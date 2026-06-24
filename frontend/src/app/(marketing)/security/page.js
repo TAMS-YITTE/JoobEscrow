@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import styles from '../marketing.module.css';
 import dict from '../../../i18n/en.json';
-import { ESCROW_ADDRESS } from '../../../config/contract';
+import { instances } from '../../../config/instances';
 import GovernanceTransparency from '../../../components/GovernanceTransparency';
 
 export const metadata = {
@@ -34,12 +34,30 @@ export default function SecurityPage() {
         <p style={{ color: 'var(--text-secondary)', marginBottom: '20px', lineHeight: 1.6 }}>
           {d.contractSection.desc}
         </p>
-        <div style={{ padding: '15px', backgroundColor: 'rgba(0,0,0,0.5)', borderRadius: '8px', wordBreak: 'break-all', fontFamily: 'monospace', color: 'var(--accent-primary)' }}>
-          {ESCROW_ADDRESS}
+        <div style={{ padding: '15px', backgroundColor: 'rgba(0,0,0,0.5)', borderRadius: '8px', wordBreak: 'break-all', fontFamily: 'monospace', color: 'var(--accent-primary)', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          {[...new Set(Object.values(instances).map(i => i.contractAddress))].map((addr, idx) => {
+             // Map address back to tier approximately for display
+             const tierMap = {
+               "0xD5B180580D183A7A9278118312207bc8a9C9f89E": "10% Tier",
+               "0xa45f887b938a08B295A5b96b6559600632F09Ab0": "8% Tier",
+               "0x56c2227E06dBC16062179Be397839b101a8e58c7": "5% Tier",
+               "0x3EEEA456daCF2247CB0023a70923E60C3E13D6C3": "3% Tier",
+               "0x7986Bd37C4DA6d1822958fCB97E7a284b40DD7Cc": "2% Tier"
+             };
+             const tierName = tierMap[addr] || "Custom Tier";
+             return (
+               <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: idx < 4 ? '1px solid rgba(255,255,255,0.1)' : 'none', paddingBottom: idx < 4 ? '10px' : '0' }}>
+                 <div style={{ display: 'flex', flexDirection: 'column' }}>
+                   <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{tierName}</span>
+                   <span>{addr}</span>
+                 </div>
+                 <Link href={`https://bscscan.com/address/${addr}`} target="_blank" className="btn btn-outline" style={{ padding: '4px 12px', fontSize: '0.8rem' }}>
+                   BscScan
+                 </Link>
+               </div>
+             );
+          })}
         </div>
-        <Link href={`https://bscscan.com/address/${ESCROW_ADDRESS}`} target="_blank" className="btn btn-outline" style={{ marginTop: '20px' }}>
-          View on BscScan
-        </Link>
       </div>
 
       <GovernanceTransparency />

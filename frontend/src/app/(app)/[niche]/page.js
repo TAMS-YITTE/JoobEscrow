@@ -8,7 +8,7 @@ import { useSearchParams } from 'next/navigation';
 import { useWeb3 } from '../../../context/Web3Context';
 import { useNiche } from '../../../context/NicheContext';
 import { ethers } from 'ethers';
-import { ESCROW_ADDRESS, ESCROW_ABI, USDT_ADDRESS, ERC20_ABI } from '../../../config/contract';
+import { USDT_ADDRESS, ERC20_ABI, ESCROW_ABI } from '../../../config/contract';
 import './page.css';
 
 function DashboardContent() {
@@ -27,7 +27,7 @@ function DashboardContent() {
     
     setLoading(true);
     try {
-      const contract = new ethers.Contract(ESCROW_ADDRESS, ESCROW_ABI, currentProvider);
+      const contract = new ethers.Contract(niche.contractAddress, ESCROW_ABI, currentProvider);
       const escrowCount = await contract.escrowCounter();
       const count = Number(escrowCount);
       const globalStaleTimeout = await contract.staleDisputeTimeout();
@@ -98,7 +98,7 @@ function DashboardContent() {
       console.error(err);
     }
     setLoading(false);
-  }, [account, provider, readProvider, highlightedId]);
+  }, [account, provider, readProvider, highlightedId, niche.contractAddress]);
 
   useEffect(() => {
     if (readProvider || provider) {

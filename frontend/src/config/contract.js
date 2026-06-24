@@ -1,5 +1,7 @@
-// Automatically updated with latest V4 ABI and Testnet address
-export const ESCROW_ADDRESS = process.env.NEXT_PUBLIC_ESCROW_ADDRESS || "0x96c38901e9b4608C6F4181dbF5da024047D13e7C";
+import { CONTRACT_8_PERCENT } from './instances';
+
+// Default global address is now the 8% Mainnet contract, fallback to local sandbox if defined.
+export const ESCROW_ADDRESS = CONTRACT_8_PERCENT;
 export const USDT_ADDRESS = process.env.NEXT_PUBLIC_USDT_ADDRESS || "0x55d398326f99059fF775485246999027B3197955";
 
 export const ESCROW_ABI = [

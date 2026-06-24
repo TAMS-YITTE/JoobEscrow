@@ -5,7 +5,7 @@ import { useWeb3 } from '../../../../context/Web3Context';
 import { useNiche } from '../../../../context/NicheContext';
 import { ethers } from 'ethers';
 import EscrowCard from '../../../../components/EscrowCard';
-import { ESCROW_ADDRESS, ESCROW_ABI } from '../../../../config/contract';
+import { ESCROW_ABI } from '../../../../config/contract';
 
 export default function DisputesPage() {
   const { account, provider, readProvider } = useWeb3();
@@ -19,7 +19,7 @@ export default function DisputesPage() {
       if (!currentProvider || !account) return;
       setLoading(true);
       try {
-        const contract = new ethers.Contract(ESCROW_ADDRESS, ESCROW_ABI, currentProvider);
+        const contract = new ethers.Contract(niche.contractAddress, ESCROW_ABI, currentProvider);
         const counter = await contract.escrowCounter();
         const maxId = Number(counter);
         const globalStaleTimeout = await contract.staleDisputeTimeout();
@@ -61,7 +61,7 @@ export default function DisputesPage() {
       setLoading(false);
     }
     fetchDisputes();
-  }, [account, provider, readProvider]);
+  }, [account, provider, readProvider, niche.contractAddress]);
 
   return (
     <div className="dashboard">
