@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+frontend/node_modules/
+contracts/node_modules/
+
+# Environment Variables (CRITICAL: Do not commit private keys!)
+.env
+contracts/.env
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+
+# Next.js Build Output
+frontend/.next/
+frontend/out/
+
+# Hardhat Build Output
+contracts/artifacts/
+contracts/cache/
+contracts/typechain-types/
+
+# Misc
+.DS_Store
+*.log

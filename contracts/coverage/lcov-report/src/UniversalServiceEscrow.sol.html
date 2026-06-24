@@ -1,0 +1,1760 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for src\UniversalServiceEscrow.sol</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../prettify.css" />
+    <link rel="stylesheet" href="../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../index.html">all files</a> / <a href="index.html">src/</a> UniversalServiceEscrow.sol
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">87.58% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>141/161</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">62.36% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>111/178</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">88.89% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>32/36</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">92.23% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>190/206</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line high'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295
+296
+297
+298
+299
+300
+301
+302
+303
+304
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315
+316
+317
+318
+319
+320
+321
+322
+323
+324
+325
+326
+327
+328
+329
+330
+331
+332
+333
+334
+335
+336
+337
+338
+339
+340
+341
+342
+343
+344
+345
+346
+347
+348
+349
+350
+351
+352
+353
+354
+355
+356
+357
+358
+359
+360
+361
+362
+363
+364
+365
+366
+367
+368
+369
+370
+371
+372
+373
+374
+375
+376
+377
+378
+379
+380
+381
+382
+383
+384
+385
+386
+387
+388
+389
+390
+391
+392
+393
+394
+395
+396
+397
+398
+399
+400
+401
+402
+403
+404
+405
+406
+407
+408
+409
+410
+411
+412
+413
+414
+415
+416
+417
+418
+419
+420
+421
+422
+423
+424
+425
+426
+427
+428
+429
+430
+431
+432
+433
+434
+435
+436
+437
+438
+439
+440
+441
+442
+443
+444
+445
+446
+447
+448
+449
+450
+451
+452
+453
+454
+455
+456
+457
+458
+459
+460
+461
+462
+463
+464
+465
+466
+467
+468
+469
+470
+471
+472
+473
+474
+475
+476
+477
+478
+479
+480
+481
+482
+483
+484
+485
+486
+487
+488
+489
+490
+491
+492
+493
+494
+495
+496
+497
+498
+499
+500
+501
+502
+503
+504
+505
+506
+507
+508
+509
+510
+511
+512
+513
+514
+515
+516
+517
+518
+519
+520
+521
+522
+523
+524
+525
+526
+527
+528
+529
+530
+531
+532
+533
+534
+535
+536
+537
+538
+539
+540
+541
+542
+543
+544
+545
+546
+547
+548
+549
+550
+551
+552
+553
+554
+555
+556
+557
+558
+559
+560
+561
+562
+563
+564
+565
+566</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">81×</span>
+<span class="cline-any cline-yes">78×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-yes">5×</span>
+<span class="cline-any cline-yes">5×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5×</span>
+<span class="cline-any cline-yes">5×</span>
+<span class="cline-any cline-yes">5×</span>
+<span class="cline-any cline-yes">5×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7×</span>
+<span class="cline-any cline-yes">7×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">38×</span>
+<span class="cline-any cline-yes">38×</span>
+<span class="cline-any cline-yes">37×</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-yes">35×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">35×</span>
+<span class="cline-any cline-yes">35×</span>
+<span class="cline-any cline-yes">35×</span>
+<span class="cline-any cline-yes">35×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">35×</span>
+<span class="cline-any cline-yes">35×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">35×</span>
+<span class="cline-any cline-yes">35×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">35×</span>
+<span class="cline-any cline-yes">35×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">25×</span>
+<span class="cline-any cline-yes">25×</span>
+<span class="cline-any cline-yes">24×</span>
+<span class="cline-any cline-yes">24×</span>
+<span class="cline-any cline-yes">24×</span>
+<span class="cline-any cline-yes">23×</span>
+<span class="cline-any cline-yes">23×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9×</span>
+<span class="cline-any cline-yes">9×</span>
+<span class="cline-any cline-yes">9×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9×</span>
+<span class="cline-any cline-yes">9×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9×</span>
+<span class="cline-any cline-yes">9×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9×</span>
+<span class="cline-any cline-yes">9×</span>
+<span class="cline-any cline-yes">9×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14×</span>
+<span class="cline-any cline-yes">14×</span>
+<span class="cline-any cline-yes">13×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">13×</span>
+<span class="cline-any cline-yes">13×</span>
+<span class="cline-any cline-yes">13×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">13×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8×</span>
+<span class="cline-any cline-yes">7×</span>
+<span class="cline-any cline-yes">7×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7×</span>
+<span class="cline-any cline-yes">7×</span>
+<span class="cline-any cline-yes">7×</span>
+<span class="cline-any cline-yes">7×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7×</span>
+<span class="cline-any cline-yes">7×</span>
+<span class="cline-any cline-yes">7×</span>
+<span class="cline-any cline-yes">7×</span>
+<span class="cline-any cline-yes">7×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7×</span>
+<span class="cline-any cline-yes">7×</span>
+<span class="cline-any cline-yes">7×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5×</span>
+<span class="cline-any cline-yes">5×</span>
+<span class="cline-any cline-yes">5×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">52×</span>
+<span class="cline-any cline-yes">49×</span>
+<span class="cline-any cline-yes">49×</span>
+<span class="cline-any cline-yes">49×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5×</span>
+<span class="cline-any cline-yes">5×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5×</span>
+<span class="cline-any cline-yes">5×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">11×</span>
+<span class="cline-any cline-yes">11×</span>
+<span class="cline-any cline-yes">11×</span>
+<span class="cline-any cline-yes">11×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+&nbsp;
+/**
+ * @title UniversalServiceEscrow
+ * @notice Generic escrow engine for Web3 services on BNB Smart Chain.
+ *
+ * Hardening over earlier versions:
+ *  1. Pull-over-push: funds are credited then withdrawn by the beneficiary,
+ *     never pushed. Prevents griefing by reverting/blacklisted recipients.
+ *  2. Ownable2Step: two-step ownership transfer prevents accidental fat-finger loss.
+ *  3. Accounting invariant: totalLocked + totalWithdrawable &lt;= balance. The
+ *     stuck-token recovery function can never touch committed funds.
+ *  4. Non-binary disputes: split resolution (provider 0..100%) instead of all-or-nothing.
+ *  5. Evidence anchoring: evidenceHash (IPFS CID) recorded on-chain on dispute opening
+ *     and via submitEvidence, by both parties.
+ *  6. Provider acceptance: the client may cancel freely until the provider accepts;
+ *     after acceptance, cancellation requires a dispute.
+ *  7. Per-token limits: min/max amounts stored per token to handle heterogeneous decimals.
+ *  8. Timelock: fee, feeRecipient, and global limits changes go through a 2-day queue.
+ *  9. Emergency pause: creation/release/cancel gated by whenNotPaused, while withdraw and
+ *     dispute resolution remain accessible.
+ *
+ * Post-audit fixes (SpyWolf):
+ *  - resolveStaleDispute: 50/50 split, no bias toward either party.
+ *  - batchWithdraw: isolated transfers, one failing token does not block others.
+ *  - claimTimeout: requires prior provider acceptance.
+ */
+&nbsp;
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/access/Ownable2Step.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+&nbsp;
+contract UniversalServiceEscrow is ReentrancyGuard, Ownable2Step {
+&nbsp;
+    using SafeERC20 for IERC20;
+&nbsp;
+    // --- Types ---
+&nbsp;
+    enum Status { NULL, FUNDED, RELEASED, DISPUTED, RESOLVED, CANCELLED }
+&nbsp;
+    struct Escrow {
+        address client;
+        address provider;
+        address token;
+        uint256 amount;
+        uint256 feeBPS;          // fee in basis points, locked at creation time
+        uint256 createdAt;       // used for acceptDelay
+        uint256 timeoutDate;
+        Status  status;
+        bool    accepted;        // provider has committed to the job
+    }
+&nbsp;
+    struct TokenConfig {
+        bool    allowed;
+        string  symbol;
+        uint256 minAmount;       // per-token bounds (in token's native decimals)
+        uint256 maxAmount;
+    }
+&nbsp;
+    // --- Storage ---
+&nbsp;
+    uint256 public escrowCounter;
+    mapping(uint256 =&gt; Escrow) public escrows;
+&nbsp;
+    mapping(address =&gt; uint256) public activeEscrowsByUser;     // client -&gt; active count
+    mapping(address =&gt; TokenConfig) public tokenConfigs;
+&nbsp;
+    // Pull-over-push accounting
+    mapping(address =&gt; mapping(address =&gt; uint256)) public withdrawable; // user -&gt; token -&gt; amount
+    mapping(address =&gt; uint256) public totalWithdrawable;                // token -&gt; owed
+    mapping(address =&gt; uint256) public totalLocked;                      // token -&gt; locked in escrows
+&nbsp;
+    bool public paused;
+&nbsp;
+    address public feeRecipient;
+    uint256 public defaultFeeBPS         = 800;   // 8%
+    uint256 public maxActiveEscrowsPerUser = 10;
+    uint256 public minTimeoutDays        = 3;     // minimum timeout in days
+    uint256 public maxTimeoutDays        = 365;
+    uint256 public acceptDelaySeconds    = 0;     // optional front-running delay
+&nbsp;
+    uint256 public staleDisputeTimeout   = 30 days;
+    mapping(uint256 =&gt; uint256) public disputeOpenedAt;
+    mapping(uint256 =&gt; address) public disputeOpener;
+&nbsp;
+    // Timelock
+    uint256 public constant TIMELOCK_DELAY = 2 days;
+    mapping(bytes32 =&gt; uint256) public timelocks; // actionId -&gt; earliest execution timestamp
+&nbsp;
+    // Pre-whitelisted tokens on BSC Mainnet (chainId 56)
+    address public constant BUSD = 0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56;
+    address public constant USDT = 0x55d398326f99059fF775485246999027B3197955;
+    address public constant USDC = 0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d;
+    address public constant WBNB = 0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c;
+&nbsp;
+    // --- Events ---
+&nbsp;
+    event EscrowCreated(uint256 indexed escrowId, address indexed client, address indexed provider, address token, uint256 amount, uint256 timeoutDate);
+    event EscrowAccepted(uint256 indexed escrowId, address indexed provider);
+    // FundsReleased is the canonical accounting event for successful payouts.
+    // TimeoutClaimed is emitted additionally to indicate the specific release reason.
+    event FundsReleased(uint256 indexed escrowId, uint256 providerAmount, uint256 feeAmount);
+    event TimeoutClaimed(uint256 indexed escrowId, address indexed provider);
+    event EscrowCancelled(uint256 indexed escrowId, address indexed client, uint256 amount);
+    event DisputeOpened(uint256 indexed escrowId, address indexed opener, bytes32 evidenceHash);
+    event EvidenceSubmitted(uint256 indexed escrowId, address indexed party, bytes32 evidenceHash);
+    event DisputeResolved(uint256 indexed escrowId, uint256 providerBps, uint256 providerAmount, uint256 clientAmount, uint256 feeAmount);
+    event StaleDisputeResolved(uint256 indexed escrowId, address resolver, uint256 settledAmount);
+    event Credited(address indexed user, address indexed token, uint256 amount);
+    event Withdrawn(address indexed user, address indexed token, uint256 amount);
+    event TokensRecovered(address indexed token, address indexed to, uint256 amount);
+&nbsp;
+    event TokenConfigUpdated(address indexed token, bool allowed, string symbol, uint256 minAmount, uint256 maxAmount);
+    event FeeRecipientUpdated(address indexed oldRecipient, address indexed newRecipient);
+    event DefaultFeeUpdated(uint256 oldFee, uint256 newFee);
+    event LimitsUpdated(uint256 maxActive, uint256 minTimeout, uint256 maxTimeout, uint256 acceptDelay);
+    event PauseToggled(bool paused);
+    event ActionQueued(bytes32 indexed actionId, uint256 executeAfter);
+    event ActionCancelled(bytes32 indexed actionId);
+&nbsp;
+    // --- Constructor ---
+&nbsp;
+    constructor(address _feeRecipient) Ownable(msg.sender) {
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(_feeRecipient != address(0), "Invalid fee recipient");
+        feeRecipient = _feeRecipient;
+&nbsp;
+        // Auto-whitelist only on BSC Mainnet (chainId 56)
+        <span class="missing-if-branch" title="if path not taken" >I</span>if (block.chainid == 56) {
+<span class="cstat-no" title="statement not covered" >            if (BUSD.code.length &gt; 0) <span class="cstat-no" title="statement not covered" >_whitelistToken(BUSD, "BUSD", 1 ether, 100000 ether)</span>;</span>
+<span class="cstat-no" title="statement not covered" >            if (USDT.code.length &gt; 0) <span class="cstat-no" title="statement not covered" >_whitelistToken(USDT, "USDT", 1 ether, 100000 ether)</span>;</span>
+<span class="cstat-no" title="statement not covered" >            if (USDC.code.length &gt; 0) <span class="cstat-no" title="statement not covered" >_whitelistToken(USDC, "USDC", 1 ether, 100000 ether)</span>;</span>
+<span class="cstat-no" title="statement not covered" >            if (WBNB.code.length &gt; 0) <span class="cstat-no" title="statement not covered" >_whitelistToken(WBNB, "WBNB", 0.01 ether, 1000 ether)</span>;</span>
+        }
+    }
+&nbsp;
+    // --- Modifiers ---
+&nbsp;
+    modifier whenNotPaused() {
+        require(!paused, "Contract is paused");
+        _;
+    }
+&nbsp;
+    // --- Admin: token whitelist (immediate, owner-only) ---
+&nbsp;
+    function setTokenAllowed(
+        address _token,
+        string calldata _symbol,
+        uint256 _minAmount,
+        uint256 _maxAmount,
+        bool _allowed
+    ) external <span class="missing-if-branch" title="else path not taken" >E</span>onlyOwner {
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(_token != address(0) &amp;&amp; _token.code.length &gt; 0, "Invalid token address");
+        if (_allowed) {
+            <span class="missing-if-branch" title="else path not taken" >E</span>require(_minAmount &gt; 0 &amp;&amp; _maxAmount &gt; _minAmount, "Invalid amount bounds");
+            _whitelistToken(_token, _symbol, _minAmount, _maxAmount);
+        } else {
+            string memory oldSymbol = tokenConfigs[_token].symbol;
+            delete tokenConfigs[_token];
+            emit TokenConfigUpdated(_token, false, oldSymbol, 0, 0);
+        }
+    }
+&nbsp;
+    function _whitelistToken(address _token, string memory _symbol, uint256 _min, uint256 _max) internal {
+        try IERC20(_token).totalSupply() returns (uint256 supply) {
+            <span class="missing-if-branch" title="else path not taken" >E</span>require(supply &gt; 0, "Token has no supply");
+            tokenConfigs[_token] = TokenConfig({allowed: true, symbol: _symbol, minAmount: _min, maxAmount: _max});
+            emit TokenConfigUpdated(_token, true, _symbol, _min, _max);
+        } catch {
+<span class="cstat-no" title="statement not covered" >            revert("Invalid BEP-20 token")</span>;
+        }
+    }
+&nbsp;
+    // --- Admin: emergency pause (immediate, by design) ---
+&nbsp;
+    function togglePause() external onlyOwner {
+        paused = !paused;
+        emit PauseToggled(paused);
+    }
+&nbsp;
+    // --- Admin: timelocked parameter changes ---
+&nbsp;
+    function _queue(bytes32 actionId) internal {
+        timelocks[actionId] = block.timestamp + TIMELOCK_DELAY;
+        emit ActionQueued(actionId, timelocks[actionId]);
+    }
+&nbsp;
+    function _consume(bytes32 actionId) internal {
+        uint256 t = timelocks[actionId];
+        require(t != 0 &amp;&amp; block.timestamp &gt;= t, "Action not ready");
+        delete timelocks[actionId];
+    }
+&nbsp;
+    function cancelQueuedAction(bytes32 actionId) external <span class="missing-if-branch" title="else path not taken" >E</span>onlyOwner {
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(timelocks[actionId] != 0, "Nothing queued");
+        delete timelocks[actionId];
+        emit ActionCancelled(actionId);
+    }
+&nbsp;
+    // Fee
+    function queueDefaultFee(uint256 _newFeeBPS) external onlyOwner {
+        require(_newFeeBPS &lt;= 2000, "Fee too high (max 20%)");
+        _queue(keccak256(abi.encode("FEE", _newFeeBPS)));
+    }
+    function executeDefaultFee(uint256 _newFeeBPS) external <span class="missing-if-branch" title="else path not taken" >E</span>onlyOwner {
+        _consume(keccak256(abi.encode("FEE", _newFeeBPS)));
+        uint256 oldFee = defaultFeeBPS;
+        defaultFeeBPS = _newFeeBPS;
+        emit DefaultFeeUpdated(oldFee, _newFeeBPS);
+    }
+&nbsp;
+    // Fee recipient
+    function queueFeeRecipient(address _newRecipient) external <span class="missing-if-branch" title="else path not taken" >E</span>onlyOwner {
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(_newRecipient != address(0), "Invalid address");
+        _queue(keccak256(abi.encode("RECIPIENT", _newRecipient)));
+    }
+    function executeFeeRecipient(address _newRecipient) external <span class="missing-if-branch" title="else path not taken" >E</span>onlyOwner {
+        _consume(keccak256(abi.encode("RECIPIENT", _newRecipient)));
+        address oldRecipient = feeRecipient;
+        feeRecipient = _newRecipient;
+        emit FeeRecipientUpdated(oldRecipient, _newRecipient);
+    }
+&nbsp;
+    // Global limits
+    function queueLimits(uint256 _maxActive, uint256 _minTimeout, uint256 _maxTimeout, uint256 _acceptDelay) external <span class="missing-if-branch" title="else path not taken" >E</span>onlyOwner {
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(_maxActive &gt; 0 &amp;&amp; _minTimeout &gt; 0 &amp;&amp; _maxTimeout &gt; _minTimeout &amp;&amp; _maxTimeout &lt;= 730, "Invalid limits");
+        _queue(keccak256(abi.encode("LIMITS", _maxActive, _minTimeout, _maxTimeout, _acceptDelay)));
+    }
+    function executeLimits(uint256 _maxActive, uint256 _minTimeout, uint256 _maxTimeout, uint256 _acceptDelay) external <span class="missing-if-branch" title="else path not taken" >E</span>onlyOwner {
+        _consume(keccak256(abi.encode("LIMITS", _maxActive, _minTimeout, _maxTimeout, _acceptDelay)));
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(_minTimeout &gt; 0, "Min timeout must be &gt; 0");
+        maxActiveEscrowsPerUser = _maxActive;
+        minTimeoutDays = _minTimeout;
+        maxTimeoutDays = _maxTimeout;
+        acceptDelaySeconds = _acceptDelay;
+        emit LimitsUpdated(_maxActive, _minTimeout, _maxTimeout, _acceptDelay);
+    }
+&nbsp;
+    // Stale dispute timeout
+    function queueStaleTimeout(uint256 _newTimeoutDays) external <span class="missing-if-branch" title="else path not taken" >E</span>onlyOwner {
+        require(_newTimeoutDays &gt;= 7 &amp;&amp; _newTimeoutDays &lt;= 90, "Stale timeout out of range");
+        _queue(keccak256(abi.encode("STALE_TIMEOUT", _newTimeoutDays)));
+    }
+    function executeStaleTimeout(uint256 _newTimeoutDays) external <span class="missing-if-branch" title="else path not taken" >E</span>onlyOwner {
+        _consume(keccak256(abi.encode("STALE_TIMEOUT", _newTimeoutDays)));
+        staleDisputeTimeout = _newTimeoutDays * 1 days;
+    }
+&nbsp;
+    // --- Core: escrow creation ---
+&nbsp;
+    function createAndFundEscrow(
+        address _provider,
+        address _token,
+        uint256 _amount,
+        uint256 _timeoutDurationInDays
+    ) external <span class="missing-if-branch" title="else path not taken" >E</span>nonReentrant whenNotPaused returns (uint256) {
+        TokenConfig memory cfg = tokenConfigs[_token];
+        require(cfg.allowed, "Token not whitelisted");
+        require(_provider != address(0) &amp;&amp; _provider != msg.sender, "Invalid provider");
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(_amount &gt;= cfg.minAmount &amp;&amp; _amount &lt;= cfg.maxAmount, "Amount out of bounds");
+        require(_timeoutDurationInDays &gt;= minTimeoutDays &amp;&amp; _timeoutDurationInDays &lt;= maxTimeoutDays, "Invalid timeout");
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(activeEscrowsByUser[msg.sender] &lt; maxActiveEscrowsPerUser, "Too many active escrows");
+&nbsp;
+        // Measure actual received amount (handles fee-on-transfer tokens)
+        uint256 balanceBefore = IERC20(_token).balanceOf(address(this));
+        IERC20(_token).safeTransferFrom(msg.sender, address(this), _amount);
+        uint256 actualAmount = IERC20(_token).balanceOf(address(this)) - balanceBefore;
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(actualAmount &gt; 0, "Transfer returned zero tokens");
+&nbsp;
+        uint256 escrowId = ++escrowCounter;
+        escrows[escrowId] = Escrow({
+            client: msg.sender,
+            provider: _provider,
+            token: _token,
+            amount: actualAmount,
+            feeBPS: defaultFeeBPS,
+            createdAt: block.timestamp,
+            timeoutDate: block.timestamp + (_timeoutDurationInDays * 1 days),
+            status: Status.FUNDED,
+            accepted: false
+        });
+&nbsp;
+        activeEscrowsByUser[msg.sender]++;
+        totalLocked[_token] += actualAmount;
+&nbsp;
+        emit EscrowCreated(escrowId, msg.sender, _provider, _token, actualAmount, escrows[escrowId].timeoutDate);
+        return escrowId;
+    }
+&nbsp;
+    // --- Core: provider acceptance ---
+&nbsp;
+    function acceptEscrow(uint256 _escrowId) external <span class="missing-if-branch" title="else path not taken" >E</span>whenNotPaused {
+        Escrow storage e = escrows[_escrowId];
+        require(msg.sender == e.provider, "Only provider");
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(e.status == Status.FUNDED, "Not FUNDED");
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(block.timestamp &gt;= e.createdAt + acceptDelaySeconds, "Accept delay not met");
+        require(!e.accepted, "Already accepted");
+        e.accepted = true;
+        emit EscrowAccepted(_escrowId, msg.sender);
+    }
+&nbsp;
+    // --- Core: happy path ---
+&nbsp;
+    function releaseFunds(uint256 _escrowId) external <span class="missing-if-branch" title="else path not taken" >E</span>nonReentrant whenNotPaused {
+        Escrow storage e = escrows[_escrowId];
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(msg.sender == e.client, "Only client");
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(e.status == Status.FUNDED, "Not FUNDED");
+&nbsp;
+        e.status = Status.RELEASED;
+        activeEscrowsByUser[e.client]--;
+&nbsp;
+        uint256 feeAmount = (e.amount * e.feeBPS) / 10000;
+        uint256 providerAmount = e.amount - feeAmount;
+&nbsp;
+        totalLocked[e.token] -= e.amount;
+        _credit(feeRecipient, e.token, feeAmount);
+        _credit(e.provider, e.token, providerAmount);
+&nbsp;
+        emit FundsReleased(_escrowId, providerAmount, feeAmount);
+    }
+&nbsp;
+    function claimTimeout(uint256 _escrowId) external <span class="missing-if-branch" title="else path not taken" >E</span>nonReentrant <span class="missing-if-branch" title="else path not taken" >E</span>whenNotPaused {
+        Escrow storage e = escrows[_escrowId];
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(msg.sender == e.provider, "Only provider");
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(e.status == Status.FUNDED, "Not FUNDED");
+        require(e.accepted, "Provider never accepted");
+        require(block.timestamp &gt; e.timeoutDate, "Timeout not reached");
+&nbsp;
+        e.status = Status.RELEASED;
+        activeEscrowsByUser[e.client]--;
+&nbsp;
+        uint256 feeAmount = (e.amount * e.feeBPS) / 10000;
+        uint256 providerAmount = e.amount - feeAmount;
+&nbsp;
+        totalLocked[e.token] -= e.amount;
+        _credit(feeRecipient, e.token, feeAmount);
+        _credit(e.provider, e.token, providerAmount);
+&nbsp;
+        emit TimeoutClaimed(_escrowId, msg.sender);
+        emit FundsReleased(_escrowId, providerAmount, feeAmount);
+    }
+&nbsp;
+    // --- Core: cancellation (only before provider acceptance) ---
+&nbsp;
+    function cancelEscrow(uint256 _escrowId) external <span class="missing-if-branch" title="else path not taken" >E</span>nonReentrant whenNotPaused {
+        Escrow storage e = escrows[_escrowId];
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(msg.sender == e.client, "Only client");
+        require(e.status == Status.FUNDED &amp;&amp; !e.accepted, "Cannot cancel");
+&nbsp;
+        e.status = Status.CANCELLED;
+        activeEscrowsByUser[e.client]--;
+&nbsp;
+        totalLocked[e.token] -= e.amount;
+        _credit(e.client, e.token, e.amount); // full refund, no fee
+&nbsp;
+        emit EscrowCancelled(_escrowId, e.client, e.amount);
+    }
+&nbsp;
+    // --- Disputes ---
+&nbsp;
+    function openDispute(uint256 _escrowId, bytes32 _evidenceHash) external <span class="missing-if-branch" title="else path not taken" >E</span>nonReentrant {
+        Escrow storage e = escrows[_escrowId];
+        require(msg.sender == e.client || msg.sender == e.provider, "Not party to escrow");
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(e.status == Status.FUNDED, "Not FUNDED");
+&nbsp;
+        e.status = Status.DISPUTED;
+        disputeOpenedAt[_escrowId] = block.timestamp;
+        disputeOpener[_escrowId] = msg.sender;
+&nbsp;
+        emit DisputeOpened(_escrowId, msg.sender, _evidenceHash);
+    }
+&nbsp;
+    function submitEvidence(uint256 _escrowId, bytes32 _evidenceHash) external {
+        Escrow storage e = escrows[_escrowId];
+        require(<span class="branch-0 cbranch-no" title="branch not covered" >msg.sender == e.client</span> || msg.sender == e.provider, "Not party to escrow");
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(e.status == Status.DISPUTED, "Not DISPUTED");
+        emit EvidenceSubmitted(_escrowId, msg.sender, _evidenceHash);
+    }
+&nbsp;
+    /**
+     * @notice Resolves a dispute with a proportional split.
+     * @param _providerBps Provider's share in basis points (10000 = 100% to provider).
+     *        Fee is charged only on the provider's portion.
+     * @dev NOT gated by whenNotPaused: a dispute must be resolvable even during a pause.
+     */
+    function resolveDispute(uint256 _escrowId, uint256 _providerBps) external onlyOwner <span class="missing-if-branch" title="else path not taken" >E</span>nonReentrant {
+        require(_providerBps &lt;= 10000, "Invalid split");
+        Escrow storage e = escrows[_escrowId];
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(e.status == Status.DISPUTED, "Not DISPUTED");
+&nbsp;
+        uint256 providerShare = (e.amount * _providerBps) / 10000;
+        uint256 clientShare = e.amount - providerShare;
+        uint256 feeAmount = (providerShare * e.feeBPS) / 10000;
+        uint256 providerNet = providerShare - feeAmount;
+&nbsp;
+        e.status = Status.RESOLVED;
+        activeEscrowsByUser[e.client]--;
+        totalLocked[e.token] -= e.amount;
+        delete disputeOpenedAt[_escrowId];
+        delete disputeOpener[_escrowId];
+&nbsp;
+        _credit(feeRecipient, e.token, feeAmount);
+        _credit(e.provider, e.token, providerNet);
+        _credit(e.client, e.token, clientShare);
+&nbsp;
+        emit DisputeResolved(_escrowId, _providerBps, providerNet, clientShare, feeAmount);
+    }
+&nbsp;
+    /**
+     * @notice Resolves an abandoned (stale) dispute after staleDisputeTimeout has passed.
+     *         Splits funds 50/50 – no party benefits from the other's inaction.
+     * @dev    The timer is NOT paused when the contract is paused.
+     */
+    function resolveStaleDispute(uint256 _escrowId) external <span class="missing-if-branch" title="else path not taken" >E</span>nonReentrant {
+        Escrow storage e = escrows[_escrowId];
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(e.status == Status.DISPUTED, "Not DISPUTED");
+        require(msg.sender == e.client || msg.sender == e.provider, "Not party to escrow");
+        require(block.timestamp &gt; disputeOpenedAt[_escrowId] + staleDisputeTimeout, "Dispute not stale");
+&nbsp;
+        e.status = Status.RESOLVED;
+        activeEscrowsByUser[e.client]--;
+        totalLocked[e.token] -= e.amount;
+        delete disputeOpenedAt[_escrowId];
+        delete disputeOpener[_escrowId];
+&nbsp;
+        // 50/50 split – fee only on the provider's half
+        uint256 providerShare = e.amount / 2;
+        uint256 clientShare = e.amount - providerShare;
+        uint256 feeAmount = (providerShare * e.feeBPS) / 10000;
+        uint256 providerNet = providerShare - feeAmount;
+&nbsp;
+        _credit(feeRecipient, e.token, feeAmount);
+        _credit(e.provider, e.token, providerNet);
+        _credit(e.client, e.token, clientShare);
+&nbsp;
+        emit StaleDisputeResolved(_escrowId, msg.sender, providerNet);
+    }
+&nbsp;
+    // --- Pull-over-push settlement ---
+&nbsp;
+    function _credit(address _user, address _token, uint256 _amount) internal {
+        if (_amount == 0) return;
+        withdrawable[_user][_token] += _amount;
+        totalWithdrawable[_token] += _amount;
+        emit Credited(_user, _token, _amount);
+    }
+&nbsp;
+    /**
+     * @notice Withdraws owed funds for a single token.
+     * @dev    NOT gated by whenNotPaused; users must always be able to retrieve their funds.
+     */
+    function withdraw(address _token) external <span class="missing-if-branch" title="else path not taken" >E</span>nonReentrant {
+        uint256 amount = withdrawable[msg.sender][_token];
+        require(amount &gt; 0, "Nothing to withdraw");
+&nbsp;
+        withdrawable[msg.sender][_token] = 0;
+        totalWithdrawable[_token] -= amount;
+&nbsp;
+        IERC20(_token).safeTransfer(msg.sender, amount);
+        emit Withdrawn(msg.sender, _token, amount);
+    }
+&nbsp;
+    /**
+     * @notice Batch withdrawal across multiple tokens.
+     *         Each transfer is isolated: a failure in one token does not block the others.
+     */
+    function batchWithdraw(address[] calldata _tokens) external <span class="missing-if-branch" title="else path not taken" >E</span>nonReentrant {
+        for (uint256 i = 0; i &lt; _tokens.length; i++) {
+            address token = _tokens[i];
+            uint256 amount = withdrawable[msg.sender][token];
+            <span class="missing-if-branch" title="else path not taken" >E</span>if (amount &gt; 0) {
+                withdrawable[msg.sender][token] = 0;
+                totalWithdrawable[token] -= amount;
+&nbsp;
+                // Low-level call to handle non-standard tokens (e.g., USDT)
+                (bool success, bytes memory data) = token.call(
+                    abi.encodeWithSelector(IERC20.transfer.selector, msg.sender, amount)
+                );
+                bool transferOk = success &amp;&amp; (data.length == 0 || abi.decode(data, (bool)));
+&nbsp;
+                if (!transferOk) {
+                    // Re-credit on failure so the user can try again later
+                    withdrawable[msg.sender][token] += amount;
+                    totalWithdrawable[token] += amount;
+                } else {
+                    emit Withdrawn(msg.sender, token, amount);
+                }
+            }
+        }
+    }
+&nbsp;
+    // --- Bounded stuck-token recovery (cannot drain committed funds) ---
+&nbsp;
+    /**
+     * @notice Recovers tokens accidentally sent to the contract.
+     *         Only the surplus (balance - totalLocked - totalWithdrawable) can be swept.
+     */
+<span class="fstat-no" title="function not covered" >    function recoverStuckTokens(address _token, address _to, uint256 _amount) external <span class="missing-if-branch" title="if path not taken" >I</span>onlyOwner nonReentrant {</span>
+<span class="cstat-no" title="statement not covered" >        require(_to != address(0), "Invalid recipient")</span>;
+<span class="cstat-no" title="statement not covered" >        uint256 bal = IERC20(_token).balanceOf(address(this));</span>
+<span class="cstat-no" title="statement not covered" >        uint256 committed = totalLocked[_token] + totalWithdrawable[_token];</span>
+<span class="cstat-no" title="statement not covered" >        require(bal &gt; committed, "No surplus")</span>;
+<span class="cstat-no" title="statement not covered" >        require(_amount &lt;= bal - committed, "Exceeds surplus")</span>;
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        IERC20(_token).safeTransfer(_to, _amount)</span>;
+<span class="cstat-no" title="statement not covered" >        emit TokensRecovered(_token, _to, _amount);</span>
+    }
+&nbsp;
+    // --- Views ---
+&nbsp;
+    function getEscrowDetails(uint256 _escrowId) external view returns (
+        address client, address provider, address token, string memory sym,
+        uint256 amount, uint256 feeBPS, uint256 timeoutDate, Status status, bool accepted
+    ) {
+        Escrow storage e = escrows[_escrowId];
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(e.client != address(0), "Escrow does not exist");
+        return (e.client, e.provider, e.token, tokenConfigs[e.token].symbol, e.amount, e.feeBPS, e.timeoutDate, e.status, e.accepted);
+    }
+&nbsp;
+    /**
+     * @notice Paginated view of active escrows for a user. Costly; intended for off-chain calls.
+     *         For high volume, index events via The Graph rather than calling this on-chain.
+     */
+    function getActiveEscrowsByUser(address _user, uint256 _offset, uint256 _limit) external view returns (uint256[] memory) {
+        uint256 total = escrowCounter;
+        uint256[] memory temp = new uint256[](total);
+        uint256 count = 0;
+&nbsp;
+        for (uint256 i = 1; i &lt;= total &amp;&amp; count &lt; _offset + _limit; i++) {
+            Escrow storage e = escrows[i];
+            <span class="missing-if-branch" title="else path not taken" >E</span>if ((e.client == _user || <span class="branch-1 cbranch-no" title="branch not covered" >e.provider == _user</span>) &amp;&amp; (e.status == Status.FUNDED || <span class="branch-1 cbranch-no" title="branch not covered" >e.status == Status.DISPUTED</span>)) {
+                if (count &gt;= _offset) temp[count - _offset] = i;
+                count++;
+            }
+        }
+&nbsp;
+        uint256 resultSize = count &gt; _offset ? (count - _offset &gt; _limit ? _limit : count - _offset) : <span class="missing-if-branch" title="else path not taken" >E</span>0;
+        uint256[] memory result = new uint256[](resultSize);
+        for (uint256 i = 0; i &lt; resultSize; i++) result[i] = temp[i];
+        return result;
+    }
+&nbsp;
+    function getActiveEscrowCount(address _user) external view returns (uint256) {
+        return activeEscrowsByUser[_user];
+    }
+&nbsp;
+<span class="fstat-no" title="function not covered" >    function canClaimTimeout(uint256 _escrowId) external view returns (bool) {</span>
+<span class="cstat-no" title="statement not covered" >        Escrow storage e = escrows[_escrowId];</span>
+<span class="cstat-no" title="statement not covered" >        return e.status == Status.FUNDED &amp;&amp; block.timestamp &gt; e.timeoutDate;</span>
+    }
+&nbsp;
+    function tokenSymbol(address _token) external view returns (string memory) {
+        return tokenConfigs[_token].symbol;
+    }
+&nbsp;
+    // ABI-compatible alias for earlier versions
+<span class="fstat-no" title="function not covered" >    function tokenSymbols(address _token) external view returns (string memory) {</span>
+<span class="cstat-no" title="statement not covered" >        return tokenConfigs[_token].symbol;</span>
+    }
+&nbsp;
+<span class="fstat-no" title="function not covered" >    function allowedTokens(address _token) external view returns (bool) {</span>
+<span class="cstat-no" title="statement not covered" >        return tokenConfigs[_token].allowed;</span>
+    }
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Tue Jun 23 2026 16:51:45 GMT+0200 (heure d’été d’Europe centrale)
+</div>
+</div>
+<script src="../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../sorter.js"></script>
+</body>
+</html>
