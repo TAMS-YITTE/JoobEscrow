@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useMemo } from 'react';
 import { ethers } from 'ethers';
 
 const Web3Context = createContext();
@@ -13,7 +13,9 @@ export function Web3Provider({ children }) {
   const [error, setError] = useState(null);
   const [isTestnet, setIsTestnet] = useState(false);
 
-  const readProvider = new ethers.JsonRpcProvider(process.env.NEXT_PUBLIC_BSC_RPC_URL || 'https://data-seed-prebsc-1-s1.binance.org:8545/');
+  const readProvider = useMemo(() => 
+    new ethers.JsonRpcProvider(process.env.NEXT_PUBLIC_BSC_RPC_URL || 'https://data-seed-prebsc-1-s1.binance.org:8545/')
+  , []);
 
   const ensureCorrectChain = async () => {
     const expectedChainId = process.env.NEXT_PUBLIC_CHAIN_ID || '97';
@@ -28,8 +30,32 @@ export function Web3Provider({ children }) {
         return true;
       } catch (switchError) {
         if (switchError.code === 4902) {
-          // Chain not added to MetaMask, could add it here as fallback
-          throw new Error("Please add the correct BSC chain to your wallet.");
+          const chainParams = expectedChainId === '56' ? {
+            chainId: '0x38',
+            chainName: 'BNB Smart Chain',
+            rpcUrls: ['https://bsc-dataseed.binance.org/'],
+            nativeCurrency: { name: 'BNB', symbol: 'BNB', decimals: 18 },
+            blockExplorerUrls: ['https://bscscan.com']
+          } : {
+            chainId: '0x61',
+            chainName: 'BNB Smart Chain Testnet',
+            rpcUrls: ['https://data-seed-prebsc-1-s1.binance.org:8545/'],
+            nativeCurrency: { name: 'tBNB', symbol: 'tBNB', decimals: 18 },
+            blockExplorerUrls: ['https://testnet.bscscan.com']
+          };
+
+          try {
+            await window.ethereum.request({
+              method: 'wallet_addEthereumChain',
+              params: [chainParams],
+            });
+            return true;
+          } catch (addError) {
+            if (addError.code === 4001) {
+              throw new Error("You rejected adding the required network to your wallet.");
+            }
+            throw new Error("Failed to add the correct BSC chain to your wallet.");
+          }
         }
         throw new Error("You must switch to the correct network to proceed.");
       }
