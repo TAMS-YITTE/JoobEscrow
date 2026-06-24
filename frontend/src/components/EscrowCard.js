@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { useWeb3 } from '../context/Web3Context';
 import { useNiche } from '../context/NicheContext';
@@ -13,30 +13,23 @@ export default function EscrowCard({ escrow, isDisputeView }) {
   const niche = useNiche();
   const [loading, setLoading] = useState(false);
 
-  const getStatusBadge = (status) => {
-    switch (status) {
+  const getStatusBadge = () => {
+    if (escrow.status === 'FUNDED' && escrow.accepted) {
+      return <span className="status-badge status-funded">Accepted</span>;
+    }
+    switch (escrow.status) {
       case 'FUNDED':
-      case 0n:
-      case 0:
         return <span className="status-badge status-funded">Funded</span>;
-      case 'ACCEPTED':
-      case 1n:
-      case 1:
-        return <span className="status-badge status-funded">Accepted</span>;
+      case 'RELEASED':
+        return <span className="status-badge status-resolved">Released</span>;
       case 'DISPUTED':
-      case 2n:
-      case 2:
         return <span className="status-badge status-disputed">Disputed</span>;
       case 'RESOLVED':
-      case 3n:
-      case 3:
         return <span className="status-badge status-resolved">Resolved</span>;
       case 'CANCELLED':
-      case 4n:
-      case 4:
         return <span className="status-badge">Cancelled</span>;
       default:
-        return <span className="status-badge">{status.toString()}</span>;
+        return <span className="status-badge">{escrow.status?.toString()}</span>;
     }
   };
 
@@ -117,8 +110,52 @@ export default function EscrowCard({ escrow, isDisputeView }) {
     setLoading(false);
   };
 
+  const handleClaimTimeout = async () => {
+    if (!contract) return;
+    setLoading(true);
+    try {
+      const tx = await contract.claimTimeout(escrow.id);
+      await tx.wait();
+      alert("Timeout claimed!");
+      window.location.reload();
+    } catch (err) {
+      console.error(err);
+      const reason = err.reason || err.data?.message || err.message || "Unknown error";
+      if (!reason.includes("user rejected") && !reason.includes("User denied")) {
+        alert(`Failed to claim timeout: ${reason}`);
+      }
+    }
+    setLoading(false);
+  };
+
+  const handleCancel = async () => {
+    if (!contract) return;
+    setLoading(true);
+    try {
+      const tx = await contract.cancelEscrow(escrow.id);
+      await tx.wait();
+      alert("Escrow cancelled!");
+      window.location.reload();
+    } catch (err) {
+      console.error(err);
+      const reason = err.reason || err.data?.message || err.message || "Unknown error";
+      if (!reason.includes("user rejected") && !reason.includes("User denied")) {
+        alert(`Failed to cancel: ${reason}`);
+      }
+    }
+    setLoading(false);
+  };
+
   const isClient = account && escrow.client && account.toLowerCase() === escrow.client.toLowerCase();
   const isProvider = account && escrow.provider && account.toLowerCase() === escrow.provider.toLowerCase();
+  const [nowSec, setNowSec] = useState(0);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setNowSec(Math.floor(Date.now() / 1000));
+    const interval = setInterval(() => setNowSec(Math.floor(Date.now() / 1000)), 10000);
+    return () => clearInterval(interval);
+  }, []);
 
   const getExplorerLink = () => {
     if (!niche || !niche.contractAddress) return null;
@@ -144,7 +181,7 @@ export default function EscrowCard({ escrow, isDisputeView }) {
             </a>
           )}
         </div>
-        {getStatusBadge(escrow.status)}
+        {getStatusBadge()}
       </div>
 
       {/* Timeline */}
@@ -187,14 +224,20 @@ export default function EscrowCard({ escrow, isDisputeView }) {
         </div>
       </div>
       
-      <div className="escrow-footer">
-        {(escrow.status === 'FUNDED' || escrow.status === 0n) && isProvider && (
+      <div className="escrow-footer flex flex-wrap gap-2 justify-end mt-4">
+        {escrow.status === 'FUNDED' && !escrow.accepted && isProvider && (
           <button className="btn btn-primary" onClick={handleAccept} disabled={loading} style={{backgroundColor: niche.theme.primary, borderColor: niche.theme.primary}}>
             {loading ? 'Processing...' : 'Accept'}
           </button>
         )}
 
-        {(escrow.status === 'ACCEPTED' || escrow.status === 1n || escrow.status === 'FUNDED') && (
+        {escrow.status === 'FUNDED' && !escrow.accepted && isClient && (
+          <button className="btn btn-outline text-red-500 border-red-500 hover:bg-red-500/10" onClick={handleCancel} disabled={loading}>
+            {loading ? 'Processing...' : 'Cancel (Refund)'}
+          </button>
+        )}
+
+        {escrow.status === 'FUNDED' && (
           <>
             {(isClient || isProvider) && (
               <button className="btn btn-outline" onClick={handleOpenDispute} disabled={loading}>
@@ -209,10 +252,24 @@ export default function EscrowCard({ escrow, isDisputeView }) {
           </>
         )}
 
-        {(escrow.status === 'DISPUTED' || escrow.status === 2n || escrow.status === 2) && isDisputeView && (
-          <button className="btn btn-primary" style={{ backgroundColor: '#ef4444', borderColor: '#ef4444' }} onClick={handleStaleResolution} disabled={loading}>
-            {loading ? 'Processing...' : 'Force 50/50 Resolution'}
-          </button>
+        {escrow.status === 'FUNDED' && escrow.accepted && isProvider && escrow.timeoutDate > 0 && nowSec > escrow.timeoutDate && (
+           <button className="btn btn-primary" onClick={handleClaimTimeout} disabled={loading} style={{backgroundColor: niche.theme.primary, borderColor: niche.theme.primary}}>
+             {loading ? 'Processing...' : 'Claim Timeout'}
+           </button>
+        )}
+
+        {escrow.status === 'DISPUTED' && isDisputeView && (
+          <div className="w-full flex justify-end">
+            {escrow.disputeOpenedAt > 0 && nowSec > (escrow.disputeOpenedAt + escrow.staleDisputeTimeout) ? (
+              <button className="btn btn-primary" style={{ backgroundColor: '#ef4444', borderColor: '#ef4444' }} onClick={handleStaleResolution} disabled={loading}>
+                {loading ? 'Processing...' : 'Force 50/50 Resolution'}
+              </button>
+            ) : (
+              <div className="text-sm text-gray-400 mt-2 text-center w-full p-2 bg-black/20 rounded">
+                Stale resolution available after: {new Date((escrow.disputeOpenedAt + escrow.staleDisputeTimeout) * 1000).toLocaleString()}
+              </div>
+            )}
+          </div>
         )}
       </div>
     </div>

@@ -30,6 +30,8 @@ function DashboardContent() {
       const contract = new ethers.Contract(ESCROW_ADDRESS, ESCROW_ABI, currentProvider);
       const escrowCount = await contract.escrowCounter();
       const count = Number(escrowCount);
+      const globalStaleTimeout = await contract.staleDisputeTimeout();
+      const staleTimeoutNumber = Number(globalStaleTimeout);
       
       const loaded = [];
       for (let i = 1; i <= count; i++) {
@@ -49,7 +51,15 @@ function DashboardContent() {
                actionRequired = "Action Required: Accept Job";
              } else if (isAccepted && isClient) {
                actionRequired = "Action Required: Release or Dispute";
+             } else if (isAccepted && isProvider && Number(e.timeoutDate) > 0 && (Date.now()/1000) > Number(e.timeoutDate)) {
+               actionRequired = "Action Required: Claim Timeout";
              }
+           }
+           
+           let disputeOpenedAt = 0;
+           if (statusEnum === 3) { // DISPUTED
+             const openedAt = await contract.disputeOpenedAt(i);
+             disputeOpenedAt = Number(openedAt);
            }
 
            loaded.push({
@@ -63,7 +73,9 @@ function DashboardContent() {
              highlighted: highlightedId === i.toString(),
              createdAt: Number(e.createdAt),
              timeoutDate: Number(e.timeoutDate),
-             accepted: Boolean(e.accepted)
+             accepted: Boolean(e.accepted),
+             disputeOpenedAt,
+             staleDisputeTimeout: staleTimeoutNumber
            });
         }
       }
