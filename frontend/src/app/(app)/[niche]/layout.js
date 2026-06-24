@@ -1,4 +1,4 @@
-import { instances } from '../../config/instances';
+import { instances } from '../../../config/instances';
 import { notFound } from 'next/navigation';
 
 export function generateStaticParams() {

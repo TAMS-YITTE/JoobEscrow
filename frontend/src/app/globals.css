@@ -145,3 +145,108 @@ h1, h2, h3 {
     padding: 20px;
   }
 }
+
+/* Hub / Ecosystems Page Styles */
+.hub-container {
+  padding: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.hub-title {
+  font-size: 3rem;
+  margin-bottom: 10px;
+}
+
+.hub-subtitle {
+  font-size: 1.2rem;
+  margin-bottom: 40px;
+}
+
+.hub-section-title {
+  color: #fff;
+  font-size: 2rem;
+  margin-bottom: 30px;
+}
+
+.featured-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  max-width: 1000px;
+  margin: 0 auto;
+  justify-items: center;
+}
+
+.featured-card {
+  padding: 30px;
+  border-radius: 12px;
+  border-top-width: 4px;
+  border-top-style: solid;
+  cursor: pointer;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.featured-card:hover {
+  transform: translateY(-4px);
+}
+
+.featured-title {
+  margin-bottom: 15px;
+  font-size: 1.8rem;
+}
+
+.featured-desc {
+  color: var(--text-secondary);
+  line-height: 1.5;
+  flex-grow: 1;
+}
+
+.fee-badge {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: rgba(255,255,255,0.05);
+  border-radius: 8px;
+  display: inline-block;
+  align-self: center;
+}
+
+.specialized-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 15px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.specialized-card {
+  padding: 20px;
+  border-radius: 8px;
+  border-left-width: 3px;
+  border-left-style: solid;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.specialized-card:hover {
+  transform: translateX(4px);
+}
+
+.specialized-title {
+  margin: 0 0 5px 0;
+  font-size: 1.2rem;
+  text-align: left;
+}
+
+.specialized-desc {
+  color: var(--text-secondary);
+  margin: 0;
+  font-size: 0.85rem;
+  text-align: left;
+}

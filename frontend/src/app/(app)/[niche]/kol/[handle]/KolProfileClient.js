@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import WalletConnect from '../../../../components/WalletConnect';
-import CreateEscrowModal from '../../../../components/CreateEscrowModal';
+import WalletConnect from '../../../../../components/WalletConnect';
+import CreateEscrowModal from '../../../../../components/CreateEscrowModal';
 import './kol.css';
 
 export default function KolProfileClient({ handle }) {
@@ -18,8 +18,8 @@ export default function KolProfileClient({ handle }) {
     activeCampaigns: 2,
     disputes: 0,
     services: [
-      { id: 1, name: "Tweet Simple", price: "800", delivery: "48h", desc: "1 tweet promotionnel avec vos hashtags et un lien." },
-      { id: 2, name: "Thread Sponsorisé", price: "2500", delivery: "72h", desc: "Un thread détaillé de 5 tweets avec vos visuels." }
+      { id: 1, name: "Simple Tweet", price: "800", delivery: "48h", desc: "1 promotional tweet with your hashtags and a link." },
+      { id: 2, name: "Sponsored Thread", price: "2500", delivery: "72h", desc: "A detailed 5-tweet thread with your visuals." }
     ]
   };
 
@@ -76,7 +76,7 @@ export default function KolProfileClient({ handle }) {
         {/* Services & History */}
         <div className="kol-content-split">
           <div className="services-section">
-            <h3>Services & Tarifs</h3>
+            <h3>Services & Pricing</h3>
             <div className="services-list">
               {kolProfile.services.map(srv => (
                 <div key={srv.id} className="service-card glass-panel">
@@ -85,9 +85,9 @@ export default function KolProfileClient({ handle }) {
                     <span className="service-price">{srv.price} USDT</span>
                   </div>
                   <p className="service-desc">{srv.desc}</p>
-                  <p className="service-delivery">⏱ Livraison sous {srv.delivery}</p>
+                  <p className="service-delivery">⏱ Delivery in {srv.delivery}</p>
                   <button className="btn btn-primary w-100" onClick={() => handleOrder(srv)}>
-                    Commander ce service
+                    Order this service
                   </button>
                 </div>
               ))}
@@ -95,22 +95,22 @@ export default function KolProfileClient({ handle }) {
           </div>
 
           <div className="history-section">
-            <h3>Historique Public</h3>
+            <h3>Public History</h3>
             <div className="glass-panel history-panel">
               <div className="history-item">
-                <span>✅ Campagnes complétées</span>
+                <span>✅ Completed campaigns</span>
                 <strong>{kolProfile.completedCampaigns}</strong>
               </div>
               <div className="history-item">
-                <span>⏳ En cours</span>
+                <span>⏳ In progress</span>
                 <strong>{kolProfile.activeCampaigns}</strong>
               </div>
               <div className="history-item dispute">
-                <span>❌ Litiges</span>
+                <span>❌ Disputes</span>
                 <strong>{kolProfile.disputes}</strong>
               </div>
               <div className="trust-badge">
-                🛡 Audité par Joob | 100% Delivery
+                🛡 Audited by Joob | 100% Delivery
               </div>
             </div>
           </div>

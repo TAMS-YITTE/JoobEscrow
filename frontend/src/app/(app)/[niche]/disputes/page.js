@@ -1,11 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useWeb3 } from '../../../context/Web3Context';
-import { useNiche } from '../../../context/NicheContext';
-import { useEscrowContract } from '../../../hooks/useEscrowContract';
+import { useWeb3 } from '../../../../context/Web3Context';
+import { useNiche } from '../../../../context/NicheContext';
+import { useEscrowContract } from '../../../../hooks/useEscrowContract';
 import { ethers } from 'ethers';
-import EscrowCard from '../../../components/EscrowCard';
+import EscrowCard from '../../../../components/EscrowCard';
 
 export default function DisputesPage() {
   const { account } = useWeb3();

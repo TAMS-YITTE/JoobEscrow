@@ -1,27 +1,21 @@
 import "./globals.css";
-import Sidebar from "../components/Sidebar";
-import { Web3Provider } from "../context/Web3Context";
-import { NicheProvider } from "../context/NicheContext";
 
 export const metadata = {
+  metadataBase: new URL('https://joobescrow.com'),
   title: "Joob Escrow - Premium Web3 Escrow",
   description: "Joob Escrow - The Universal Decentralized Trust Layer",
+  openGraph: {
+    title: "Joob Escrow - Premium Web3 Escrow",
+    description: "The Universal Decentralized Trust Layer",
+    images: [{ url: "/og-image.png", width: 1024, height: 1024 }],
+  },
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body suppressHydrationWarning>
-        <Web3Provider>
-          <NicheProvider>
-            <div className="app-container">
-              <Sidebar />
-              <main className="main-content">
-                {children}
-              </main>
-            </div>
-          </NicheProvider>
-        </Web3Provider>
+        {children}
       </body>
     </html>
   );

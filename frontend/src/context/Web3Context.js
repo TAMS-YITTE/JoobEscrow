@@ -10,11 +10,18 @@ export function Web3Provider({ children }) {
   const [provider, setProvider] = useState(null);
   const [signer, setSigner] = useState(null);
   const [balance, setBalance] = useState(null);
+  const [error, setError] = useState(null);
+  const [isTestnet, setIsTestnet] = useState(false);
 
   const connectWallet = async () => {
+    setError(null);
     if (typeof window.ethereum !== 'undefined') {
       try {
         const tempProvider = new ethers.BrowserProvider(window.ethereum);
+        
+        const network = await tempProvider.getNetwork();
+        setIsTestnet(network.chainId.toString() === '97');
+
         const accounts = await tempProvider.send("eth_requestAccounts", []);
         const acc = accounts[0];
         
@@ -31,23 +38,33 @@ export function Web3Provider({ children }) {
         window.ethereum.on('accountsChanged', (newAccounts) => {
           if (newAccounts.length > 0) {
             setAccount(newAccounts[0]);
-            window.location.reload(); // simple way to reset state
+            window.location.reload();
           } else {
             setAccount(null);
             setSigner(null);
           }
         });
 
-      } catch (error) {
-        console.error("Connection error:", error);
+        // Listen for network changes
+        window.ethereum.on('chainChanged', () => {
+          window.location.reload();
+        });
+
+      } catch (err) {
+        if (err.code === 4001) {
+          setError("Connection rejected by user.");
+        } else {
+          setError("Connection error: " + (err.message || "Unknown error"));
+        }
+        console.error("Web3 Connection error:", err);
       }
     } else {
-      alert("Please install MetaMask or another Web3 wallet.");
+      setError("Please install MetaMask or a compatible Web3 wallet.");
     }
   };
 
   return (
-    <Web3Context.Provider value={{ account, provider, signer, balance, connectWallet }}>
+    <Web3Context.Provider value={{ account, provider, signer, balance, error, isTestnet, connectWallet }}>
       {children}
     </Web3Context.Provider>
   );

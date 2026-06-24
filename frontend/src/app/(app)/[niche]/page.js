@@ -1,13 +1,13 @@
 'use client';
 
-import WalletConnect from '../../components/WalletConnect';
-import EscrowCard from '../../components/EscrowCard';
-import CreateEscrowModal from '../../components/CreateEscrowModal';
+import WalletConnect from '../../../components/WalletConnect';
+import EscrowCard from '../../../components/EscrowCard';
+import CreateEscrowModal from '../../../components/CreateEscrowModal';
 import { useState, useEffect, useCallback } from 'react';
-import { useWeb3 } from '../../context/Web3Context';
-import { useNiche } from '../../context/NicheContext';
+import { useWeb3 } from '../../../context/Web3Context';
+import { useNiche } from '../../../context/NicheContext';
 import { ethers } from 'ethers';
-import { ESCROW_ADDRESS, ESCROW_ABI, USDT_ADDRESS, ERC20_ABI } from '../../config/contract';
+import { ESCROW_ADDRESS, ESCROW_ABI, USDT_ADDRESS, ERC20_ABI } from '../../../config/contract';
 import './page.css';
 
 export default function Dashboard() {
@@ -63,10 +63,10 @@ export default function Dashboard() {
     if (!signer) return;
     try {
       const usdt = new ethers.Contract(USDT_ADDRESS, ERC20_ABI, signer);
-      // MockUSDT a été minté au déployeur. 
-      // Si l'utilisateur actuel n'est pas le déployeur, le transfert échouera. 
-      // Mais dans Hardhat, le compte 0 déploie et on se connecte souvent avec.
-      // Pour une démo, on essaye juste de voir la balance
+      // MockUSDT was minted to the deployer.
+      // If the current user is not the deployer, transfer will fail.
+      // But in Hardhat, account 0 deploys and we often connect with it.
+      // For a demo, we just try to read the balance.
       const bal = await usdt.balanceOf(account);
       alert(`You have ${ethers.formatEther(bal)} MockUSDT`);
     } catch (err) {

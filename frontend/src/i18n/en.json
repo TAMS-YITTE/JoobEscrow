@@ -1,0 +1,45 @@
+{
+  "landing": {
+    "hero": {
+      "title": "Secure every payment. Pay only when the work is approved.",
+      "subtitle": "The universal decentralized escrow platform for freelancers, creators, and businesses.",
+      "ctaPrimary": "Launch App",
+      "ctaSecondary": "How it works"
+    },
+    "howItWorks": {
+      "title": "How it works?",
+      "step1": {
+        "title": "1. Secure Deposit",
+        "desc": "The client deposits funds into a tamper-proof smart contract."
+      },
+      "step2": {
+        "title": "2. Work Delivered",
+        "desc": "The provider completes the mission with peace of mind, knowing the funds are locked."
+      },
+      "step3": {
+        "title": "3. Release",
+        "desc": "Upon approval, the funds are instantly transferred to the provider."
+      }
+    },
+    "trust": {
+      "auditBadge": "Smart Contract Audited",
+      "viewAudit": "View the full report"
+    },
+    "footer": {
+      "terms": "Terms & Security",
+      "security": "Security Model"
+    }
+  },
+  "security": {
+    "title": "Security & Transparency",
+    "subtitle": "Our architecture is designed to ensure that no one (not even JoobEscrow) can access your funds without your consent.",
+    "auditSection": {
+      "title": "Independent Audit",
+      "desc": "Our contracts have been rigorously audited by independent experts to guarantee the absence of flaws or backdoors."
+    },
+    "contractSection": {
+      "title": "Verified Public Contract",
+      "desc": "The source code of our escrow is public and verified on BscScan."
+    }
+  }
+}
