@@ -1,6 +1,6 @@
 // Automatically updated with latest V4 ABI and Testnet address
 export const ESCROW_ADDRESS = process.env.NEXT_PUBLIC_ESCROW_ADDRESS || "0x96c38901e9b4608C6F4181dbF5da024047D13e7C";
-export const USDT_ADDRESS = process.env.NEXT_PUBLIC_USDT_ADDRESS || "0xE5191bBFbe0E04956C9611CEF4dF6E10eFb79B70";
+export const USDT_ADDRESS = process.env.NEXT_PUBLIC_USDT_ADDRESS || "0x55d398326f99059fF775485246999027B3197955";
 
 export const ESCROW_ABI = [
   {
