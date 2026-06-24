@@ -30,19 +30,31 @@ export function Web3Provider({ children }) {
         return true;
       } catch (switchError) {
         if (switchError.code === 4902) {
-          const chainParams = expectedChainId === '56' ? {
-            chainId: '0x38',
-            chainName: 'BNB Smart Chain',
-            rpcUrls: ['https://bsc-dataseed.binance.org/'],
-            nativeCurrency: { name: 'BNB', symbol: 'BNB', decimals: 18 },
-            blockExplorerUrls: ['https://bscscan.com']
-          } : {
-            chainId: '0x61',
-            chainName: 'BNB Smart Chain Testnet',
-            rpcUrls: ['https://data-seed-prebsc-1-s1.binance.org:8545/'],
-            nativeCurrency: { name: 'tBNB', symbol: 'tBNB', decimals: 18 },
-            blockExplorerUrls: ['https://testnet.bscscan.com']
-          };
+          let chainParams;
+          if (expectedChainId === '56') {
+            chainParams = {
+              chainId: '0x38',
+              chainName: 'BNB Smart Chain',
+              rpcUrls: ['https://bsc-dataseed.binance.org/'],
+              nativeCurrency: { name: 'BNB', symbol: 'BNB', decimals: 18 },
+              blockExplorerUrls: ['https://bscscan.com']
+            };
+          } else if (expectedChainId === '31337') {
+            chainParams = {
+              chainId: '0x7a69',
+              chainName: 'Hardhat Local',
+              rpcUrls: ['http://127.0.0.1:8545'],
+              nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 }
+            };
+          } else {
+            chainParams = {
+              chainId: '0x61',
+              chainName: 'BNB Smart Chain Testnet',
+              rpcUrls: ['https://data-seed-prebsc-1-s1.binance.org:8545/'],
+              nativeCurrency: { name: 'tBNB', symbol: 'tBNB', decimals: 18 },
+              blockExplorerUrls: ['https://testnet.bscscan.com']
+            };
+          }
 
           try {
             await window.ethereum.request({

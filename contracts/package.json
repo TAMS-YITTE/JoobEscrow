@@ -1,6 +1,9 @@
 {
   "name": "contracts",
   "version": "1.0.0",
+  "engines": {
+    "node": ">=20 <23"
+  },
   "description": "",
   "main": "index.js",
   "directories": {
@@ -8,7 +11,9 @@
   },
   "scripts": {
     "test": "hardhat test",
-    "simulate": "hardhat run scripts/simulation.js"
+    "simulate": "hardhat run scripts/simulation.js",
+    "node": "hardhat node",
+    "sandbox": "hardhat run scripts/sandbox.js --network localhost"
   },
   "keywords": [],
   "author": "",
