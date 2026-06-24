@@ -3,40 +3,53 @@
 import { useState, useEffect } from 'react';
 import { useWeb3 } from '../../../../context/Web3Context';
 import { useNiche } from '../../../../context/NicheContext';
-import { useEscrowContract } from '../../../../hooks/useEscrowContract';
 import { ethers } from 'ethers';
 import EscrowCard from '../../../../components/EscrowCard';
+import { ESCROW_ADDRESS, ESCROW_ABI } from '../../../../config/contract';
 
 export default function DisputesPage() {
-  const { account } = useWeb3();
-  const contract = useEscrowContract();
+  const { account, provider, readProvider } = useWeb3();
   const niche = useNiche();
   const [disputes, setDisputes] = useState([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     async function fetchDisputes() {
-      if (!contract || !account) return;
+      const currentProvider = readProvider || provider;
+      if (!currentProvider || !account) return;
       setLoading(true);
       try {
+        const contract = new ethers.Contract(ESCROW_ADDRESS, ESCROW_ABI, currentProvider);
         const counter = await contract.escrowCounter();
         const maxId = Number(counter);
+        const globalStaleTimeout = await contract.staleDisputeTimeout();
+        const staleTimeoutNumber = Number(globalStaleTimeout);
+
         const fetched = [];
         
         for (let i = 1; i <= maxId; i++) {
           const details = await contract.getEscrowDetails(i);
-          if (details.status === 2n || details.status === 2) {
+          const statusEnum = Number(details.status);
+          
+          if (statusEnum === 3) { // DISPUTED
              if (details.client.toLowerCase() === account.toLowerCase() || 
                  details.provider.toLowerCase() === account.toLowerCase()) {
                  
                 const amountStr = ethers.formatEther(details.amount);
+                const openedAt = await contract.disputeOpenedAt(i);
+                
                 fetched.push({
-                  id: i,
+                  id: i.toString(),
                   client: details.client,
                   provider: details.provider,
                   amount: amountStr,
-                  status: details.status,
-                  tokenSymbol: "Token"
+                  status: 'DISPUTED',
+                  tokenSymbol: 'USDT',
+                  accepted: Boolean(details.accepted),
+                  timeoutDate: Number(details.timeoutDate),
+                  disputeOpenedAt: Number(openedAt),
+                  staleDisputeTimeout: staleTimeoutNumber,
+                  createdAt: Number(details.createdAt)
                 });
              }
           }
@@ -48,7 +61,7 @@ export default function DisputesPage() {
       setLoading(false);
     }
     fetchDisputes();
-  }, [contract, account]);
+  }, [account, provider, readProvider]);
 
   return (
     <div className="dashboard">
