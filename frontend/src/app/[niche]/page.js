@@ -3,7 +3,7 @@
 import WalletConnect from '../../components/WalletConnect';
 import EscrowCard from '../../components/EscrowCard';
 import CreateEscrowModal from '../../components/CreateEscrowModal';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useWeb3 } from '../../context/Web3Context';
 import { useNiche } from '../../context/NicheContext';
 import { ethers } from 'ethers';
@@ -18,15 +18,10 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
-  useEffect(() => {
-    if (account && provider) {
-      fetchEscrows();
-    } else {
-      setEscrows([]);
+  const fetchEscrows = useCallback(async () => {
+    if (!account || !provider) {
+      return;
     }
-  }, [account, provider]);
-
-  const fetchEscrows = async () => {
     setLoading(true);
     try {
       const contract = new ethers.Contract(ESCROW_ADDRESS, ESCROW_ABI, provider);
@@ -52,7 +47,17 @@ export default function Dashboard() {
       console.error(err);
     }
     setLoading(false);
-  };
+  }, [account, provider]);
+
+  useEffect(() => {
+    if (account && provider) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      fetchEscrows();
+    } else {
+       
+      setEscrows([]);
+    }
+  }, [fetchEscrows, account, provider]);
 
   const handleFaucet = async () => {
     if (!signer) return;

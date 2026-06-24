@@ -7,11 +7,12 @@ import { ESCROW_ABI } from '../config/contract';
 export function useEscrowContract() {
   const { signer } = useWeb3();
   const niche = useNiche();
+  const contractAddress = niche?.contractAddress;
 
   const contract = useMemo(() => {
-    if (!signer || !niche?.contractAddress) return null;
-    return new ethers.Contract(niche.contractAddress, ESCROW_ABI, signer);
-  }, [signer, niche?.contractAddress]);
+    if (!signer || !contractAddress) return null;
+    return new ethers.Contract(contractAddress, ESCROW_ABI, signer);
+  }, [signer, contractAddress]);
 
   return contract;
 }
