@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import WalletConnect from '../../../components/WalletConnect';
-import CreateEscrowModal from '../../../components/CreateEscrowModal';
+import WalletConnect from '../../../../components/WalletConnect';
+import CreateEscrowModal from '../../../../components/CreateEscrowModal';
 import './kol.css';
 
 export default function KolProfileClient({ handle }) {
