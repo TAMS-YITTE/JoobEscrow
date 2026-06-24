@@ -55,7 +55,10 @@ export default function EscrowCard({ escrow, isDisputeView }) {
       window.location.reload();
     } catch (err) {
       console.error(err);
-      alert("Error during acceptance");
+      const reason = err.reason || err.data?.message || err.message || "Unknown error";
+      if (!reason.includes("user rejected") && !reason.includes("User denied")) {
+        alert(`Failed to accept: ${reason}`);
+      }
     }
     setLoading(false);
   };
@@ -70,7 +73,10 @@ export default function EscrowCard({ escrow, isDisputeView }) {
       window.location.reload();
     } catch (err) {
       console.error(err);
-      alert("Error during funds release");
+      const reason = err.reason || err.data?.message || err.message || "Unknown error";
+      if (!reason.includes("user rejected") && !reason.includes("User denied")) {
+        alert(`Failed to release: ${reason}`);
+      }
     }
     setLoading(false);
   };
@@ -85,7 +91,10 @@ export default function EscrowCard({ escrow, isDisputeView }) {
       window.location.reload();
     } catch (err) {
       console.error(err);
-      alert("Error during dispute opening");
+      const reason = err.reason || err.data?.message || err.message || "Unknown error";
+      if (!reason.includes("user rejected") && !reason.includes("User denied")) {
+        alert(`Failed to open dispute: ${reason}`);
+      }
     }
     setLoading(false);
   };
@@ -100,7 +109,10 @@ export default function EscrowCard({ escrow, isDisputeView }) {
       window.location.reload();
     } catch (err) {
       console.error(err);
-      alert("Error. Make sure 30 days have passed.");
+      const reason = err.reason || err.data?.message || err.message || "Unknown error";
+      if (!reason.includes("user rejected") && !reason.includes("User denied")) {
+        alert(`Failed to resolve: ${reason}`);
+      }
     }
     setLoading(false);
   };

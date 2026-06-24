@@ -18,14 +18,30 @@ export default function CreateEscrowModal({ onClose, onSuccess, prefilledProvide
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!niche.contractAddress || !signer) return;
+
+    if (!ethers.isAddress(providerAddr)) {
+      alert("Invalid provider address format.");
+      return;
+    }
+    if (parseFloat(amount) <= 0) {
+      alert("Amount must be greater than 0.");
+      return;
+    }
+
     setLoading(true);
     try {
       const parsedAmount = ethers.parseEther(amount);
       
       const usdt = new ethers.Contract(USDT_ADDRESS, ERC20_ABI, signer);
-      const approveTx = await usdt.approve(niche.contractAddress, parsedAmount);
-      await approveTx.wait();
+      const currentAllowance = await usdt.allowance(account, niche.contractAddress);
+      
+      if (currentAllowance < parsedAmount) {
+        setStep(2);
+        const approveTx = await usdt.approve(niche.contractAddress, ethers.MaxUint256);
+        await approveTx.wait();
+      }
 
+      setStep(3);
       const contract = new ethers.Contract(niche.contractAddress, ESCROW_ABI, signer);
       const tx = await contract.createAndFundEscrow(providerAddr, USDT_ADDRESS, parsedAmount, 7);
       await tx.wait();
@@ -35,9 +51,13 @@ export default function CreateEscrowModal({ onClose, onSuccess, prefilledProvide
       onClose();
     } catch (err) {
       console.error(err);
-      alert("Error creating escrow");
+      const reason = err.reason || err.data?.message || err.message || "Unknown error";
+      if (!reason.includes("user rejected") && !reason.includes("User denied")) {
+        alert(`Transaction Failed: ${reason}`);
+      }
     }
     setLoading(false);
+    setStep(1);
   };
 
   return (
@@ -56,7 +76,7 @@ export default function CreateEscrowModal({ onClose, onSuccess, prefilledProvide
           <div className="modal-actions">
             <button type="button" className="btn btn-outline" onClick={onClose} disabled={loading}>Cancel</button>
             <button type="submit" className="btn btn-primary" disabled={loading} style={{backgroundColor: niche.theme.primary, borderColor: niche.theme.primary}}>
-              {loading ? 'Creating...' : 'Create & Fund'}
+              {loading ? (step === 2 ? 'Approving USDT...' : 'Creating Escrow...') : 'Create & Fund'}
             </button>
           </div>
         </form>
