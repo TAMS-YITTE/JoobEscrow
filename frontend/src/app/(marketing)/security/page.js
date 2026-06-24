@@ -2,6 +2,7 @@ import Link from 'next/link';
 import styles from '../marketing.module.css';
 import dict from '../../../i18n/en.json';
 import { ESCROW_ADDRESS } from '../../../config/contract';
+import GovernanceTransparency from '../../../components/GovernanceTransparency';
 
 export const metadata = {
   title: 'Security & Trust - Joob Escrow',
@@ -40,6 +41,8 @@ export default function SecurityPage() {
           View on BscScan
         </Link>
       </div>
+
+      <GovernanceTransparency />
     </div>
   );
 }

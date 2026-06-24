@@ -3,20 +3,23 @@
 import WalletConnect from '../../../components/WalletConnect';
 import EscrowCard from '../../../components/EscrowCard';
 import CreateEscrowModal from '../../../components/CreateEscrowModal';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useWeb3 } from '../../../context/Web3Context';
 import { useNiche } from '../../../context/NicheContext';
 import { ethers } from 'ethers';
 import { ESCROW_ADDRESS, ESCROW_ABI, USDT_ADDRESS, ERC20_ABI } from '../../../config/contract';
 import './page.css';
 
-export default function Dashboard() {
+function DashboardContent() {
   const { account, provider, signer, readProvider } = useWeb3();
   const niche = useNiche();
   const [activeTab, setActiveTab] = useState('active');
   const [escrows, setEscrows] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const searchParams = useSearchParams();
+  const highlightedId = searchParams?.get('escrow');
 
   const fetchEscrows = useCallback(async () => {
     const currentProvider = readProvider || provider;
@@ -32,14 +35,35 @@ export default function Dashboard() {
       for (let i = 1; i <= count; i++) {
         const e = await contract.getEscrowDetails(i);
         // If wallet is connected, show only user's escrows. Otherwise, show public recent ones.
-        if (!account || e.client.toLowerCase() === account.toLowerCase() || e.provider.toLowerCase() === account.toLowerCase()) {
+        const isClient = account && e.client.toLowerCase() === account.toLowerCase();
+        const isProvider = account && e.provider.toLowerCase() === account.toLowerCase();
+        
+        if (!account || isClient || isProvider) {
+           const statusEnum = Number(e.status);
+           const isAccepted = Boolean(e.accepted);
+           
+           // Calculate Action Required
+           let actionRequired = null;
+           if (statusEnum === 1) { // FUNDED
+             if (!isAccepted && isProvider) {
+               actionRequired = "Action Required: Accept Job";
+             } else if (isAccepted && isClient) {
+               actionRequired = "Action Required: Release or Dispute";
+             }
+           }
+
            loaded.push({
              id: i.toString(),
              client: e.client,
              provider: e.provider,
              amount: ethers.formatEther(e.amount),
-             status: ['FUNDED', 'ACCEPTED', 'DISPUTED', 'RESOLVED', 'CANCELLED'][Number(e.status)],
-             tokenSymbol: e.sym || 'Token'
+             status: ['FUNDED', 'RELEASED', 'DISPUTED', 'RESOLVED', 'CANCELLED'][statusEnum - 1] || 'UNKNOWN',
+             tokenSymbol: 'USDT', // We only use USDT right now
+             actionRequired,
+             highlighted: highlightedId === i.toString(),
+             createdAt: Number(e.createdAt),
+             timeoutDate: Number(e.timeoutDate),
+             accepted: Boolean(e.accepted)
            });
         }
       }
@@ -48,20 +72,28 @@ export default function Dashboard() {
         loaded.reverse();
         setEscrows(loaded.slice(0, 10)); // Show 10 latest publicly
       } else {
+        // Sort: action required first, then highlighted, then newest
+        loaded.sort((a, b) => {
+          if (a.actionRequired && !b.actionRequired) return -1;
+          if (!a.actionRequired && b.actionRequired) return 1;
+          if (a.highlighted && !b.highlighted) return -1;
+          if (!a.highlighted && b.highlighted) return 1;
+          return Number(b.id) - Number(a.id);
+        });
         setEscrows(loaded);
       }
     } catch (err) {
       console.error(err);
     }
     setLoading(false);
-  }, [account, provider, readProvider]);
+  }, [account, provider, readProvider, highlightedId]);
 
   useEffect(() => {
     if (readProvider || provider) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       fetchEscrows();
     }
-  }, [fetchEscrows, readProvider, provider]);
+  }, [fetchEscrows, readProvider, provider, highlightedId]);
 
   const handleFaucet = async () => {
     if (!signer) return;
@@ -115,5 +147,13 @@ export default function Dashboard() {
 
       {showModal && <CreateEscrowModal onClose={() => setShowModal(false)} onSuccess={fetchEscrows} />}
     </div>
+  );
+}
+
+export default function Dashboard() {
+  return (
+    <Suspense fallback={<div className="glass-panel text-center p-8 m-8">Loading Dashboard...</div>}>
+      <DashboardContent />
+    </Suspense>
   );
 }

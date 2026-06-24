@@ -120,11 +120,56 @@ export default function EscrowCard({ escrow, isDisputeView }) {
   const isClient = account && escrow.client && account.toLowerCase() === escrow.client.toLowerCase();
   const isProvider = account && escrow.provider && account.toLowerCase() === escrow.provider.toLowerCase();
 
+  const getExplorerLink = () => {
+    if (!niche || !niche.contractAddress) return null;
+    const chainId = process.env.NEXT_PUBLIC_CHAIN_ID || '97';
+    if (chainId === '56') return `https://bscscan.com/address/${niche.contractAddress}`;
+    if (chainId === '97') return `https://testnet.bscscan.com/address/${niche.contractAddress}`;
+    return null;
+  };
+
   return (
-    <div className="escrow-card glass-panel">
+    <div className={`escrow-card glass-panel ${escrow.highlighted ? 'highlight-pulse' : ''}`} id={`escrow-${escrow.id}`}>
+      {escrow.actionRequired && (
+        <div className="action-required-banner">
+          ⚠️ {escrow.actionRequired}
+        </div>
+      )}
       <div className="escrow-header">
-        <h3>Escrow #{escrow.id.toString()}</h3>
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <h3>Escrow #{escrow.id.toString()}</h3>
+          {getExplorerLink() && (
+            <a href={getExplorerLink()} target="_blank" rel="noreferrer" className="text-xs text-gray-500 hover:text-white underline" style={{ marginTop: '4px' }}>
+              View Contract on BscScan
+            </a>
+          )}
+        </div>
         {getStatusBadge(escrow.status)}
+      </div>
+
+      {/* Timeline */}
+      <div className="escrow-timeline my-4">
+        <div className="flex justify-between items-center text-xs text-gray-500 mb-2">
+          <div className={`flex flex-col items-center ${escrow.createdAt ? 'text-green-400' : ''}`}>
+            <span className="w-2 h-2 rounded-full bg-current mb-1"></span>
+            Created
+          </div>
+          <div className="flex-1 h-px bg-gray-800 mx-2"></div>
+          <div className={`flex flex-col items-center ${escrow.accepted ? 'text-green-400' : (escrow.status === 'FUNDED' ? 'text-yellow-400' : '')}`}>
+            <span className="w-2 h-2 rounded-full bg-current mb-1"></span>
+            Accepted
+          </div>
+          <div className="flex-1 h-px bg-gray-800 mx-2"></div>
+          <div className={`flex flex-col items-center ${['RELEASED', 'RESOLVED'].includes(escrow.status) ? 'text-green-400' : (escrow.status === 'DISPUTED' ? 'text-red-400' : '')}`}>
+            <span className="w-2 h-2 rounded-full bg-current mb-1"></span>
+            Completed
+          </div>
+        </div>
+        {escrow.timeoutDate > 0 && escrow.status !== 'RELEASED' && escrow.status !== 'RESOLVED' && escrow.status !== 'CANCELLED' && (
+          <div className="text-center text-xs mt-2 text-gray-400">
+            ⏳ Timeout: {new Date(escrow.timeoutDate * 1000).toLocaleString()}
+          </div>
+        )}
       </div>
       
       <div className="escrow-body">

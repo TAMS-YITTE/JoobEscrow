@@ -1,30 +1,95 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { ethers } from 'ethers';
+import { useWeb3 } from '../../../../../context/Web3Context';
+import { useEscrowContract } from '../../../../../hooks/useEscrowContract';
 import WalletConnect from '../../../../../components/WalletConnect';
 import CreateEscrowModal from '../../../../../components/CreateEscrowModal';
 import './kol.css';
 
 export default function KolProfileClient({ handle }) {
-  // Mock Data pour le MVP Front-End
+  const { readProvider } = useWeb3();
+  const contract = useEscrowContract();
+
+  // We keep static UI data for the KOL identity but dynamic data for the history
   const kolProfile = {
     handle: handle,
-    name: "Crypto Influence",
-    address: "0x70997970C51812dc3A010C7d01b50e0d17dc79C8", // Hardhat Account #1
+    name: handle === 'CryptoInfluence' ? "Crypto Influence" : handle,
+    address: "0x70997970C51812dc3A010C7d01b50e0d17dc79C8", // Would come from a DB in prod
     followers: "52K",
     engagement: "3.2%",
     verified: true,
-    completedCampaigns: 43,
-    activeCampaigns: 2,
-    disputes: 0,
     services: [
       { id: 1, name: "Simple Tweet", price: "800", delivery: "48h", desc: "1 promotional tweet with your hashtags and a link." },
       { id: 2, name: "Sponsored Thread", price: "2500", delivery: "72h", desc: "A detailed 5-tweet thread with your visuals." }
     ]
   };
 
+  const [onChainStats, setOnChainStats] = useState({
+    completed: 0,
+    active: 0,
+    disputes: 0,
+    totalVolume: 0,
+    loading: true
+  });
+
   const [showModal, setShowModal] = useState(false);
   const [selectedService, setSelectedService] = useState(null);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function fetchReputation() {
+      if (!contract || !readProvider) return;
+
+      try {
+        // Query all EscrowCreated events where provider = kolProfile.address
+        const filter = contract.filters.EscrowCreated(null, null, kolProfile.address);
+        const events = await contract.queryFilter(filter, -100000); // look back ~100k blocks
+
+        let completed = 0;
+        let active = 0;
+        let disputes = 0;
+        let volume = 0n;
+
+        // Fetch details for each to get current status
+        const detailsPromises = events.map(e => contract.getEscrowDetails(e.args[0]));
+        const escrows = await Promise.allSettled(detailsPromises);
+
+        for (const res of escrows) {
+          if (res.status === 'fulfilled') {
+            const e = res.value;
+            // Status: 0=NULL, 1=FUNDED, 2=RELEASED, 3=DISPUTED, 4=RESOLVED, 5=CANCELLED
+            const statusInt = typeof e.status === 'bigint' ? Number(e.status) : e.status;
+            
+            if (statusInt === 1) active++; // FUNDED
+            if (statusInt === 2 || statusInt === 4) {
+              completed++; // RELEASED or RESOLVED
+              volume += e.amount;
+            }
+            if (statusInt === 3) disputes++; // DISPUTED
+          }
+        }
+
+        if (isMounted) {
+          setOnChainStats({
+            completed,
+            active,
+            disputes,
+            totalVolume: ethers.formatUnits(volume, 18),
+            loading: false
+          });
+        }
+      } catch (err) {
+        console.error("Failed to fetch KOL reputation:", err);
+        if (isMounted) setOnChainStats(s => ({ ...s, loading: false }));
+      }
+    }
+
+    fetchReputation();
+    return () => { isMounted = false; };
+  }, [contract, readProvider, kolProfile.address]);
 
   const handleOrder = (service) => {
     setSelectedService(service);
@@ -45,8 +110,7 @@ export default function KolProfileClient({ handle }) {
         <div className="profile-card glass-panel">
           <div className="profile-top">
             <div className="avatar">
-               {/* Placeholder avatar */}
-               <div className="avatar-circle">CI</div>
+               <div className="avatar-circle">{kolProfile.name.substring(0,2).toUpperCase()}</div>
             </div>
             <div className="profile-info">
               <h1>{kolProfile.name} {kolProfile.verified && <span className="verified-icon">✅</span>}</h1>
@@ -67,7 +131,7 @@ export default function KolProfileClient({ handle }) {
               <span className="stat-label">Engagement</span>
             </div>
             <div className="stat-box">
-              <span className="stat-value">{kolProfile.completedCampaigns}</span>
+              <span className="stat-value">{onChainStats.loading ? '...' : onChainStats.completed}</span>
               <span className="stat-label">Success</span>
             </div>
           </div>
@@ -95,22 +159,26 @@ export default function KolProfileClient({ handle }) {
           </div>
 
           <div className="history-section">
-            <h3>Public History</h3>
+            <h3>On-Chain History</h3>
             <div className="glass-panel history-panel">
               <div className="history-item">
                 <span>✅ Completed campaigns</span>
-                <strong>{kolProfile.completedCampaigns}</strong>
+                <strong>{onChainStats.loading ? '...' : onChainStats.completed}</strong>
               </div>
               <div className="history-item">
                 <span>⏳ In progress</span>
-                <strong>{kolProfile.activeCampaigns}</strong>
+                <strong>{onChainStats.loading ? '...' : onChainStats.active}</strong>
               </div>
               <div className="history-item dispute">
                 <span>❌ Disputes</span>
-                <strong>{kolProfile.disputes}</strong>
+                <strong>{onChainStats.loading ? '...' : onChainStats.disputes}</strong>
               </div>
-              <div className="trust-badge">
-                🛡 Audited by Joob | 100% Delivery
+              <div className="history-item">
+                <span>💰 Total Volume</span>
+                <strong>{onChainStats.loading ? '...' : `$${Number(onChainStats.totalVolume).toLocaleString()}`}</strong>
+              </div>
+              <div className="trust-badge mt-4">
+                🛡 Tracked securely on BscScan
               </div>
             </div>
           </div>

@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import styles from './marketing.module.css';
 import dict from '../../i18n/en.json';
+import LiveStats from '../../components/LiveStats';
+import FeeCalculator from '../../components/FeeCalculator';
 
 export default function LandingPage() {
   const d = dict.landing;
@@ -19,6 +21,10 @@ export default function LandingPage() {
             {d.hero.ctaSecondary}
           </Link>
         </div>
+      </section>
+      {/* Live Stats Section */}
+      <section className="bg-black/50 border-y border-white/5">
+        <LiveStats />
       </section>
 
       {/* How It Works */}
@@ -57,6 +63,35 @@ export default function LandingPage() {
           <h3 style={{ margin: 0 }}>{d.trust.auditBadge}</h3>
           <Link href="/Universal_Service_Escrow_V4_Audit.pdf" target="_blank" className="text-gradient">
             {d.trust.viewAudit} →
+          </Link>
+        </div>
+      </section>
+
+      {/* Fee Calculator Section */}
+      <section className="bg-black/50 border-y border-white/5 py-12">
+        <FeeCalculator />
+      </section>
+
+      {/* Mini FAQ */}
+      <section className={`${styles.section} max-w-4xl mx-auto px-4`}>
+        <h2 className={styles.sectionTitle}>Frequently Asked Questions</h2>
+        <div className="space-y-4 text-left">
+          <div className="glass-panel p-6">
+            <h3 className="font-bold text-lg text-white mb-2">Is my money safe? Can JoobEscrow access it?</h3>
+            <p className="text-gray-400">Your funds are locked in a non-custodial smart contract. We never have direct access to your tokens. The contract ensures that funds can only be released to the provider upon your approval, or refunded if canceled.</p>
+          </div>
+          <div className="glass-panel p-6">
+            <h3 className="font-bold text-lg text-white mb-2">Who resolves disputes?</h3>
+            <p className="text-gray-400">If a disagreement occurs, either party can open a dispute and submit evidence. JoobEscrow acts as an impartial arbitrator to review the evidence and distribute the funds fairly between both parties.</p>
+          </div>
+          <div className="glass-panel p-6">
+            <h3 className="font-bold text-lg text-white mb-2">What fees do I pay?</h3>
+            <p className="text-gray-400">Fees depend on the niche (ranging from 2% to 10%). The fee is only deducted from the provider&apos;s payout upon successful completion. There are no hidden setup fees.</p>
+          </div>
+        </div>
+        <div className="mt-8 text-center">
+          <Link href="/faq" className="text-gradient font-bold hover:underline">
+            Read all FAQs →
           </Link>
         </div>
       </section>

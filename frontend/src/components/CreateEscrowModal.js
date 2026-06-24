@@ -15,6 +15,8 @@ export default function CreateEscrowModal({ onClose, onSuccess, prefilledProvide
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1); // 1: input, 2: approve, 3: create
 
+  const [shareableLink, setShareableLink] = useState(null);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!niche.contractAddress || !signer) return;
@@ -54,11 +56,27 @@ export default function CreateEscrowModal({ onClose, onSuccess, prefilledProvide
       setStep(3);
       const contract = new ethers.Contract(niche.contractAddress, ESCROW_ABI, signer);
       const tx = await contract.createAndFundEscrow(providerAddr, USDT_ADDRESS, parsedAmount, 7);
-      await tx.wait();
+      const receipt = await tx.wait();
       
-      alert("Escrow created successfully!");
-      onSuccess();
-      onClose();
+      let newEscrowId = null;
+      for (const log of receipt.logs) {
+        try {
+          const parsed = contract.interface.parseLog({ topics: log.topics, data: log.data });
+          if (parsed && parsed.name === 'EscrowCreated') {
+            newEscrowId = parsed.args.escrowId.toString();
+          }
+        } catch(e) {}
+      }
+
+      if (newEscrowId) {
+        const link = `${window.location.origin}/${niche.id}?escrow=${newEscrowId}`;
+        setShareableLink(link);
+      } else {
+        alert("Escrow created successfully!");
+        onSuccess();
+        onClose();
+      }
+
     } catch (err) {
       console.error(err);
       const reason = err.reason || err.data?.message || err.message || "Unknown error";
@@ -69,6 +87,30 @@ export default function CreateEscrowModal({ onClose, onSuccess, prefilledProvide
     setLoading(false);
     setStep(1);
   };
+
+  const copyLinkAndClose = () => {
+    navigator.clipboard.writeText(shareableLink);
+    alert("Link copied!");
+    onSuccess();
+    onClose();
+  };
+
+  if (shareableLink) {
+    return (
+      <div className="modal-overlay">
+        <div className="modal-content glass-panel" style={{ borderTop: `4px solid ${niche.theme.primary}`}}>
+          <h2>Success! 🎉</h2>
+          <p className="text-gray-400 my-4 text-center">Your escrow has been created and funded. Send this link to the {niche.lexicon.provider.toLowerCase()} so they can easily accept the deal.</p>
+          <div className="bg-black/50 border border-gray-700 p-3 rounded text-sm text-white mb-6 break-all">
+            {shareableLink}
+          </div>
+          <button className="btn btn-primary w-full" onClick={copyLinkAndClose} style={{backgroundColor: niche.theme.primary, borderColor: niche.theme.primary}}>
+            Copy Link & Close
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="modal-overlay">
