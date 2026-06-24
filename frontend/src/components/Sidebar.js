@@ -40,7 +40,7 @@ export default function Sidebar() {
       </nav>
 
       <div className="sidebar-footer">
-        <p className="status-text"><span className="status-dot green"></span> Network: BSC Testnet</p>
+        <p className="status-text"><span className="status-dot green"></span> Network: BSC Mainnet</p>
         <Link href="/terms" style={{ display: 'block', marginTop: '10px', fontSize: '0.8rem', color: 'var(--text-secondary)', textDecoration: 'none' }}>
           TOS & Security
         </Link>
