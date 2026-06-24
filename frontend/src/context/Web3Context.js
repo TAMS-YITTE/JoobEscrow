@@ -13,6 +13,30 @@ export function Web3Provider({ children }) {
   const [error, setError] = useState(null);
   const [isTestnet, setIsTestnet] = useState(false);
 
+  const readProvider = new ethers.JsonRpcProvider(process.env.NEXT_PUBLIC_BSC_RPC_URL || 'https://data-seed-prebsc-1-s1.binance.org:8545/');
+
+  const ensureCorrectChain = async () => {
+    const expectedChainId = process.env.NEXT_PUBLIC_CHAIN_ID || '97';
+    const currentChainId = (await new ethers.BrowserProvider(window.ethereum).getNetwork()).chainId.toString();
+    
+    if (currentChainId !== expectedChainId) {
+      try {
+        await window.ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: ethers.toBeHex(BigInt(expectedChainId)) }],
+        });
+        return true;
+      } catch (switchError) {
+        if (switchError.code === 4902) {
+          // Chain not added to MetaMask, could add it here as fallback
+          throw new Error("Please add the correct BSC chain to your wallet.");
+        }
+        throw new Error("You must switch to the correct network to proceed.");
+      }
+    }
+    return true;
+  };
+
   const connectWallet = async () => {
     setError(null);
     if (typeof window.ethereum !== 'undefined') {
@@ -64,7 +88,7 @@ export function Web3Provider({ children }) {
   };
 
   return (
-    <Web3Context.Provider value={{ account, provider, signer, balance, error, isTestnet, connectWallet }}>
+    <Web3Context.Provider value={{ account, provider, signer, readProvider, balance, error, isTestnet, connectWallet, ensureCorrectChain }}>
       {children}
     </Web3Context.Provider>
   );

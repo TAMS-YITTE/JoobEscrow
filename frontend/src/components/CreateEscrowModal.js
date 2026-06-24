@@ -8,7 +8,7 @@ import { ESCROW_ABI, USDT_ADDRESS, ERC20_ABI } from '../config/contract';
 import './CreateEscrowModal.css';
 
 export default function CreateEscrowModal({ onClose, onSuccess, prefilledProvider = '', prefilledAmount = '' }) {
-  const { account, signer } = useWeb3();
+  const { account, signer, ensureCorrectChain, readProvider } = useWeb3();
   const niche = useNiche();
   const [providerAddr, setProviderAddr] = useState(prefilledProvider);
   const [amount, setAmount] = useState(prefilledAmount);
@@ -30,14 +30,24 @@ export default function CreateEscrowModal({ onClose, onSuccess, prefilledProvide
 
     setLoading(true);
     try {
-      const parsedAmount = ethers.parseEther(amount);
+      await ensureCorrectChain();
+
+      const usdtRead = new ethers.Contract(USDT_ADDRESS, ERC20_ABI, readProvider || signer);
+      let decimals = 18;
+      try {
+        decimals = Number(await usdtRead.decimals());
+      } catch (err) {
+        console.warn("Could not read decimals, defaulting to 18", err);
+      }
+      
+      const parsedAmount = ethers.parseUnits(amount.toString(), decimals);
       
       const usdt = new ethers.Contract(USDT_ADDRESS, ERC20_ABI, signer);
       const currentAllowance = await usdt.allowance(account, niche.contractAddress);
       
       if (currentAllowance < parsedAmount) {
         setStep(2);
-        const approveTx = await usdt.approve(niche.contractAddress, ethers.MaxUint256);
+        const approveTx = await usdt.approve(niche.contractAddress, parsedAmount);
         await approveTx.wait();
       }
 

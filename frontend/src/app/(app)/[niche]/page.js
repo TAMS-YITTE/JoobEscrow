@@ -11,7 +11,7 @@ import { ESCROW_ADDRESS, ESCROW_ABI, USDT_ADDRESS, ERC20_ABI } from '../../../co
 import './page.css';
 
 export default function Dashboard() {
-  const { account, provider, signer } = useWeb3();
+  const { account, provider, signer, readProvider } = useWeb3();
   const niche = useNiche();
   const [activeTab, setActiveTab] = useState('active');
   const [escrows, setEscrows] = useState([]);
@@ -19,19 +19,20 @@ export default function Dashboard() {
   const [showModal, setShowModal] = useState(false);
 
   const fetchEscrows = useCallback(async () => {
-    if (!account || !provider) {
-      return;
-    }
+    const currentProvider = readProvider || provider;
+    if (!currentProvider) return;
+    
     setLoading(true);
     try {
-      const contract = new ethers.Contract(ESCROW_ADDRESS, ESCROW_ABI, provider);
+      const contract = new ethers.Contract(ESCROW_ADDRESS, ESCROW_ABI, currentProvider);
       const escrowCount = await contract.escrowCounter();
       const count = Number(escrowCount);
       
       const loaded = [];
       for (let i = 1; i <= count; i++) {
         const e = await contract.getEscrowDetails(i);
-        if (e.client.toLowerCase() === account.toLowerCase() || e.provider.toLowerCase() === account.toLowerCase()) {
+        // If wallet is connected, show only user's escrows. Otherwise, show public recent ones.
+        if (!account || e.client.toLowerCase() === account.toLowerCase() || e.provider.toLowerCase() === account.toLowerCase()) {
            loaded.push({
              id: i.toString(),
              client: e.client,
@@ -42,22 +43,25 @@ export default function Dashboard() {
            });
         }
       }
-      setEscrows(loaded);
+      
+      if (!account) {
+        loaded.reverse();
+        setEscrows(loaded.slice(0, 10)); // Show 10 latest publicly
+      } else {
+        setEscrows(loaded);
+      }
     } catch (err) {
       console.error(err);
     }
     setLoading(false);
-  }, [account, provider]);
+  }, [account, provider, readProvider]);
 
   useEffect(() => {
-    if (account && provider) {
+    if (readProvider || provider) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       fetchEscrows();
-    } else {
-       
-      setEscrows([]);
     }
-  }, [fetchEscrows, account, provider]);
+  }, [fetchEscrows, readProvider, provider]);
 
   const handleFaucet = async () => {
     if (!signer) return;
