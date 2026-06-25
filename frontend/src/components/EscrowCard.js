@@ -5,13 +5,17 @@ import { ethers } from 'ethers';
 import { useWeb3 } from '../context/Web3Context';
 import { useNiche } from '../context/NicheContext';
 import { useEscrowContract } from '../hooks/useEscrowContract';
+import dynamic from 'next/dynamic';
 import './EscrowCard.css';
+
+const ChatBox = dynamic(() => import('./ChatBox'), { ssr: false });
 
 export default function EscrowCard({ escrow, isDisputeView }) {
   const { account } = useWeb3();
   const contract = useEscrowContract();
   const niche = useNiche();
   const [loading, setLoading] = useState(false);
+  const [showChat, setShowChat] = useState(false);
 
   const getStatusBadge = () => {
     if (escrow.status === 'FUNDED' && escrow.accepted) {
@@ -258,6 +262,12 @@ export default function EscrowCard({ escrow, isDisputeView }) {
            </button>
         )}
 
+        {(isClient || isProvider) && (
+          <button className="btn btn-outline" style={{ marginLeft: 'auto' }} onClick={() => setShowChat(!showChat)}>
+            {showChat ? 'Hide Chat' : '💬 Chat'}
+          </button>
+        )}
+
         {escrow.status === 'DISPUTED' && isDisputeView && (
           <div className="w-full flex justify-end">
             {escrow.disputeOpenedAt > 0 && nowSec > (escrow.disputeOpenedAt + escrow.staleDisputeTimeout) ? (
@@ -272,6 +282,12 @@ export default function EscrowCard({ escrow, isDisputeView }) {
           </div>
         )}
       </div>
+      
+      {showChat && (isClient || isProvider) && (
+        <div className="mt-4 border-t border-white/10 pt-4">
+          <ChatBox peerAddress={isClient ? escrow.provider : escrow.client} />
+        </div>
+      )}
     </div>
   );
 }
