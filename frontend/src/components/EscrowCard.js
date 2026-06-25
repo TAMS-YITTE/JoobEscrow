@@ -159,7 +159,7 @@ export default function EscrowCard({ escrow, isDisputeView }) {
 
   const getExplorerLink = () => {
     if (!niche || !niche.contractAddress) return null;
-    const chainId = process.env.NEXT_PUBLIC_CHAIN_ID || '97';
+    const chainId = process.env.NEXT_PUBLIC_CHAIN_ID || '56';
     if (chainId === '56') return `https://bscscan.com/address/${niche.contractAddress}`;
     if (chainId === '97') return `https://testnet.bscscan.com/address/${niche.contractAddress}`;
     return null;

@@ -45,7 +45,7 @@ export function Web3Provider({ children }) {
   const { open } = useAppKit();
 
   const readProvider = useMemo(() => 
-    new ethers.JsonRpcProvider(process.env.NEXT_PUBLIC_BSC_RPC_URL || 'https://data-seed-prebsc-1-s1.binance.org:8545/')
+    new ethers.JsonRpcProvider(process.env.NEXT_PUBLIC_BSC_RPC_URL || 'https://bsc-dataseed.binance.org/')
   , []);
 
   useEffect(() => {
