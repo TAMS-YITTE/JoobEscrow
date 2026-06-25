@@ -19,7 +19,7 @@ export function Web3Provider({ children }) {
 
   const ensureCorrectChain = async () => {
     const expectedChainId = process.env.NEXT_PUBLIC_CHAIN_ID || '97';
-    const currentChainId = (await new ethers.BrowserProvider(window.ethereum).getNetwork()).chainId.toString();
+    const currentChainId = (await new ethers.BrowserProvider(window.ethereum, 'any').getNetwork()).chainId.toString();
     
     if (currentChainId !== expectedChainId) {
       try {
@@ -79,7 +79,7 @@ export function Web3Provider({ children }) {
     setError(null);
     if (typeof window.ethereum !== 'undefined') {
       try {
-        const tempProvider = new ethers.BrowserProvider(window.ethereum);
+        const tempProvider = new ethers.BrowserProvider(window.ethereum, 'any');
         
         const network = await tempProvider.getNetwork();
         setIsTestnet(network.chainId.toString() === '97');
