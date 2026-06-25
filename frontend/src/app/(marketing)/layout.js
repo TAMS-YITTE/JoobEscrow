@@ -24,7 +24,7 @@ export default function MarketingLayout({ children }) {
           </nav>
 
           <div className={styles.navRight}>
-            <Link href="/app" className="btn btn-primary">
+            <Link href="/app" className="btn btn-primary" style={{ whiteSpace: 'nowrap' }}>
               Launch App
             </Link>
           </div>
