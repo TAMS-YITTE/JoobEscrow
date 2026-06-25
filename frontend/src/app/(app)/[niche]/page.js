@@ -111,12 +111,12 @@ function DashboardContent() {
     if (!signer) return;
     try {
       const usdt = new ethers.Contract(USDT_ADDRESS, ERC20_ABI, signer);
-      // MockUSDT was minted to the deployer.
+      // USDT was minted to the deployer.
       // If the current user is not the deployer, transfer will fail.
       // But in Hardhat, account 0 deploys and we often connect with it.
       // For a demo, we just try to read the balance.
       const bal = await usdt.balanceOf(account);
-      alert(`You have ${ethers.formatEther(bal)} MockUSDT`);
+      alert(`You have ${ethers.formatEther(bal)} USDT`);
     } catch (err) {
       console.error(err);
     }

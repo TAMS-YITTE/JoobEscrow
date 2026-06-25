@@ -24,7 +24,7 @@ export default function MarketingLayout({ children }) {
           </nav>
 
           <div className={styles.navRight}>
-            <Link href="/app" className={styles.btnLaunch}>
+            <Link href="/app" className="btn btn-primary">
               Launch App
             </Link>
           </div>
