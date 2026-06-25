@@ -10,7 +10,7 @@ export default function MarketingLayout({ children }) {
       <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
         <header className={styles.header}>
           <Link href="/" className={styles.logoContainer}>
-            <img src="/logo.jpg" alt="JoobEscrow Logo" style={{ width: '48px', height: '48px', borderRadius: '50%', objectFit: 'cover', border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 0 12px rgba(59, 130, 246, 0.6)', filter: 'brightness(1.6) contrast(1.2)' }} />
+            <img src="/logo.jpg" alt="JoobEscrow Logo" style={{ width: '48px', height: '48px', borderRadius: '50%', objectFit: 'cover', border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 0 12px rgba(59, 130, 246, 0.6)' }} />
             <span className={styles.logoText}>JoobEscrow</span>
           </Link>
           
@@ -37,6 +37,7 @@ export default function MarketingLayout({ children }) {
         <footer className={styles.footer} style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '2rem', paddingBottom: '2rem' }}>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
             <div className={styles.footerNav} style={{ flexWrap: 'wrap', justifyContent: 'center', gap: '1.5rem' }}>
+              <Link href="https://t.me/JoobEscrow_Official" target="_blank" className={styles.navLink}>Telegram</Link>
               <Link href="/faq" className={styles.navLink}>FAQ</Link>
               <Link href="/how-disputes-work" className={styles.navLink}>How Disputes Work</Link>
               <Link href="/security" className={styles.navLink}>Security & Trust</Link>
