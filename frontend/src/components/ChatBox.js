@@ -1,14 +1,13 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { useClient, useConversations, useStreamMessages } from '@xmtp/react-sdk';
 import { useWeb3 } from '../context/Web3Context';
+import { useXMTP } from '../context/XMTPContext';
 import './ChatBox.css';
 
 export default function ChatBox({ peerAddress }) {
   const { signer, account } = useWeb3();
-  const { client, initialize, isLoading: isInitializing } = useClient();
-  const { conversations, getCachedByPeerAddress } = useConversations();
+  const { client, initialize, isInitializing } = useXMTP();
   
   const [conversation, setConversation] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -27,42 +26,51 @@ export default function ChatBox({ peerAddress }) {
     scrollToBottom();
   }, [messages]);
 
-  // Load conversation and messages once client is ready
+  // Load conversation and stream messages natively
   useEffect(() => {
-    const loadConversation = async () => {
-      if (!client || !peerAddress) return;
+    if (!client || !peerAddress) return;
+    
+    let isMounted = true;
+    let stream = null;
+
+    const loadData = async () => {
       try {
-        let conv = await getCachedByPeerAddress(peerAddress);
+        const convs = await client.conversations.list();
+        let conv = convs.find(c => c.peerAddress.toLowerCase() === peerAddress.toLowerCase());
+        
         if (!conv) {
-          // Check network
-          const networkConvs = await client.conversations.list();
-          conv = networkConvs.find(c => c.peerAddress.toLowerCase() === peerAddress.toLowerCase());
+          conv = await client.conversations.newConversation(peerAddress);
         }
-        if (!conv) {
-          // We don't create it here to save gas/requests until user sends a message
-          // But XMTP allows creating new conversations anytime
-        } else {
-          setConversation(conv);
-          const msgs = await conv.messages();
-          setMessages(msgs);
+        
+        if (isMounted) setConversation(conv);
+        
+        const msgs = await conv.messages();
+        if (isMounted) setMessages(msgs);
+
+        stream = await conv.streamMessages();
+        for await (const msg of stream) {
+          if (isMounted) {
+            setMessages(prev => {
+              if (prev.find(m => m.id === msg.id)) return prev;
+              return [...prev, msg];
+            });
+          }
         }
       } catch (err) {
-        console.error("Error loading conversation:", err);
+        console.error("Error loading chat:", err);
       }
     };
-    loadConversation();
-  }, [client, peerAddress, getCachedByPeerAddress]);
+    
+    loadData();
 
-  // Stream new messages
-  useStreamMessages(conversation, {
-    onMessage: (msg) => {
-      setMessages((prev) => {
-        // Prevent duplicates
-        if (prev.find((m) => m.id === msg.id)) return prev;
-        return [...prev, msg];
-      });
-    },
-  });
+    return () => {
+      isMounted = false;
+      if (stream) {
+        // stream might not have a close method depending on exact SDK version, try/catch to be safe
+        try { stream.return(); } catch (e) {}
+      }
+    };
+  }, [client, peerAddress]);
 
   const handleInitialize = async () => {
     if (!signer) {
@@ -71,7 +79,7 @@ export default function ChatBox({ peerAddress }) {
     }
     setError(null);
     try {
-      await initialize({ keys: null, options: { env: 'production' }, signer });
+      await initialize(signer);
     } catch (err) {
       console.error("Failed to initialize XMTP:", err);
       setError("Signature rejected or failed. You must sign to use chat.");
@@ -80,20 +88,13 @@ export default function ChatBox({ peerAddress }) {
 
   const handleSend = async (e) => {
     e.preventDefault();
-    if (!text.trim() || !client) return;
+    if (!text.trim() || !client || !conversation) return;
 
     setIsSending(true);
     try {
-      let currentConv = conversation;
-      if (!currentConv) {
-        currentConv = await client.conversations.newConversation(peerAddress);
-        setConversation(currentConv);
-      }
-      await currentConv.send(text.trim());
+      await conversation.send(text.trim());
       setText('');
-      // Optimistically reload messages to show it quickly
-      const msgs = await currentConv.messages();
-      setMessages(msgs);
+      // Message will appear via the stream loop above
     } catch (err) {
       console.error("Failed to send message:", err);
       setError("Failed to send message.");
@@ -106,7 +107,7 @@ export default function ChatBox({ peerAddress }) {
       <div className="chatbox-container">
         <div className="chatbox-uninitialized">
           <h4>Secure Messaging</h4>
-          <p>Sign a message with your wallet to activate end-to-end encrypted chat via XMTP.</p>
+          <p>Sign a message with your wallet to activate end-to-end encrypted chat via XMTP V3.</p>
           <button className="btn btn-primary" onClick={handleInitialize} disabled={isInitializing}>
             {isInitializing ? 'Connecting...' : 'Activate Chat'}
           </button>

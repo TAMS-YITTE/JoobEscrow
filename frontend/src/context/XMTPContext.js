@@ -1,29 +1,44 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import dynamic from 'next/dynamic';
+import { createContext, useContext, useState, useEffect } from 'react';
+import { Client } from '@xmtp/browser-sdk';
 
-const DynamicXMTPProvider = dynamic(
-  () => import('@xmtp/react-sdk').then(mod => mod.XMTPProvider),
-  { ssr: false }
-);
+const XMTPContext = createContext();
 
 export function XMTPProviderWrapper({ children }) {
-  const [mounted, setMounted] = useState(false);
+  const [client, setClient] = useState(null);
+  const [isInitializing, setIsInitializing] = useState(false);
 
   useEffect(() => {
     // Polyfill Buffer for XMTP
     if (typeof window !== 'undefined' && !window.Buffer) {
       window.Buffer = require('buffer').Buffer;
     }
-    setMounted(true);
   }, []);
 
-  if (!mounted) return null;
+  const initialize = async (signer) => {
+    if (!signer) return null;
+    setIsInitializing(true);
+    try {
+      // Create native browser SDK Client
+      const xmtpClient = await Client.create(signer, { env: "production" });
+      setClient(xmtpClient);
+      setIsInitializing(false);
+      return xmtpClient;
+    } catch (err) {
+      console.error("XMTP initialization failed", err);
+      setIsInitializing(false);
+      throw err;
+    }
+  };
 
   return (
-    <DynamicXMTPProvider>
+    <XMTPContext.Provider value={{ client, initialize, isInitializing }}>
       {children}
-    </DynamicXMTPProvider>
+    </XMTPContext.Provider>
   );
+}
+
+export function useXMTP() {
+  return useContext(XMTPContext);
 }
