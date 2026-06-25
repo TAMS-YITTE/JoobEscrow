@@ -61,7 +61,7 @@ export default function LandingPage() {
         <div className={styles.trustBanner}>
           <svg width="32" height="32" fill="none" stroke="var(--accent-primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
           <h3 style={{ margin: 0 }}>{d.trust.auditBadge}</h3>
-          <Link href="/Universal_Service_Escrow_V4_Audit.pdf" target="_blank" className="text-gradient">
+          <Link href="https://spywolf.co/audits/Universal_Service_Escrow_V4_Audit.pdf" target="_blank" className="text-gradient">
             {d.trust.viewAudit} →
           </Link>
         </div>

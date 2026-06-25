@@ -10,11 +10,7 @@ export default function MarketingLayout({ children }) {
       <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
         <header className={styles.header}>
           <Link href="/" className={styles.logoContainer}>
-            <div className={styles.logoIcon}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-              </svg>
-            </div>
+            <img src="/logo.jpg" alt="JoobEscrow Logo" style={{ width: '36px', height: '36px', borderRadius: '50%', objectFit: 'cover' }} />
             <span className={styles.logoText}>JoobEscrow</span>
           </Link>
           
@@ -47,7 +43,7 @@ export default function MarketingLayout({ children }) {
               <Link href="/risks" className={styles.navLink}>Risks & Disclaimers</Link>
               <Link href="/bug-bounty" className={styles.navLink}>Bug Bounty</Link>
               <Link href="/blog" className={styles.navLink}>Blog</Link>
-              <Link href="/Universal_Service_Escrow_V4_Audit.pdf" target="_blank" className={styles.navLink}>Audit Report</Link>
+              <Link href="https://spywolf.co/audits/Universal_Service_Escrow_V4_Audit.pdf" target="_blank" className={styles.navLink}>Audit Report</Link>
             </div>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginTop: '1rem' }}>© {new Date().getFullYear()} JoobEscrow. All rights reserved.</p>
           </div>

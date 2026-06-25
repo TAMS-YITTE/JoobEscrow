@@ -19,8 +19,11 @@ export default function Sidebar() {
   return (
     <aside className="sidebar glass-panel">
       <div className="sidebar-brand">
-        <h2>Joob</h2>
-        <p style={{color: niche.theme.primary}}>{niche.name}</p>
+        <Link href="/" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <img src="/logo.jpg" alt="JoobEscrow Logo" style={{ width: '40px', height: '40px', borderRadius: '8px', objectFit: 'cover' }} />
+          <h2>Joob</h2>
+        </Link>
+        <p style={{color: niche.theme.primary, marginTop: '8px'}}>{niche.name}</p>
       </div>
       
       <nav className="nav-menu">
