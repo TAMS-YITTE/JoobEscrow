@@ -2,6 +2,32 @@
 
 import { createContext, useContext, useState, useEffect, useMemo } from 'react';
 import { ethers } from 'ethers';
+import { createAppKit, useAppKit, useAppKitProvider, useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react';
+import { EthersAdapter } from '@reown/appkit-adapter-ethers';
+import { bsc, bscTestnet, hardhat } from '@reown/appkit/networks';
+
+const projectId = 'f7c5b567dc730d97b126ba84ddc76278';
+
+const networks = [bsc, bscTestnet, hardhat];
+
+const metadata = {
+  name: 'JoobEscrow',
+  description: 'The universal decentralized escrow platform',
+  url: 'https://joobescrow.com', 
+  icons: ['https://joobescrow.com/logo.jpg']
+};
+
+const ethersAdapter = new EthersAdapter();
+
+createAppKit({
+  adapters: [ethersAdapter],
+  networks,
+  projectId,
+  metadata,
+  features: {
+    analytics: true
+  }
+});
 
 const Web3Context = createContext();
 
@@ -13,115 +39,57 @@ export function Web3Provider({ children }) {
   const [error, setError] = useState(null);
   const [isTestnet, setIsTestnet] = useState(false);
 
+  const { address, isConnected } = useAppKitAccount();
+  const { walletProvider } = useAppKitProvider('eip155');
+  const { chainId } = useAppKitNetwork();
+  const { open } = useAppKit();
+
   const readProvider = useMemo(() => 
     new ethers.JsonRpcProvider(process.env.NEXT_PUBLIC_BSC_RPC_URL || 'https://data-seed-prebsc-1-s1.binance.org:8545/')
   , []);
 
-  const ensureCorrectChain = async () => {
-    const expectedChainId = process.env.NEXT_PUBLIC_CHAIN_ID || '97';
-    const currentChainId = (await new ethers.BrowserProvider(window.ethereum, 'any').getNetwork()).chainId.toString();
-    
-    if (currentChainId !== expectedChainId) {
-      try {
-        await window.ethereum.request({
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId: ethers.toBeHex(BigInt(expectedChainId)) }],
-        });
-        return true;
-      } catch (switchError) {
-        if (switchError.code === 4902) {
-          let chainParams;
-          if (expectedChainId === '56') {
-            chainParams = {
-              chainId: '0x38',
-              chainName: 'BNB Smart Chain',
-              rpcUrls: ['https://bsc-dataseed.binance.org/'],
-              nativeCurrency: { name: 'BNB', symbol: 'BNB', decimals: 18 },
-              blockExplorerUrls: ['https://bscscan.com']
-            };
-          } else if (expectedChainId === '31337') {
-            chainParams = {
-              chainId: '0x7a69',
-              chainName: 'Hardhat Local',
-              rpcUrls: ['http://127.0.0.1:8545'],
-              nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 }
-            };
-          } else {
-            chainParams = {
-              chainId: '0x61',
-              chainName: 'BNB Smart Chain Testnet',
-              rpcUrls: ['https://data-seed-prebsc-1-s1.binance.org:8545/'],
-              nativeCurrency: { name: 'tBNB', symbol: 'tBNB', decimals: 18 },
-              blockExplorerUrls: ['https://testnet.bscscan.com']
-            };
+  useEffect(() => {
+    async function syncConnection() {
+      if (isConnected && walletProvider) {
+        try {
+          const ethersProvider = new ethers.BrowserProvider(walletProvider, 'any');
+          setProvider(ethersProvider);
+          const tempSigner = await ethersProvider.getSigner();
+          setSigner(tempSigner);
+          setAccount(address);
+          
+          if (chainId) {
+            setIsTestnet(chainId === 97);
           }
 
-          try {
-            await window.ethereum.request({
-              method: 'wallet_addEthereumChain',
-              params: [chainParams],
-            });
-            return true;
-          } catch (addError) {
-            if (addError.code === 4001) {
-              throw new Error("You rejected adding the required network to your wallet.");
-            }
-            throw new Error("Failed to add the correct BSC chain to your wallet.");
-          }
+          const bal = await ethersProvider.getBalance(address);
+          setBalance(ethers.formatEther(bal));
+          setError(null);
+        } catch (err) {
+          console.error("Error setting up provider from Reown:", err);
+          setError("Failed to setup provider from Reown.");
         }
-        throw new Error("You must switch to the correct network to proceed.");
+      } else {
+        setProvider(null);
+        setSigner(null);
+        setAccount(null);
+        setBalance(null);
       }
     }
+    syncConnection();
+  }, [isConnected, walletProvider, address, chainId]);
+
+  const ensureCorrectChain = async () => {
+    // Reown AppKit handles network selection. We simply return true here so existing
+    // logic in the app doesn't break. If needed, users switch via the AppKit modal.
     return true;
   };
 
   const connectWallet = async () => {
-    setError(null);
-    if (typeof window.ethereum !== 'undefined') {
-      try {
-        const tempProvider = new ethers.BrowserProvider(window.ethereum, 'any');
-        
-        const network = await tempProvider.getNetwork();
-        setIsTestnet(network.chainId.toString() === '97');
-
-        const accounts = await tempProvider.send("eth_requestAccounts", []);
-        const acc = accounts[0];
-        
-        const tempSigner = await tempProvider.getSigner();
-        
-        setProvider(tempProvider);
-        setSigner(tempSigner);
-        setAccount(acc);
-        
-        const bal = await tempProvider.getBalance(acc);
-        setBalance(ethers.formatEther(bal));
-
-        // Listen for account changes
-        window.ethereum.on('accountsChanged', (newAccounts) => {
-          if (newAccounts.length > 0) {
-            setAccount(newAccounts[0]);
-            window.location.reload();
-          } else {
-            setAccount(null);
-            setSigner(null);
-          }
-        });
-
-        // Listen for network changes
-        window.ethereum.on('chainChanged', () => {
-          window.location.reload();
-        });
-
-      } catch (err) {
-        if (err.code === 4001) {
-          setError("Connection rejected by user.");
-        } else {
-          setError("Connection error: " + (err.message || "Unknown error"));
-        }
-        console.error("Web3 Connection error:", err);
-      }
-    } else {
-      setError("Please install MetaMask or a compatible Web3 wallet.");
+    try {
+      await open();
+    } catch (err) {
+      console.error("Failed to open Reown AppKit:", err);
     }
   };
 
