@@ -97,6 +97,23 @@
   margin-top: 10px;
 }
 
+.socialIcons {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 10px;
+}
+
+.socialLink {
+  color: var(--text-secondary);
+  transition: color 0.2s, transform 0.2s;
+}
+
+.socialLink:hover {
+  color: #fff;
+  transform: translateY(-2px);
+}
+
 /* Landing Specific */
 .hero {
   text-align: center;
