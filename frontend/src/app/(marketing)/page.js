@@ -21,6 +21,15 @@ export default function LandingPage() {
             {d.hero.ctaSecondary}
           </Link>
         </div>
+
+        {/* Trust Banner moved to Hero */}
+        <div className={styles.trustBanner} style={{ marginTop: '3rem', display: 'inline-flex', padding: '15px 30px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px' }}>
+          <svg width="24" height="24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          <h3 style={{ margin: 0, fontSize: '1.1rem', color: '#fff', fontWeight: '600' }}>{d.trust.auditBadge}</h3>
+          <Link href="https://spywolf.co/audits/Universal_Service_Escrow_V4_Audit.pdf" target="_blank" className="text-gradient" style={{ fontSize: '1rem', marginLeft: '10px' }}>
+            {d.trust.viewAudit} →
+          </Link>
+        </div>
       </section>
       {/* Live Stats Section */}
       <section className="bg-black/50 border-y border-white/5">
@@ -57,14 +66,6 @@ export default function LandingPage() {
           </div>
         </div>
 
-        {/* Trust Banner */}
-        <div className={styles.trustBanner}>
-          <svg width="32" height="32" fill="none" stroke="var(--accent-primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-          <h3 style={{ margin: 0 }}>{d.trust.auditBadge}</h3>
-          <Link href="https://spywolf.co/audits/Universal_Service_Escrow_V4_Audit.pdf" target="_blank" className="text-gradient">
-            {d.trust.viewAudit} →
-          </Link>
-        </div>
       </section>
 
       {/* Fee Calculator Section */}

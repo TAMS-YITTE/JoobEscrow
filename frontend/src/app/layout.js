@@ -2,13 +2,20 @@ import "./globals.css";
 
 export const metadata = {
   metadataBase: new URL('https://joobescrow.com'),
-  title: "Joob Escrow - Premium Web3 Escrow",
-  description: "Joob Escrow - The Universal Decentralized Trust Layer",
+  title: "JoobEscrow | The Universal Web3 Escrow",
+  description: "Secure every payment. Pay only when the work is approved. The universal decentralized escrow platform for freelancers, creators, and businesses.",
   openGraph: {
-    title: "Joob Escrow - Premium Web3 Escrow",
-    description: "The Universal Decentralized Trust Layer",
-    images: [{ url: "/og-image.png", width: 1024, height: 1024 }],
+    title: "JoobEscrow | The Universal Web3 Escrow",
+    description: "Secure every payment. Pay only when the work is approved. The universal decentralized escrow platform for freelancers, creators, and businesses.",
+    images: [{ url: "/og-image.png", width: 1500, height: 500 }],
+    type: "website"
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "JoobEscrow | The Universal Web3 Escrow",
+    description: "Secure every payment. Pay only when the work is approved. The universal decentralized escrow platform for freelancers, creators, and businesses.",
+    images: ["/og-image.png"],
+  }
 };
 
 export default function RootLayout({ children }) {
