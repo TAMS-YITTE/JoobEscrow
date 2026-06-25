@@ -9,17 +9,29 @@ export default function MarketingLayout({ children }) {
     <Web3Provider>
       <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
         <header className={styles.header}>
-          <Link href="/" className={styles.logo}>
-            JoobEscrow
+          <Link href="/" className={styles.logoContainer}>
+            <div className={styles.logoIcon}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+            </div>
+            <span className={styles.logoText}>JoobEscrow</span>
           </Link>
-          <nav className={styles.nav}>
-            <Link href="/security" className={styles.navLink}>
-              {dict.landing.footer.security}
+          
+          <nav className={styles.navCenter}>
+            <Link href="/#how-it-works" className={styles.navLink}>
+              How it works
             </Link>
-            <Link href="/app" className="btn btn-primary" style={{ padding: '6px 16px' }}>
-              {dict.landing.hero.ctaPrimary}
+            <Link href="/security" className={styles.navLink}>
+              Security
             </Link>
           </nav>
+
+          <div className={styles.navRight}>
+            <Link href="/app" className={styles.btnLaunch}>
+              Launch App
+            </Link>
+          </div>
         </header>
 
         <main style={{ flex: 1 }}>

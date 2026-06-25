@@ -7,27 +7,78 @@
   margin: 0 auto;
 }
 
-.logo {
+.logoContainer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  flex: 1;
+}
+
+.logoIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--accent-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-primary);
+}
+
+.logoText {
   font-size: 1.5rem;
   font-weight: bold;
   color: #fff;
+  letter-spacing: -0.5px;
 }
 
-.nav {
+.navCenter {
   display: flex;
-  gap: 20px;
+  gap: 30px;
   align-items: center;
+  justify-content: center;
+  flex: 2;
+}
+
+.navRight {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex: 1;
 }
 
 .navLink {
-  color: var(--text-secondary);
-  font-size: 0.9rem;
+  color: #94a3b8;
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-decoration: none;
   transition: color 0.2s;
 }
 
 .navLink:hover {
   color: #fff;
 }
+
+.btnLaunch {
+  background: #3b82f6; /* Blue matching the image */
+  color: white;
+  padding: 10px 24px;
+  border-radius: 20px; /* Pill shape */
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.4); /* Glow effect */
+  transition: all 0.2s ease;
+}
+
+.btnLaunch:hover {
+  background: #2563eb;
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.6);
+  transform: translateY(-1px);
+}
+
+
 
 .footer {
   text-align: center;
