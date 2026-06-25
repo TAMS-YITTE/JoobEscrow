@@ -42,7 +42,6 @@ export default function MarketingLayout({ children }) {
               <Link href="/security" className={styles.navLink}>Security & Trust</Link>
               <Link href="/risks" className={styles.navLink}>Risks & Disclaimers</Link>
               <Link href="/bug-bounty" className={styles.navLink}>Bug Bounty</Link>
-              <Link href="/blog" className={styles.navLink}>Blog</Link>
               <Link href="https://spywolf.co/audits/Universal_Service_Escrow_V4_Audit.pdf" target="_blank" className={styles.navLink}>Audit Report</Link>
             </div>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginTop: '1rem' }}>© {new Date().getFullYear()} JoobEscrow. All rights reserved.</p>

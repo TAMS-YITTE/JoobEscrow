@@ -16,17 +16,17 @@ export default function BugBountyPage() {
       <div className="grid md:grid-cols-3 gap-6 mb-12">
         <div className="glass-panel p-6 text-center border-red-500/30 bg-red-900/10">
           <h3 className="text-red-400 font-bold mb-2">Critical</h3>
-          <p className="text-3xl font-black text-white mb-2">Up to $50,000</p>
+          <p className="text-3xl font-black text-white mb-2">TBD</p>
           <p className="text-xs text-gray-400">Theft of funds, unauthorized releases, permanent freezing of user funds.</p>
         </div>
         <div className="glass-panel p-6 text-center border-yellow-500/30 bg-yellow-900/10">
           <h3 className="text-yellow-400 font-bold mb-2">High</h3>
-          <p className="text-3xl font-black text-white mb-2">Up to $10,000</p>
+          <p className="text-3xl font-black text-white mb-2">TBD</p>
           <p className="text-xs text-gray-400">Bypassing dispute logic, manipulation of fee calculations.</p>
         </div>
         <div className="glass-panel p-6 text-center border-blue-500/30 bg-blue-900/10">
           <h3 className="text-blue-400 font-bold mb-2">Medium / Low</h3>
-          <p className="text-3xl font-black text-white mb-2">Up to $2,000</p>
+          <p className="text-3xl font-black text-white mb-2">TBD</p>
           <p className="text-xs text-gray-400">Smart contract logic errors that do not lead to direct loss of funds, gas griefing.</p>
         </div>
       </div>
