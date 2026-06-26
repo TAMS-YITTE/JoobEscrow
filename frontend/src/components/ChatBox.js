@@ -119,9 +119,14 @@ export default function ChatBox({ peerAddress }) {
 
   return (
     <div className="chatbox-container">
-      <div className="chatbox-header">
-        <h4>Encrypted Chat</h4>
-        <span className="text-xs text-gray-400">XMTP Network</span>
+      <div className="chatbox-header" style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+        <h4 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <svg width="16" height="16" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          Encrypted Chat
+        </h4>
+        <span className="text-xs text-green-400" style={{ fontSize: '0.75rem', opacity: 0.9 }}>
+          End-to-End Encrypted (XMTP Network)
+        </span>
       </div>
       
       <div className="chatbox-messages">

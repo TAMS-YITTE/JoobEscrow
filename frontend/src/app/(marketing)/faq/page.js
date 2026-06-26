@@ -69,6 +69,17 @@ export default function FAQPage() {
           </p>
         </div>
 
+        {/* Q6 */}
+        <div className="glass-panel p-6">
+          <h3 className="font-bold text-xl text-white mb-3">Are my messages and files secure? What is XMTP?</h3>
+          <p className="text-gray-400">
+            Absolutely. JoobEscrow uses the <strong>XMTP (Extensible Message Transport Protocol)</strong> for all in-app communications. 
+            This means every message, link, or file you share with the other party is <strong>End-to-End Encrypted</strong> and tied directly to your wallet addresses. 
+            <br/><br/>
+            Because it is decentralized, neither JoobEscrow nor any third party can read your messages. It guarantees total privacy for your negotiations and deliverables.
+          </p>
+        </div>
+
       </div>
 
       <div className="mt-12 text-center">

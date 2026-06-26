@@ -89,6 +89,10 @@ export default function LandingPage() {
             <h3 className="font-bold text-lg text-white mb-2">What fees do I pay?</h3>
             <p className="text-gray-400">Fees depend on the niche (ranging from 2% to 10%). The fee is only deducted from the provider&apos;s payout upon successful completion. There are no hidden setup fees.</p>
           </div>
+          <div className="glass-panel p-6">
+            <h3 className="font-bold text-lg text-white mb-2">Are my communications with the provider secure?</h3>
+            <p className="text-gray-400">Yes! We integrated the <strong>XMTP protocol</strong> to provide wallet-to-wallet, end-to-end encrypted messaging directly inside the contract. Your files and negotiations remain 100% private and decentralized.</p>
+          </div>
         </div>
         <div className="mt-8 text-center">
           <Link href="/faq" className="text-gradient font-bold hover:underline">
