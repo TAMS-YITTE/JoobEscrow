@@ -126,7 +126,7 @@ export default function CreateEscrowModal({ onClose, onSuccess, prefilledProvide
             <input type="number" step="0.01" value={amount} onChange={e=>setAmount(e.target.value)} required placeholder="100.00" />
           </div>
           <div className="modal-actions">
-            <button type="button" className="btn btn-outline" onClick={onClose} disabled={loading}>Cancel</button>
+            <button type="button" className="btn btn-outline" onClick={onClose}>Cancel</button>
             <button type="submit" className="btn btn-primary" disabled={loading} style={{backgroundColor: niche.theme.primary, borderColor: niche.theme.primary}}>
               {loading ? (step === 2 ? 'Approving USDT...' : 'Creating Escrow...') : 'Create & Fund'}
             </button>
