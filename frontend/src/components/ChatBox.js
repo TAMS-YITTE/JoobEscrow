@@ -3,10 +3,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { useWeb3 } from '../context/Web3Context';
 import { useXMTP } from '../context/XMTPContext';
+import { Client, IdentifierKind } from '@xmtp/browser-sdk';
 import './ChatBox.css';
 
 export default function ChatBox({ peerAddress }) {
-  const { signer, account } = useWeb3();
+  const { signer } = useWeb3();
   const { client, initialize, isInitializing } = useXMTP();
   
   const [conversation, setConversation] = useState(null);
@@ -26,7 +27,7 @@ export default function ChatBox({ peerAddress }) {
     scrollToBottom();
   }, [messages]);
 
-  // Load conversation and stream messages natively
+  // Load conversation and stream messages natively V3
   useEffect(() => {
     if (!client || !peerAddress) return;
     
@@ -35,29 +36,65 @@ export default function ChatBox({ peerAddress }) {
 
     const loadData = async () => {
       try {
-        const convs = await client.conversations.list();
-        let conv = convs.find(c => c.peerAddress.toLowerCase() === peerAddress.toLowerCase());
-        
+        const peerIdentifier = { 
+          identifier: peerAddress.toLowerCase(), 
+          identifierKind: IdentifierKind.Ethereum 
+        };
+
+        // 1. Check reachability
+        const canMsgMap = await Client.canMessage([peerIdentifier], 'production');
+        const isReachable = canMsgMap.get(peerIdentifier.identifier);
+
+        if (!isReachable) {
+          if (isMounted) setError("This wallet hasn't activated XMTP yet. Ask them to open the chat once to enable messaging.");
+          return;
+        }
+
+        // 2. Get inboxId
+        const peerInboxId = await client.getInboxIdByIdentifier(peerIdentifier);
+        if (!peerInboxId) {
+          if (isMounted) setError("This wallet hasn't activated XMTP yet. Ask them to open the chat once to enable messaging.");
+          return;
+        }
+
+        // 3. Get or create DM
+        let conv;
+        try {
+          conv = await client.conversations.getDmByInboxId(peerInboxId);
+        } catch (e) {
+          // Fallback to searching in list
+          const convs = await client.conversations.list();
+          conv = convs.find(c => c.peerInboxId === peerInboxId);
+        }
+
         if (!conv) {
-          conv = await client.conversations.newConversation(peerAddress);
+          conv = await client.conversations.createDmWithIdentifier(peerIdentifier);
         }
         
         if (isMounted) setConversation(conv);
         
+        // 4. Load history
         const msgs = await conv.messages();
-        if (isMounted) setMessages(msgs);
+        if (isMounted) setMessages(msgs.filter(m => typeof m.content === 'string'));
 
-        stream = await conv.streamMessages();
-        for await (const msg of stream) {
-          if (isMounted) {
-            setMessages(prev => {
-              if (prev.find(m => m.id === msg.id)) return prev;
-              return [...prev, msg];
-            });
+        // 5. Stream real-time
+        if (conv.stream) {
+          try {
+            stream = await conv.stream();
+            for await (const msg of stream) {
+              if (isMounted && typeof msg.content === 'string') {
+                setMessages(prev => {
+                  if (prev.find(m => m.id === msg.id)) return prev;
+                  return [...prev, msg];
+                });
+              }
+            }
+          } catch (streamErr) {
+            console.error("Stream error:", streamErr);
           }
         }
       } catch (err) {
-        console.error("Error loading chat:", err);
+        console.error("Error loading V3 chat:", err);
       }
     };
     
@@ -65,8 +102,7 @@ export default function ChatBox({ peerAddress }) {
 
     return () => {
       isMounted = false;
-      if (stream) {
-        // stream might not have a close method depending on exact SDK version, try/catch to be safe
+      if (stream && typeof stream.return === 'function') {
         try { stream.return(); } catch (e) {}
       }
     };
@@ -81,7 +117,7 @@ export default function ChatBox({ peerAddress }) {
     try {
       await initialize(signer);
     } catch (err) {
-      console.error("Failed to initialize XMTP:", err);
+      console.error("Failed to initialize XMTP V3:", err);
       setError("Signature rejected or failed. You must sign to use chat.");
     }
   };
@@ -94,7 +130,9 @@ export default function ChatBox({ peerAddress }) {
     try {
       await conversation.send(text.trim());
       setText('');
-      // Message will appear via the stream loop above
+      // Reload messages to ensure the sent message displays reliably
+      const msgs = await conversation.messages();
+      setMessages(msgs.filter(m => typeof m.content === 'string'));
     } catch (err) {
       console.error("Failed to send message:", err);
       setError("Failed to send message.");
@@ -129,19 +167,24 @@ export default function ChatBox({ peerAddress }) {
         </span>
       </div>
       
+      {error && <div className="p-2 bg-red-900/50 text-red-200 text-sm border-b border-red-800">{error}</div>}
+
       <div className="chatbox-messages">
         {messages.length === 0 ? (
           <p className="chat-empty">No messages yet. Send a message to start!</p>
         ) : (
           messages.map((msg) => {
-            const isMe = msg.senderAddress.toLowerCase() === account?.toLowerCase();
+            const isMe = msg.senderInboxId === client.inboxId;
+            const content = typeof msg.content === 'string' ? msg.content : (msg.fallback || "Unsupported message");
+            const date = new Date(Number(msg.sentAtNs / 1000000n));
+
             return (
               <div key={msg.id} className={`chat-bubble-wrapper ${isMe ? 'is-me' : 'is-peer'}`}>
                 <div className="chat-bubble">
-                  {msg.content}
+                  {content}
                 </div>
                 <div className="chat-time">
-                  {new Date(msg.sent).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  {date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 </div>
               </div>
             );
@@ -156,9 +199,9 @@ export default function ChatBox({ peerAddress }) {
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder="Type a message or paste a link..." 
-          disabled={isSending}
+          disabled={isSending || error}
         />
-        <button type="submit" disabled={isSending || !text.trim()}>
+        <button type="submit" disabled={isSending || !text.trim() || error}>
           {isSending ? '...' : 'Send'}
         </button>
       </form>

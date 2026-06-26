@@ -1,7 +1,8 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect } from 'react';
-import { Client } from '@xmtp/browser-sdk';
+import { Client, IdentifierKind } from '@xmtp/browser-sdk';
+import { ethers } from 'ethers';
 
 const XMTPContext = createContext();
 
@@ -16,17 +17,32 @@ export function XMTPProviderWrapper({ children }) {
     }
   }, []);
 
-  const initialize = async (signer) => {
-    if (!signer) return null;
+  const initialize = async (ethersSigner) => {
+    if (!ethersSigner) return null;
     setIsInitializing(true);
     try {
-      // Create native browser SDK Client
-      const xmtpClient = await Client.create(signer, { env: "production" });
+      const address = await ethersSigner.getAddress();
+      
+      // Construire le Signer attendu par la V3
+      const v3Signer = {
+        type: 'EOA',
+        getIdentifier: () => ({ 
+          identifier: address.toLowerCase(), 
+          identifierKind: IdentifierKind.Ethereum 
+        }),
+        signMessage: async (message) => {
+          const sig = await ethersSigner.signMessage(message);
+          return ethers.getBytes(sig); // Doit être un Uint8Array en V3
+        }
+      };
+
+      // Create native browser SDK Client V3
+      const xmtpClient = await Client.create(v3Signer, { env: "production" });
       setClient(xmtpClient);
       setIsInitializing(false);
       return xmtpClient;
     } catch (err) {
-      console.error("XMTP initialization failed", err);
+      console.error("XMTP V3 initialization failed", err);
       setIsInitializing(false);
       throw err;
     }
