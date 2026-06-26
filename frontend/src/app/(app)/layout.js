@@ -3,6 +3,7 @@ import { Web3Provider } from "../../context/Web3Context";
 import { NicheProvider } from "../../context/NicheContext";
 import { XMTPProviderWrapper } from "../../context/XMTPContext";
 import AppGuard from "../../components/AppGuard";
+import CrispChat from "../../components/CrispChat";
 
 export default function AppLayout({ children }) {
   return (
@@ -17,6 +18,7 @@ export default function AppLayout({ children }) {
               </AppGuard>
             </main>
           </div>
+          <CrispChat />
         </NicheProvider>
       </XMTPProviderWrapper>
     </Web3Provider>
