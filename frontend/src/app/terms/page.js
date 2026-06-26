@@ -60,10 +60,24 @@ export default function TermsPage() {
           </div>
         </section>
 
-        <section>
+        <section style={{ marginBottom: '30px' }}>
           <h2 style={{ fontSize: '1.5rem', marginBottom: '15px', color: '#fff' }}>6. Legality and Compliance</h2>
           <p style={{ color: 'var(--text-secondary)' }}>
             The Joob interface is a neutral tool. It is the strict responsibility of Users to ensure that the subject of their transaction is legal in their jurisdiction. Joob reserves the right to block access to its web interface to any IP address or wallet linked to illicit activities.
+          </p>
+        </section>
+
+        <section style={{ marginBottom: '30px' }}>
+          <h2 style={{ fontSize: '1.5rem', marginBottom: '15px', color: '#fff' }}>7. Geographic Eligibility</h2>
+          <p style={{ color: 'var(--text-secondary)' }}>
+            You are entirely responsible for verifying whether the use of cryptocurrency and decentralized protocols is legal in your country of residence. Access to the interface is restricted or prohibited for users located in sanctioned jurisdictions. By using JoobEscrow, you represent and warrant that you are permitted to do so under your local laws.
+          </p>
+        </section>
+
+        <section>
+          <h2 style={{ fontSize: '1.5rem', marginBottom: '15px', color: '#fff' }}>8. No Financial or Legal Advice</h2>
+          <p style={{ color: 'var(--text-secondary)' }}>
+            Information provided on the JoobEscrow platform, marketing materials, or communications does not constitute financial, investment, or legal advice. JoobEscrow is a non-custodial software service, and you use it entirely at your own risk.
           </p>
         </section>
 

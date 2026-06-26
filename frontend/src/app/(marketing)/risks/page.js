@@ -48,6 +48,13 @@ export default function RisksPage() {
             In the event of a dispute, the JoobEscrow administrator acts as a neutral third party to resolve it based on the evidence provided. By using the platform, you agree to abide by the administrator&apos;s final decision. If the administrator is unavailable for a prolonged period, the protocol has a &quot;stale dispute&quot; fallback that allows anyone to force a 50/50 split of the funds.
           </p>
         </div>
+
+        <div className="glass-panel p-8 border-blue-500/30 bg-blue-900/10">
+          <h2 className="text-xl font-bold text-white mb-3">6. Regulatory considerations (MiCA / EU)</h2>
+          <p className="text-gray-400">
+            JoobEscrow is a non-custodial software protocol. It does not provide investment services, financial advice, or portfolio management. Users interact directly with smart contracts on the blockchain. You are entirely responsible for ensuring that your transactions comply with the regulations in your jurisdiction (including the EU Markets in Crypto-Assets regulation where applicable).
+          </p>
+        </div>
       </div>
 
       <div className="mt-12 text-center">

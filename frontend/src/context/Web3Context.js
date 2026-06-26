@@ -12,7 +12,7 @@ const networks = [bsc, bscTestnet, hardhat];
 
 const metadata = {
   name: 'JoobEscrow',
-  description: 'The universal decentralized escrow platform',
+  description: 'The universal non-custodial escrow platform',
   url: 'https://joobescrow.com', 
   icons: ['https://joobescrow.com/logo.jpg']
 };

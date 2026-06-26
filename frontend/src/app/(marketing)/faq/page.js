@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 export const metadata = {
   title: 'Frequently Asked Questions | JoobEscrow',
-  description: 'Learn how JoobEscrow secures your funds and resolves disputes in a decentralized way.',
+  description: 'Learn how JoobEscrow secures your funds and resolves disputes securely.',
 };
 
 export default function FAQPage() {

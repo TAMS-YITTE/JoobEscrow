@@ -10,7 +10,7 @@ export default function HowDisputesWorkPage() {
     <div className="w-full max-w-4xl mx-auto py-16 px-4">
       <div className="text-center mb-12">
         <h1 className="text-4xl md:text-5xl font-bold mb-4">How <span className="text-gradient">Disputes</span> Work</h1>
-        <p className="text-gray-400 text-lg">A transparent look into our decentralized arbitration lifecycle.</p>
+        <p className="text-gray-400 text-lg">A transparent look into our impartial arbitration lifecycle.</p>
       </div>
 
       {/* Visual Timeline */}

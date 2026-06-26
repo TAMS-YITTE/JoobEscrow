@@ -8,7 +8,7 @@ export default function HubPage() {
     <div className="hub-container">
       <h1 className="text-gradient hub-title">Joob Escrow</h1>
       <p className="subtitle hub-subtitle">
-        The Universal Decentralized Trust Layer
+        The Universal Non-Custodial Trust Layer
       </p>
 
       <h2 className="hub-section-title">Featured Ecosystems</h2>
