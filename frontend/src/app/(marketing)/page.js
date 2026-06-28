@@ -13,31 +13,18 @@ export default function LandingPage() {
       <section className={styles.hero}>
         <h1 className={styles.heroTitle}>{d.hero.title}</h1>
         <p className={styles.heroSubtitle}>{d.hero.subtitle}</p>
-        <div className={styles.heroCtas}>
-          <Link href="/app" className="btn btn-primary" style={{ padding: '12px 28px', fontSize: '1rem' }}>
+        <div className={styles.heroCtas} style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center', gap: '15px' }}>
+          <Link href="/app" className="btn btn-primary" style={{ padding: '12px 28px', fontSize: '1rem', height: '100%', display: 'flex', alignItems: 'center' }}>
             {d.hero.ctaPrimary}
           </Link>
-          <Link href="#how-it-works" className="btn btn-outline" style={{ padding: '12px 28px', fontSize: '1rem' }}>
+          <Link href="#how-it-works" className="btn btn-outline" style={{ padding: '12px 28px', fontSize: '1rem', height: '100%', display: 'flex', alignItems: 'center' }}>
             {d.hero.ctaSecondary}
           </Link>
-        </div>
-
-        {/* Trust Banner moved to Hero */}
-        <div className={styles.trustBanner} style={{ marginTop: '3rem', display: 'inline-flex', padding: '15px 30px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <svg width="24" height="24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-            <h3 style={{ margin: 0, fontSize: '1.1rem', color: '#fff', fontWeight: '600' }}>{d.trust.auditBadge}</h3>
-            <Link href="https://spywolf.co/audits/Universal_Service_Escrow_V4_Audit.pdf" target="_blank" className="text-gradient hover:underline" style={{ fontSize: '1rem', marginLeft: '10px' }}>
-              {d.trust.viewAudit} →
-            </Link>
-          </div>
-        </div>
-      </section>
-      {/* Stats & Calculator Section */}
-      <section style={{ backgroundColor: 'rgba(0,0,0,0.5)', borderTop: '1px solid rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.05)', padding: '60px 20px' }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', flexWrap: 'wrap', gap: '30px', alignItems: 'stretch' }}>
-          <LiveStats />
-          <FeeCalculator />
+          <Link href="/Universal_Service_Escrow_V4_Audit.pdf" target="_blank" style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 20px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: '#fff', textDecoration: 'none', transition: 'all 0.2s' }} className="hover:bg-white/10">
+            <svg width="20" height="20" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            <span style={{ fontWeight: '600', fontSize: '0.95rem' }}>{d.trust.auditBadge}</span>
+            <span style={{ fontSize: '0.85rem', color: '#a8b3cf' }}>View Report →</span>
+          </Link>
         </div>
       </section>
 
@@ -71,6 +58,14 @@ export default function LandingPage() {
           </div>
         </div>
 
+      </section>
+
+      {/* Stats & Calculator Section */}
+      <section style={{ backgroundColor: 'rgba(0,0,0,0.5)', borderTop: '1px solid rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.05)', padding: '60px 20px' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', flexWrap: 'wrap', gap: '30px', alignItems: 'stretch' }}>
+          <LiveStats />
+          <FeeCalculator />
+        </div>
       </section>
 
 
