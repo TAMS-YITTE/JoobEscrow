@@ -12,6 +12,7 @@ export default function CreateEscrowModal({ onClose, onSuccess, prefilledProvide
   const niche = useNiche();
   const [providerAddr, setProviderAddr] = useState(prefilledProvider);
   const [amount, setAmount] = useState(prefilledAmount);
+  const [timeoutDays, setTimeoutDays] = useState(7);
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1); // 1: input, 2: approve, 3: create
 
@@ -55,7 +56,7 @@ export default function CreateEscrowModal({ onClose, onSuccess, prefilledProvide
 
       setStep(3);
       const contract = new ethers.Contract(niche.contractAddress, ESCROW_ABI, signer);
-      const tx = await contract.createAndFundEscrow(providerAddr, USDT_ADDRESS, parsedAmount, 7);
+      const tx = await contract.createAndFundEscrow(providerAddr, USDT_ADDRESS, parsedAmount, parseInt(timeoutDays) || 7);
       const receipt = await tx.wait();
       
       let newEscrowId = null;
@@ -121,9 +122,15 @@ export default function CreateEscrowModal({ onClose, onSuccess, prefilledProvide
             <label>{niche.lexicon.provider} Address:</label>
             <input type="text" value={providerAddr} onChange={e=>setProviderAddr(e.target.value)} required placeholder="0x..." />
           </div>
-          <div className="form-group">
-            <label>Amount (USDT):</label>
-            <input type="number" step="0.01" value={amount} onChange={e=>setAmount(e.target.value)} required placeholder="100.00" />
+          <div className="flex gap-4">
+            <div className="form-group flex-1">
+              <label>Amount (USDT):</label>
+              <input type="number" step="0.01" value={amount} onChange={e=>setAmount(e.target.value)} required placeholder="100.00" />
+            </div>
+            <div className="form-group flex-1">
+              <label>Timeout (Days):</label>
+              <input type="number" min="1" max="365" step="1" value={timeoutDays} onChange={e=>setTimeoutDays(e.target.value)} required title="Nombre de jours avant annulation automatique si inactif" />
+            </div>
           </div>
           <div className="modal-actions">
             <button type="button" className="btn btn-outline" onClick={onClose}>Cancel</button>
