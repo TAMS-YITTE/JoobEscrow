@@ -56,8 +56,8 @@ export default function BugBountyPage() {
           <p className="text-gray-400 mb-6">
             If you have found a vulnerability, please do NOT disclose it publicly. Email our security team directly with a detailed PoC (Proof of Concept).
           </p>
-          <a href="mailto:security@joobescrow.com" className="text-xl font-bold text-green-400 hover:text-green-300 underline">
-            security@joobescrow.com
+          <a href="mailto:contact@joobescrow.com" className="text-xl font-bold text-green-400 hover:text-green-300 underline">
+            contact@joobescrow.com
           </a>
         </div>
       </div>
