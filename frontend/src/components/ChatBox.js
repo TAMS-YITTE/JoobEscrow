@@ -51,7 +51,7 @@ export default function ChatBox({ peerAddress }) {
         }
 
         // 2. Get inboxId
-        const peerInboxId = await client.getInboxIdByIdentifier(peerIdentifier);
+        const peerInboxId = await client.fetchInboxIdByIdentifier(peerIdentifier);
         if (!peerInboxId) {
           if (isMounted) setError("This wallet hasn't activated XMTP yet. Ask them to open the chat once to enable messaging.");
           return;
