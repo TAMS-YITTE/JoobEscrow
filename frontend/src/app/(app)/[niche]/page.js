@@ -18,8 +18,21 @@ function DashboardContent() {
   const [escrows, setEscrows] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [pendingUsdt, setPendingUsdt] = useState('0');
   const searchParams = useSearchParams();
   const highlightedId = searchParams?.get('escrow');
+
+  const fetchPending = useCallback(async () => {
+    const currentProvider = readProvider || provider;
+    if (!currentProvider || !account) return;
+    try {
+      const contract = new ethers.Contract(niche.contractAddress, ESCROW_ABI, currentProvider);
+      const pending = await contract.withdrawable(account, USDT_ADDRESS);
+      setPendingUsdt(ethers.formatEther(pending));
+    } catch (e) {
+      console.error("Error fetching withdrawable:", e);
+    }
+  }, [account, provider, readProvider, niche.contractAddress]);
 
   const fetchEscrows = useCallback(async () => {
     const currentProvider = readProvider || provider;
@@ -104,21 +117,33 @@ function DashboardContent() {
     if (readProvider || provider) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       fetchEscrows();
+      fetchPending();
     }
-  }, [fetchEscrows, readProvider, provider, highlightedId]);
+  }, [fetchEscrows, fetchPending, readProvider, provider, highlightedId]);
 
   const handleFaucet = async () => {
     if (!signer) return;
     try {
       const usdt = new ethers.Contract(USDT_ADDRESS, ERC20_ABI, signer);
-      // USDT was minted to the deployer.
-      // If the current user is not the deployer, transfer will fail.
-      // But in Hardhat, account 0 deploys and we often connect with it.
-      // For a demo, we just try to read the balance.
       const bal = await usdt.balanceOf(account);
       alert(`You have ${ethers.formatEther(bal)} USDT`);
     } catch (err) {
       console.error(err);
+    }
+  };
+
+  const handleClaim = async () => {
+    if (!signer) return;
+    try {
+      const contract = new ethers.Contract(niche.contractAddress, ESCROW_ABI, signer);
+      const tx = await contract.withdraw(USDT_ADDRESS);
+      alert('Withdrawal transaction sent!');
+      await tx.wait();
+      alert('Withdrawal successful!');
+      fetchPending();
+    } catch (err) {
+      console.error(err);
+      alert('Withdrawal failed: ' + err.message);
     }
   };
 
@@ -137,7 +162,12 @@ function DashboardContent() {
           <button className={`tab ${activeTab === 'active' ? 'active' : ''}`} onClick={() => setActiveTab('active')}>Active Contracts</button>
           <button className={`tab ${activeTab === 'history' ? 'active' : ''}`} onClick={() => setActiveTab('history')}>History</button>
         </div>
-        <div style={{display:'flex', gap: '10px'}}>
+        <div style={{display:'flex', gap: '10px', alignItems: 'center'}}>
+          {Number(pendingUsdt) > 0 && (
+            <button className="btn btn-primary" onClick={handleClaim} style={{background: '#22c55e', border: '1px solid #16a34a'}}>
+              Claim {pendingUsdt} USDT (Pending)
+            </button>
+          )}
           {account && <button className="btn btn-outline" onClick={handleFaucet}>USDT Balance</button>}
           <button className="btn btn-primary" disabled={!account} onClick={() => setShowModal(true)}>+ New Escrow</button>
         </div>
