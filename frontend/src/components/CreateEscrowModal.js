@@ -132,6 +132,9 @@ export default function CreateEscrowModal({ onClose, onSuccess, prefilledProvide
             <div className="form-group flex-1">
               <label>Delivery Deadline (Days):</label>
               <input type="number" min="3" max="365" step="1" value={timeoutDays} onChange={e=>setTimeoutDays(e.target.value)} required title="Minimum 3 days as per smart contract rules" />
+              <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '6px', lineHeight: '1.2' }}>
+                *Min. 3 days enforced by the smart contract to guarantee a fair dispute window and prevent abuse.
+              </p>
             </div>
           </div>
           <div className="modal-actions">
