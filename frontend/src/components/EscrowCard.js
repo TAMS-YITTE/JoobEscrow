@@ -18,6 +18,8 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner }) {
   const [showChat, setShowChat] = useState(false);
   const [showResolveModal, setShowResolveModal] = useState(false);
   const [resolvePercent, setResolvePercent] = useState(50);
+  const [showReleaseModal, setShowReleaseModal] = useState(false);
+  const [releaseAck, setReleaseAck] = useState(false);
 
   const getStatusBadge = () => {
     if (escrow.status === 'FUNDED' && escrow.accepted) {
@@ -63,6 +65,18 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner }) {
   };
 
   const handleRelease = async () => {
+    if (!contract) return;
+    // If the provider hasn't accepted yet, require an explicit acknowledgement
+    // (releasing now pays directly and gives up the escrow protection).
+    if (!escrow.accepted) {
+      setReleaseAck(false);
+      setShowReleaseModal(true);
+      return;
+    }
+    await executeRelease();
+  };
+
+  const executeRelease = async () => {
     if (!contract) return;
     setLoading(true);
     try {
@@ -129,7 +143,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner }) {
     try {
       const tx = await contract.resolveDispute(escrow.id, providerBps);
       await tx.wait();
-      alert(`Litige résolu ! L'Influenceur recevra ${resolvePercent}% et le Client récupérera ${100 - resolvePercent}%.`);
+      alert(`Litige résolu ! ${niche.lexicon.provider} recevra ${resolvePercent}% et ${niche.lexicon.client} récupérera ${100 - resolvePercent}%.`);
       setShowResolveModal(false);
       window.location.reload();
     } catch (err) {
@@ -322,6 +336,49 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner }) {
       {showChat && (isClient || isProvider) && (
         <div className="mt-4 border-t border-white/10 pt-4">
           <ChatBox peerAddress={isClient ? escrow.provider : escrow.client} />
+        </div>
+      )}
+
+      {showReleaseModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm" style={{position: 'fixed'}}>
+          <div className="glass-panel p-6 max-w-md w-full mx-4" style={{border: '1px solid #f59e0b'}}>
+            <h3 className="text-xl font-bold mb-4" style={{ color: '#f59e0b' }}>
+              ⚠️ Libérer sans acceptation ?
+            </h3>
+            <p className="text-gray-300 text-sm mb-4">
+              <strong>{niche.lexicon.provider}</strong> n'a pas encore accepté cet escrow.
+              Si vous libérez les fonds maintenant, vous <strong>payez directement</strong> et
+              vous renoncez à la protection du séquestre (vérification de livraison, recours en
+              cas de litige). Cette action est <strong>irréversible</strong>.
+            </p>
+
+            <label className="flex items-start gap-3 text-sm text-gray-200 mb-6 cursor-pointer p-3 rounded-lg" style={{background: 'rgba(0,0,0,0.3)'}}>
+              <input
+                type="checkbox"
+                checked={releaseAck}
+                onChange={(e) => setReleaseAck(e.target.checked)}
+                style={{ marginTop: '3px', accentColor: '#f59e0b', width: '16px', height: '16px' }}
+              />
+              <span>
+                Je comprends que je libère les fonds sans la protection du séquestre, et je
+                confirme vouloir le faire.
+              </span>
+            </label>
+
+            <div className="flex gap-3 justify-end">
+              <button className="btn btn-outline" onClick={() => setShowReleaseModal(false)} disabled={loading}>
+                Annuler
+              </button>
+              <button
+                className="btn btn-primary"
+                onClick={async () => { setShowReleaseModal(false); await executeRelease(); }}
+                disabled={loading || !releaseAck}
+                style={{ backgroundColor: '#f59e0b', borderColor: '#f59e0b', opacity: releaseAck ? 1 : 0.5 }}
+              >
+                {loading ? 'Processing...' : 'Libérer les fonds'}
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
