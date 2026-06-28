@@ -166,7 +166,7 @@ function DashboardContent() {
             </button>
           )}
           {account && (
-            <div className="badge badge-outline" style={{ display: 'flex', alignItems: 'center', padding: '0 15px', height: '40px', border: '1px solid var(--border-color)', borderRadius: '8px', background: 'var(--panel-bg)', fontWeight: '500' }}>
+            <div className="badge badge-outline" style={{ display: 'flex', alignItems: 'center', padding: '0 15px', height: '40px', border: '1px solid #22c55e', color: '#22c55e', borderRadius: '8px', background: 'rgba(34, 197, 94, 0.05)', fontWeight: '600' }}>
               {usdtBalance ? `${Number(usdtBalance).toFixed(2)} USDT` : 'Loading...'}
             </div>
           )}
