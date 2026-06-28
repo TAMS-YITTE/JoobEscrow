@@ -1,14 +1,41 @@
 'use client';
-import { useDisconnect, useAppKitAccount } from '@reown/appkit/react';
+import { useDisconnect, useAppKitAccount, useAppKit } from '@reown/appkit/react';
 import './WalletConnect.css';
 
 export default function WalletConnect() {
   const { disconnect } = useDisconnect();
-  const { isConnected } = useAppKitAccount();
+  const { isConnected, address } = useAppKitAccount();
+  const { open } = useAppKit();
   
   return (
     <div className="wallet-container" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '10px' }}>
-      <appkit-button />
+      
+      {isConnected ? (
+        <button 
+          onClick={() => open()}
+          style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            background: 'var(--panel-bg, #1e293b)', 
+            borderRadius: '24px', 
+            padding: '4px 16px 4px 4px', 
+            border: '1px solid var(--border-color, #334155)', 
+            cursor: 'pointer',
+            color: 'white',
+            transition: 'background 0.2s ease'
+          }}
+          onMouseOver={(e) => e.currentTarget.style.background = '#334155'}
+          onMouseOut={(e) => e.currentTarget.style.background = 'var(--panel-bg, #1e293b)'}
+        >
+          <img src="/logo.png" alt="JoobEscrow" style={{ width: '28px', height: '28px', borderRadius: '50%', marginRight: '8px', objectFit: 'cover' }} />
+          <span style={{ fontSize: '0.9rem', fontWeight: '500', fontFamily: 'monospace' }}>
+            {address ? `${address.substring(0, 6)}...${address.substring(address.length - 4)}` : ''}
+          </span>
+        </button>
+      ) : (
+        <appkit-button />
+      )}
+
       {isConnected && (
         <button 
           onClick={() => disconnect()} 
