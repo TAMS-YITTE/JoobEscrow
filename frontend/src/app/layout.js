@@ -5,6 +5,10 @@ export const metadata = {
   title: "JoobEscrow | The Universal Web3 Escrow",
   description: "Secure every payment. Pay only when the work is approved. The universal non-custodial escrow platform for freelancers, creators, and businesses.",
   keywords: ["escrow", "web3 escrow", "crypto escrow", "freelance crypto", "smart contract", "secure payment"],
+  icons: {
+    icon: '/logo.png',
+    apple: '/logo.png',
+  },
   alternates: {
     canonical: '/',
   },

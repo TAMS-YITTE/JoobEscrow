@@ -14,7 +14,7 @@ const metadata = {
   name: 'JoobEscrow',
   description: 'The universal non-custodial escrow platform',
   url: 'https://joobescrow.com', 
-  icons: ['https://joobescrow.com/logo.jpg']
+  icons: ['https://joobescrow.com/logo.png']
 };
 
 const ethersAdapter = new EthersAdapter();
