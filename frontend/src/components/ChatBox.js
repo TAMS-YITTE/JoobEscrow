@@ -150,9 +150,11 @@ export default function ChatBox({ peerAddress }) {
       console.log("[XMTP] Conversation synced.");
 
       console.log("[XMTP] Sending message with 15s timeout...");
-      const sendPromise = conversation.send(text.trim());
+      // V7: use sendText() for plain strings. send() expects an EncodedContent
+      // object; passing a raw string stalls the XMTP worker indefinitely.
+      const sendPromise = conversation.sendText(text.trim());
       const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error("Send timed out after 15s (OPFS locked or network issue). Please use separate browser profiles.")), 15000)
+        setTimeout(() => reject(new Error("Échec de l'envoi : le destinataire n'a peut-être pas encore activé le chat XMTP, ou réseau indisponible. Réessayez.")), 15000)
       );
       
       await Promise.race([sendPromise, timeoutPromise]);
