@@ -24,7 +24,7 @@ export default function SecurityPage() {
         <p style={{ color: 'var(--text-secondary)', marginBottom: '20px', lineHeight: 1.6 }}>
           {d.auditSection.desc}
         </p>
-        <Link href="/Universal_Service_Escrow_V4_Audit.pdf" target="_blank" className="btn btn-primary">
+        <Link href="https://spywolf.co/audits/Universal_Service_Escrow_V4_Audit.pdf" target="_blank" className="btn btn-primary">
           View Audit Report (PDF)
         </Link>
       </div>

@@ -11,7 +11,7 @@ export default function MarketingLayout({ children }) {
       <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
         <header className={styles.header}>
           <Link href="/" className={styles.logoContainer}>
-            <img src="/logo.jpg" alt="JoobEscrow Logo" style={{ width: '48px', height: '48px', borderRadius: '50%', objectFit: 'cover', border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 0 12px rgba(59, 130, 246, 0.6)' }} />
+            <img src="/logo.jpg" alt="JoobEscrow Logo" style={{ width: '48px', height: '48px', borderRadius: '50%', objectFit: 'cover', border: '1px solid rgba(59, 130, 246, 0.8)', padding: '2px', boxShadow: '0 0 15px rgba(59, 130, 246, 0.5)', filter: 'brightness(1.4)' }} />
             <span className={styles.logoText}>JoobEscrow</span>
           </Link>
           

@@ -74,15 +74,6 @@ export default function GovernanceTransparency() {
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="p-4 bg-black/40 rounded border border-white/5 overflow-hidden">
-          <span className="text-xs text-gray-500 uppercase tracking-wider block mb-1">Contract Owner (Arbitrator) :</span>
-          <span className="text-sm text-white font-mono break-all">{govData.owner}</span>
-        </div>
-        
-        <div className="p-4 bg-black/40 rounded border border-white/5 overflow-hidden">
-          <span className="text-xs text-gray-500 uppercase tracking-wider block mb-1">Treasury Wallet :</span>
-          <span className="text-sm text-white font-mono break-all">{govData.feeRecipient}</span>
-        </div>
 
         <div className="p-4 bg-black/40 rounded border border-white/5">
           <span className="text-xs text-gray-500 uppercase tracking-wider block mb-1">Default Base Fee :</span>
