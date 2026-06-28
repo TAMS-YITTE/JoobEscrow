@@ -34,6 +34,13 @@ export default function SecurityPage() {
         <p style={{ color: 'var(--text-secondary)', marginBottom: '20px', lineHeight: 1.6 }}>
           {d.contractSection.desc} All contracts are <strong>Verified on BscScan</strong> and securely managed by a <strong>Gnosis Safe Multisig</strong> to ensure absolute transparency and trustless operations.
         </p>
+        <div style={{ marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px', background: 'rgba(16, 185, 129, 0.1)', padding: '10px 15px', borderRadius: '8px', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
+          <span style={{ color: '#10b981', fontWeight: 'bold' }}>Treasury & Admin:</span>
+          <Link href="https://app.safe.global/home?safe=bnb:0x872F979aa868145bE3c3A6EA787614BE2A18C7f7" target="_blank" className="hover:underline" style={{ color: '#fff', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '5px' }}>
+            <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            Gnosis Safe (0x872F...C7f7) ↗
+          </Link>
+        </div>
         <div style={{ padding: '15px', backgroundColor: 'rgba(0,0,0,0.5)', borderRadius: '8px', wordBreak: 'break-all', fontFamily: 'monospace', color: 'var(--accent-primary)', display: 'flex', flexDirection: 'column', gap: '10px' }}>
           {[...new Set(Object.values(instances).map(i => i.contractAddress))].map((addr, idx) => {
              // Map address back to tier approximately for display

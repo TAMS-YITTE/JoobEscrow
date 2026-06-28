@@ -70,7 +70,7 @@ export default function GovernanceTransparency() {
     <div className="glass-panel p-6 mt-8 border border-white/10">
       <h3 className="font-bold text-2xl text-white mb-4">Live Governance Transparency</h3>
       <p className="text-gray-400 mb-6">
-        The parameters below are read directly from the blockchain. These Timelock and Governance rules apply identically to all 5 tier contracts (2%, 3%, 5%, 8%, 10%). The values displayed below are fetched from the default 8% contract.
+        The parameters below are read directly from the blockchain. These Timelock and Governance rules apply identically to all 5 tier contracts (2%, 3%, 5%, 8%, 10%). The values displayed below are fetched from the default 5% contract.
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

@@ -1,7 +1,7 @@
-import { CONTRACT_8_PERCENT } from './instances';
+import { CONTRACT_5_PERCENT } from './instances';
 
-// Default global address is now the 8% Mainnet contract, fallback to local sandbox if defined.
-export const ESCROW_ADDRESS = CONTRACT_8_PERCENT;
+// Default global address is now the 5% Mainnet contract, fallback to local sandbox if defined.
+export const ESCROW_ADDRESS = CONTRACT_5_PERCENT;
 export const USDT_ADDRESS = process.env.NEXT_PUBLIC_USDT_ADDRESS || "0x55d398326f99059fF775485246999027B3197955";
 
 export const ESCROW_ABI = [

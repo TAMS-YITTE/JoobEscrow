@@ -17,7 +17,7 @@ export default function LandingPage() {
           <Link href="/app" className="btn btn-primary" style={{ padding: '12px 28px', fontSize: '1rem', height: '100%', display: 'flex', alignItems: 'center' }}>
             {d.hero.ctaPrimary}
           </Link>
-          <Link href="https://spywolf.co/audits/Universal_Service_Escrow_V4_Audit.pdf" target="_blank" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '10px 20px', background: '#fff', border: '1px solid #fff', borderRadius: '12px', height: '100%', transition: 'all 0.2s', minWidth: '160px' }} className="hover:opacity-90">
+          <Link href="https://spywolf.co/audits/Universal_Service_Escrow_V4_Audit.pdf" target="_blank" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '10px 20px', background: '#e2e8f0', border: '1px solid #e2e8f0', borderRadius: '12px', height: '100%', transition: 'all 0.2s', minWidth: '160px' }} className="hover:opacity-90">
             <img src="https://spywolf.co/images/SpyWolf-v2-logo.svg" alt="Audited by SpyWolf" style={{ height: '24px', objectFit: 'contain' }} />
           </Link>
         </div>

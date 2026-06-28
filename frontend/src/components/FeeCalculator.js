@@ -8,7 +8,7 @@ import { ESCROW_ADDRESS, ESCROW_ABI } from '../config/contract';
 export default function FeeCalculator() {
   const { readProvider } = useWeb3();
   const [amount, setAmount] = useState(1000);
-  const [feeBPS, setFeeBPS] = useState(200); // default 200 BPS = 2%
+  const [feeBPS, setFeeBPS] = useState(500); // default 500 BPS = 5%
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
