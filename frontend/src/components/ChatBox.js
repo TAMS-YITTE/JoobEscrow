@@ -62,7 +62,14 @@ export default function ChatBox({ peerAddress }) {
           return;
         }
 
-        // 3. Get or create DM
+        // 3. Sync conversations and Get/Create DM
+        console.log("[XMTP] Syncing conversations from network...");
+        try {
+          await client.conversations.sync();
+        } catch (syncErr) {
+          console.error("[XMTP] Failed to sync conversations:", syncErr);
+        }
+
         let conv;
         try {
           console.log("[XMTP] Attempting to get DM by inbox ID...");
