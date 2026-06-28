@@ -20,6 +20,13 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner }) {
   const [resolvePercent, setResolvePercent] = useState(50);
   const [showReleaseModal, setShowReleaseModal] = useState(false);
   const [releaseAck, setReleaseAck] = useState(false);
+  const [toast, setToast] = useState(null); // { type: 'success' | 'error', message }
+
+  // Floating toast notification, auto-dismisses after 4.5s
+  const showToast = (type, message) => {
+    setToast({ type, message });
+    setTimeout(() => setToast(null), 4500);
+  };
 
   const getStatusBadge = () => {
     if (escrow.status === 'FUNDED' && escrow.accepted) {
@@ -52,13 +59,13 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner }) {
     try {
       const tx = await contract.acceptEscrow(escrow.id);
       await tx.wait();
-      alert("Escrow accepted!");
-      window.location.reload();
+      showToast('success', "Escrow accepted!");
+      setTimeout(() => window.location.reload(), 1500);
     } catch (err) {
       console.error(err);
       const reason = err.reason || err.data?.message || err.message || "Unknown error";
       if (!reason.includes("user rejected") && !reason.includes("User denied")) {
-        alert(`Failed to accept: ${reason}`);
+        showToast('error', `Failed to accept: ${reason}`);
       }
     }
     setLoading(false);
@@ -82,13 +89,13 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner }) {
     try {
       const tx = await contract.releaseFunds(escrow.id);
       await tx.wait();
-      alert("Funds released!");
-      window.location.reload();
+      showToast('success', "Funds released!");
+      setTimeout(() => window.location.reload(), 1500);
     } catch (err) {
       console.error(err);
       const reason = err.reason || err.data?.message || err.message || "Unknown error";
       if (!reason.includes("user rejected") && !reason.includes("User denied")) {
-        alert(`Failed to release: ${reason}`);
+        showToast('error', `Failed to release: ${reason}`);
       }
     }
     setLoading(false);
@@ -100,13 +107,13 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner }) {
     try {
       const tx = await contract.openDispute(escrow.id, ethers.ZeroHash);
       await tx.wait();
-      alert("Dispute opened!");
-      window.location.reload();
+      showToast('success', "Dispute opened!");
+      setTimeout(() => window.location.reload(), 1500);
     } catch (err) {
       console.error(err);
       const reason = err.reason || err.data?.message || err.message || "Unknown error";
       if (!reason.includes("user rejected") && !reason.includes("User denied")) {
-        alert(`Failed to open dispute: ${reason}`);
+        showToast('error', `Failed to open dispute: ${reason}`);
       }
     }
     setLoading(false);
@@ -118,13 +125,13 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner }) {
     try {
       const tx = await contract.resolveStaleDispute(escrow.id);
       await tx.wait();
-      alert("Stale dispute resolved 50/50!");
-      window.location.reload();
+      showToast('success', "Stale dispute resolved 50/50!");
+      setTimeout(() => window.location.reload(), 1500);
     } catch (err) {
       console.error(err);
       const reason = err.reason || err.data?.message || err.message || "Unknown error";
       if (!reason.includes("user rejected") && !reason.includes("User denied")) {
-        alert(`Failed to resolve: ${reason}`);
+        showToast('error', `Failed to resolve: ${reason}`);
       }
     }
     setLoading(false);
@@ -143,14 +150,14 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner }) {
     try {
       const tx = await contract.resolveDispute(escrow.id, providerBps);
       await tx.wait();
-      alert(`Dispute resolved! ${niche.lexicon.provider} will receive ${resolvePercent}% and ${niche.lexicon.client} will get back ${100 - resolvePercent}%.`);
+      showToast('success', `Dispute resolved! ${niche.lexicon.provider} will receive ${resolvePercent}% and ${niche.lexicon.client} will get back ${100 - resolvePercent}%.`);
       setShowResolveModal(false);
-      window.location.reload();
+      setTimeout(() => window.location.reload(), 1500);
     } catch (err) {
       console.error(err);
       const reason = err.reason || err.data?.message || err.message || "Unknown error";
       if (!reason.includes("user rejected") && !reason.includes("User denied")) {
-        alert(`Failed to resolve: ${reason}`);
+        showToast('error', `Failed to resolve: ${reason}`);
       }
     }
     setLoading(false);
@@ -162,13 +169,13 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner }) {
     try {
       const tx = await contract.claimTimeout(escrow.id);
       await tx.wait();
-      alert("Timeout claimed!");
-      window.location.reload();
+      showToast('success', "Timeout claimed!");
+      setTimeout(() => window.location.reload(), 1500);
     } catch (err) {
       console.error(err);
       const reason = err.reason || err.data?.message || err.message || "Unknown error";
       if (!reason.includes("user rejected") && !reason.includes("User denied")) {
-        alert(`Failed to claim timeout: ${reason}`);
+        showToast('error', `Failed to claim timeout: ${reason}`);
       }
     }
     setLoading(false);
@@ -180,13 +187,13 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner }) {
     try {
       const tx = await contract.cancelEscrow(escrow.id);
       await tx.wait();
-      alert("Escrow cancelled!");
-      window.location.reload();
+      showToast('success', "Escrow cancelled!");
+      setTimeout(() => window.location.reload(), 1500);
     } catch (err) {
       console.error(err);
       const reason = err.reason || err.data?.message || err.message || "Unknown error";
       if (!reason.includes("user rejected") && !reason.includes("User denied")) {
-        alert(`Failed to cancel: ${reason}`);
+        showToast('error', `Failed to cancel: ${reason}`);
       }
     }
     setLoading(false);
@@ -213,6 +220,28 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner }) {
 
   return (
     <div className={`escrow-card glass-panel ${escrow.highlighted ? 'highlight-pulse' : ''}`} id={`escrow-${escrow.id}`}>
+      {toast && (
+        <div
+          role="alert"
+          onClick={() => setToast(null)}
+          style={{
+            position: 'fixed', top: '20px', right: '20px', zIndex: 100,
+            maxWidth: '360px', padding: '14px 18px', borderRadius: '12px',
+            background: '#0d0f17', cursor: 'pointer',
+            border: `1px solid ${toast.type === 'success' ? '#22c55e' : '#ef4444'}`,
+            boxShadow: `0 8px 30px rgba(0,0,0,0.5), 0 0 0 1px ${toast.type === 'success' ? 'rgba(34,197,94,0.25)' : 'rgba(239,68,68,0.25)'}`,
+            display: 'flex', alignItems: 'flex-start', gap: '12px',
+            animation: 'toastIn 0.25s ease-out',
+          }}
+        >
+          <span style={{ fontSize: '18px', lineHeight: 1.2, color: toast.type === 'success' ? '#22c55e' : '#ef4444' }}>
+            {toast.type === 'success' ? '✓' : '⚠️'}
+          </span>
+          <span style={{ fontSize: '0.875rem', color: '#e5e7eb', lineHeight: 1.4 }}>
+            {toast.message}
+          </span>
+        </div>
+      )}
       {escrow.actionRequired && (
         <div className="action-required-banner">
           ⚠️ {escrow.actionRequired}
