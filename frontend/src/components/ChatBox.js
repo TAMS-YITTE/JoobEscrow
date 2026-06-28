@@ -42,8 +42,10 @@ export default function ChatBox({ peerAddress }) {
         };
 
         // 1. Check reachability
-        const canMsgMap = await Client.canMessage([peerIdentifier], 'production');
+        console.log("[XMTP] Checking reachability for:", peerIdentifier.identifier);
+        const canMsgMap = await client.canMessage([peerIdentifier]);
         const isReachable = canMsgMap.get(peerIdentifier.identifier);
+        console.log("[XMTP] Reachability result:", isReachable);
 
         if (!isReachable) {
           if (isMounted) setError("This wallet hasn't activated XMTP yet. Ask them to open the chat once to enable messaging.");
@@ -51,7 +53,10 @@ export default function ChatBox({ peerAddress }) {
         }
 
         // 2. Get inboxId
+        console.log("[XMTP] Fetching inbox ID...");
         const peerInboxId = await client.fetchInboxIdByIdentifier(peerIdentifier);
+        console.log("[XMTP] Found inbox ID:", peerInboxId);
+        
         if (!peerInboxId) {
           if (isMounted) setError("This wallet hasn't activated XMTP yet. Ask them to open the chat once to enable messaging.");
           return;
@@ -60,22 +65,26 @@ export default function ChatBox({ peerAddress }) {
         // 3. Get or create DM
         let conv;
         try {
+          console.log("[XMTP] Attempting to get DM by inbox ID...");
           conv = await client.conversations.getDmByInboxId(peerInboxId);
         } catch (e) {
-          console.log("getDmByInboxId failed, searching list:", e);
+          console.log("[XMTP] getDmByInboxId failed, searching list:", e);
           const convs = await client.conversations.list();
           conv = convs.find(c => c.peerInboxId === peerInboxId);
         }
 
         if (!conv) {
-          console.log("Creating new DM with inbox:", peerInboxId);
+          console.log("[XMTP] Creating new DM with inbox:", peerInboxId);
           conv = await client.conversations.createDm(peerInboxId);
         }
+        console.log("[XMTP] Conversation established:", conv.id);
         
         if (isMounted) setConversation(conv);
         
         // 4. Load history
+        console.log("[XMTP] Loading history...");
         const msgs = await conv.messages();
+        console.log("[XMTP] History loaded, count:", msgs.length);
         if (isMounted) setMessages(msgs.filter(m => typeof m.content === 'string'));
 
         // 5. Stream real-time
@@ -134,17 +143,32 @@ export default function ChatBox({ peerAddress }) {
     }
 
     setIsSending(true);
+    console.log("[XMTP] Starting send process...");
     try {
-      await conversation.send(text.trim());
+      console.log("[XMTP] Syncing conversation before send...");
+      await conversation.sync();
+      console.log("[XMTP] Conversation synced.");
+
+      console.log("[XMTP] Sending message with 15s timeout...");
+      const sendPromise = conversation.send(text.trim());
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error("Send timed out after 15s (OPFS locked or network issue). Please use separate browser profiles.")), 15000)
+      );
+      
+      await Promise.race([sendPromise, timeoutPromise]);
+      console.log("[XMTP] Message sent successfully.");
+      
       setText('');
       // Reload messages to ensure the sent message displays reliably
       const msgs = await conversation.messages();
       setMessages(msgs.filter(m => typeof m.content === 'string'));
     } catch (err) {
-      console.error("Failed to send message:", err);
+      console.error("[XMTP] Failed to send message:", err);
       setError("Failed to send message: " + err.message);
+    } finally {
+      setIsSending(false);
+      console.log("[XMTP] Send process finished.");
     }
-    setIsSending(false);
   };
 
   if (!client) {
