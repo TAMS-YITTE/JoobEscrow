@@ -20,6 +20,7 @@ function DashboardContent() {
   const [showModal, setShowModal] = useState(false);
   const [pendingUsdt, setPendingUsdt] = useState('0');
   const [usdtBalance, setUsdtBalance] = useState(null);
+  const [isOwner, setIsOwner] = useState(false);
   const searchParams = useSearchParams();
   const highlightedId = searchParams?.get('escrow');
 
@@ -51,14 +52,18 @@ function DashboardContent() {
       const globalStaleTimeout = await contract.staleDisputeTimeout();
       const staleTimeoutNumber = Number(globalStaleTimeout);
       
+      const ownerAddr = await contract.owner();
+      const currentIsOwner = account && ownerAddr.toLowerCase() === account.toLowerCase();
+      setIsOwner(currentIsOwner);
+      
       const loaded = [];
       for (let i = 1; i <= count; i++) {
         const e = await contract.getEscrowDetails(i);
-        // If wallet is connected, show only user's escrows. Otherwise, show public recent ones.
+        // If wallet is connected, show only user's escrows (or all if owner). Otherwise, show public recent ones.
         const isClient = account && e.client.toLowerCase() === account.toLowerCase();
         const isProvider = account && e.provider.toLowerCase() === account.toLowerCase();
         
-        if (!account || isClient || isProvider) {
+        if (!account || isClient || isProvider || currentIsOwner) {
            const statusEnum = Number(e.status);
            const isAccepted = Boolean(e.accepted);
            
@@ -102,12 +107,12 @@ function DashboardContent() {
         loaded.reverse();
         setEscrows(loaded.slice(0, 10)); // Show 10 latest publicly
       } else {
-        // Sort: action required first, then highlighted, then newest
+        // Sort: action required first, then disputed (for admin), then newest
         loaded.sort((a, b) => {
           if (a.actionRequired && !b.actionRequired) return -1;
           if (!a.actionRequired && b.actionRequired) return 1;
-          if (a.highlighted && !b.highlighted) return -1;
-          if (!a.highlighted && b.highlighted) return 1;
+          if (a.status === 'DISPUTED' && b.status !== 'DISPUTED') return -1;
+          if (a.status !== 'DISPUTED' && b.status === 'DISPUTED') return 1;
           return Number(b.id) - Number(a.id);
         });
         setEscrows(loaded);
@@ -183,7 +188,7 @@ function DashboardContent() {
       ) : (
         <div className="escrow-grid">
           {escrows.map(escrow => (
-            <EscrowCard key={escrow.id} escrow={escrow} />
+            <EscrowCard key={escrow.id} escrow={escrow} isOwner={isOwner} />
           ))}
         </div>
       )}

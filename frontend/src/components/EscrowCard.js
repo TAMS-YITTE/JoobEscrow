@@ -10,7 +10,7 @@ import './EscrowCard.css';
 
 const ChatBox = dynamic(() => import('./ChatBox'), { ssr: false });
 
-export default function EscrowCard({ escrow, isDisputeView }) {
+export default function EscrowCard({ escrow, isDisputeView, isOwner }) {
   const { account } = useWeb3();
   const contract = useEscrowContract();
   const niche = useNiche();
@@ -103,6 +103,24 @@ export default function EscrowCard({ escrow, isDisputeView }) {
       const tx = await contract.resolveStaleDispute(escrow.id);
       await tx.wait();
       alert("Stale dispute resolved 50/50!");
+      window.location.reload();
+    } catch (err) {
+      console.error(err);
+      const reason = err.reason || err.data?.message || err.message || "Unknown error";
+      if (!reason.includes("user rejected") && !reason.includes("User denied")) {
+        alert(`Failed to resolve: ${reason}`);
+      }
+    }
+    setLoading(false);
+  };
+
+  const handleAdminResolve = async () => {
+    if (!contract) return;
+    setLoading(true);
+    try {
+      const tx = await contract.resolveDispute(escrow.id, 5000);
+      await tx.wait();
+      alert("Dispute resolved 50/50 by Admin!");
       window.location.reload();
     } catch (err) {
       console.error(err);
@@ -268,6 +286,14 @@ export default function EscrowCard({ escrow, isDisputeView }) {
           </button>
         )}
 
+        {escrow.status === 'DISPUTED' && isOwner && (
+          <div className="w-full flex justify-end mt-2">
+             <button className="btn btn-primary" style={{ backgroundColor: '#f59e0b', borderColor: '#f59e0b' }} onClick={handleAdminResolve} disabled={loading}>
+               {loading ? 'Processing...' : 'Admin: Resolve 50/50'}
+             </button>
+          </div>
+        )}
+        
         {escrow.status === 'DISPUTED' && isDisputeView && (
           <div className="w-full flex justify-end">
             {escrow.disputeOpenedAt > 0 && nowSec > (escrow.disputeOpenedAt + escrow.staleDisputeTimeout) ? (
