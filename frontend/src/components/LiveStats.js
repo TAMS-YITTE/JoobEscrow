@@ -89,39 +89,44 @@ export default function LiveStats() {
   }, [readProvider]);
 
   return (
-    <div className="w-full max-w-5xl mx-auto py-8 px-4">
-      <div className="glass-panel p-6 grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+    <div className="glass-panel" style={{ padding: '30px', margin: '0', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)', flex: 1, minWidth: '300px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+      <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+        <h3 style={{ fontWeight: 'bold', fontSize: '1.5rem', color: '#fff', margin: '0 0 8px 0' }}>Live Network Stats</h3>
+        <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', margin: 0 }}>Real-time metrics straight from the blockchain.</p>
+      </div>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
         
-        <div className="flex flex-col space-y-2">
-          <span className="text-sm text-gray-400 uppercase tracking-wider font-semibold">Total Value Secured</span>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', backgroundColor: 'rgba(0,0,0,0.4)', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
+          <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 'bold' }}>Total Secured</span>
           {stats.loading ? (
-            <div className="h-10 bg-gray-800 animate-pulse rounded w-1/2 mx-auto"></div>
+            <div style={{ height: '24px', width: '80px', backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: '4px' }}></div>
           ) : stats.error ? (
-            <span className="text-3xl font-bold text-gray-500">N/A</span>
+            <span style={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'var(--text-secondary)' }}>N/A</span>
           ) : (
-            <span className="text-3xl font-bold text-white">${Number(stats.tvl).toLocaleString(undefined, {maximumFractionDigits:0})}</span>
+            <span style={{ fontSize: '1.4rem', fontWeight: 'bold', color: '#fff' }}>${Number(stats.tvl).toLocaleString(undefined, {maximumFractionDigits:0})}</span>
           )}
         </div>
 
-        <div className="flex flex-col space-y-2">
-          <span className="text-sm text-gray-400 uppercase tracking-wider font-semibold">Escrows Created</span>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', backgroundColor: 'rgba(0,0,0,0.4)', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
+          <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 'bold' }}>Escrows Created</span>
           {stats.loading ? (
-            <div className="h-10 bg-gray-800 animate-pulse rounded w-1/2 mx-auto"></div>
+            <div style={{ height: '24px', width: '40px', backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: '4px' }}></div>
           ) : stats.error ? (
-            <span className="text-3xl font-bold text-gray-500">N/A</span>
+            <span style={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'var(--text-secondary)' }}>N/A</span>
           ) : (
-            <span className="text-3xl font-bold text-white">{stats.totalEscrows}</span>
+            <span style={{ fontSize: '1.4rem', fontWeight: 'bold', color: '#fff' }}>{stats.totalEscrows}</span>
           )}
         </div>
 
-        <div className="flex flex-col space-y-2">
-          <span className="text-sm text-gray-400 uppercase tracking-wider font-semibold">Funds Released</span>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', backgroundColor: 'rgba(50,255,100,0.05)', borderRadius: '8px', border: '1px solid rgba(50,255,100,0.2)' }}>
+          <span style={{ fontSize: '0.9rem', color: '#4ade80', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 'bold' }}>Funds Released</span>
           {stats.loading ? (
-            <div className="h-10 bg-gray-800 animate-pulse rounded w-1/2 mx-auto"></div>
+            <div style={{ height: '24px', width: '80px', backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: '4px' }}></div>
           ) : stats.error ? (
-            <span className="text-3xl font-bold text-gray-500">N/A</span>
+            <span style={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'var(--text-secondary)' }}>N/A</span>
           ) : (
-            <span className="text-3xl font-bold text-white">${Number(stats.fundsReleased).toLocaleString(undefined, {maximumFractionDigits:0})}</span>
+            <span style={{ fontSize: '1.4rem', fontWeight: 'bold', color: '#4ade80' }}>${Number(stats.fundsReleased).toLocaleString(undefined, {maximumFractionDigits:0})}</span>
           )}
         </div>
 

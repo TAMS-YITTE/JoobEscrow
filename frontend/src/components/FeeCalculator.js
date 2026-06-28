@@ -41,47 +41,47 @@ export default function FeeCalculator() {
   const providerReceives = amount - feeAmount;
 
   return (
-    <div className="glass-panel p-6 max-w-md mx-auto my-8 border border-white/10">
-      <div className="text-center mb-6">
-        <h3 className="font-bold text-2xl text-white">Transparent Fees</h3>
-        <p className="text-gray-400 text-sm">Calculate exactly what you pay and what they get.</p>
+    <div className="glass-panel" style={{ padding: '30px', margin: '0', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)', flex: 1, minWidth: '300px' }}>
+      <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+        <h3 style={{ fontWeight: 'bold', fontSize: '1.5rem', color: '#fff', margin: '0 0 8px 0' }}>Transparent Fees</h3>
+        <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', margin: 0 }}>Calculate exactly what you pay and what they get.</p>
       </div>
 
-      <div className="mb-6">
-        <label className="block text-sm text-gray-400 mb-2">Escrow Amount (USDT)</label>
-        <div className="relative">
-          <span className="absolute left-4 top-3 text-gray-500 font-bold">$</span>
+      <div style={{ marginBottom: '24px' }}>
+        <label style={{ display: 'block', fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '8px' }}>Escrow Amount (USDT)</label>
+        <div style={{ position: 'relative' }}>
+          <span style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)', fontWeight: 'bold', fontSize: '1.2rem' }}>$</span>
           <input 
             type="number" 
-            className="w-full bg-black/50 border border-gray-700 rounded-lg py-3 pl-8 pr-4 text-white text-xl font-bold focus:outline-none focus:border-green-500"
+            style={{ width: '100%', backgroundColor: 'rgba(0,0,0,0.5)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '12px 12px 12px 35px', color: '#fff', fontSize: '1.2rem', fontWeight: 'bold', outline: 'none', boxSizing: 'border-box' }}
             value={amount}
             onChange={handleAmountChange}
           />
         </div>
       </div>
 
-      <div className="space-y-4">
-        <div className="flex justify-between items-center p-3 bg-black/40 rounded">
-          <span className="text-gray-400">Client deposits:</span>
-          <span className="text-white font-bold">{amount.toFixed(2)} USDT</span>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 15px', backgroundColor: 'rgba(0,0,0,0.4)', borderRadius: '8px' }}>
+          <span style={{ color: 'var(--text-secondary)', fontSize: '0.95rem' }}>Client deposits:</span>
+          <span style={{ color: '#fff', fontWeight: 'bold' }}>{amount.toFixed(2)} USDT</span>
         </div>
         
-        <div className="flex justify-between items-center p-3 bg-red-900/10 border border-red-500/20 rounded">
-          <span className="text-gray-400 flex items-center gap-2">
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 15px', backgroundColor: 'rgba(255,50,50,0.1)', border: '1px solid rgba(255,50,50,0.2)', borderRadius: '8px' }}>
+          <span style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
             JoobEscrow Fee 
-            {loading ? <span className="animate-pulse bg-gray-700 h-4 w-8 rounded"></span> : <span className="text-xs bg-gray-800 px-2 py-1 rounded">{percentage}%</span>}
+            {loading ? <span style={{ backgroundColor: 'rgba(255,255,255,0.1)', height: '16px', width: '30px', borderRadius: '4px' }}></span> : <span style={{ fontSize: '0.75rem', backgroundColor: 'rgba(255,255,255,0.1)', padding: '2px 6px', borderRadius: '4px', color: '#fff' }}>{percentage}%</span>}
           </span>
-          <span className="text-red-400 font-bold">-{feeAmount.toFixed(2)} USDT</span>
+          <span style={{ color: '#ff6b6b', fontWeight: 'bold' }}>-{feeAmount.toFixed(2)} USDT</span>
         </div>
 
-        <div className="flex justify-between items-center p-4 bg-green-900/20 border border-green-500/30 rounded-lg">
-          <span className="text-green-400 font-bold">Provider receives:</span>
-          <span className="text-green-400 font-bold text-xl">{providerReceives.toFixed(2)} USDT</span>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 15px', backgroundColor: 'rgba(50,255,100,0.1)', border: '1px solid rgba(50,255,100,0.2)', borderRadius: '8px' }}>
+          <span style={{ color: '#4ade80', fontWeight: 'bold' }}>Provider receives:</span>
+          <span style={{ color: '#4ade80', fontWeight: 'bold', fontSize: '1.2rem' }}>{providerReceives.toFixed(2)} USDT</span>
         </div>
       </div>
       
-      <p className="text-xs text-center text-gray-500 mt-4">
-        The fee is only deducted from the provider&apos;s payout upon successful completion. 100% refund if cancelled.
+      <p style={{ fontSize: '0.8rem', textAlign: 'center', color: 'var(--text-secondary)', marginTop: '20px' }}>
+        The fee is only deducted from the provider's payout upon successful completion. 100% refund if cancelled.
       </p>
     </div>
   );

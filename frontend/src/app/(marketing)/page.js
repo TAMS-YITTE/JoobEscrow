@@ -33,9 +33,12 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
-      {/* Live Stats Section */}
-      <section className="bg-black/50 border-y border-white/5">
-        <LiveStats />
+      {/* Stats & Calculator Section */}
+      <section style={{ backgroundColor: 'rgba(0,0,0,0.5)', borderTop: '1px solid rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.05)', padding: '60px 20px' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', flexWrap: 'wrap', gap: '30px', alignItems: 'stretch' }}>
+          <LiveStats />
+          <FeeCalculator />
+        </div>
       </section>
 
       {/* How It Works */}
@@ -70,10 +73,7 @@ export default function LandingPage() {
 
       </section>
 
-      {/* Fee Calculator Section */}
-      <section className="bg-black/50 border-y border-white/5 py-12">
-        <FeeCalculator />
-      </section>
+
 
       {/* Mini FAQ */}
       <section className={`${styles.section} max-w-4xl mx-auto px-4`}>
