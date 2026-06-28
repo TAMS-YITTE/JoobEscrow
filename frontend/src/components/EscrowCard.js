@@ -5,6 +5,7 @@ import { ethers } from 'ethers';
 import { useWeb3 } from '../context/Web3Context';
 import { useNiche } from '../context/NicheContext';
 import { useEscrowContract } from '../hooks/useEscrowContract';
+import { useToast } from '../context/ToastContext';
 import dynamic from 'next/dynamic';
 import './EscrowCard.css';
 
@@ -20,13 +21,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner }) {
   const [resolvePercent, setResolvePercent] = useState(50);
   const [showReleaseModal, setShowReleaseModal] = useState(false);
   const [releaseAck, setReleaseAck] = useState(false);
-  const [toast, setToast] = useState(null); // { type: 'success' | 'error', message }
-
-  // Floating toast notification, auto-dismisses after 4.5s
-  const showToast = (type, message) => {
-    setToast({ type, message });
-    setTimeout(() => setToast(null), 4500);
-  };
+  const { showToast } = useToast();
 
   const getStatusBadge = () => {
     if (escrow.status === 'FUNDED' && escrow.accepted) {
@@ -220,28 +215,6 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner }) {
 
   return (
     <div className={`escrow-card glass-panel ${escrow.highlighted ? 'highlight-pulse' : ''}`} id={`escrow-${escrow.id}`}>
-      {toast && (
-        <div
-          role="alert"
-          onClick={() => setToast(null)}
-          style={{
-            position: 'fixed', top: '20px', right: '20px', zIndex: 100,
-            maxWidth: '360px', padding: '14px 18px', borderRadius: '12px',
-            background: '#0d0f17', cursor: 'pointer',
-            border: `1px solid ${toast.type === 'success' ? '#22c55e' : '#ef4444'}`,
-            boxShadow: `0 8px 30px rgba(0,0,0,0.5), 0 0 0 1px ${toast.type === 'success' ? 'rgba(34,197,94,0.25)' : 'rgba(239,68,68,0.25)'}`,
-            display: 'flex', alignItems: 'flex-start', gap: '12px',
-            animation: 'toastIn 0.25s ease-out',
-          }}
-        >
-          <span style={{ fontSize: '18px', lineHeight: 1.2, color: toast.type === 'success' ? '#22c55e' : '#ef4444' }}>
-            {toast.type === 'success' ? '✓' : '⚠️'}
-          </span>
-          <span style={{ fontSize: '0.875rem', color: '#e5e7eb', lineHeight: 1.4 }}>
-            {toast.message}
-          </span>
-        </div>
-      )}
       {escrow.actionRequired && (
         <div className="action-required-banner">
           ⚠️ {escrow.actionRequired}

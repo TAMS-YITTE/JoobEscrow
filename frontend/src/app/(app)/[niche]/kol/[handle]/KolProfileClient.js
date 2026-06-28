@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { useWeb3 } from '../../../../../context/Web3Context';
+import { useToast } from '../../../../../context/ToastContext';
 import { useEscrowContract } from '../../../../../hooks/useEscrowContract';
 import WalletConnect from '../../../../../components/WalletConnect';
 import CreateEscrowModal from '../../../../../components/CreateEscrowModal';
@@ -10,6 +11,7 @@ import './kol.css';
 
 export default function KolProfileClient({ handle }) {
   const { readProvider } = useWeb3();
+  const { showToast } = useToast();
   const contract = useEscrowContract();
 
   // We keep static UI data for the KOL identity but dynamic data for the history
@@ -188,7 +190,7 @@ export default function KolProfileClient({ handle }) {
       {showModal && (
         <CreateEscrowModal 
           onClose={() => setShowModal(false)} 
-          onSuccess={() => alert('Escrow Funded! Redirecting to dashboard...')} 
+          onSuccess={() => showToast('success', 'Escrow Funded! Redirecting to dashboard...')}
           prefilledProvider={kolProfile.address}
           prefilledAmount={selectedService?.price}
         />

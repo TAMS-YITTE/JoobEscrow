@@ -2,8 +2,10 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useToast } from '../../../context/ToastContext';
 
 export default function BadgeGenerator() {
+  const { showToast } = useToast();
   const [handle, setHandle] = useState('CryptoInfluence');
   const [niche, setNiche] = useState('influence');
 
@@ -13,7 +15,7 @@ export default function BadgeGenerator() {
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(snippet);
-    alert('Snippet copied to clipboard!');
+    showToast('success', 'Snippet copied to clipboard!');
   };
 
   return (

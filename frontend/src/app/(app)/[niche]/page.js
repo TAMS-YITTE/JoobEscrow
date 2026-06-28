@@ -7,6 +7,7 @@ import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useWeb3 } from '../../../context/Web3Context';
 import { useNiche } from '../../../context/NicheContext';
+import { useToast } from '../../../context/ToastContext';
 import { ethers } from 'ethers';
 import { USDT_ADDRESS, ERC20_ABI, ESCROW_ABI } from '../../../config/contract';
 import './page.css';
@@ -14,6 +15,7 @@ import './page.css';
 function DashboardContent() {
   const { account, provider, signer, readProvider } = useWeb3();
   const niche = useNiche();
+  const { showToast } = useToast();
   const [activeTab, setActiveTab] = useState('active');
   const [escrows, setEscrows] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -136,13 +138,13 @@ function DashboardContent() {
     try {
       const contract = new ethers.Contract(niche.contractAddress, ESCROW_ABI, signer);
       const tx = await contract.withdraw(USDT_ADDRESS);
-      alert('Withdrawal transaction sent!');
+      showToast('success', 'Withdrawal transaction sent!');
       await tx.wait();
-      alert('Withdrawal successful!');
+      showToast('success', 'Withdrawal successful!');
       fetchPending();
     } catch (err) {
       console.error(err);
-      alert('Withdrawal failed: ' + err.message);
+      showToast('error', 'Withdrawal failed: ' + err.message);
     }
   };
 

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useWeb3 } from '../context/Web3Context';
 import { useNiche } from '../context/NicheContext';
+import { useToast } from '../context/ToastContext';
 import { ethers } from 'ethers';
 import { ESCROW_ABI, USDT_ADDRESS, ERC20_ABI } from '../config/contract';
 import './CreateEscrowModal.css';
@@ -10,6 +11,7 @@ import './CreateEscrowModal.css';
 export default function CreateEscrowModal({ onClose, onSuccess, prefilledProvider = '', prefilledAmount = '' }) {
   const { account, signer, ensureCorrectChain, readProvider } = useWeb3();
   const niche = useNiche();
+  const { showToast } = useToast();
   const [providerAddr, setProviderAddr] = useState(prefilledProvider);
   const [amount, setAmount] = useState(prefilledAmount);
   const [timeoutDays, setTimeoutDays] = useState(7);
@@ -23,11 +25,11 @@ export default function CreateEscrowModal({ onClose, onSuccess, prefilledProvide
     if (!niche.contractAddress || !signer) return;
 
     if (!ethers.isAddress(providerAddr)) {
-      alert("Invalid provider address format.");
+      showToast('error', "Invalid provider address format.");
       return;
     }
     if (parseFloat(amount) <= 0) {
-      alert("Amount must be greater than 0.");
+      showToast('error', "Amount must be greater than 0.");
       return;
     }
 
@@ -73,7 +75,7 @@ export default function CreateEscrowModal({ onClose, onSuccess, prefilledProvide
         const link = `${window.location.origin}/${niche.id}?escrow=${newEscrowId}`;
         setShareableLink(link);
       } else {
-        alert("Escrow created successfully!");
+        showToast('success', "Escrow created successfully!");
         onSuccess();
         onClose();
       }
@@ -82,7 +84,7 @@ export default function CreateEscrowModal({ onClose, onSuccess, prefilledProvide
       console.error(err);
       const reason = err.reason || err.data?.message || err.message || "Unknown error";
       if (!reason.includes("user rejected") && !reason.includes("User denied")) {
-        alert(`Transaction Failed: ${reason}`);
+        showToast('error', `Transaction Failed: ${reason}`);
       }
     }
     setLoading(false);
@@ -91,7 +93,7 @@ export default function CreateEscrowModal({ onClose, onSuccess, prefilledProvide
 
   const copyLinkAndClose = () => {
     navigator.clipboard.writeText(shareableLink);
-    alert("Link copied!");
+    showToast('success', "Link copied!");
     onSuccess();
     onClose();
   };

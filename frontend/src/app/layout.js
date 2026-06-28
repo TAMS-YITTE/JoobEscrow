@@ -1,4 +1,5 @@
 import "./globals.css";
+import { ToastProvider } from "../context/ToastContext";
 
 export const metadata = {
   metadataBase: new URL('https://joobescrow.com'),
@@ -31,7 +32,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body suppressHydrationWarning>
-        {children}
+        <ToastProvider>
+          {children}
+        </ToastProvider>
       </body>
     </html>
   );
