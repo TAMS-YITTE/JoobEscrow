@@ -130,7 +130,7 @@ export default function CreateEscrowModal({ onClose, onSuccess, prefilledProvide
               <input type="number" step="0.01" value={amount} onChange={e=>setAmount(e.target.value)} required placeholder="100.00" />
             </div>
             <div className="form-group flex-1">
-              <label>Timeout (Days):</label>
+              <label>Delivery Deadline (Days):</label>
               <input type="number" min="1" max="365" step="1" value={timeoutDays} onChange={e=>setTimeoutDays(e.target.value)} required title="Nombre de jours avant annulation automatique si inactif" />
             </div>
           </div>
