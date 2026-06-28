@@ -16,6 +16,8 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner }) {
   const niche = useNiche();
   const [loading, setLoading] = useState(false);
   const [showChat, setShowChat] = useState(false);
+  const [showResolveModal, setShowResolveModal] = useState(false);
+  const [resolvePercent, setResolvePercent] = useState(50);
 
   const getStatusBadge = () => {
     if (escrow.status === 'FUNDED' && escrow.accepted) {
@@ -115,24 +117,20 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner }) {
   };
 
   const handleAdminResolve = async () => {
+    setShowResolveModal(true);
+  };
+
+  const executeAdminResolve = async () => {
     if (!contract) return;
     
-    const percentStr = prompt("Quel pourcentage de l'argent doit aller à l'Influenceur ? (ex: 100 pour donner tout à l'Influenceur, 0 pour tout rembourser au Client, 50 pour moitié-moitié) :");
-    if (percentStr === null) return; // cancelled
-    
-    const percent = parseInt(percentStr);
-    if (isNaN(percent) || percent < 0 || percent > 100) {
-       alert("Veuillez entrer un nombre valide entre 0 et 100.");
-       return;
-    }
-    
-    const providerBps = percent * 100;
+    const providerBps = resolvePercent * 100;
     
     setLoading(true);
     try {
       const tx = await contract.resolveDispute(escrow.id, providerBps);
       await tx.wait();
-      alert(`Litige résolu ! L'Influenceur recevra ${percent}% et le Client récupérera ${100 - percent}%.`);
+      alert(`Litige résolu ! L'Influenceur recevra ${resolvePercent}% et le Client récupérera ${100 - resolvePercent}%.`);
+      setShowResolveModal(false);
       window.location.reload();
     } catch (err) {
       console.error(err);
@@ -324,6 +322,48 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner }) {
       {showChat && (isClient || isProvider) && (
         <div className="mt-4 border-t border-white/10 pt-4">
           <ChatBox peerAddress={isClient ? escrow.provider : escrow.client} />
+        </div>
+      )}
+
+      {showResolveModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm" style={{position: 'fixed'}}>
+          <div className="glass-panel p-6 max-w-md w-full mx-4" style={{border: `1px solid ${niche.theme.primary}`}}>
+            <h3 className="text-xl font-bold mb-4 text-gradient" style={{ backgroundImage: `linear-gradient(to right, ${niche.theme.primary}, #fff)` }}>
+              Resolve Dispute
+            </h3>
+            <p className="text-gray-300 text-sm mb-6">
+              Adjust the slider to set the percentage of funds the <strong>{niche.lexicon.provider}</strong> will receive. The remaining balance will be refunded to the {niche.lexicon.client}.
+            </p>
+            
+            <div className="mb-6 p-4 rounded-xl" style={{background: 'rgba(0,0,0,0.3)'}}>
+              <div className="flex justify-between text-sm mb-4 font-semibold">
+                <span className="text-gray-400">{niche.lexicon.client}: {100 - resolvePercent}%</span>
+                <span style={{color: niche.theme.primary}}>{niche.lexicon.provider}: {resolvePercent}%</span>
+              </div>
+              <input 
+                type="range" 
+                min="0" max="100" 
+                value={resolvePercent} 
+                onChange={(e) => setResolvePercent(parseInt(e.target.value))}
+                className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
+                style={{accentColor: niche.theme.primary}}
+              />
+            </div>
+            
+            <div className="flex gap-3 justify-end mt-6">
+              <button className="btn btn-outline" onClick={() => setShowResolveModal(false)} disabled={loading}>
+                Cancel
+              </button>
+              <button 
+                className="btn btn-primary" 
+                onClick={executeAdminResolve} 
+                disabled={loading}
+                style={{backgroundColor: niche.theme.primary, borderColor: niche.theme.primary}}
+              >
+                {loading ? 'Processing...' : 'Confirm Resolution'}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
