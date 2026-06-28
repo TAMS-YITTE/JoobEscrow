@@ -14,7 +14,7 @@ export default function CreateEscrowModal({ onClose, onSuccess, prefilledProvide
   const { showToast } = useToast();
   const [providerAddr, setProviderAddr] = useState(prefilledProvider);
   const [amount, setAmount] = useState(prefilledAmount);
-  const [timeoutDays, setTimeoutDays] = useState(7);
+  const [timeoutDays, setTimeoutDays] = useState(3);
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1); // 1: input, 2: approve, 3: create
 
@@ -131,7 +131,7 @@ export default function CreateEscrowModal({ onClose, onSuccess, prefilledProvide
             </div>
             <div className="form-group flex-1">
               <label>Delivery Deadline (Days):</label>
-              <input type="number" min="1" max="365" step="1" value={timeoutDays} onChange={e=>setTimeoutDays(e.target.value)} required title="Nombre de jours avant annulation automatique si inactif" />
+              <input type="number" min="3" max="365" step="1" value={timeoutDays} onChange={e=>setTimeoutDays(e.target.value)} required title="Minimum 3 days as per smart contract rules" />
             </div>
           </div>
           <div className="modal-actions">
