@@ -19,6 +19,7 @@ function DashboardContent() {
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [pendingUsdt, setPendingUsdt] = useState('0');
+  const [usdtBalance, setUsdtBalance] = useState(null);
   const searchParams = useSearchParams();
   const highlightedId = searchParams?.get('escrow');
 
@@ -29,8 +30,12 @@ function DashboardContent() {
       const contract = new ethers.Contract(niche.contractAddress, ESCROW_ABI, currentProvider);
       const pending = await contract.withdrawable(account, USDT_ADDRESS);
       setPendingUsdt(ethers.formatEther(pending));
+
+      const usdt = new ethers.Contract(USDT_ADDRESS, ERC20_ABI, currentProvider);
+      const bal = await usdt.balanceOf(account);
+      setUsdtBalance(ethers.formatEther(bal));
     } catch (e) {
-      console.error("Error fetching withdrawable:", e);
+      console.error("Error fetching withdrawable/balance:", e);
     }
   }, [account, provider, readProvider, niche.contractAddress]);
 
@@ -121,17 +126,6 @@ function DashboardContent() {
     }
   }, [fetchEscrows, fetchPending, readProvider, provider, highlightedId]);
 
-  const handleFaucet = async () => {
-    if (!signer) return;
-    try {
-      const usdt = new ethers.Contract(USDT_ADDRESS, ERC20_ABI, signer);
-      const bal = await usdt.balanceOf(account);
-      alert(`You have ${ethers.formatEther(bal)} USDT`);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   const handleClaim = async () => {
     if (!signer) return;
     try {
@@ -150,9 +144,12 @@ function DashboardContent() {
   return (
     <div className="dashboard">
       <header className="dashboard-header">
-        <div>
-          <h1 className="text-gradient" style={{ backgroundImage: `linear-gradient(to right, ${niche.theme.primary}, #fff)` }}>Dashboard</h1>
-          <p className="subtitle">Manage your {niche.name} {niche.lexicon.action.toLowerCase()}s & escrows</p>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+          <img src="/logo.jpg" alt="JoobEscrow Logo" style={{ width: '48px', height: '48px', borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--border-color)' }} />
+          <div>
+            <h1 className="text-gradient" style={{ backgroundImage: `linear-gradient(to right, ${niche.theme.primary}, #fff)` }}>Dashboard</h1>
+            <p className="subtitle">Manage your {niche.name} {niche.lexicon.action.toLowerCase()}s & escrows</p>
+          </div>
         </div>
         <WalletConnect />
       </header>
@@ -168,7 +165,11 @@ function DashboardContent() {
               Claim {pendingUsdt} USDT (Pending)
             </button>
           )}
-          {account && <button className="btn btn-outline" onClick={handleFaucet}>USDT Balance</button>}
+          {account && (
+            <div className="badge badge-outline" style={{ display: 'flex', alignItems: 'center', padding: '0 15px', height: '40px', border: '1px solid var(--border-color)', borderRadius: '8px', background: 'var(--panel-bg)', fontWeight: '500' }}>
+              {usdtBalance ? `${Number(usdtBalance).toFixed(2)} USDT` : 'Loading...'}
+            </div>
+          )}
           <button className="btn btn-primary" disabled={!account} onClick={() => setShowModal(true)}>+ New Escrow</button>
         </div>
       </div>

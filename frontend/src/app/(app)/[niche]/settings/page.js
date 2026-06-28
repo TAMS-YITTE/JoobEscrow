@@ -22,10 +22,10 @@ export default function SettingsPage() {
           
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>
-              <p style={{ fontWeight: '500' }}>Notifications</p>
-              <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Get alerts for contract updates and disputes.</p>
+              <p style={{ fontWeight: '500' }}>Notifications <span style={{ fontSize: '0.7rem', padding: '2px 6px', background: '#3b82f6', color: '#fff', borderRadius: '4px', marginLeft: '8px' }}>Phase 3</span></p>
+              <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Get alerts for contract updates and disputes via Telegram or Email.</p>
             </div>
-            <button className="btn btn-primary">Enable</button>
+            <button className="btn btn-outline" disabled style={{ opacity: 0.5, cursor: 'not-allowed' }}>Coming Soon</button>
           </div>
         </div>
       </div>
