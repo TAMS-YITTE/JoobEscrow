@@ -143,7 +143,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner }) {
     try {
       const tx = await contract.resolveDispute(escrow.id, providerBps);
       await tx.wait();
-      alert(`Litige résolu ! ${niche.lexicon.provider} recevra ${resolvePercent}% et ${niche.lexicon.client} récupérera ${100 - resolvePercent}%.`);
+      alert(`Dispute resolved! ${niche.lexicon.provider} will receive ${resolvePercent}% and ${niche.lexicon.client} will get back ${100 - resolvePercent}%.`);
       setShowResolveModal(false);
       window.location.reload();
     } catch (err) {
@@ -341,15 +341,15 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner }) {
 
       {showReleaseModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm" style={{position: 'fixed'}}>
-          <div className="glass-panel p-6 max-w-md w-full mx-4" style={{border: '1px solid #f59e0b'}}>
+          <div className="glass-panel p-6 max-w-md w-full mx-4" style={{border: '1px solid #f59e0b', background: '#0d0f17', backdropFilter: 'none'}}>
             <h3 className="text-xl font-bold mb-4" style={{ color: '#f59e0b' }}>
-              ⚠️ Libérer sans acceptation ?
+              ⚠️ Release without acceptance?
             </h3>
             <p className="text-gray-300 text-sm mb-4">
-              <strong>{niche.lexicon.provider}</strong> n'a pas encore accepté cet escrow.
-              Si vous libérez les fonds maintenant, vous <strong>payez directement</strong> et
-              vous renoncez à la protection du séquestre (vérification de livraison, recours en
-              cas de litige). Cette action est <strong>irréversible</strong>.
+              <strong>{niche.lexicon.provider}</strong> has not accepted this escrow yet.
+              If you release the funds now, you <strong>pay directly</strong> and give up
+              the escrow protection (delivery verification, recourse in case of a dispute).
+              This action is <strong>irreversible</strong>.
             </p>
 
             <label className="flex items-start gap-3 text-sm text-gray-200 mb-6 cursor-pointer p-3 rounded-lg" style={{background: 'rgba(0,0,0,0.3)'}}>
@@ -360,14 +360,14 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner }) {
                 style={{ marginTop: '3px', accentColor: '#f59e0b', width: '16px', height: '16px' }}
               />
               <span>
-                Je comprends que je libère les fonds sans la protection du séquestre, et je
-                confirme vouloir le faire.
+                I understand that I am releasing the funds without escrow protection, and I
+                confirm I want to do this.
               </span>
             </label>
 
             <div className="flex gap-3 justify-end">
               <button className="btn btn-outline" onClick={() => setShowReleaseModal(false)} disabled={loading}>
-                Annuler
+                Cancel
               </button>
               <button
                 className="btn btn-primary"
@@ -375,7 +375,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner }) {
                 disabled={loading || !releaseAck}
                 style={{ backgroundColor: '#f59e0b', borderColor: '#f59e0b', opacity: releaseAck ? 1 : 0.5 }}
               >
-                {loading ? 'Processing...' : 'Libérer les fonds'}
+                {loading ? 'Processing...' : 'Release funds'}
               </button>
             </div>
           </div>
@@ -384,7 +384,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner }) {
 
       {showResolveModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm" style={{position: 'fixed'}}>
-          <div className="glass-panel p-6 max-w-md w-full mx-4" style={{border: `1px solid ${niche.theme.primary}`}}>
+          <div className="glass-panel p-6 max-w-md w-full mx-4" style={{border: `1px solid ${niche.theme.primary}`, background: '#0d0f17', backdropFilter: 'none'}}>
             <h3 className="text-xl font-bold mb-4 text-gradient" style={{ backgroundImage: `linear-gradient(to right, ${niche.theme.primary}, #fff)` }}>
               Resolve Dispute
             </h3>

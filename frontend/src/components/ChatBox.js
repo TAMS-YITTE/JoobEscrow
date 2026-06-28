@@ -161,7 +161,7 @@ export default function ChatBox({ peerAddress }) {
       // object; passing a raw string stalls the XMTP worker indefinitely.
       const sendPromise = conversation.sendText(text.trim());
       const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error("Échec de l'envoi : le destinataire n'a peut-être pas encore activé le chat XMTP, ou réseau indisponible. Réessayez.")), 15000)
+        setTimeout(() => reject(new Error("Send failed: the recipient may not have activated XMTP chat yet, or the network is unavailable. Please try again.")), 15000)
       );
       
       await Promise.race([sendPromise, timeoutPromise]);

@@ -23,7 +23,7 @@ export function XMTPProviderWrapper({ children }) {
     try {
       const address = await ethersSigner.getAddress();
       
-      // Construire le Signer attendu par la V3
+      // Build the Signer expected by V3
       const v3Signer = {
         type: 'EOA',
         getIdentifier: () => ({ 
@@ -32,7 +32,7 @@ export function XMTPProviderWrapper({ children }) {
         }),
         signMessage: async (message) => {
           const sig = await ethersSigner.signMessage(message);
-          return ethers.getBytes(sig); // Doit être un Uint8Array en V3
+          return ethers.getBytes(sig); // Must be a Uint8Array in V3
         }
       };
 
