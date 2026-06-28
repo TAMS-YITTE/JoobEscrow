@@ -116,11 +116,23 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner }) {
 
   const handleAdminResolve = async () => {
     if (!contract) return;
+    
+    const percentStr = prompt("Quel pourcentage de l'argent doit aller à l'Influenceur ? (ex: 100 pour donner tout à l'Influenceur, 0 pour tout rembourser au Client, 50 pour moitié-moitié) :");
+    if (percentStr === null) return; // cancelled
+    
+    const percent = parseInt(percentStr);
+    if (isNaN(percent) || percent < 0 || percent > 100) {
+       alert("Veuillez entrer un nombre valide entre 0 et 100.");
+       return;
+    }
+    
+    const providerBps = percent * 100;
+    
     setLoading(true);
     try {
-      const tx = await contract.resolveDispute(escrow.id, 5000);
+      const tx = await contract.resolveDispute(escrow.id, providerBps);
       await tx.wait();
-      alert("Dispute resolved 50/50 by Admin!");
+      alert(`Litige résolu ! L'Influenceur recevra ${percent}% et le Client récupérera ${100 - percent}%.`);
       window.location.reload();
     } catch (err) {
       console.error(err);
@@ -289,7 +301,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner }) {
         {escrow.status === 'DISPUTED' && isOwner && (
           <div className="w-full flex justify-end mt-2">
              <button className="btn btn-primary" style={{ backgroundColor: '#f59e0b', borderColor: '#f59e0b' }} onClick={handleAdminResolve} disabled={loading}>
-               {loading ? 'Processing...' : 'Admin: Resolve 50/50'}
+               {loading ? 'Processing...' : 'Admin: Resolve Dispute'}
              </button>
           </div>
         )}
