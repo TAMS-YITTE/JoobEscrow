@@ -12,7 +12,7 @@ export default function WalletConnect() {
         onClick={() => disconnect()} 
         style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline', padding: 0 }}
       >
-        Déconnexion
+        Disconnect
       </button>
     </div>
   );
