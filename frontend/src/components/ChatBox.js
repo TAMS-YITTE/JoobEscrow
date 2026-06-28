@@ -62,13 +62,14 @@ export default function ChatBox({ peerAddress }) {
         try {
           conv = await client.conversations.getDmByInboxId(peerInboxId);
         } catch (e) {
-          // Fallback to searching in list
+          console.log("getDmByInboxId failed, searching list:", e);
           const convs = await client.conversations.list();
           conv = convs.find(c => c.peerInboxId === peerInboxId);
         }
 
         if (!conv) {
-          conv = await client.conversations.createDmWithIdentifier(peerIdentifier);
+          console.log("Creating new DM with inbox:", peerInboxId);
+          conv = await client.conversations.createDm(peerInboxId);
         }
         
         if (isMounted) setConversation(conv);
@@ -95,6 +96,7 @@ export default function ChatBox({ peerAddress }) {
         }
       } catch (err) {
         console.error("Error loading V3 chat:", err);
+        if (isMounted) setError("Error setting up conversation: " + err.message);
       }
     };
     
@@ -124,7 +126,12 @@ export default function ChatBox({ peerAddress }) {
 
   const handleSend = async (e) => {
     e.preventDefault();
-    if (!text.trim() || !client || !conversation) return;
+    if (!text.trim() || !client) return;
+
+    if (!conversation) {
+      setError("Conversation is not fully loaded. Please wait or reload.");
+      return;
+    }
 
     setIsSending(true);
     try {
@@ -135,7 +142,7 @@ export default function ChatBox({ peerAddress }) {
       setMessages(msgs.filter(m => typeof m.content === 'string'));
     } catch (err) {
       console.error("Failed to send message:", err);
-      setError("Failed to send message.");
+      setError("Failed to send message: " + err.message);
     }
     setIsSending(false);
   };
