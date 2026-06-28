@@ -17,7 +17,7 @@ export default function LandingPage() {
           <Link href="/app" className="btn btn-primary" style={{ padding: '12px 28px', fontSize: '1rem', height: '100%', display: 'flex', alignItems: 'center' }}>
             {d.hero.ctaPrimary}
           </Link>
-          <Link href="/Universal_Service_Escrow_V4_Audit.pdf" target="_blank" style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 20px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: '#fff', textDecoration: 'none', transition: 'all 0.2s' }} className="hover:bg-white/10">
+          <Link href="https://spywolf.co/audits/Universal_Service_Escrow_V4_Audit.pdf" target="_blank" style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 20px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: '#fff', textDecoration: 'none', transition: 'all 0.2s' }} className="hover:bg-white/10">
             <svg width="20" height="20" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
             <span style={{ fontWeight: '600', fontSize: '0.95rem' }}>{d.trust.auditBadge}</span>
             <span style={{ fontSize: '0.85rem', color: '#a8b3cf' }}>View Report →</span>
