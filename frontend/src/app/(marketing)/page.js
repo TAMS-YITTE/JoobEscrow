@@ -23,19 +23,12 @@ export default function LandingPage() {
         </div>
 
         {/* Trust Banner moved to Hero */}
-        <div className={styles.trustBanner} style={{ marginTop: '3rem', display: 'flex', flexDirection: 'column', gap: '15px', alignItems: 'center', padding: '20px 30px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px' }}>
-          <div style={{ display: 'flex', gap: '30px', flexWrap: 'wrap', justifyContent: 'center' }}>
-            <Link href="https://spywolf.co/audits/Universal_Service_Escrow_V4_Audit.pdf" target="_blank" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-              <svg width="20" height="20" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-              <span className="text-sm font-semibold text-gray-300">Audited by SpyWolf</span>
-            </Link>
-            <Link href="/security" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-              <svg width="20" height="20" fill="none" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-              <span className="text-sm font-semibold text-gray-300">Gnosis Safe Multisig</span>
-            </Link>
-            <Link href="/security" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-              <svg width="20" height="20" fill="none" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
-              <span className="text-sm font-semibold text-gray-300">Verified on BscScan</span>
+        <div className={styles.trustBanner} style={{ marginTop: '3rem', display: 'inline-flex', padding: '15px 30px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <svg width="24" height="24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            <h3 style={{ margin: 0, fontSize: '1.1rem', color: '#fff', fontWeight: '600' }}>{d.trust.auditBadge}</h3>
+            <Link href="https://spywolf.co/audits/Universal_Service_Escrow_V4_Audit.pdf" target="_blank" className="text-gradient hover:underline" style={{ fontSize: '1rem', marginLeft: '10px' }}>
+              {d.trust.viewAudit} →
             </Link>
           </div>
         </div>

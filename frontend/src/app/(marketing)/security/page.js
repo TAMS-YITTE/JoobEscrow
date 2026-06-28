@@ -32,7 +32,7 @@ export default function SecurityPage() {
       <div className="glass-panel" style={{ marginTop: '30px', padding: '40px' }}>
         <h2 style={{ color: '#fff', marginBottom: '15px' }}>{d.contractSection.title}</h2>
         <p style={{ color: 'var(--text-secondary)', marginBottom: '20px', lineHeight: 1.6 }}>
-          {d.contractSection.desc}
+          {d.contractSection.desc} All contracts are <strong>Verified on BscScan</strong> and securely managed by a <strong>Gnosis Safe Multisig</strong> to ensure absolute transparency and trustless operations.
         </p>
         <div style={{ padding: '15px', backgroundColor: 'rgba(0,0,0,0.5)', borderRadius: '8px', wordBreak: 'break-all', fontFamily: 'monospace', color: 'var(--accent-primary)', display: 'flex', flexDirection: 'column', gap: '10px' }}>
           {[...new Set(Object.values(instances).map(i => i.contractAddress))].map((addr, idx) => {
