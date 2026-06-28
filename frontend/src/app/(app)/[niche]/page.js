@@ -184,13 +184,43 @@ function DashboardContent() {
       {loading ? (
         <p style={{color: 'var(--text-secondary)'}}>Loading blockchain data...</p>
       ) : escrows.length === 0 ? (
-        <div className="glass-panel" style={{textAlign: 'center', padding: '40px'}}>
-           <p style={{color: 'var(--text-secondary)'}}>{account ? "No contracts found." : "Connect wallet to view contracts."}</p>
+        <div className="glass-panel text-center p-8 max-w-3xl mx-auto mt-8 border border-gray-800">
+           {account ? (
+             <div className="flex flex-col items-center">
+               <h2 className="text-2xl font-bold mb-6 text-white">How it works</h2>
+               <div className="flex flex-col md:flex-row gap-4 text-left w-full">
+                 <div className="flex-1 bg-black/40 p-5 rounded-xl border border-gray-800/50 hover:border-gray-700 transition-colors">
+                   <div className="text-2xl mb-3">1️⃣</div>
+                   <h3 className="font-bold text-white mb-2">Create & Fund</h3>
+                   <p className="text-sm text-gray-400 leading-relaxed">Click <strong>+ New Escrow</strong> to lock funds in the smart contract. Share the link with your {niche.lexicon.provider.toLowerCase()}.</p>
+                 </div>
+                 <div className="flex-1 bg-black/40 p-5 rounded-xl border border-gray-800/50 hover:border-gray-700 transition-colors">
+                   <div className="text-2xl mb-3">2️⃣</div>
+                   <h3 className="font-bold text-white mb-2">Work & Deliver</h3>
+                   <p className="text-sm text-gray-400 leading-relaxed">The {niche.lexicon.provider.toLowerCase()} accepts the contract and completes the task securely.</p>
+                 </div>
+                 <div className="flex-1 bg-black/40 p-5 rounded-xl border border-gray-800/50 hover:border-gray-700 transition-colors">
+                   <div className="text-2xl mb-3">3️⃣</div>
+                   <h3 className="font-bold text-white mb-2">Release or Dispute</h3>
+                   <p className="text-sm text-gray-400 leading-relaxed">Satisfied? Release funds instantly. Issue? Open a dispute for fair resolution.</p>
+                 </div>
+               </div>
+               <button className="btn btn-primary mt-8 px-8 py-3 shadow-lg" onClick={() => setShowModal(true)} style={{backgroundColor: niche.theme.primary, borderColor: niche.theme.primary}}>
+                 Create Your First Escrow
+               </button>
+             </div>
+           ) : (
+             <div className="py-12">
+               <div className="text-4xl mb-4">🔒</div>
+               <h3 className="text-xl font-bold text-white mb-2">Secure Web3 Escrow</h3>
+               <p className="text-gray-400 mb-6">Connect your wallet to view or create contracts.</p>
+             </div>
+           )}
         </div>
       ) : (
         <div className="escrow-grid">
           {escrows.map(escrow => (
-            <EscrowCard key={escrow.id} escrow={escrow} isOwner={isOwner} />
+            <EscrowCard key={escrow.id} escrow={escrow} isOwner={isOwner} onUpdate={fetchEscrows} />
           ))}
         </div>
       )}

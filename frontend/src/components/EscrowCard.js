@@ -11,7 +11,7 @@ import './EscrowCard.css';
 
 const ChatBox = dynamic(() => import('./ChatBox'), { ssr: false });
 
-export default function EscrowCard({ escrow, isDisputeView, isOwner }) {
+export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate }) {
   const { account } = useWeb3();
   const contract = useEscrowContract();
   const niche = useNiche();
@@ -55,7 +55,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner }) {
       const tx = await contract.acceptEscrow(escrow.id);
       await tx.wait();
       showToast('success', "Escrow accepted!");
-      setTimeout(() => window.location.reload(), 1500);
+      setTimeout(() => { if (onUpdate) onUpdate(); else window.location.reload(); }, 1500);
     } catch (err) {
       console.error(err);
       const reason = err.reason || err.data?.message || err.message || "Unknown error";
@@ -85,7 +85,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner }) {
       const tx = await contract.releaseFunds(escrow.id);
       await tx.wait();
       showToast('success', "Funds released!");
-      setTimeout(() => window.location.reload(), 1500);
+      setTimeout(() => { if (onUpdate) onUpdate(); else window.location.reload(); }, 1500);
     } catch (err) {
       console.error(err);
       const reason = err.reason || err.data?.message || err.message || "Unknown error";
@@ -103,7 +103,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner }) {
       const tx = await contract.openDispute(escrow.id, ethers.ZeroHash);
       await tx.wait();
       showToast('success', "Dispute opened!");
-      setTimeout(() => window.location.reload(), 1500);
+      setTimeout(() => { if (onUpdate) onUpdate(); else window.location.reload(); }, 1500);
     } catch (err) {
       console.error(err);
       const reason = err.reason || err.data?.message || err.message || "Unknown error";
@@ -121,7 +121,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner }) {
       const tx = await contract.resolveStaleDispute(escrow.id);
       await tx.wait();
       showToast('success', "Stale dispute resolved 50/50!");
-      setTimeout(() => window.location.reload(), 1500);
+      setTimeout(() => { if (onUpdate) onUpdate(); else window.location.reload(); }, 1500);
     } catch (err) {
       console.error(err);
       const reason = err.reason || err.data?.message || err.message || "Unknown error";
@@ -147,7 +147,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner }) {
       await tx.wait();
       showToast('success', `Dispute resolved! ${niche.lexicon.provider} will receive ${resolvePercent}% and ${niche.lexicon.client} will get back ${100 - resolvePercent}%.`);
       setShowResolveModal(false);
-      setTimeout(() => window.location.reload(), 1500);
+      setTimeout(() => { if (onUpdate) onUpdate(); else window.location.reload(); }, 1500);
     } catch (err) {
       console.error(err);
       const reason = err.reason || err.data?.message || err.message || "Unknown error";
@@ -165,7 +165,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner }) {
       const tx = await contract.claimTimeout(escrow.id);
       await tx.wait();
       showToast('success', "Timeout claimed!");
-      setTimeout(() => window.location.reload(), 1500);
+      setTimeout(() => { if (onUpdate) onUpdate(); else window.location.reload(); }, 1500);
     } catch (err) {
       console.error(err);
       const reason = err.reason || err.data?.message || err.message || "Unknown error";
@@ -183,7 +183,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner }) {
       const tx = await contract.cancelEscrow(escrow.id);
       await tx.wait();
       showToast('success', "Escrow cancelled!");
-      setTimeout(() => window.location.reload(), 1500);
+      setTimeout(() => { if (onUpdate) onUpdate(); else window.location.reload(); }, 1500);
     } catch (err) {
       console.error(err);
       const reason = err.reason || err.data?.message || err.message || "Unknown error";
