@@ -72,7 +72,7 @@ export default function CreateEscrowModal({ onClose, onSuccess, prefilledProvide
       }
 
       if (newEscrowId) {
-        const link = `${window.location.origin}/${niche.id}?escrow=${newEscrowId}`;
+        const link = `${window.location.origin}${window.location.pathname}?escrow=${newEscrowId}`;
         setShareableLink(link);
       } else {
         showToast('success', "Escrow created successfully!");
