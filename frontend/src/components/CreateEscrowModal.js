@@ -72,7 +72,9 @@ export default function CreateEscrowModal({ onClose, onSuccess, prefilledProvide
       }
 
       if (newEscrowId) {
-        const link = `${window.location.origin}${window.location.pathname}?escrow=${newEscrowId}`;
+        // Build from the niche slug (always valid) rather than window.location.pathname,
+        // which could be "/undefined" and produce a broken 404 link.
+        const link = `${window.location.origin}/${niche.slug}?escrow=${newEscrowId}`;
         setShareableLink(link);
       } else {
         showToast('success', "Escrow created successfully!");
