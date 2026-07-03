@@ -312,12 +312,12 @@ function DashboardContent() {
           {escrows
             .filter(escrow => !(invitedEscrow && escrow.id === invitedEscrow.id))
             .map(escrow => (
-              <EscrowCard key={escrow.id} escrow={escrow} isOwner={isOwner} onUpdate={fetchEscrows} />
+              <EscrowCard key={escrow.id} escrow={escrow} isOwner={isOwner} onUpdate={() => { fetchEscrows(); fetchPending(); }} />
             ))}
         </div>
       )}
 
-      {showModal && <CreateEscrowModal onClose={() => setShowModal(false)} onSuccess={fetchEscrows} />}
+      {showModal && <CreateEscrowModal onClose={() => setShowModal(false)} onSuccess={() => { fetchEscrows(); fetchPending(); }} />}
     </div>
   );
 }
