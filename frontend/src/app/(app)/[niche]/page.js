@@ -210,10 +210,13 @@ function DashboardContent() {
                </button>
              </div>
            ) : (
-             <div className="py-12">
+             <div className="py-12 flex flex-col items-center">
                <div className="text-4xl mb-4">🔒</div>
                <h3 className="text-xl font-bold text-white mb-2">Secure Web3 Escrow</h3>
-               <p className="text-gray-400 mb-6">Connect your wallet to view or create contracts.</p>
+               <p className="text-gray-400 mb-6 text-center">Connect your wallet to view or create contracts.</p>
+               <div style={{ transform: 'scale(1.2)' }}>
+                 <WalletConnect />
+               </div>
              </div>
            )}
         </div>
