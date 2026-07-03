@@ -8,6 +8,7 @@ import { useSearchParams } from 'next/navigation';
 import { useWeb3 } from '../../../context/Web3Context';
 import { useNiche } from '../../../context/NicheContext';
 import { useToast } from '../../../context/ToastContext';
+import { useAppKit } from '@reown/appkit/react';
 import { ethers } from 'ethers';
 import { USDT_ADDRESS, ERC20_ABI, ESCROW_ABI } from '../../../config/contract';
 import './page.css';
@@ -16,8 +17,10 @@ function DashboardContent() {
   const { account, provider, signer, readProvider } = useWeb3();
   const niche = useNiche();
   const { showToast } = useToast();
+  const { open } = useAppKit();
   const [activeTab, setActiveTab] = useState('active');
   const [escrows, setEscrows] = useState([]);
+  const [invitedEscrow, setInvitedEscrow] = useState(null);
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [pendingUsdt, setPendingUsdt] = useState('0');
@@ -41,6 +44,50 @@ function DashboardContent() {
       console.error("Error fetching withdrawable/balance:", e);
     }
   }, [account, provider, readProvider, niche.contractAddress]);
+
+  // Load the single escrow referenced by ?escrow=N (works read-only, even when
+  // disconnected) so the recipient of a share link always sees a focused card.
+  const fetchInvited = useCallback(async () => {
+    const currentProvider = readProvider || provider;
+    if (!currentProvider || !highlightedId) { setInvitedEscrow(null); return; }
+    try {
+      const contract = new ethers.Contract(niche.contractAddress, ESCROW_ABI, currentProvider);
+      const e = await contract.getEscrowDetails(highlightedId);
+      const statusEnum = Number(e.status);
+      const isAccepted = Boolean(e.accepted);
+      const isClient = account && e.client.toLowerCase() === account.toLowerCase();
+      const isProvider = account && e.provider.toLowerCase() === account.toLowerCase();
+
+      let disputeOpenedAt = 0;
+      if (statusEnum === 3) disputeOpenedAt = Number(await contract.disputeOpenedAt(highlightedId));
+      const staleTimeoutNumber = Number(await contract.staleDisputeTimeout());
+
+      let actionRequired = null;
+      if (statusEnum === 1) {
+        if (!isAccepted && isProvider) actionRequired = "Action Required: Accept Job";
+        else if (isAccepted && isClient) actionRequired = "Action Required: Release or Dispute";
+      }
+
+      setInvitedEscrow({
+        id: highlightedId.toString(),
+        client: e.client,
+        provider: e.provider,
+        amount: ethers.formatEther(e.amount),
+        status: ['FUNDED', 'RELEASED', 'DISPUTED', 'RESOLVED', 'CANCELLED'][statusEnum - 1] || 'UNKNOWN',
+        tokenSymbol: 'USDT',
+        actionRequired,
+        highlighted: true,
+        createdAt: 0,
+        timeoutDate: Number(e.timeoutDate),
+        accepted: isAccepted,
+        disputeOpenedAt,
+        staleDisputeTimeout: staleTimeoutNumber
+      });
+    } catch (err) {
+      console.error("Invited escrow not found:", err);
+      setInvitedEscrow(null);
+    }
+  }, [highlightedId, readProvider, provider, account, niche.contractAddress]);
 
   const fetchEscrows = useCallback(async () => {
     const currentProvider = readProvider || provider;
@@ -130,8 +177,9 @@ function DashboardContent() {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       fetchEscrows();
       fetchPending();
+      fetchInvited();
     }
-  }, [fetchEscrows, fetchPending, readProvider, provider, highlightedId]);
+  }, [fetchEscrows, fetchPending, fetchInvited, readProvider, provider, highlightedId]);
 
   const handleClaim = async () => {
     if (!signer) return;
@@ -181,6 +229,45 @@ function DashboardContent() {
         </div>
       </div>
 
+      {highlightedId && invitedEscrow && (() => {
+        const short = (a) => a ? `${a.substring(0, 6)}...${a.substring(a.length - 4)}` : '';
+        const meProvider = account && invitedEscrow.provider.toLowerCase() === account.toLowerCase();
+        const meClient = account && invitedEscrow.client.toLowerCase() === account.toLowerCase();
+        let banner;
+        if (!account) {
+          banner = (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'flex-start' }}>
+              <p className="text-gray-300 text-sm">
+                You've been invited to <strong>Escrow #{invitedEscrow.id}</strong> ({invitedEscrow.amount} {invitedEscrow.tokenSymbol}).
+                Connect the wallet <strong style={{ fontFamily: 'monospace', color: niche.theme.primary }}>{short(invitedEscrow.provider)}</strong> ({niche.lexicon.provider}) to review and accept it.
+              </p>
+              <button className="btn btn-primary" onClick={() => open()} style={{ backgroundColor: niche.theme.primary, borderColor: niche.theme.primary, padding: '10px 20px' }}>
+                Connect Wallet
+              </button>
+            </div>
+          );
+        } else if (meProvider) {
+          banner = <p className="text-sm" style={{ color: '#22c55e' }}>✓ You are connected as the recipient ({niche.lexicon.provider}). Review and accept this escrow below.</p>;
+        } else if (meClient) {
+          banner = <p className="text-sm text-gray-300">You created this escrow ({niche.lexicon.client}). Waiting for the {niche.lexicon.provider.toLowerCase()} to accept.</p>;
+        } else {
+          banner = (
+            <p className="text-sm" style={{ color: '#f59e0b' }}>
+              ⚠️ This escrow is addressed to <strong style={{ fontFamily: 'monospace' }}>{short(invitedEscrow.provider)}</strong>, but you're connected as <strong style={{ fontFamily: 'monospace' }}>{short(account)}</strong>. Switch to the correct wallet to accept it.
+            </p>
+          );
+        }
+        return (
+          <div className="glass-panel mt-6 p-5" style={{ border: `1px solid ${niche.theme.primary}`, background: 'rgba(0,0,0,0.3)' }}>
+            <h3 className="text-lg font-bold mb-3" style={{ color: niche.theme.primary }}>📨 Escrow Invitation</h3>
+            {banner}
+            <div className="mt-4">
+              <EscrowCard escrow={invitedEscrow} isOwner={isOwner} onUpdate={() => { fetchInvited(); fetchEscrows(); fetchPending(); }} />
+            </div>
+          </div>
+        );
+      })()}
+
       {loading ? (
         <p style={{color: 'var(--text-secondary)'}}>Loading blockchain data...</p>
       ) : escrows.length === 0 ? (
@@ -222,9 +309,11 @@ function DashboardContent() {
         </div>
       ) : (
         <div className="escrow-grid">
-          {escrows.map(escrow => (
-            <EscrowCard key={escrow.id} escrow={escrow} isOwner={isOwner} onUpdate={fetchEscrows} />
-          ))}
+          {escrows
+            .filter(escrow => !(invitedEscrow && escrow.id === invitedEscrow.id))
+            .map(escrow => (
+              <EscrowCard key={escrow.id} escrow={escrow} isOwner={isOwner} onUpdate={fetchEscrows} />
+            ))}
         </div>
       )}
 
