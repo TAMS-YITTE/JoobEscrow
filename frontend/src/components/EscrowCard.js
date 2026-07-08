@@ -335,13 +335,8 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate })
           </div>
         )}
       </div>
-
-      {((escrow.status === 'RELEASED' && isProvider) || (escrow.status === 'CANCELLED' && isClient) || (escrow.status === 'RESOLVED' && (isClient || isProvider))) && (
-        <div className="mt-4 p-3 rounded-lg text-sm text-center" style={{background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.3)', color: '#a7f3d0'}}>
-          ℹ️ <strong>Funds are credited!</strong> Look for the green <strong>"Claim USDT (Pending)"</strong> button at the top of your dashboard to withdraw them to your wallet.
-        </div>
-      )}
       
+
       {showChat && (isClient || isProvider) && (
         <div className="mt-4 border-t border-white/10 pt-4">
           <div className="flex gap-4 mb-4 border-b border-gray-800 pb-2">

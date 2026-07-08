@@ -244,9 +244,12 @@ function DashboardContent() {
         </div>
         <div style={{display:'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap'}}>
           {Number(pendingUsdt) > 0 && (
-            <button className="btn btn-primary" onClick={handleClaim} style={{background: '#22c55e', border: '1px solid #16a34a'}}>
-              Claim {pendingUsdt} USDT (Pending)
-            </button>
+            <div className="flex items-center gap-3 bg-green-900/30 border border-green-500/50 text-green-300 px-4 py-2 rounded-lg" style={{ animation: 'pulse 2s infinite' }}>
+              <span className="text-sm">ℹ️ Funds available to withdraw</span>
+              <button className="btn btn-primary" onClick={handleClaim} style={{background: '#22c55e', border: '1px solid #16a34a', padding: '6px 12px', fontSize: '0.875rem', height: 'auto'}}>
+                Claim {pendingUsdt} USDT
+              </button>
+            </div>
           )}
           {account && (
             <div className="badge badge-outline" style={{ display: 'flex', alignItems: 'center', padding: '0 15px', height: '40px', border: '1px solid #22c55e', color: '#22c55e', borderRadius: '8px', background: 'rgba(34, 197, 94, 0.05)', fontWeight: '600' }}>
