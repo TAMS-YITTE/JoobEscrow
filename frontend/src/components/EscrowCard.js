@@ -307,11 +307,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate })
            </button>
         )}
 
-        {(isClient || isProvider) && (
-          <button className="btn btn-outline" style={{ marginLeft: 'auto' }} onClick={() => setShowChat(!showChat)}>
-            {showChat ? 'Hide Chat' : '💬 Chat'}
-          </button>
-        )}
+
 
         {escrow.status === 'DISPUTED' && isOwner && (
           <div className="w-full flex justify-end mt-2">
@@ -337,7 +333,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate })
       </div>
       
 
-      {showChat && (isClient || isProvider) && (
+      {(isClient || isProvider) && (
         <div className="mt-4 border-t border-white/10 pt-4">
           <div className="flex gap-4 mb-4 border-b border-gray-800 pb-2">
             <button 
