@@ -196,6 +196,11 @@ function DashboardContent() {
     }
   };
 
+  const activeEscrows = escrows.filter(e => e.status === 'FUNDED' || e.status === 'DISPUTED');
+  const activeCount = activeEscrows.length;
+  const totalSecured = activeEscrows.reduce((sum, e) => sum + Number(e.amount), 0);
+  const actionRequiredCount = activeEscrows.filter(e => e.actionRequired).length;
+
   return (
     <div className="dashboard">
       <header className="dashboard-header">
@@ -203,18 +208,41 @@ function DashboardContent() {
           <img src="/logo.jpg" alt="JoobEscrow Logo" style={{ width: '48px', height: '48px', borderRadius: '50%', objectFit: 'cover', border: '1px solid rgba(59, 130, 246, 0.8)', padding: '2px', boxShadow: '0 0 15px rgba(59, 130, 246, 0.5)', filter: 'brightness(1.4)' }} />
           <div>
             <h1 className="text-gradient" style={{ backgroundImage: `linear-gradient(to right, ${niche.theme.primary}, #fff)` }}>Dashboard</h1>
-            <p className="subtitle">Manage your {niche.name} {niche.lexicon.action.toLowerCase()}s & escrows</p>
+            <p className="subtitle">Manage your {niche.name} {niche.lexicon.action.toLowerCase()}s & secure payments</p>
           </div>
         </div>
         <WalletConnect />
       </header>
 
-      <div className="dashboard-controls">
-        <div className="tabs">
+      {account && (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <div className="glass-panel p-5 rounded-xl border border-gray-800 flex flex-col justify-between">
+            <div className="text-gray-400 text-sm mb-2 flex items-center gap-2">
+              <span>💼</span> Active Transactions
+            </div>
+            <div className="text-3xl font-bold text-white">{activeCount}</div>
+          </div>
+          <div className="glass-panel p-5 rounded-xl border border-gray-800 flex flex-col justify-between">
+            <div className="text-gray-400 text-sm mb-2 flex items-center gap-2">
+              <span>💶</span> Total Secured
+            </div>
+            <div className="text-3xl font-bold text-white">{totalSecured.toFixed(2)} USDT</div>
+          </div>
+          <div className="glass-panel p-5 rounded-xl border border-gray-800 flex flex-col justify-between">
+            <div className="text-gray-400 text-sm mb-2 flex items-center gap-2">
+              <span>⚠️</span> Actions Required
+            </div>
+            <div className="text-3xl font-bold text-yellow-400">{actionRequiredCount}</div>
+          </div>
+        </div>
+      )}
+
+      <div className="dashboard-controls" style={{ display: 'flex', flexWrap: 'wrap', gap: '15px', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div className="tabs" style={{ flex: '1 1 auto' }}>
           <button className={`tab ${activeTab === 'active' ? 'active' : ''}`} onClick={() => setActiveTab('active')}>Active Contracts</button>
           <button className={`tab ${activeTab === 'history' ? 'active' : ''}`} onClick={() => setActiveTab('history')}>History</button>
         </div>
-        <div style={{display:'flex', gap: '10px', alignItems: 'center'}}>
+        <div style={{display:'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap'}}>
           {Number(pendingUsdt) > 0 && (
             <button className="btn btn-primary" onClick={handleClaim} style={{background: '#22c55e', border: '1px solid #16a34a'}}>
               Claim {pendingUsdt} USDT (Pending)
@@ -225,7 +253,7 @@ function DashboardContent() {
               {usdtBalance ? `${Number(usdtBalance).toFixed(2)} USDT` : 'Loading...'}
             </div>
           )}
-          <button className="btn btn-primary" disabled={!account} onClick={() => setShowModal(true)}>+ New Escrow</button>
+          <button className="btn btn-primary" disabled={!account} onClick={() => setShowModal(true)} style={{ padding: '0 24px', fontSize: '1.05rem' }}>+ Create Secure Transaction</button>
         </div>
       </div>
 

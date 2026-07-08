@@ -23,19 +23,20 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate })
   const [releaseAck, setReleaseAck] = useState(false);
   const { showToast } = useToast();
 
+  const [activeTab, setActiveTab] = useState('details'); // 'details' | 'messages' | 'files'
+
   const getStatusBadge = () => {
     if (escrow.status === 'FUNDED' && escrow.accepted) {
-      return <span className="status-badge status-funded">Accepted</span>;
+      return <span className="status-badge" style={{ backgroundColor: 'rgba(59, 130, 246, 0.1)', color: '#60a5fa', border: '1px solid #3b82f6' }}>🔵 Secured</span>;
     }
     switch (escrow.status) {
       case 'FUNDED':
-        return <span className="status-badge status-funded">Funded</span>;
+        return <span className="status-badge" style={{ backgroundColor: 'rgba(156, 163, 175, 0.1)', color: '#9ca3af', border: '1px solid #6b7280' }}>⚪ Pending</span>;
       case 'RELEASED':
-        return <span className="status-badge status-resolved">Released</span>;
-      case 'DISPUTED':
-        return <span className="status-badge status-disputed">Disputed</span>;
       case 'RESOLVED':
-        return <span className="status-badge status-resolved">Resolved</span>;
+        return <span className="status-badge" style={{ backgroundColor: 'rgba(34, 197, 94, 0.1)', color: '#4ade80', border: '1px solid #22c55e' }}>🟢 Completed</span>;
+      case 'DISPUTED':
+        return <span className="status-badge" style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', color: '#f87171', border: '1px solid #ef4444' }}>🔴 Mediation</span>;
       case 'CANCELLED':
         return <span className="status-badge">Cancelled</span>;
       default:
@@ -275,13 +276,13 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate })
       <div className="escrow-footer flex flex-wrap gap-2 justify-end mt-4">
         {escrow.status === 'FUNDED' && !escrow.accepted && isProvider && (
           <button className="btn btn-primary" onClick={handleAccept} disabled={loading} style={{backgroundColor: niche.theme.primary, borderColor: niche.theme.primary}}>
-            {loading ? 'Processing...' : 'Accept'}
+            {loading ? 'Processing...' : 'Start Work'}
           </button>
         )}
 
         {escrow.status === 'FUNDED' && !escrow.accepted && isClient && (
           <button className="btn btn-outline text-red-500 border-red-500 hover:bg-red-500/10" onClick={handleCancel} disabled={loading}>
-            {loading ? 'Processing...' : 'Cancel (Refund)'}
+            {loading ? 'Processing...' : 'Cancel & Refund'}
           </button>
         )}
 
@@ -289,12 +290,12 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate })
           <>
             {(isClient || isProvider) && (
               <button className="btn btn-outline" onClick={handleOpenDispute} disabled={loading}>
-                {loading ? 'Processing...' : 'Open Dispute'}
+                {loading ? 'Processing...' : 'Request Mediation'}
               </button>
             )}
             {isClient && (
               <button className="btn btn-primary" onClick={handleRelease} disabled={loading} style={{backgroundColor: niche.theme.primary, borderColor: niche.theme.primary}}>
-                {loading ? 'Processing...' : 'Release Funds'}
+                {loading ? 'Processing...' : 'Approve & Pay'}
               </button>
             )}
           </>
@@ -343,8 +344,48 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate })
       
       {showChat && (isClient || isProvider) && (
         <div className="mt-4 border-t border-white/10 pt-4">
-          <p className="text-xs text-gray-500 mb-2 text-center" title="Due to browser OPFS limits, using multiple tabs can lock the database.">⚠️ <strong>Note:</strong> Please avoid opening the chat in multiple tabs simultaneously.</p>
-          <ChatBox peerAddress={isClient ? escrow.provider : escrow.client} />
+          <div className="flex gap-4 mb-4 border-b border-gray-800 pb-2">
+            <button 
+              className={`text-sm font-semibold pb-1 ${activeTab === 'details' ? 'text-white border-b-2 border-white' : 'text-gray-500'}`}
+              onClick={() => setActiveTab('details')}
+            >
+              Details
+            </button>
+            <button 
+              className={`text-sm font-semibold pb-1 ${activeTab === 'messages' ? 'text-white border-b-2 border-white' : 'text-gray-500'}`}
+              onClick={() => setActiveTab('messages')}
+            >
+              Messages (Encrypted)
+            </button>
+            <button 
+              className={`text-sm font-semibold pb-1 ${activeTab === 'files' ? 'text-white border-b-2 border-white' : 'text-gray-500'}`}
+              onClick={() => setActiveTab('files')}
+            >
+              Files
+            </button>
+          </div>
+
+          {activeTab === 'details' && (
+            <div className="text-gray-400 text-sm">
+              <p>Escrow ID: {escrow.id}</p>
+              <p>Created: {new Date(escrow.createdAt * 1000).toLocaleString()}</p>
+              <p>Timeout: {escrow.timeoutDate > 0 ? new Date(escrow.timeoutDate * 1000).toLocaleString() : 'None'}</p>
+              <p className="mt-2 text-xs">No formal description provided. Use the messages tab to coordinate delivery.</p>
+            </div>
+          )}
+
+          {activeTab === 'messages' && (
+            <>
+              <p className="text-xs text-gray-500 mb-2 text-center" title="Due to browser OPFS limits, using multiple tabs can lock the database.">⚠️ <strong>Note:</strong> Please avoid opening the chat in multiple tabs simultaneously.</p>
+              <ChatBox peerAddress={isClient ? escrow.provider : escrow.client} />
+            </>
+          )}
+
+          {activeTab === 'files' && (
+            <div className="text-gray-500 text-sm italic text-center py-4 border border-dashed border-gray-700 rounded-lg">
+              File attachments coming soon...
+            </div>
+          )}
         </div>
       )}
 
