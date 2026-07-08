@@ -335,35 +335,35 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate })
 
       {(isClient || isProvider) && (
         <div className="mt-4 border-t border-white/10 pt-4">
-          <div className="flex gap-4 mb-4 border-b border-gray-800 pb-2">
-            <div 
-              className={`cursor-pointer bg-transparent appearance-none outline-none text-sm font-semibold pb-1 ${activeTab === 'details' ? 'text-white border-b-2 border-white' : 'text-gray-500 border-b-2 border-transparent hover:text-gray-300'}`}
-              style={{ borderTop: 'none', borderLeft: 'none', borderRight: 'none', borderRadius: '0' }}
+          <div className="flex flex-wrap gap-2 mb-4">
+            <button 
+              className={`btn btn-sm ${activeTab === 'details' ? 'btn-primary' : 'btn-outline'}`}
+              style={activeTab === 'details' ? {backgroundColor: niche.theme.primary, borderColor: niche.theme.primary, padding: '6px 14px', borderRadius: '8px'} : {padding: '6px 14px', borderRadius: '8px'}}
               onClick={() => setActiveTab('details')}
             >
               Details
-            </div>
-            <div 
-              className={`cursor-pointer bg-transparent appearance-none outline-none text-sm font-semibold pb-1 ${activeTab === 'messages' ? 'text-white border-b-2 border-white' : 'text-gray-500 border-b-2 border-transparent hover:text-gray-300'}`}
-              style={{ borderTop: 'none', borderLeft: 'none', borderRight: 'none', borderRadius: '0' }}
+            </button>
+            <button 
+              className={`btn btn-sm ${activeTab === 'messages' ? 'btn-primary' : 'btn-outline'}`}
+              style={activeTab === 'messages' ? {backgroundColor: niche.theme.primary, borderColor: niche.theme.primary, padding: '6px 14px', borderRadius: '8px'} : {padding: '6px 14px', borderRadius: '8px'}}
               onClick={() => setActiveTab('messages')}
             >
-              Messages (Encrypted)
-            </div>
-            <div 
-              className={`cursor-pointer bg-transparent appearance-none outline-none text-sm font-semibold pb-1 ${activeTab === 'files' ? 'text-white border-b-2 border-white' : 'text-gray-500 border-b-2 border-transparent hover:text-gray-300'}`}
-              style={{ borderTop: 'none', borderLeft: 'none', borderRight: 'none', borderRadius: '0' }}
+              Activate Chat
+            </button>
+            <button 
+              className={`btn btn-sm ${activeTab === 'files' ? 'btn-primary' : 'btn-outline'}`}
+              style={activeTab === 'files' ? {backgroundColor: niche.theme.primary, borderColor: niche.theme.primary, padding: '6px 14px', borderRadius: '8px'} : {padding: '6px 14px', borderRadius: '8px'}}
               onClick={() => setActiveTab('files')}
             >
-              Files
-            </div>
+              Send Files
+            </button>
           </div>
 
           {activeTab === 'details' && (
             <div className="text-gray-400 text-sm">
               <p>Escrow ID: {escrow.id}</p>
-              <p>Created: {new Date(escrow.createdAt * 1000).toLocaleString()}</p>
-              <p>Timeout: {escrow.timeoutDate > 0 ? new Date(escrow.timeoutDate * 1000).toLocaleString() : 'None'}</p>
+              {escrow.createdAt > 0 && <p>Created: {new Date(escrow.createdAt * 1000).toLocaleString()}</p>}
+              {escrow.timeoutDate > 0 && <p>Delivery Deadline: {new Date(escrow.timeoutDate * 1000).toLocaleString()}</p>}
               <p className="mt-2 text-xs">No formal description provided. Use the messages tab to coordinate delivery.</p>
             </div>
           )}
