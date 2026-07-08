@@ -253,7 +253,7 @@ function DashboardContent() {
               {usdtBalance ? `${Number(usdtBalance).toFixed(2)} USDT` : 'Loading...'}
             </div>
           )}
-          <button className="btn btn-primary" disabled={!account} onClick={() => setShowModal(true)} style={{ padding: '0 24px', fontSize: '1.05rem' }}>+ Create Secure Transaction</button>
+          <button className="btn btn-primary" disabled={!account} onClick={() => setShowModal(true)}>+ Create Secure Transaction</button>
         </div>
       </div>
 
