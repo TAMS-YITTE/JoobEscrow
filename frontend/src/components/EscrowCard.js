@@ -336,27 +336,27 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate })
       {(isClient || isProvider) && (
         <div className="mt-4 border-t border-white/10 pt-4">
           <div className="flex gap-4 mb-4 border-b border-gray-800 pb-2">
-            <button 
-              className={`bg-transparent appearance-none outline-none text-sm font-semibold pb-1 ${activeTab === 'details' ? 'text-white border-b-2 border-white' : 'text-gray-500 border-b-2 border-transparent hover:text-gray-300'}`}
+            <div 
+              className={`cursor-pointer bg-transparent appearance-none outline-none text-sm font-semibold pb-1 ${activeTab === 'details' ? 'text-white border-b-2 border-white' : 'text-gray-500 border-b-2 border-transparent hover:text-gray-300'}`}
               style={{ borderTop: 'none', borderLeft: 'none', borderRight: 'none', borderRadius: '0' }}
               onClick={() => setActiveTab('details')}
             >
               Details
-            </button>
-            <button 
-              className={`bg-transparent appearance-none outline-none text-sm font-semibold pb-1 ${activeTab === 'messages' ? 'text-white border-b-2 border-white' : 'text-gray-500 border-b-2 border-transparent hover:text-gray-300'}`}
+            </div>
+            <div 
+              className={`cursor-pointer bg-transparent appearance-none outline-none text-sm font-semibold pb-1 ${activeTab === 'messages' ? 'text-white border-b-2 border-white' : 'text-gray-500 border-b-2 border-transparent hover:text-gray-300'}`}
               style={{ borderTop: 'none', borderLeft: 'none', borderRight: 'none', borderRadius: '0' }}
               onClick={() => setActiveTab('messages')}
             >
               Messages (Encrypted)
-            </button>
-            <button 
-              className={`bg-transparent appearance-none outline-none text-sm font-semibold pb-1 ${activeTab === 'files' ? 'text-white border-b-2 border-white' : 'text-gray-500 border-b-2 border-transparent hover:text-gray-300'}`}
+            </div>
+            <div 
+              className={`cursor-pointer bg-transparent appearance-none outline-none text-sm font-semibold pb-1 ${activeTab === 'files' ? 'text-white border-b-2 border-white' : 'text-gray-500 border-b-2 border-transparent hover:text-gray-300'}`}
               style={{ borderTop: 'none', borderLeft: 'none', borderRight: 'none', borderRadius: '0' }}
               onClick={() => setActiveTab('files')}
             >
               Files
-            </button>
+            </div>
           </div>
 
           {activeTab === 'details' && (
