@@ -16,17 +16,9 @@ export default function KolProfileClient({ handle }) {
   const contract = useEscrowContract();
 
   const kolData = kolsConfig[handle];
+  const isValid = !!kolData;
 
-  if (!kolData) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
-        <h1 className="text-3xl font-bold mb-4 text-white">Partner Not Found</h1>
-        <p className="text-gray-400">The JoobEscrow partner "{handle}" does not exist or is not active yet.</p>
-      </div>
-    );
-  }
-
-  const kolProfile = {
+  const kolProfile = isValid ? {
     handle: handle,
     name: kolData.name,
     address: kolData.address,
@@ -34,7 +26,7 @@ export default function KolProfileClient({ handle }) {
     engagement: kolData.engagement || "N/A",
     verified: kolData.verified ?? true,
     services: kolData.services || []
-  };
+  } : null;
 
   const [onChainStats, setOnChainStats] = useState({
     completed: 0,
@@ -48,6 +40,8 @@ export default function KolProfileClient({ handle }) {
   const [selectedService, setSelectedService] = useState(null);
 
   useEffect(() => {
+    if (!isValid) return;
+
     // Inject KOL handle into LocalStorage for Vercel Analytics Tracking
     if (handle) {
       localStorage.setItem('joob_ref', handle);
@@ -104,12 +98,21 @@ export default function KolProfileClient({ handle }) {
 
     fetchReputation();
     return () => { isMounted = false; };
-  }, [contract, readProvider, kolProfile.address]);
+  }, [contract, readProvider, kolProfile?.address, isValid]);
 
   const handleOrder = (service) => {
     setSelectedService(service);
     setShowModal(true);
   };
+
+  if (!isValid) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
+        <h1 className="text-3xl font-bold mb-4 text-white">Partner Not Found</h1>
+        <p className="text-gray-400">The JoobEscrow partner "{handle}" does not exist or is not active yet.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="kol-page">
