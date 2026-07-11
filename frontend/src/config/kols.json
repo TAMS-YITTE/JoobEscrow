@@ -1,1 +1,18 @@
-{}
+{
+  "admin": {
+    "name": "Admin Official",
+    "address": "0x0000000000000000000000000000000000000000",
+    "followers": "1M",
+    "engagement": "10%",
+    "verified": true,
+    "services": [
+      {
+        "id": 1,
+        "name": "Admin Promo",
+        "price": "100",
+        "delivery": "24h",
+        "desc": "Official Admin Promotion"
+      }
+    ]
+  }
+}
