@@ -215,24 +215,24 @@ function DashboardContent() {
       </header>
 
       {account && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <div className="glass-panel p-5 rounded-xl border border-gray-800 flex flex-col justify-between">
-            <div className="text-gray-400 text-sm mb-2 flex items-center gap-2">
-              <span>💼</span> Active Transactions
+        <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-8">
+          <div className="glass-panel p-3 sm:p-5 rounded-xl border border-gray-800 flex flex-col justify-between">
+            <div className="text-gray-400 text-xs sm:text-sm mb-2 flex flex-col sm:flex-row items-center sm:items-start gap-1 sm:gap-2 text-center sm:text-left">
+              <span>💼</span> <span className="hidden sm:inline">Active Transactions</span><span className="sm:hidden">Active</span>
             </div>
-            <div className="text-3xl font-bold text-white">{activeCount}</div>
+            <div className="text-xl sm:text-3xl font-bold text-white text-center sm:text-left">{activeCount}</div>
           </div>
-          <div className="glass-panel p-5 rounded-xl border border-gray-800 flex flex-col justify-between">
-            <div className="text-gray-400 text-sm mb-2 flex items-center gap-2">
-              <span>💶</span> Total Secured
+          <div className="glass-panel p-3 sm:p-5 rounded-xl border border-gray-800 flex flex-col justify-between">
+            <div className="text-gray-400 text-xs sm:text-sm mb-2 flex flex-col sm:flex-row items-center sm:items-start gap-1 sm:gap-2 text-center sm:text-left">
+              <span>💶</span> <span className="hidden sm:inline">Total Secured</span><span className="sm:hidden">Secured</span>
             </div>
-            <div className="text-3xl font-bold text-white">{totalSecured.toFixed(2)} USDT</div>
+            <div className="text-xl sm:text-3xl font-bold text-white text-center sm:text-left">{totalSecured.toFixed(2)} <span className="text-sm hidden sm:inline">USDT</span></div>
           </div>
-          <div className="glass-panel p-5 rounded-xl border border-gray-800 flex flex-col justify-between">
-            <div className="text-gray-400 text-sm mb-2 flex items-center gap-2">
-              <span>⚠️</span> Actions Required
+          <div className="glass-panel p-3 sm:p-5 rounded-xl border border-gray-800 flex flex-col justify-between">
+            <div className="text-gray-400 text-xs sm:text-sm mb-2 flex flex-col sm:flex-row items-center sm:items-start gap-1 sm:gap-2 text-center sm:text-left">
+              <span>⚠️</span> <span className="hidden sm:inline">Actions Required</span><span className="sm:hidden">Actions</span>
             </div>
-            <div className="text-3xl font-bold text-yellow-400">{actionRequiredCount}</div>
+            <div className="text-xl sm:text-3xl font-bold text-yellow-400 text-center sm:text-left">{actionRequiredCount}</div>
           </div>
         </div>
       )}
