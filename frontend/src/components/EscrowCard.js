@@ -6,6 +6,7 @@ import { useWeb3 } from '../context/Web3Context';
 import { useNiche } from '../context/NicheContext';
 import { useEscrowContract } from '../hooks/useEscrowContract';
 import { useToast } from '../context/ToastContext';
+import { track } from '@vercel/analytics';
 import dynamic from 'next/dynamic';
 import './EscrowCard.css';
 
@@ -86,6 +87,12 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate })
       const tx = await contract.releaseFunds(escrow.id);
       await tx.wait();
       showToast('success', "Funds released!");
+
+      const kolRef = localStorage.getItem('joob_ref');
+      if (kolRef) {
+        track('Escrow_Completed', { kol: kolRef });
+      }
+
       setTimeout(() => { if (onUpdate) onUpdate(); else window.location.reload(); }, 1500);
     } catch (err) {
       console.error(err);

@@ -1,5 +1,8 @@
 import "./globals.css";
 import { ToastProvider } from "../context/ToastContext";
+import { Analytics } from "@vercel/analytics/react";
+import { Suspense } from "react";
+import ReferralTracker from "../components/ReferralTracker";
 
 export const metadata = {
   metadataBase: new URL('https://joobescrow.com'),
@@ -34,6 +37,10 @@ export default function RootLayout({ children }) {
       <body suppressHydrationWarning>
         <ToastProvider>
           {children}
+          <Suspense fallback={null}>
+            <ReferralTracker />
+          </Suspense>
+          <Analytics />
         </ToastProvider>
       </body>
     </html>
