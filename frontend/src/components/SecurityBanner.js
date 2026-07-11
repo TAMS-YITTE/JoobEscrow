@@ -20,11 +20,11 @@ export default function SecurityBanner() {
         <p className="mb-1 leading-relaxed">
           <strong>Seeing an "untrusted contract" warning?</strong> That's normal for a new platform — our contracts just aren't listed in every wallet's database yet. Funds are non-custodial and only ever go to you or your counterparty.
         </p>
-        <p className="mt-2 text-yellow-400 font-medium flex flex-wrap gap-x-4 gap-y-1">
+        <p className="mt-2 text-yellow-400 font-medium" style={{ display: 'flex', flexWrap: 'wrap', gap: '15px', alignItems: 'center' }}>
           <span className="text-yellow-200/50">Verify us anytime:</span>
-          <a href="https://spywolf.co/audits/Universal_Service_Escrow_V4_Audit.pdf" target="_blank" rel="noreferrer" className="hover:text-yellow-300 underline decoration-yellow-500/50 transition-colors">Audit Report</a>
-          <a href="https://app.safe.global/home?safe=bnb:0x872F979aa868145bE3c3A6EA787614BE2A18C7f7" target="_blank" rel="noreferrer" className="hover:text-yellow-300 underline decoration-yellow-500/50 transition-colors">Multisig Safe</a>
-          <a href={explorerUrl} target="_blank" rel="noreferrer" className="hover:text-yellow-300 underline decoration-yellow-500/50 transition-colors">BscScan Contract</a>
+          <a href="https://spywolf.co/audits/Universal_Service_Escrow_V4_Audit.pdf" target="_blank" rel="noreferrer" style={{ textDecoration: 'underline', textUnderlineOffset: '2px', color: '#facc15' }} className="hover:text-yellow-300 transition-colors">Audit Report</a>
+          <a href="https://app.safe.global/home?safe=bnb:0x872F979aa868145bE3c3A6EA787614BE2A18C7f7" target="_blank" rel="noreferrer" style={{ textDecoration: 'underline', textUnderlineOffset: '2px', color: '#facc15' }} className="hover:text-yellow-300 transition-colors">Multisig Safe</a>
+          <a href={explorerUrl} target="_blank" rel="noreferrer" style={{ textDecoration: 'underline', textUnderlineOffset: '2px', color: '#facc15' }} className="hover:text-yellow-300 transition-colors">BscScan Contract</a>
         </p>
       </div>
     </div>
