@@ -7,6 +7,7 @@ import { useToast } from '../../../../../context/ToastContext';
 import { useEscrowContract } from '../../../../../hooks/useEscrowContract';
 import WalletConnect from '../../../../../components/WalletConnect';
 import CreateEscrowModal from '../../../../../components/CreateEscrowModal';
+import kolsConfig from '../../../../../config/kols.json';
 import './kol.css';
 
 export default function KolProfileClient({ handle }) {
@@ -14,18 +15,25 @@ export default function KolProfileClient({ handle }) {
   const { showToast } = useToast();
   const contract = useEscrowContract();
 
-  // We keep static UI data for the KOL identity but dynamic data for the history
+  const kolData = kolsConfig[handle];
+
+  if (!kolData) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
+        <h1 className="text-3xl font-bold mb-4 text-white">Partner Not Found</h1>
+        <p className="text-gray-400">The JoobEscrow partner "{handle}" does not exist or is not active yet.</p>
+      </div>
+    );
+  }
+
   const kolProfile = {
     handle: handle,
-    name: handle === 'CryptoInfluence' ? "Crypto Influence" : handle,
-    address: "0x70997970C51812dc3A010C7d01b50e0d17dc79C8", // Would come from a DB in prod
-    followers: "52K",
-    engagement: "3.2%",
-    verified: true,
-    services: [
-      { id: 1, name: "Simple Tweet", price: "800", delivery: "48h", desc: "1 promotional tweet with your hashtags and a link." },
-      { id: 2, name: "Sponsored Thread", price: "2500", delivery: "72h", desc: "A detailed 5-tweet thread with your visuals." }
-    ]
+    name: kolData.name,
+    address: kolData.address,
+    followers: kolData.followers || "N/A",
+    engagement: kolData.engagement || "N/A",
+    verified: kolData.verified ?? true,
+    services: kolData.services || []
   };
 
   const [onChainStats, setOnChainStats] = useState({
