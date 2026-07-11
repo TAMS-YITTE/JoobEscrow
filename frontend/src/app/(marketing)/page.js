@@ -23,6 +23,19 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Video Section */}
+      <section style={{ maxWidth: '800px', margin: '20px auto 60px auto', padding: '0 20px' }}>
+        <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 10px 40px rgba(0, 255, 128, 0.15)', border: '1px solid rgba(255,255,255,0.05)' }}>
+          <iframe 
+            style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+            src="https://www.youtube.com/embed/NbLMUrY4bac?rel=0" 
+            title="JoobEscrow - Secure Payments" 
+            frameBorder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            allowFullScreen>
+          </iframe>
+        </div>
+      </section>
       {/* How It Works */}
       <section id="how-it-works" className={styles.section}>
         <h2 className={styles.sectionTitle}>{d.howItWorks.title}</h2>
