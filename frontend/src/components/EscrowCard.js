@@ -265,20 +265,37 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate })
       {/* Timeline */}
       <div className="escrow-timeline my-4 p-3 bg-black/20 rounded-lg border border-white/5">
         <div className="flex items-center text-xs font-medium text-gray-500 mb-3" style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          <div className={`flex flex-col items-center ${escrow.createdAt ? 'text-blue-400' : ''}`} style={{ flex: 1 }}>
-            <div className={`w-3 h-3 rounded-full mb-1 ${escrow.createdAt ? 'bg-blue-400 shadow-[0_0_8px_rgba(96,165,250,0.6)]' : 'bg-gray-700'}`}></div>
-            Secured
+          
+          {/* Step 1: Secured */}
+          <div className="flex flex-col items-center text-blue-400" style={{ flex: 1 }}>
+            <div className="flex items-center justify-center w-5 h-5 rounded-full mb-1 bg-blue-500/20 text-blue-400" style={{fontSize: '10px'}}>✅</div>
+            <span className="font-bold">Secured</span>
           </div>
-          <div className={`flex-1 h-px ${escrow.accepted ? 'bg-blue-400' : 'bg-gray-700'}`} style={{ minWidth: '20px' }}></div>
-          <div className={`flex flex-col items-center ${escrow.accepted ? 'text-blue-400' : (escrow.status === 'FUNDED' ? 'text-gray-400' : '')}`} style={{ flex: 1 }}>
-            <div className={`w-3 h-3 rounded-full mb-1 ${escrow.accepted ? 'bg-blue-400 shadow-[0_0_8px_rgba(96,165,250,0.6)]' : 'bg-gray-700'}`}></div>
-            In Progress
+
+          <div className={`flex-1 h-px ${escrow.accepted || escrow.status === 'CANCELLED' ? 'bg-blue-400' : 'bg-gray-700'}`} style={{ minWidth: '20px' }}></div>
+          
+          {/* Step 2: In Progress or Cancelled */}
+          <div className={`flex flex-col items-center ${escrow.status === 'CANCELLED' ? 'text-red-400' : (escrow.accepted ? 'text-blue-400' : 'text-gray-500')}`} style={{ flex: 1 }}>
+            <div className={`flex items-center justify-center w-5 h-5 rounded-full mb-1 ${escrow.status === 'CANCELLED' ? 'bg-red-500/20 text-red-400' : (escrow.accepted ? 'bg-blue-500/20 text-blue-400' : 'bg-gray-800')}`} style={{fontSize: '10px'}}>
+              {escrow.status === 'CANCELLED' ? '❌' : (escrow.accepted ? '✅' : '⏳')}
+            </div>
+            <span className={escrow.accepted || escrow.status === 'CANCELLED' ? 'font-bold' : ''}>
+              {escrow.status === 'CANCELLED' ? 'Cancelled' : 'In Progress'}
+            </span>
           </div>
-          <div className={`flex-1 h-px ${['RELEASED', 'RESOLVED'].includes(escrow.status) ? 'bg-green-400' : 'bg-gray-700'}`} style={{ minWidth: '20px' }}></div>
-          <div className={`flex flex-col items-center ${['RELEASED', 'RESOLVED'].includes(escrow.status) ? 'text-green-400' : (escrow.status === 'DISPUTED' ? 'text-red-400' : '')}`} style={{ flex: 1 }}>
-            <div className={`w-3 h-3 rounded-full mb-1 ${['RELEASED', 'RESOLVED'].includes(escrow.status) ? 'bg-green-400 shadow-[0_0_8px_rgba(74,222,128,0.6)]' : (escrow.status === 'DISPUTED' ? 'bg-red-400 shadow-[0_0_8px_rgba(248,113,113,0.6)]' : 'bg-gray-700')}`}></div>
-            Paid
+
+          <div className={`flex-1 h-px ${['RELEASED', 'RESOLVED', 'DISPUTED'].includes(escrow.status) ? (escrow.status === 'DISPUTED' ? 'bg-red-400' : 'bg-green-400') : 'bg-gray-700'}`} style={{ minWidth: '20px' }}></div>
+          
+          {/* Step 3: Paid or Disputed */}
+          <div className={`flex flex-col items-center ${['RELEASED', 'RESOLVED'].includes(escrow.status) ? 'text-green-400' : (escrow.status === 'DISPUTED' ? 'text-red-400' : 'text-gray-500')}`} style={{ flex: 1 }}>
+            <div className={`flex items-center justify-center w-5 h-5 rounded-full mb-1 ${['RELEASED', 'RESOLVED'].includes(escrow.status) ? 'bg-green-500/20 text-green-400' : (escrow.status === 'DISPUTED' ? 'bg-red-500/20 text-red-400' : 'bg-gray-800')}`} style={{fontSize: '10px'}}>
+              {['RELEASED', 'RESOLVED'].includes(escrow.status) ? '✅' : (escrow.status === 'DISPUTED' ? '⚠️' : (escrow.status === 'CANCELLED' ? '➖' : '⏳'))}
+            </div>
+            <span className={['RELEASED', 'RESOLVED', 'DISPUTED'].includes(escrow.status) ? 'font-bold' : ''}>
+              {escrow.status === 'DISPUTED' ? 'Disputed' : 'Paid'}
+            </span>
           </div>
+
         </div>
         {escrow.timeoutDate > 0 && escrow.status !== 'RELEASED' && escrow.status !== 'RESOLVED' && escrow.status !== 'CANCELLED' && (
           <div className="text-center text-xs text-gray-400 bg-black/30 rounded py-1 px-2 mt-2 w-fit mx-auto border border-white/5">
