@@ -272,7 +272,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate })
             <span className="font-bold text-blue-400 text-xs text-center">Secured</span>
           </div>
 
-          <div className={`${escrow.accepted || escrow.status === 'CANCELLED' || ['RELEASED', 'RESOLVED'].includes(escrow.status) ? 'bg-blue-400' : 'bg-gray-700'}`} style={{ flex: 1, height: '2px', marginTop: '12px', minWidth: '10px' }}></div>
+          <div className={`${escrow.accepted || escrow.status === 'CANCELLED' || ['RELEASED', 'RESOLVED'].includes(escrow.status) ? 'bg-white' : 'bg-white/20'}`} style={{ flex: 1, height: '2px', marginTop: '12px', minWidth: '10px' }}></div>
           
           {/* Step 2: In Progress or Cancelled */}
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1 }}>
@@ -284,7 +284,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate })
             </span>
           </div>
 
-          <div className={`${['RELEASED', 'RESOLVED', 'DISPUTED'].includes(escrow.status) ? (escrow.status === 'DISPUTED' ? 'bg-red-400' : 'bg-green-400') : 'bg-gray-700'}`} style={{ flex: 1, height: '2px', marginTop: '12px', minWidth: '10px' }}></div>
+          <div className={`${['RELEASED', 'RESOLVED', 'DISPUTED'].includes(escrow.status) ? (escrow.status === 'DISPUTED' ? 'bg-red-400' : 'bg-white') : 'bg-white/20'}`} style={{ flex: 1, height: '2px', marginTop: '12px', minWidth: '10px' }}></div>
           
           {/* Step 3: Paid or Disputed */}
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1 }}>
