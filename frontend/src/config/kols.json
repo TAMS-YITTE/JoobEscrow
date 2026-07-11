@@ -14,5 +14,21 @@
         "desc": "Official Admin Promotion"
       }
     ]
+  },
+  "JohnCrypto": {
+    "name": "JohnCrypto",
+    "address": "0xc47aAA9C3dBE951eA0F6b995814c311fc2b65B27",
+    "followers": "10K",
+    "engagement": "10%",
+    "verified": true,
+    "services": [
+      {
+        "id": 1,
+        "name": "Post",
+        "price": "10",
+        "delivery": "",
+        "desc": "Post for JoobEscrow.com"
+      }
+    ]
   }
 }
