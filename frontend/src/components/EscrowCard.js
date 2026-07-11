@@ -39,7 +39,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate })
       case 'DISPUTED':
         return <span className="status-badge" style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', color: '#f87171', border: '1px solid #ef4444' }}>🔴 Mediation</span>;
       case 'CANCELLED':
-        return <span className="status-badge">Cancelled</span>;
+        return <span className="status-badge" style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', color: '#f87171', border: '1px solid #ef4444', textTransform: 'uppercase' }}>🔴 Cancelled</span>;
       default:
         return <span className="status-badge">{escrow.status?.toString()}</span>;
     }
