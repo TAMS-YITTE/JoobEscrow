@@ -264,34 +264,34 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate })
 
       {/* Timeline */}
       <div className="escrow-timeline my-4 p-3 bg-black/20 rounded-lg border border-white/5">
-        <div className="flex items-center text-xs font-medium text-gray-500 mb-3" style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', width: '100%', gap: '4px' }}>
           
           {/* Step 1: Secured */}
-          <div className="flex flex-col items-center text-blue-400" style={{ flex: 1 }}>
-            <div className="flex items-center justify-center w-5 h-5 rounded-full mb-1 bg-blue-500/20 text-blue-400" style={{fontSize: '10px'}}>✅</div>
-            <span className="font-bold">Secured</span>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1 }}>
+            <div className="flex items-center justify-center w-6 h-6 rounded-full mb-1 bg-blue-500/20 text-blue-400" style={{fontSize: '12px'}}>✅</div>
+            <span className="font-bold text-blue-400 text-xs text-center">Secured</span>
           </div>
 
-          <div className={`flex-1 h-px ${escrow.accepted || escrow.status === 'CANCELLED' ? 'bg-blue-400' : 'bg-gray-700'}`} style={{ minWidth: '20px' }}></div>
+          <div className={`${escrow.accepted || escrow.status === 'CANCELLED' || ['RELEASED', 'RESOLVED'].includes(escrow.status) ? 'bg-blue-400' : 'bg-gray-700'}`} style={{ flex: 1, height: '2px', marginTop: '12px', minWidth: '10px' }}></div>
           
           {/* Step 2: In Progress or Cancelled */}
-          <div className={`flex flex-col items-center ${escrow.status === 'CANCELLED' ? 'text-red-400' : (escrow.accepted ? 'text-blue-400' : 'text-gray-500')}`} style={{ flex: 1 }}>
-            <div className={`flex items-center justify-center w-5 h-5 rounded-full mb-1 ${escrow.status === 'CANCELLED' ? 'bg-red-500/20 text-red-400' : (escrow.accepted ? 'bg-blue-500/20 text-blue-400' : 'bg-gray-800')}`} style={{fontSize: '10px'}}>
-              {escrow.status === 'CANCELLED' ? '❌' : (escrow.accepted ? '✅' : '⏳')}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1 }}>
+            <div className={`flex items-center justify-center w-6 h-6 rounded-full mb-1 ${escrow.status === 'CANCELLED' ? 'bg-red-500/20 text-red-400' : (escrow.accepted || ['RELEASED', 'RESOLVED'].includes(escrow.status) ? 'bg-blue-500/20 text-blue-400' : 'bg-gray-800')}`} style={{fontSize: '12px'}}>
+              {escrow.status === 'CANCELLED' ? '❌' : (escrow.accepted || ['RELEASED', 'RESOLVED'].includes(escrow.status) ? '✅' : '⏳')}
             </div>
-            <span className={escrow.accepted || escrow.status === 'CANCELLED' ? 'font-bold' : ''}>
+            <span className={`text-xs text-center ${escrow.accepted || escrow.status === 'CANCELLED' || ['RELEASED', 'RESOLVED'].includes(escrow.status) ? 'font-bold' : ''} ${escrow.status === 'CANCELLED' ? 'text-red-400' : (escrow.accepted || ['RELEASED', 'RESOLVED'].includes(escrow.status) ? 'text-blue-400' : 'text-gray-500')}`}>
               {escrow.status === 'CANCELLED' ? 'Cancelled' : 'In Progress'}
             </span>
           </div>
 
-          <div className={`flex-1 h-px ${['RELEASED', 'RESOLVED', 'DISPUTED'].includes(escrow.status) ? (escrow.status === 'DISPUTED' ? 'bg-red-400' : 'bg-green-400') : 'bg-gray-700'}`} style={{ minWidth: '20px' }}></div>
+          <div className={`${['RELEASED', 'RESOLVED', 'DISPUTED'].includes(escrow.status) ? (escrow.status === 'DISPUTED' ? 'bg-red-400' : 'bg-green-400') : 'bg-gray-700'}`} style={{ flex: 1, height: '2px', marginTop: '12px', minWidth: '10px' }}></div>
           
           {/* Step 3: Paid or Disputed */}
-          <div className={`flex flex-col items-center ${['RELEASED', 'RESOLVED'].includes(escrow.status) ? 'text-green-400' : (escrow.status === 'DISPUTED' ? 'text-red-400' : 'text-gray-500')}`} style={{ flex: 1 }}>
-            <div className={`flex items-center justify-center w-5 h-5 rounded-full mb-1 ${['RELEASED', 'RESOLVED'].includes(escrow.status) ? 'bg-green-500/20 text-green-400' : (escrow.status === 'DISPUTED' ? 'bg-red-500/20 text-red-400' : 'bg-gray-800')}`} style={{fontSize: '10px'}}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1 }}>
+            <div className={`flex items-center justify-center w-6 h-6 rounded-full mb-1 ${['RELEASED', 'RESOLVED'].includes(escrow.status) ? 'bg-green-500/20 text-green-400' : (escrow.status === 'DISPUTED' ? 'bg-red-500/20 text-red-400' : 'bg-gray-800')}`} style={{fontSize: '12px'}}>
               {['RELEASED', 'RESOLVED'].includes(escrow.status) ? '✅' : (escrow.status === 'DISPUTED' ? '⚠️' : (escrow.status === 'CANCELLED' ? '➖' : '⏳'))}
             </div>
-            <span className={['RELEASED', 'RESOLVED', 'DISPUTED'].includes(escrow.status) ? 'font-bold' : ''}>
+            <span className={`text-xs text-center ${['RELEASED', 'RESOLVED', 'DISPUTED'].includes(escrow.status) ? 'font-bold' : ''} ${['RELEASED', 'RESOLVED'].includes(escrow.status) ? 'text-green-400' : (escrow.status === 'DISPUTED' ? 'text-red-400' : 'text-gray-500')}`}>
               {escrow.status === 'DISPUTED' ? 'Disputed' : 'Paid'}
             </span>
           </div>
