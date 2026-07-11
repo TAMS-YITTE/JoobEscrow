@@ -129,6 +129,12 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate })
       const tx = await contract.resolveStaleDispute(escrow.id);
       await tx.wait();
       showToast('success', "Stale dispute resolved 50/50!");
+
+      const kolRef = localStorage.getItem('joob_ref');
+      if (kolRef) {
+        track('Escrow_Completed', { kol: kolRef });
+      }
+
       setTimeout(() => { if (onUpdate) onUpdate(); else window.location.reload(); }, 1500);
     } catch (err) {
       console.error(err);
@@ -155,6 +161,12 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate })
       await tx.wait();
       showToast('success', `Dispute resolved! ${niche.lexicon.provider} will receive ${resolvePercent}% and ${niche.lexicon.client} will get back ${100 - resolvePercent}%.`);
       setShowResolveModal(false);
+
+      const kolRef = localStorage.getItem('joob_ref');
+      if (kolRef) {
+        track('Escrow_Completed', { kol: kolRef });
+      }
+
       setTimeout(() => { if (onUpdate) onUpdate(); else window.location.reload(); }, 1500);
     } catch (err) {
       console.error(err);

@@ -40,6 +40,11 @@ export default function KolProfileClient({ handle }) {
   const [selectedService, setSelectedService] = useState(null);
 
   useEffect(() => {
+    // Inject KOL handle into LocalStorage for Vercel Analytics Tracking
+    if (handle) {
+      localStorage.setItem('joob_ref', handle);
+    }
+
     let isMounted = true;
 
     async function fetchReputation() {
