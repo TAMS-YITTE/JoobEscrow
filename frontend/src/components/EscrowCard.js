@@ -91,6 +91,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate })
       const kolRef = localStorage.getItem('joob_ref');
       if (kolRef) {
         track('Escrow_Completed', { kol: kolRef });
+        localStorage.removeItem('joob_ref');
       }
 
       setTimeout(() => { if (onUpdate) onUpdate(); else window.location.reload(); }, 1500);
@@ -133,6 +134,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate })
       const kolRef = localStorage.getItem('joob_ref');
       if (kolRef) {
         track('Escrow_Completed', { kol: kolRef });
+        localStorage.removeItem('joob_ref');
       }
 
       setTimeout(() => { if (onUpdate) onUpdate(); else window.location.reload(); }, 1500);
@@ -165,6 +167,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate })
       const kolRef = localStorage.getItem('joob_ref');
       if (kolRef) {
         track('Escrow_Completed', { kol: kolRef });
+        localStorage.removeItem('joob_ref');
       }
 
       setTimeout(() => { if (onUpdate) onUpdate(); else window.location.reload(); }, 1500);
@@ -185,6 +188,13 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate })
       const tx = await contract.claimTimeout(escrow.id);
       await tx.wait();
       showToast('success', "Timeout claimed!");
+
+      const kolRef = localStorage.getItem('joob_ref');
+      if (kolRef) {
+        track('Escrow_Completed', { kol: kolRef });
+        localStorage.removeItem('joob_ref');
+      }
+
       setTimeout(() => { if (onUpdate) onUpdate(); else window.location.reload(); }, 1500);
     } catch (err) {
       console.error(err);
