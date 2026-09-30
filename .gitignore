@@ -23,3 +23,6 @@ contracts/typechain-types/
 # Misc
 .DS_Store
 *.log
+
+# Kit contrats generique (depot prive separe)
+contracts-token/
