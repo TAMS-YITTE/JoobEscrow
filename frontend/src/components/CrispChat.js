@@ -8,6 +8,8 @@ export default function CrispChat() {
     if (window.$crisp) return;
     
     window.$crisp = [];
+    // Site en anglais : interface du chat en anglais quelle que soit la langue du navigateur.
+    window.CRISP_RUNTIME_CONFIG = { locale: 'en' };
     window.CRISP_WEBSITE_ID = process.env.NEXT_PUBLIC_CRISP_WEBSITE_ID || "7f5a4ba6-6c8c-4c27-bc3a-651fe7a79755";
     (function () {
       const d = document;

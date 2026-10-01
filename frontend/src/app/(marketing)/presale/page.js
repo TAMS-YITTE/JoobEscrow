@@ -58,6 +58,45 @@ const ROADMAP = [
   { title: 'Expansion', items: 'Multichain, card payments, API & "Pay me with JoobEscrow" widget, receipts & invoices.' },
   { title: 'Community', items: 'Governance votes, staked arbitrators.' },
 ];
+// Repartition de l'offre fixe de 1 Md JOOB (MASTER_PROMPT §5). Les 13,5 M de bonus/parrainage
+// du plafond presale (163,5 M) sont pris sur l'ecosysteme. onChain = vesting impose par un contrat deploye.
+const TOKENOMICS = [
+  { name: 'Presale', pct: 15, color: '#10b981', vesting: '20% at sale end, then linear over 180 days', onChain: true },
+  { name: 'Presale bonus & referral', pct: 1.35, color: '#6ee7b7', vesting: 'Same vesting as the presale', onChain: true },
+  { name: 'Ecosystem & usage', pct: 23.65, color: '#3b82f6', vesting: 'Over 48 months, max 0.5% of supply per month' },
+  { name: 'Treasury (Safe)', pct: 13, color: '#8b5cf6', vesting: '6-month cliff, then 36 months' },
+  { name: 'Team', pct: 12, color: '#f59e0b', vesting: '12-month cliff, then 24 months' },
+  { name: 'DEX liquidity', pct: 10, color: '#06b6d4', vesting: 'Paired at listing, LP locked 12 months or more' },
+  { name: 'Marketing', pct: 8, color: '#ec4899', vesting: '10% at TGE, then 18 months' },
+  { name: 'Partners & KOL', pct: 7, color: '#f97316', vesting: '3-month cliff, then 12 months, always disclosed' },
+  { name: 'Airdrop (points)', pct: 5, color: '#eab308', vesting: '20% at TGE, then 6 months (audited contract)' },
+  { name: 'CEX reserve', pct: 5, color: '#64748b', vesting: 'Used only for a centralized exchange listing' },
+];
+const TOTAL_SUPPLY = 1_000_000_000;
+// Debut cumule de chaque segment, calcule une fois hors rendu.
+const SEGMENTS = TOKENOMICS.map((t, i) => ({ ...t, start: TOKENOMICS.slice(0, i).reduce((a, x) => a + x.pct, 0) }));
+const fmtM = (pct) => `${((TOTAL_SUPPLY * pct) / 100 / 1e6).toLocaleString('en-US', { maximumFractionDigits: 1 })}M`;
+
+function TokenomicsDonut() {
+  const R = 15.9155; // circonference = 100
+  return (
+    <svg viewBox="0 0 42 42" className={styles.donut} role="img" aria-label="JOOB token allocation">
+      <circle cx="21" cy="21" r={R} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="6" />
+      {SEGMENTS.map((t) => (
+        <circle
+            key={t.name}
+            cx="21" cy="21" r={R} fill="none" stroke={t.color} strokeWidth="6"
+            strokeDasharray={`${Math.max(t.pct - 0.3, 0.2)} ${100 - Math.max(t.pct - 0.3, 0.2)}`}
+            strokeDashoffset={25 - t.start}
+            className={styles.donutSeg}
+          >
+            <title>{`${t.name}: ${t.pct}% (${fmtM(t.pct)} JOOB)`}</title>
+          </circle>
+      ))}
+    </svg>
+  );
+}
+
 const STATUS_LABEL = { done: 'Done', now: 'In progress', next: 'Next' };
 
 export default function PresalePage() {
@@ -65,6 +104,43 @@ export default function PresalePage() {
     <>
       <PresaleClient />
       <div className={styles.page} style={{ paddingTop: 0 }}>
+        <section className={styles.faq} id="tokenomics">
+          <h2 className={styles.faqTitle}>Tokenomics</h2>
+          <div className={styles.tokenomics}>
+            <div className={styles.donutWrap}>
+              <TokenomicsDonut />
+              <div className={styles.donutCenter}>
+                <strong>1,000,000,000</strong>
+                <span>JOOB · fixed supply</span>
+              </div>
+            </div>
+            <ul className={styles.allocList}>
+              {TOKENOMICS.map((t) => (
+                <li key={t.name} className={styles.allocItem}>
+                  <span className={styles.allocDot} style={{ background: t.color }} />
+                  <div className={styles.allocBody}>
+                    <div className={styles.allocHead}>
+                      <span className={styles.allocName}>{t.name}</span>
+                      <span className={styles.allocPct}>{t.pct}%</span>
+                    </div>
+                    <div className={styles.allocMeta}>
+                      {fmtM(t.pct)} JOOB · {t.vesting}
+                      <span className={`${styles.allocTag} ${t.onChain ? styles.allocTagOn : ''}`}>
+                        {t.onChain ? 'Enforced on-chain' : 'Planned'}
+                      </span>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <p className={styles.fine}>
+            Fixed supply, no mint function, no transfer tax. Presale tokens that are not sold are burned after the sale.
+            &quot;Enforced on-chain&quot; means the vesting is held by the deployed, audited presale contract; &quot;Planned&quot;
+            allocations stay in the JoobEscrow Safe multisig until their vesting contracts are deployed.
+          </p>
+        </section>
+
         <section className={styles.faq} id="roadmap">
           <h2 className={styles.faqTitle}>Roadmap</h2>
           <ol className={styles.roadmap}>
