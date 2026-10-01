@@ -27,7 +27,9 @@ export default function PresaleTermsPage() {
           <a href={`https://bscscan.com/address/${PRESALE}#code`} target="_blank" rel="noopener noreferrer" className={styles.link} style={{ wordBreak: 'break-all' }}>{PRESALE}</a>{' '}
           selling the JOOB token{' '}
           <a href={`https://bscscan.com/token/${TOKEN}`} target="_blank" rel="noopener noreferrer" className={styles.link} style={{ wordBreak: 'break-all' }}>{TOKEN}</a>{' '}
-          on BNB Smart Chain. Both contracts are verified on BscScan and owned by the JoobEscrow Safe multisig. In case of discrepancy, the
+          on BNB Smart Chain. Both contracts are verified on BscScan, owned by the JoobEscrow Safe multisig and audited by SpyWolf
+          (<a href="https://spywolf.co/audits/VestingPresale_Airdrop_Audit_JoobEscrow.pdf" target="_blank" rel="noopener noreferrer" className={styles.link}>presale report</a>,{' '}
+          <a href="https://spywolf.co/audits/StandardToken_Audit_JoobEscrow.pdf" target="_blank" rel="noopener noreferrer" className={styles.link}>token report</a>). In case of discrepancy, the
           on-chain parameters of the contract prevail.
         </p>
       </div>

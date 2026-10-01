@@ -12,6 +12,12 @@ export const PRESALE_ADDRESSES = {
 
 export const BSCSCAN = 'https://bscscan.com';
 
+// Rapports SpyWolf publies (edition JoobEscrow).
+export const AUDITS = {
+  PRESALE: 'https://spywolf.co/audits/VestingPresale_Airdrop_Audit_JoobEscrow.pdf',
+  TOKEN: 'https://spywolf.co/audits/StandardToken_Audit_JoobEscrow.pdf',
+};
+
 // Enum State du contrat.
 export const PRESALE_STATE = { PENDING: 0, ACTIVE: 1, ENDED: 2 };
 

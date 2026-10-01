@@ -30,6 +30,18 @@ export default function SecurityPage() {
       </div>
 
       <div className="glass-panel" style={{ marginTop: '30px', padding: '40px' }}>
+        <h2 style={{ color: '#fff', marginBottom: '15px' }}>JOOB Token &amp; Presale Audits</h2>
+        <p style={{ color: 'var(--text-secondary)', marginBottom: '20px', lineHeight: 1.6 }}>
+          The JOOB token (0x4bf3…10E2) and the JoobEscrow presale contract (0xd3F3…F63d) were audited by SpyWolf: no critical, high or
+          medium issue; every finding was fixed or acknowledged. Both contracts are verified on BscScan and owned by the Safe multisig.
+        </p>
+        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+          <Link href="https://spywolf.co/audits/StandardToken_Audit_JoobEscrow.pdf" target="_blank" className="btn btn-primary">Token audit (PDF)</Link>
+          <Link href="https://spywolf.co/audits/VestingPresale_Airdrop_Audit_JoobEscrow.pdf" target="_blank" className="btn btn-primary">Presale audit (PDF)</Link>
+        </div>
+      </div>
+
+      <div className="glass-panel" style={{ marginTop: '30px', padding: '40px' }}>
         <h2 style={{ color: '#fff', marginBottom: '15px' }}>{d.contractSection.title}</h2>
         <p style={{ color: 'var(--text-secondary)', marginBottom: '20px', lineHeight: 1.6 }}>
           {d.contractSection.desc} All contracts are <strong>Verified on BscScan</strong> and securely managed by a <strong>Gnosis Safe Multisig</strong> to ensure absolute transparency and trustless operations.

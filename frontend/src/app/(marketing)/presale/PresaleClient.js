@@ -7,7 +7,7 @@ import { useAppKitNetwork } from '@reown/appkit/react';
 import { bsc } from '@reown/appkit/networks';
 import { useWeb3 } from '../../../context/Web3Context';
 import {
-  PRESALE_ADDRESSES, PRESALE_ABI, ERC20_ABI, PRESALE_STATE, PRESALE_CHAIN_ID, BSCSCAN,
+  PRESALE_ADDRESSES, PRESALE_ABI, ERC20_ABI, PRESALE_STATE, PRESALE_CHAIN_ID, BSCSCAN, AUDITS,
   priceAt, nextStepAt, volumeTierBps, readableError,
 } from '../../../config/presale';
 import styles from './presale.module.css';
@@ -384,6 +384,12 @@ export default function PresaleClient() {
         </a>
         <a href={`${BSCSCAN}/token/${PRESALE_ADDRESSES.TOKEN}`} target="_blank" rel="noopener noreferrer" className={styles.chip}>
           JOOB token contract ↗
+        </a>
+        <a href={AUDITS.PRESALE} target="_blank" rel="noopener noreferrer" className={`${styles.chip} ${styles.chipOk}`}>
+          ✓ SpyWolf audit: presale ↗
+        </a>
+        <a href={AUDITS.TOKEN} target="_blank" rel="noopener noreferrer" className={`${styles.chip} ${styles.chipOk}`}>
+          ✓ SpyWolf audit: token ↗
         </a>
         <a href={`${BSCSCAN}/address/${PRESALE_ADDRESSES.PRESALE}#readContract`} target="_blank" rel="noopener noreferrer"
           className={`${styles.chip} ${vaultSealed ? styles.chipOk : styles.chipWarn}`}>
