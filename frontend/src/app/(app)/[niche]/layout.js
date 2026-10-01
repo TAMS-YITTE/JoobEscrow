@@ -1,4 +1,4 @@
-import { instances } from '../../../config/instances';
+import { allInstances as instances } from '../../../config/instances';
 import { notFound } from 'next/navigation';
 
 export function generateStaticParams() {
@@ -20,7 +20,9 @@ export async function generateMetadata({ params }) {
 
   return {
     title: `Joob Escrow | ${niche.name}`,
-    description: `Secure payments between ${niche.lexicon.client} and ${niche.lexicon.provider} with Joob Escrow. ${niche.feeTier}% platform fee.`,
+    description: niche.isDemo
+      ? 'Try JoobEscrow with $1: run a full escrow between two of your own wallets. 0% fee, 1 to 20 USDT or USDC.'
+      : `Secure payments between ${niche.lexicon.client} and ${niche.lexicon.provider} with Joob Escrow. ${niche.feeTier}% platform fee.`,
     alternates: {
       canonical: `/${slug}`,
     }

@@ -5,7 +5,7 @@ import { useWeb3 } from '../context/Web3Context';
 import { useNiche } from '../context/NicheContext';
 import { useToast } from '../context/ToastContext';
 import { ethers } from 'ethers';
-import { ESCROW_ABI, USDT_ADDRESS, ERC20_ABI } from '../config/contract';
+import { ESCROW_ABI, TOKEN_ADDRESSES, ERC20_ABI } from '../config/contract';
 import './CreateEscrowModal.css';
 
 export default function CreateEscrowModal({ onClose, onSuccess, prefilledProvider = '', prefilledAmount = '' }) {
@@ -15,6 +15,10 @@ export default function CreateEscrowModal({ onClose, onSuccess, prefilledProvide
   const [providerAddr, setProviderAddr] = useState(prefilledProvider);
   const [amount, setAmount] = useState(prefilledAmount);
   const [timeoutDays, setTimeoutDays] = useState(3);
+  // Jetons de la niche (USDT par defaut ; USDT ou USDC pour la demo).
+  const tokenChoices = niche.tokens || ['USDT'];
+  const [tokenSym, setTokenSym] = useState(tokenChoices[0]);
+  const tokenAddr = TOKEN_ADDRESSES[tokenSym];
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1); // 1: input, 2: approve, 3: create
 
@@ -32,12 +36,22 @@ export default function CreateEscrowModal({ onClose, onSuccess, prefilledProvide
       showToast('error', "Amount must be greater than 0.");
       return;
     }
+    if (account && providerAddr.toLowerCase() === account.toLowerCase()) {
+      showToast('error', niche.isDemo
+        ? "Use your second wallet's address as provider: the contract refuses the same wallet on both sides."
+        : "The provider must be a different wallet than yours.");
+      return;
+    }
+    if (niche.minAmount && (parseFloat(amount) < niche.minAmount || parseFloat(amount) > niche.maxAmount)) {
+      showToast('error', `Demo amount must be between ${niche.minAmount} and ${niche.maxAmount} ${tokenSym}.`);
+      return;
+    }
 
     setLoading(true);
     try {
       await ensureCorrectChain();
 
-      const usdtRead = new ethers.Contract(USDT_ADDRESS, ERC20_ABI, readProvider || signer);
+      const usdtRead = new ethers.Contract(tokenAddr, ERC20_ABI, readProvider || signer);
       let decimals = 18;
       try {
         decimals = Number(await usdtRead.decimals());
@@ -47,7 +61,7 @@ export default function CreateEscrowModal({ onClose, onSuccess, prefilledProvide
       
       const parsedAmount = ethers.parseUnits(amount.toString(), decimals);
       
-      const usdt = new ethers.Contract(USDT_ADDRESS, ERC20_ABI, signer);
+      const usdt = new ethers.Contract(tokenAddr, ERC20_ABI, signer);
       const currentAllowance = await usdt.allowance(account, niche.contractAddress);
       
       if (currentAllowance < parsedAmount) {
@@ -58,7 +72,7 @@ export default function CreateEscrowModal({ onClose, onSuccess, prefilledProvide
 
       setStep(3);
       const contract = new ethers.Contract(niche.contractAddress, ESCROW_ABI, signer);
-      const tx = await contract.createAndFundEscrow(providerAddr, USDT_ADDRESS, parsedAmount, parseInt(timeoutDays) || 7);
+      const tx = await contract.createAndFundEscrow(providerAddr, tokenAddr, parsedAmount, parseInt(timeoutDays) || 7);
       const receipt = await tx.wait();
       
       let newEscrowId = null;
@@ -128,8 +142,16 @@ export default function CreateEscrowModal({ onClose, onSuccess, prefilledProvide
           </div>
           <div className="flex gap-4">
             <div className="form-group flex-1">
-              <label>Amount (USDT):</label>
-              <input type="number" step="0.01" value={amount} onChange={e=>setAmount(e.target.value)} required placeholder="100.00" />
+              <label>Amount ({tokenSym}):</label>
+              {tokenChoices.length > 1 && (
+                <select value={tokenSym} onChange={e=>setTokenSym(e.target.value)} aria-label="Token" style={{ marginBottom: '8px', width: '100%' }}>
+                  {tokenChoices.map(t => <option key={t} value={t}>{t} (BEP-20)</option>)}
+                </select>
+              )}
+              <input type="number" step="0.01" min={niche.minAmount} max={niche.maxAmount} value={amount} onChange={e=>setAmount(e.target.value)} required placeholder={niche.isDemo ? '1.00' : '100.00'} />
+              {niche.isDemo && (
+                <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '6px' }}>Demo: {niche.minAmount} to {niche.maxAmount} {tokenSym}, 0% fee.</p>
+              )}
             </div>
             <div className="form-group flex-1">
               <label>Delivery Deadline (Days):</label>
@@ -142,7 +164,7 @@ export default function CreateEscrowModal({ onClose, onSuccess, prefilledProvide
           <div className="modal-actions">
             <button type="button" className="btn btn-outline" onClick={onClose}>Cancel</button>
             <button type="submit" className="btn btn-primary" disabled={loading} style={{backgroundColor: niche.theme.primary, borderColor: niche.theme.primary}}>
-              {loading ? (step === 2 ? 'Approving USDT...' : 'Creating Escrow...') : 'Create & Fund'}
+              {loading ? (step === 2 ? `Approving ${tokenSym}...` : 'Creating Escrow...') : 'Create & Fund'}
             </button>
           </div>
         </form>

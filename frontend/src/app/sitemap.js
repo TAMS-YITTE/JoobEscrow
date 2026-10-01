@@ -31,6 +31,12 @@ export default function sitemap() {
       priority: 0.8,
     },
     {
+      url: 'https://joobescrow.com/try',
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
       url: 'https://joobescrow.com/presale-terms',
       lastModified: new Date(),
       changeFrequency: 'monthly',

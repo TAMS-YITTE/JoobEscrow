@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import WalletConnect from '../../../components/WalletConnect';
 import EscrowCard from '../../../components/EscrowCard';
 import CreateEscrowModal from '../../../components/CreateEscrowModal';
@@ -10,7 +11,7 @@ import { useNiche } from '../../../context/NicheContext';
 import { useToast } from '../../../context/ToastContext';
 import { useAppKit } from '@reown/appkit/react';
 import { ethers } from 'ethers';
-import { USDT_ADDRESS, ERC20_ABI, ESCROW_ABI } from '../../../config/contract';
+import { TOKEN_ADDRESSES, ERC20_ABI, ESCROW_ABI } from '../../../config/contract';
 import './page.css';
 
 function DashboardContent() {
@@ -23,8 +24,9 @@ function DashboardContent() {
   const [invitedEscrow, setInvitedEscrow] = useState(null);
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [pendingUsdt, setPendingUsdt] = useState('0');
-  const [usdtBalance, setUsdtBalance] = useState(null);
+  // Montants par jeton de la niche (USDT par defaut ; USDT + USDC pour la demo).
+  const [pending, setPending] = useState({});
+  const [balances, setBalances] = useState(null);
   const [isOwner, setIsOwner] = useState(false);
   const searchParams = useSearchParams();
   const highlightedId = searchParams?.get('escrow');
@@ -34,16 +36,20 @@ function DashboardContent() {
     if (!currentProvider || !account) return;
     try {
       const contract = new ethers.Contract(niche.contractAddress, ESCROW_ABI, currentProvider);
-      const pending = await contract.withdrawable(account, USDT_ADDRESS);
-      setPendingUsdt(ethers.formatEther(pending));
-
-      const usdt = new ethers.Contract(USDT_ADDRESS, ERC20_ABI, currentProvider);
-      const bal = await usdt.balanceOf(account);
-      setUsdtBalance(ethers.formatEther(bal));
+      const nextPending = {};
+      const nextBalances = {};
+      for (const sym of niche.tokens || ['USDT']) {
+        const tokenAddr = TOKEN_ADDRESSES[sym];
+        nextPending[sym] = ethers.formatEther(await contract.withdrawable(account, tokenAddr));
+        const erc20 = new ethers.Contract(tokenAddr, ERC20_ABI, currentProvider);
+        nextBalances[sym] = ethers.formatEther(await erc20.balanceOf(account));
+      }
+      setPending(nextPending);
+      setBalances(nextBalances);
     } catch (e) {
       console.error("Error fetching withdrawable/balance:", e);
     }
-  }, [account, provider, readProvider, niche.contractAddress]);
+  }, [account, provider, readProvider, niche.contractAddress, niche.tokens]);
 
   // Load the single escrow referenced by ?escrow=N (works read-only, even when
   // disconnected) so the recipient of a share link always sees a focused card.
@@ -74,7 +80,7 @@ function DashboardContent() {
         provider: e.provider,
         amount: ethers.formatEther(e.amount),
         status: ['FUNDED', 'RELEASED', 'DISPUTED', 'RESOLVED', 'CANCELLED'][statusEnum - 1] || 'UNKNOWN',
-        tokenSymbol: 'USDT',
+        tokenSymbol: e.sym || 'USDT',
         actionRequired,
         highlighted: true,
         createdAt: 0,
@@ -140,7 +146,7 @@ function DashboardContent() {
              provider: e.provider,
              amount: ethers.formatEther(e.amount),
              status: ['FUNDED', 'RELEASED', 'DISPUTED', 'RESOLVED', 'CANCELLED'][statusEnum - 1] || 'UNKNOWN',
-             tokenSymbol: 'USDT', // We only use USDT right now
+             tokenSymbol: e.sym || 'USDT',
              actionRequired,
              highlighted: highlightedId === i.toString(),
              createdAt: Number(e.createdAt),
@@ -181,11 +187,11 @@ function DashboardContent() {
     }
   }, [fetchEscrows, fetchPending, fetchInvited, readProvider, provider, highlightedId]);
 
-  const handleClaim = async () => {
+  const handleClaim = async (sym) => {
     if (!signer) return;
     try {
       const contract = new ethers.Contract(niche.contractAddress, ESCROW_ABI, signer);
-      const tx = await contract.withdraw(USDT_ADDRESS);
+      const tx = await contract.withdraw(TOKEN_ADDRESSES[sym]);
       showToast('success', 'Withdrawal transaction sent!');
       await tx.wait();
       showToast('success', 'Withdrawal successful!');
@@ -214,6 +220,21 @@ function DashboardContent() {
         <WalletConnect />
       </header>
 
+      {niche.isDemo && (
+        <div style={{ margin: '0 0 24px', padding: '16px 20px', borderRadius: '12px', border: '1px solid rgba(245, 158, 11, 0.45)', background: 'rgba(245, 158, 11, 0.08)', color: '#fde68a', lineHeight: 1.6 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', marginBottom: '6px' }}>
+            <span style={{ padding: '2px 10px', borderRadius: '999px', background: '#f59e0b', color: '#111', fontWeight: 800, fontSize: '0.75rem', letterSpacing: '0.05em' }}>DEMO</span>
+            <strong style={{ color: '#fff' }}>Try JoobEscrow with $1</strong>
+          </div>
+          <p style={{ fontSize: '0.9rem' }}>
+            Run a full escrow between <strong>two of your own wallets</strong>: lock {niche.minAmount} to {niche.maxAmount} USDT or USDC with wallet A, accept with wallet B,
+            release with A, withdraw with B. 0% fee: you get back exactly what you deposited (plus a few cents of BNB gas).
+            Demo escrows are never counted in JoobEscrow statistics.{' '}
+            <Link href="/try" style={{ color: '#fbbf24', textDecoration: 'underline' }}>Step-by-step guide</Link>
+          </p>
+        </div>
+      )}
+
       {account && (
         <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-8">
           <div className="glass-panel p-3 sm:p-5 rounded-xl border border-gray-800 flex flex-col justify-between">
@@ -226,7 +247,7 @@ function DashboardContent() {
             <div className="text-gray-400 text-xs sm:text-sm mb-2 flex flex-col sm:flex-row items-center sm:items-start gap-1 sm:gap-2 text-center sm:text-left">
               <span>💶</span> <span className="hidden sm:inline">Total Secured</span><span className="sm:hidden">Secured</span>
             </div>
-            <div className="text-xl sm:text-3xl font-bold text-white text-center sm:text-left">{totalSecured.toFixed(2)} <span className="text-sm hidden sm:inline">USDT</span></div>
+            <div className="text-xl sm:text-3xl font-bold text-white text-center sm:text-left">{totalSecured.toFixed(2)} <span className="text-sm hidden sm:inline">{niche.tokens ? 'USD' : 'USDT'}</span></div>
           </div>
           <div className="glass-panel p-3 sm:p-5 rounded-xl border border-gray-800 flex flex-col justify-between">
             <div className="text-gray-400 text-xs sm:text-sm mb-2 flex flex-col sm:flex-row items-center sm:items-start gap-1 sm:gap-2 text-center sm:text-left">
@@ -243,17 +264,17 @@ function DashboardContent() {
           <button className={`tab ${activeTab === 'history' ? 'active' : ''}`} onClick={() => setActiveTab('history')}>History</button>
         </div>
         <div style={{display:'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap'}}>
-          {Number(pendingUsdt) > 0 && (
-            <div className="flex items-center gap-3 bg-green-900/30 border border-green-500/50 text-green-300 px-4 py-2 rounded-lg" style={{ animation: 'pulse 2s infinite' }}>
+          {Object.entries(pending).filter(([, v]) => Number(v) > 0).map(([sym, v]) => (
+            <div key={sym} className="flex items-center gap-3 bg-green-900/30 border border-green-500/50 text-green-300 px-4 py-2 rounded-lg" style={{ animation: 'pulse 2s infinite' }}>
               <span className="text-sm">ℹ️ Funds available to withdraw</span>
-              <button className="btn btn-primary" onClick={handleClaim} style={{background: '#22c55e', border: '1px solid #16a34a', padding: '6px 12px', fontSize: '0.875rem', height: 'auto'}}>
-                Claim {pendingUsdt} USDT
+              <button className="btn btn-primary" onClick={() => handleClaim(sym)} style={{background: '#22c55e', border: '1px solid #16a34a', padding: '6px 12px', fontSize: '0.875rem', height: 'auto'}}>
+                Claim {v} {sym}
               </button>
             </div>
-          )}
+          ))}
           {account && (
             <div className="badge badge-outline" style={{ display: 'flex', alignItems: 'center', padding: '0 15px', height: '40px', border: '1px solid #22c55e', color: '#22c55e', borderRadius: '8px', background: 'rgba(34, 197, 94, 0.05)', fontWeight: '600' }}>
-              {usdtBalance ? `${Number(usdtBalance).toFixed(2)} USDT` : 'Loading...'}
+              {balances ? Object.entries(balances).map(([sym, v]) => `${Number(v).toFixed(2)} ${sym}`).join(' · ') : 'Loading...'}
             </div>
           )}
           <button className="btn btn-primary" disabled={!account} onClick={() => setShowModal(true)}>+ Create Secure Transaction</button>

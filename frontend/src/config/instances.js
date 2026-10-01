@@ -172,3 +172,31 @@ export const instances = {
 };
 
 export const defaultInstance = "influence";
+
+// Instance DEMO "Try it with $1" : meme contrat V4 audite, USDT/USDC de 1 a 20, commission 0 %.
+// Volontairement HORS de `instances` : jamais comptee dans les statistiques, le hub ni la page Securite.
+export const CONTRACT_DEMO = SANDBOX_ADDRESS || "0x28b80688749958241E14Fa8181274AE0E649eC0B";
+
+export const demoInstance = {
+  name: "Demo",
+  slug: "demo",
+  lexicon: {
+    client: "Client wallet",
+    provider: "Provider wallet",
+    action: "Demo escrow",
+    escrow: "Demo Escrow"
+  },
+  theme: {
+    primary: "#f59e0b",
+    bg: "bg-gray-900"
+  },
+  contractAddress: CONTRACT_DEMO,
+  feeTier: 0,
+  isDemo: true,
+  tokens: ["USDT", "USDC"],
+  minAmount: 1,
+  maxAmount: 20
+};
+
+// Toutes les routes /[niche] (y compris la demo).
+export const allInstances = { ...instances, demo: demoInstance };

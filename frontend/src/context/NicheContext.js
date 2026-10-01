@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { instances, defaultInstance } from '../config/instances';
+import { allInstances as instances, defaultInstance } from '../config/instances';
 import { useParams, usePathname } from 'next/navigation';
 
 const NicheContext = createContext();

@@ -3,6 +3,10 @@ import { CONTRACT_5_PERCENT } from './instances';
 // Default global address is now the 5% Mainnet contract, fallback to local sandbox if defined.
 export const ESCROW_ADDRESS = CONTRACT_5_PERCENT;
 export const USDT_ADDRESS = process.env.NEXT_PUBLIC_USDT_ADDRESS || "0x55d398326f99059fF775485246999027B3197955";
+export const USDC_ADDRESS = process.env.NEXT_PUBLIC_USDC_ADDRESS || "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d";
+
+// Jetons utilisables par niche (niche.tokens) ; USDT par defaut.
+export const TOKEN_ADDRESSES = { USDT: USDT_ADDRESS, USDC: USDC_ADDRESS };
 
 export const ESCROW_ABI = [
   {
