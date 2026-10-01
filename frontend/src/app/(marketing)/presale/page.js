@@ -43,11 +43,44 @@ const FAQ = [
   },
 ];
 
+// Feuille de route publique : aucune date au-dela de la presale (rien de signe ni planifie).
+const ROADMAP = [
+  { title: 'Foundations', status: 'done', items: 'Audited escrow contract, verified on BscScan, owned by a Safe multisig. 15 categories and encrypted in-app chat.' },
+  { title: 'Trust layer', status: 'now', items: 'Public deal pages, "verify in 30 seconds" guide, $5 demo, proof page, Telegram notification bot, on-chain dispute evidence.' },
+  { title: 'JOOB presale', status: 'next', items: 'October 15, 2026 → January 13, 2027. Sealed vault, vesting for every participant, unsold tokens burned.' },
+  { title: 'TGE & liquidity', items: 'JOOB/USDT pool on PancakeSwap, first JOOB utilities (boosts & badges), Early Escrow points.' },
+  { title: 'Escrow V5', items: 'On-chain affiliate rewards, gasless payouts, JOOB fee discount, verified reputation profiles.' },
+  { title: 'Escrow V5.1', items: 'Milestone payments, partial releases, amicable settlement, bulk deals for agencies.' },
+  { title: 'Expansion', items: 'Multichain, card payments, API & "Pay me with JoobEscrow" widget, receipts & invoices.' },
+  { title: 'Community', items: 'Governance votes, staked arbitrators.' },
+];
+const STATUS_LABEL = { done: 'Done', now: 'In progress', next: 'Next' };
+
 export default function PresalePage() {
   return (
     <>
       <PresaleClient />
       <div className={styles.page} style={{ paddingTop: 0 }}>
+        <section className={styles.faq} id="roadmap">
+          <h2 className={styles.faqTitle}>Roadmap</h2>
+          <ol className={styles.roadmap}>
+            {ROADMAP.map((phase, i) => (
+              <li key={phase.title} className={`${styles.phase} ${phase.status ? styles[`phase_${phase.status}`] : ''}`}>
+                <div className={styles.phaseHead}>
+                  <span className={styles.phaseNum}>{i + 1}</span>
+                  <span className={styles.phaseTitle}>{phase.title}</span>
+                  {phase.status && <span className={styles.phaseTag}>{STATUS_LABEL[phase.status]}</span>}
+                </div>
+                <p>{phase.items}</p>
+              </li>
+            ))}
+          </ol>
+          <p className={styles.fine}>
+            Every new contract version is audited before launch. Phases after the presale have no fixed date: they depend on
+            development, audits and adoption, and may change.
+          </p>
+        </section>
+
         <section className={styles.faq} id="faq">
           <h2 className={styles.faqTitle}>JOOB token FAQ</h2>
           {FAQ.map((item) => (
