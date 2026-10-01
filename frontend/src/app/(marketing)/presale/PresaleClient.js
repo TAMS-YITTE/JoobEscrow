@@ -9,6 +9,7 @@ import { useWeb3 } from '../../../context/Web3Context';
 import {
   PRESALE_ADDRESSES, PRESALE_ABI, ERC20_ABI, PRESALE_STATE, PRESALE_CHAIN_ID, BSCSCAN, AUDITS,
   priceAt, nextStepAt, volumeTierBps, readableError,
+  PLANNED_LISTING_PRICE,
 } from '../../../config/presale';
 import styles from './presale.module.css';
 
@@ -410,6 +411,7 @@ export default function PresaleClient() {
           <div className={styles.refs}>
             <div><div className={styles.small}>Starting price</div><div className={styles.strong}>${fmtUsd(config.basePrice, pd)}</div></div>
             <div><div className={styles.small}>Last presale price</div><div className={styles.strong}>${fmtUsd(endPrice, pd)}</div></div>
+            <div><div className={styles.small}>Planned listing</div><div className={styles.strong}>${PLANNED_LISTING_PRICE}</div></div>
             <div><div className={styles.small}>Sale cap</div><div className={styles.strong}>{fmtNum(Number(ethers.formatUnits(config.cap, td)) / 1e6, 1)}M JOOB</div></div>
           </div>
           <div className={styles.schedule}>

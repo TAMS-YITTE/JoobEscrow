@@ -39,7 +39,7 @@ const FAQ = [
   },
   {
     q: 'Will JOOB be tradable after the sale?',
-    a: 'A JOOB/USDT pool on PancakeSwap is planned after the sale ends; its details will be announced on official channels beforehand. Once trading starts, the price is set by the market alone: it is not guaranteed and may be lower than the price you paid. Only contribute what you can afford to lose.',
+    a: 'A JOOB/USDT pool on PancakeSwap is planned right after the sale ends, opened by the JoobEscrow Safe at an initial price of $0.02 (50 JOOB per USDT), above every presale price. Once trading starts, the price is set by the market alone: it is not guaranteed and may be lower than the price you paid. Only contribute what you can afford to lose.',
   },
   {
     q: 'Who can participate?',
@@ -50,9 +50,9 @@ const FAQ = [
 // Feuille de route publique : aucune date au-dela de la presale (rien de signe ni planifie).
 const ROADMAP = [
   { title: 'Foundations', status: 'done', items: 'Audited escrow contract, verified on BscScan, owned by a Safe multisig. 15 categories and encrypted in-app chat.' },
-  { title: 'Trust layer', status: 'now', items: 'Public deal pages, "verify in 30 seconds" guide, $5 demo, proof page, Telegram notification bot, on-chain dispute evidence.' },
+  { title: 'Trust layer', status: 'now', items: 'Check a deal before you pay. Live: $1 demo with a step-by-step guide, shareable escrow links. Next: public deal pages anyone can verify without a wallet, Telegram alerts, dispute evidence recorded on-chain.' },
   { title: 'JOOB presale', status: 'next', items: 'October 15, 2026 → January 13, 2027. Sealed vault, vesting for every participant, unsold tokens burned.' },
-  { title: 'TGE & liquidity', items: 'JOOB/USDT pool on PancakeSwap, first JOOB utilities (boosts & badges), Early Escrow points.' },
+  { title: 'TGE & liquidity', items: 'JOOB/USDT pool on PancakeSwap at an initial price of $0.02, first JOOB utilities (boosts & badges), Early Escrow points.' },
   { title: 'Escrow V5', items: 'On-chain affiliate rewards, gasless payouts, JOOB fee discount, verified reputation profiles.' },
   { title: 'Escrow V5.1', items: 'Milestone payments, partial releases, amicable settlement, bulk deals for agencies.' },
   { title: 'Expansion', items: 'Multichain, card payments, API & "Pay me with JoobEscrow" widget, receipts & invoices.' },

@@ -103,3 +103,7 @@ export function readableError(err) {
   if (/insufficient funds/i.test(msg)) return 'Not enough BNB to pay the network fee.';
   return msg.length > 160 ? `${msg.slice(0, 160)}…` : msg;
 }
+
+// Prix initial prevu de la pool PancakeSwap JOOB/USDT (LAUNCH_PLAN_JOOB.md : 50 JOOB pour 1 USDT).
+// Prix d'ouverture fixe par le Safe, pas une garantie : le marche fixe ensuite le prix.
+export const PLANNED_LISTING_PRICE = '0.02';
