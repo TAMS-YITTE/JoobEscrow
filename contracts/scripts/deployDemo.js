@@ -5,8 +5,8 @@
 //   SIM=1  npx hardhat run scripts/deployDemo.js --config hardhat.demo.config.js   (simulation locale chainId 56,
 //          jetons factices places aux vraies adresses — quand aucun RPC ne permet le fork)
 //
-// Etapes : deploiement (commission 0 %, recipient = Safe) -> USDT seul, borne 1..20 USDT
-// -> BUSD/USDC/WBNB retires -> transferOwnership(Safe) (Ownable2Step : le Safe doit
+// Etapes : deploiement (commission 0 %, recipient = Safe) -> USDT et USDC, bornes 1..20
+// -> BUSD/WBNB retires -> transferOwnership(Safe) (Ownable2Step : le Safe doit
 // ensuite executer acceptOwnership, lot Safe genere par ce script).
 // Sur fork : simule aussi acceptOwnership par le Safe et un cycle complet de demo.
 import hardhat from "hardhat";
@@ -15,9 +15,10 @@ const { ethers, network } = hardhat;
 
 const SAFE = "0x872F979aa868145bE3c3A6EA787614BE2A18C7f7";
 const USDT = "0x55d398326f99059fF775485246999027B3197955";
+// Jetons de la demo (18 decimales sur BSC), bornes 1..20.
+const KEEP = { USDT, USDC: "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d" };
 const REMOVE = {
   BUSD: "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56",
-  USDC: "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d",
   WBNB: "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
 };
 const MIN = ethers.parseUnits("1", 18);
@@ -40,7 +41,7 @@ async function installMockTokens() {
   const supply = ethers.parseUnits("1000000000", 18);
   // OpenZeppelin ERC20 v5 : _balances au slot 0, _totalSupply au slot 2.
   const balSlot = ethers.keccak256(ethers.AbiCoder.defaultAbiCoder().encode(["address", "uint256"], [SIM_WHALE, 0]));
-  for (const token of [USDT, ...Object.values(REMOVE)]) {
+  for (const token of [...Object.values(KEEP), ...Object.values(REMOVE)]) {
     await network.provider.send("hardhat_setCode", [token, code]);
     await network.provider.send("hardhat_setStorageAt", [token, pad(2), pad(supply)]);
     await network.provider.send("hardhat_setStorageAt", [token, balSlot, pad(supply)]);
@@ -49,7 +50,7 @@ async function installMockTokens() {
 
 async function main() {
   const { chainId } = await ethers.provider.getNetwork();
-  check(chainId === 56n, `chainId 56 (${FORK ? "fork" : network.name})`);
+  check(chainId === 56n, `chainId 56 (${process.env.SIM ? "local simulation" : FORK ? "fork" : network.name})`);
 
   if (process.env.SIM) await installMockTokens();
 
@@ -69,7 +70,9 @@ async function main() {
   const addr = await escrow.getAddress();
   console.log(`Demo escrow deployed: ${addr}`);
 
-  await (await escrow.setTokenAllowed(USDT, "USDT", MIN, MAX, true)).wait();
+  for (const [sym, token] of Object.entries(KEEP)) {
+    await (await escrow.setTokenAllowed(token, sym, MIN, MAX, true)).wait();
+  }
   for (const [sym, token] of Object.entries(REMOVE)) {
     if ((await escrow.tokenConfigs(token)).allowed) {
       await (await escrow.setTokenAllowed(token, sym, 0, 0, false)).wait();
@@ -78,8 +81,10 @@ async function main() {
   await (await escrow.transferOwnership(SAFE)).wait();
 
   // ── Controles post-deploiement ──────────────────────────────────────────
-  const usdt = await escrow.tokenConfigs(USDT);
-  check(usdt.allowed && usdt.minAmount === MIN && usdt.maxAmount === MAX, "USDT allowed, 1..20 USDT");
+  for (const [sym, token] of Object.entries(KEEP)) {
+    const cfg = await escrow.tokenConfigs(token);
+    check(cfg.allowed && cfg.minAmount === MIN && cfg.maxAmount === MAX, `${sym} allowed, 1..20`);
+  }
   for (const [sym, token] of Object.entries(REMOVE)) {
     check(!(await escrow.tokenConfigs(token)).allowed, `${sym} not allowed`);
   }
@@ -119,31 +124,33 @@ async function main() {
   check((await escrow.owner()) === SAFE, "owner = Safe after acceptOwnership");
 
   const [, clientW, providerW] = await ethers.getSigners();
-  // USDT de test : preleves chez un gros detenteur imperson ne (aucun effet reel).
-  const WHALE = process.env.SIM ? SIM_WHALE : (process.env.USDT_WHALE || "0x8894E0a0c962CB723c1976a4421c95949bE2D4E3");
-  const usdtC = await ethers.getContractAt(["function transfer(address,uint256) returns (bool)", "function approve(address,uint256) returns (bool)", "function balanceOf(address) view returns (uint256)"], USDT);
-  await network.provider.request({ method: "hardhat_impersonateAccount", params: [WHALE] });
-  await network.provider.send("hardhat_setBalance", [WHALE, "0x56BC75E2D63100000"]);
-  check((await usdtC.balanceOf(WHALE)) >= MAX * 2n, "fork: test USDT available");
-  await (await usdtC.connect(await ethers.getSigner(WHALE)).transfer(clientW.address, MAX * 2n)).wait();
+  // Jetons de test : preleves chez un gros detenteur imperson ne (aucun effet reel).
+  const ERC20 = ["function transfer(address,uint256) returns (bool)", "function approve(address,uint256) returns (bool)", "function balanceOf(address) view returns (uint256)"];
+  for (const [sym, token] of Object.entries(KEEP)) {
+    const WHALE = process.env.SIM ? SIM_WHALE : (process.env[`${sym}_WHALE`] || "0x8894E0a0c962CB723c1976a4421c95949bE2D4E3");
+    const tok = await ethers.getContractAt(ERC20, token);
+    await network.provider.request({ method: "hardhat_impersonateAccount", params: [WHALE] });
+    await network.provider.send("hardhat_setBalance", [WHALE, "0x56BC75E2D63100000"]);
+    check((await tok.balanceOf(WHALE)) >= MAX * 2n, `${sym}: test tokens available`);
+    await (await tok.connect(await ethers.getSigner(WHALE)).transfer(clientW.address, MAX * 2n)).wait();
 
-  const before = await usdtC.balanceOf(clientW.address);
-  await (await usdtC.connect(clientW).approve(addr, MIN)).wait();
-  const tx = await escrow.connect(clientW).createAndFundEscrow(providerW.address, USDT, MIN, 3);
-  const rc = await tx.wait();
-  const id = await escrow.escrowCounter();
-  await (await escrow.connect(providerW).acceptEscrow(id)).wait();
-  await (await escrow.connect(clientW).releaseFunds(id)).wait();
-  await (await escrow.connect(providerW).withdraw(USDT)).wait();
-  check((await usdtC.balanceOf(providerW.address)) === MIN, "provider received exactly 1 USDT (0 % fee)");
-  check((await usdtC.balanceOf(clientW.address)) === before - MIN, "client debited exactly 1 USDT");
-  check(rc.status === 1, "demo cycle complete");
+    const clientBefore = await tok.balanceOf(clientW.address);
+    const providerBefore = await tok.balanceOf(providerW.address);
+    await (await tok.connect(clientW).approve(addr, MIN)).wait();
+    await (await escrow.connect(clientW).createAndFundEscrow(providerW.address, token, MIN, 3)).wait();
+    const id = await escrow.escrowCounter();
+    await (await escrow.connect(providerW).acceptEscrow(id)).wait();
+    await (await escrow.connect(clientW).releaseFunds(id)).wait();
+    await (await escrow.connect(providerW).withdraw(token)).wait();
+    check((await tok.balanceOf(providerW.address)) - providerBefore === MIN, `${sym}: provider received exactly 1 (0 % fee)`);
+    check(clientBefore - (await tok.balanceOf(clientW.address)) === MIN, `${sym}: client debited exactly 1`);
 
-  let reverted = false;
-  await (await usdtC.connect(clientW).approve(addr, MAX + 1n)).wait();
-  try { await escrow.connect(clientW).createAndFundEscrow(providerW.address, USDT, MAX + 1n, 3); } catch { reverted = true; }
-  check(reverted, "deposit above 20 USDT rejected");
-  console.log("\nFork rehearsal passed.");
+    let reverted = false;
+    await (await tok.connect(clientW).approve(addr, MAX + 1n)).wait();
+    try { await escrow.connect(clientW).createAndFundEscrow(providerW.address, token, MAX + 1n, 3); } catch { reverted = true; }
+    check(reverted, `${sym}: deposit above 20 rejected`);
+  }
+  console.log("\nRehearsal passed.");
 }
 
 main().catch((e) => { console.error(e.message || e); process.exitCode = 1; });
