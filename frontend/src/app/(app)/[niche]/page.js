@@ -14,6 +14,13 @@ import { ethers } from 'ethers';
 import { TOKEN_ADDRESSES, ERC20_ABI, ESCROW_ABI } from '../../../config/contract';
 import './page.css';
 
+const DEMO_STEPS = [
+  { who: 'Wallet A', title: 'Create & fund', text: 'Click "+ Create Secure Transaction", paste wallet B as provider and lock 1 USDT or USDC.' },
+  { who: 'Wallet B', title: 'Accept', text: 'Switch to wallet B and accept the escrow. No spending approval is ever asked from B.' },
+  { who: 'Wallet A', title: 'Release', text: 'Switch back to wallet A and release the funds, as you would once the work is delivered.' },
+  { who: 'Wallet B', title: 'Withdraw', text: 'On wallet B, click "Claim": the exact amount arrives, 0% fee.' },
+];
+
 function DashboardContent() {
   const { account, provider, signer, readProvider } = useWeb3();
   const niche = useNiche();
@@ -214,46 +221,41 @@ function DashboardContent() {
           <img src="/logo.jpg" alt="JoobEscrow Logo" style={{ width: '48px', height: '48px', borderRadius: '50%', objectFit: 'cover', border: '1px solid rgba(59, 130, 246, 0.8)', padding: '2px', boxShadow: '0 0 15px rgba(59, 130, 246, 0.5)', filter: 'brightness(1.4)' }} />
           <div>
             <h1 className="text-gradient" style={{ backgroundImage: `linear-gradient(to right, ${niche.theme.primary}, #fff)` }}>Dashboard</h1>
-            <p className="subtitle">Manage your {niche.name} {niche.lexicon.action.toLowerCase()}s & secure payments</p>
+            <p className="subtitle">{niche.isDemo ? 'Test a real on-chain escrow with $1, between two of your wallets' : `Manage your ${niche.name} ${niche.lexicon.action.toLowerCase()}s & secure payments`}</p>
           </div>
         </div>
         <WalletConnect />
       </header>
 
       {niche.isDemo && (
-        <div style={{ margin: '0 0 24px', padding: '16px 20px', borderRadius: '12px', border: '1px solid rgba(245, 158, 11, 0.45)', background: 'rgba(245, 158, 11, 0.08)', color: '#fde68a', lineHeight: 1.6 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', marginBottom: '6px' }}>
-            <span style={{ padding: '2px 10px', borderRadius: '999px', background: '#f59e0b', color: '#111', fontWeight: 800, fontSize: '0.75rem', letterSpacing: '0.05em' }}>DEMO</span>
-            <strong style={{ color: '#fff' }}>Try JoobEscrow with $1</strong>
+        <div className="demo-banner">
+          <div className="demo-banner-text">
+            <div className="demo-banner-title">
+              <span className="demo-pill">DEMO</span>
+              Try JoobEscrow with $1
+            </div>
+            <p>
+              A full escrow between <strong>two of your own wallets</strong>, with {niche.minAmount} to {niche.maxAmount} USDT or USDC.
+              0% fee: you get back exactly what you deposited. Demo escrows are never counted in JoobEscrow statistics.
+            </p>
           </div>
-          <p style={{ fontSize: '0.9rem' }}>
-            Run a full escrow between <strong>two of your own wallets</strong>: lock {niche.minAmount} to {niche.maxAmount} USDT or USDC with wallet A, accept with wallet B,
-            release with A, withdraw with B. 0% fee: you get back exactly what you deposited (plus a few cents of BNB gas).
-            Demo escrows are never counted in JoobEscrow statistics.{' '}
-            <Link href="/try" style={{ color: '#fbbf24', textDecoration: 'underline' }}>Step-by-step guide</Link>
-          </p>
+          <Link href="/try" className="demo-guide-link">Step-by-step guide →</Link>
         </div>
       )}
 
       {account && (
-        <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-8">
-          <div className="glass-panel p-3 sm:p-5 rounded-xl border border-gray-800 flex flex-col justify-between">
-            <div className="text-gray-400 text-xs sm:text-sm mb-2 flex flex-col sm:flex-row items-center sm:items-start gap-1 sm:gap-2 text-center sm:text-left">
-              <span>💼</span> <span className="hidden sm:inline">Active Transactions</span><span className="sm:hidden">Active</span>
-            </div>
-            <div className="text-xl sm:text-3xl font-bold text-white text-center sm:text-left">{activeCount}</div>
+        <div className="stats-grid">
+          <div className="stat-card">
+            <div className="stat-label"><span>💼</span><span className="label-long">Active Transactions</span><span className="label-short">Active</span></div>
+            <div className="stat-value">{activeCount}</div>
           </div>
-          <div className="glass-panel p-3 sm:p-5 rounded-xl border border-gray-800 flex flex-col justify-between">
-            <div className="text-gray-400 text-xs sm:text-sm mb-2 flex flex-col sm:flex-row items-center sm:items-start gap-1 sm:gap-2 text-center sm:text-left">
-              <span>💶</span> <span className="hidden sm:inline">Total Secured</span><span className="sm:hidden">Secured</span>
-            </div>
-            <div className="text-xl sm:text-3xl font-bold text-white text-center sm:text-left">{totalSecured.toFixed(2)} <span className="text-sm hidden sm:inline">{niche.tokens ? 'USD' : 'USDT'}</span></div>
+          <div className="stat-card">
+            <div className="stat-label"><span>💶</span><span className="label-long">Total Secured</span><span className="label-short">Secured</span></div>
+            <div className="stat-value">{totalSecured.toFixed(2)}<small>{niche.tokens ? 'USD' : 'USDT'}</small></div>
           </div>
-          <div className="glass-panel p-3 sm:p-5 rounded-xl border border-gray-800 flex flex-col justify-between">
-            <div className="text-gray-400 text-xs sm:text-sm mb-2 flex flex-col sm:flex-row items-center sm:items-start gap-1 sm:gap-2 text-center sm:text-left">
-              <span>⚠️</span> <span className="hidden sm:inline">Actions Required</span><span className="sm:hidden">Actions</span>
-            </div>
-            <div className="text-xl sm:text-3xl font-bold text-yellow-400 text-center sm:text-left">{actionRequiredCount}</div>
+          <div className="stat-card">
+            <div className="stat-label"><span>⚠️</span><span className="label-long">Actions Required</span><span className="label-short">Actions</span></div>
+            <div className="stat-value warn">{actionRequiredCount}</div>
           </div>
         </div>
       )}
@@ -263,17 +265,17 @@ function DashboardContent() {
           <button className={`tab ${activeTab === 'active' ? 'active' : ''}`} onClick={() => setActiveTab('active')}>Active Contracts</button>
           <button className={`tab ${activeTab === 'history' ? 'active' : ''}`} onClick={() => setActiveTab('history')}>History</button>
         </div>
-        <div style={{display:'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap'}}>
+        <div className="controls-right">
           {Object.entries(pending).filter(([, v]) => Number(v) > 0).map(([sym, v]) => (
-            <div key={sym} className="flex items-center gap-3 bg-green-900/30 border border-green-500/50 text-green-300 px-4 py-2 rounded-lg" style={{ animation: 'pulse 2s infinite' }}>
-              <span className="text-sm">ℹ️ Funds available to withdraw</span>
-              <button className="btn btn-primary" onClick={() => handleClaim(sym)} style={{background: '#22c55e', border: '1px solid #16a34a', padding: '6px 12px', fontSize: '0.875rem', height: 'auto'}}>
+            <div key={sym} className="claim-box">
+              <span>ℹ️ Funds available to withdraw</span>
+              <button className="btn btn-primary" onClick={() => handleClaim(sym)}>
                 Claim {v} {sym}
               </button>
             </div>
           ))}
           {account && (
-            <div className="badge badge-outline" style={{ display: 'flex', alignItems: 'center', padding: '0 15px', height: '40px', border: '1px solid #22c55e', color: '#22c55e', borderRadius: '8px', background: 'rgba(34, 197, 94, 0.05)', fontWeight: '600' }}>
+            <div className="balance-badge">
               {balances ? Object.entries(balances).map(([sym, v]) => `${Number(v).toFixed(2)} ${sym}`).join(' · ') : 'Loading...'}
             </div>
           )}
@@ -288,9 +290,9 @@ function DashboardContent() {
         let banner;
         if (!account) {
           banner = (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'flex-start' }}>
-              <p className="text-gray-300 text-sm">
-                You've been invited to <strong>Escrow #{invitedEscrow.id}</strong> ({invitedEscrow.amount} {invitedEscrow.tokenSymbol}).
+            <div className="invite-body">
+              <p>
+                You&apos;ve been invited to <strong>Escrow #{invitedEscrow.id}</strong> ({invitedEscrow.amount} {invitedEscrow.tokenSymbol}).
                 Connect the wallet <strong style={{ fontFamily: 'monospace', color: niche.theme.primary }}>{short(invitedEscrow.provider)}</strong> ({niche.lexicon.provider}) to review and accept it.
               </p>
               <button className="btn btn-primary" onClick={() => open()} style={{ backgroundColor: niche.theme.primary, borderColor: niche.theme.primary, padding: '10px 20px' }}>
@@ -299,21 +301,21 @@ function DashboardContent() {
             </div>
           );
         } else if (meProvider) {
-          banner = <p className="text-sm" style={{ color: '#22c55e' }}>✓ You are connected as the recipient ({niche.lexicon.provider}). Review and accept this escrow below.</p>;
+          banner = <p style={{ color: '#22c55e' }}>✓ You are connected as the recipient ({niche.lexicon.provider}). Review and accept this escrow below.</p>;
         } else if (meClient) {
-          banner = <p className="text-sm text-gray-300">You created this escrow ({niche.lexicon.client}). Waiting for the {niche.lexicon.provider.toLowerCase()} to accept.</p>;
+          banner = <p>You created this escrow ({niche.lexicon.client}). Waiting for the {niche.lexicon.provider.toLowerCase()} to accept.</p>;
         } else {
           banner = (
-            <p className="text-sm" style={{ color: '#f59e0b' }}>
-              ⚠️ This escrow is addressed to <strong style={{ fontFamily: 'monospace' }}>{short(invitedEscrow.provider)}</strong>, but you're connected as <strong style={{ fontFamily: 'monospace' }}>{short(account)}</strong>. Switch to the correct wallet to accept it.
+            <p style={{ color: '#f59e0b' }}>
+              ⚠️ This escrow is addressed to <strong style={{ fontFamily: 'monospace' }}>{short(invitedEscrow.provider)}</strong>, but you&apos;re connected as <strong style={{ fontFamily: 'monospace' }}>{short(account)}</strong>. Switch to the correct wallet to accept it.
             </p>
           );
         }
         return (
-          <div className="glass-panel mt-6 p-5" style={{ border: `1px solid ${niche.theme.primary}`, background: 'rgba(0,0,0,0.3)' }}>
-            <h3 className="text-lg font-bold mb-3" style={{ color: niche.theme.primary }}>📨 Escrow Invitation</h3>
+          <div className="glass-panel invite-panel" style={{ borderColor: niche.theme.primary }}>
+            <h3 style={{ color: niche.theme.primary }}>📨 Escrow Invitation</h3>
             {banner}
-            <div className="mt-4">
+            <div className="invite-card">
               <EscrowCard escrow={invitedEscrow} isOwner={isOwner} onUpdate={() => { fetchInvited(); fetchEscrows(); fetchPending(); }} />
             </div>
           </div>
@@ -323,36 +325,34 @@ function DashboardContent() {
       {loading ? (
         <p style={{color: 'var(--text-secondary)'}}>Loading blockchain data...</p>
       ) : escrows.length === 0 ? (
-        <div className="glass-panel text-center p-8 max-w-3xl mx-auto mt-8 border border-gray-800">
+        <div className="glass-panel empty-panel" style={{ '--niche-primary': niche.theme.primary }}>
            {account ? (
-             <div className="flex flex-col items-center">
-               <h2 className="text-2xl font-bold mb-6 text-white">How it works</h2>
-               <div className="flex flex-col md:flex-row gap-4 text-left w-full">
-                 <div className="flex-1 bg-black/40 p-5 rounded-xl border border-gray-800/50 hover:border-gray-700 transition-colors">
-                   <div className="text-2xl mb-3">1️⃣</div>
-                   <h3 className="font-bold text-white mb-2">Create & Fund</h3>
-                   <p className="text-sm text-gray-400 leading-relaxed">Click <strong>+ New Escrow</strong> to lock funds in the smart contract. Share the link with your {niche.lexicon.provider.toLowerCase()}.</p>
-                 </div>
-                 <div className="flex-1 bg-black/40 p-5 rounded-xl border border-gray-800/50 hover:border-gray-700 transition-colors">
-                   <div className="text-2xl mb-3">2️⃣</div>
-                   <h3 className="font-bold text-white mb-2">Work & Deliver</h3>
-                   <p className="text-sm text-gray-400 leading-relaxed">The {niche.lexicon.provider.toLowerCase()} accepts the contract and completes the task securely.</p>
-                 </div>
-                 <div className="flex-1 bg-black/40 p-5 rounded-xl border border-gray-800/50 hover:border-gray-700 transition-colors">
-                   <div className="text-2xl mb-3">3️⃣</div>
-                   <h3 className="font-bold text-white mb-2">Release or Dispute</h3>
-                   <p className="text-sm text-gray-400 leading-relaxed">Satisfied? Release funds instantly. Issue? Open a dispute for fair resolution.</p>
-                 </div>
+             <>
+               <h2>How it works</h2>
+               {niche.isDemo && <p className="empty-sub">4 steps, about 10 minutes, two wallets you own.</p>}
+               <div className="steps-grid">
+                 {(niche.isDemo ? DEMO_STEPS : [
+                   { title: 'Create & Fund', text: `Click "+ Create Secure Transaction" to lock funds in the smart contract. Share the link with your ${niche.lexicon.provider.toLowerCase()}.` },
+                   { title: 'Work & Deliver', text: `The ${niche.lexicon.provider.toLowerCase()} accepts the contract and completes the task securely.` },
+                   { title: 'Release or Dispute', text: 'Satisfied? Release funds instantly. Issue? Open a dispute for fair resolution.' },
+                 ]).map((s, i) => (
+                   <div key={s.title} className="step-card">
+                     <span className="step-num">{i + 1}</span>
+                     {s.who && <span className="step-who">{s.who}</span>}
+                     <h3>{s.title}</h3>
+                     <p>{s.text}</p>
+                   </div>
+                 ))}
                </div>
-               <button className="btn btn-primary mt-8 px-8 py-3 shadow-lg" onClick={() => setShowModal(true)} style={{backgroundColor: niche.theme.primary, borderColor: niche.theme.primary}}>
-                 Create Your First Escrow
+               <button className="btn btn-primary empty-cta" onClick={() => setShowModal(true)} style={{backgroundColor: niche.theme.primary, borderColor: niche.theme.primary}}>
+                 {niche.isDemo ? 'Start the demo with wallet A' : 'Create Your First Escrow'}
                </button>
-             </div>
+             </>
            ) : (
-             <div className="py-12 flex flex-col items-center">
-               <div className="text-4xl mb-4">🔒</div>
-               <h3 className="text-xl font-bold text-white mb-2">Secure Web3 Escrow</h3>
-               <p className="text-gray-400 mb-6 text-center">Connect your wallet to view or create contracts.</p>
+             <div className="connect-empty">
+               <div className="lock">🔒</div>
+               <h3>Secure Web3 Escrow</h3>
+               <p>Connect your wallet to view or create contracts.</p>
                <div style={{ transform: 'scale(1.2)' }}>
                  <WalletConnect />
                </div>

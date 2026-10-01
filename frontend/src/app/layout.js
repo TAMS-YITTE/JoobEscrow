@@ -1,4 +1,5 @@
 import "./globals.css";
+import "./app-utilities.css";
 import { ToastProvider } from "../context/ToastContext";
 import { Analytics } from "@vercel/analytics/react";
 import { Suspense } from "react";

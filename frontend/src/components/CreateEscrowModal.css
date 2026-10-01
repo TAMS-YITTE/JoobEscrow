@@ -51,3 +51,16 @@
   gap: 12px;
   margin-top: 30px;
 }
+
+.form-group select {
+  width: 100%;
+  padding: 10px 12px;
+  background: #15171c;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-family: var(--font-main);
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+.form-group select:focus { outline: none; border-color: var(--accent-primary); }
