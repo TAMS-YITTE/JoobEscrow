@@ -13,6 +13,8 @@ export default {
     overrides: { "src/UniversalServiceEscrow.sol": V4_SETTINGS },
   },
   paths: { ...base.paths, cache: "./cache-demo", artifacts: "./artifacts-demo" },
+  // Cle unique (API Etherscan V2), comme contracts-token : l'ancien format par reseau echoue.
+  etherscan: { apiKey: process.env.BSCSCAN_API_KEY || "" },
   // FORK=1 : repetition sur un fork du mainnet BSC (aucune transaction reelle).
   // SIM=1 : reseau local en chainId 56 sans fork (jetons factices installes par le script).
   networks: process.env.FORK

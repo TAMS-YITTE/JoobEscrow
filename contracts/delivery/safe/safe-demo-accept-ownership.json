@@ -1,0 +1,21 @@
+{
+  "version": "1.0",
+  "chainId": "56",
+  "createdAt": 1790858353939,
+  "meta": {
+    "name": "JoobEscrow Demo Escrow - Accept ownership",
+    "description": "Safe accepts ownership of the demo escrow instance 0x28b80688749958241E14Fa8181274AE0E649eC0B (Ownable2Step).",
+    "txBuilderVersion": "1.18.0",
+    "createdFromSafeAddress": "0x872F979aa868145bE3c3A6EA787614BE2A18C7f7",
+    "createdFromOwnerAddress": ""
+  },
+  "transactions": [
+    {
+      "to": "0x28b80688749958241E14Fa8181274AE0E649eC0B",
+      "value": "0",
+      "data": "0x79ba5097",
+      "contractMethod": null,
+      "contractInputsValues": null
+    }
+  ]
+}
