@@ -46,7 +46,53 @@
   display: flex;
   justify-content: flex-end;
   align-items: center;
+  gap: 12px;
   flex: 1;
+}
+
+/* Bouton presale du menu : bordure en degrade + point anime */
+.presaleBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  border-radius: 999px;
+  white-space: nowrap;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #fff;
+  border: 1px solid transparent;
+  background:
+    linear-gradient(#0d1117, #0d1117) padding-box,
+    linear-gradient(90deg, #f59e0b, #10b981, #3b82f6) border-box;
+  box-shadow: 0 0 18px rgba(245, 158, 11, 0.25);
+  transition: transform 0.15s, box-shadow 0.2s;
+}
+.presaleBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 24px rgba(245, 158, 11, 0.45);
+}
+.presaleDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #f59e0b;
+  box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7);
+  animation: presalePulse 1.8s infinite;
+}
+@keyframes presalePulse {
+  70% { box-shadow: 0 0 0 7px rgba(245, 158, 11, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+}
+.presaleTag {
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #0d1117;
+  background: linear-gradient(90deg, #fbbf24, #f59e0b);
 }
 
 .navLink {

@@ -4,6 +4,7 @@ import dict from '../../i18n/en.json';
 
 import { Web3Provider } from '../../context/Web3Context';
 import CrispChat from '../../components/CrispChat';
+import PresaleNavButton from '../../components/PresaleNavButton';
 
 export default function MarketingLayout({ children }) {
   return (
@@ -22,12 +23,10 @@ export default function MarketingLayout({ children }) {
             <Link href="/security" className={styles.navLink}>
               Security
             </Link>
-            <Link href="/presale" className={styles.navLink}>
-              Token
-            </Link>
           </nav>
 
           <div className={styles.navRight}>
+            <PresaleNavButton />
             <Link href="/app" className="btn btn-primary" style={{ whiteSpace: 'nowrap' }}>
               Launch App
             </Link>
