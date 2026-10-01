@@ -59,15 +59,15 @@ const ROADMAP = [
   { title: 'Community', items: 'Governance votes, staked arbitrators.' },
 ];
 // Repartition de l'offre fixe de 1 Md JOOB (MASTER_PROMPT §5). Les 13,5 M de bonus/parrainage
-// du plafond presale (163,5 M) sont pris sur l'ecosysteme. onChain = vesting impose par un contrat deploye.
+// du plafond presale (163,5 M) sont pris sur le marketing (decision du 30/09). onChain = vesting impose par un contrat deploye.
 const TOKENOMICS = [
   { name: 'Presale', pct: 15, color: '#10b981', vesting: '20% at sale end, then linear over 180 days', onChain: true },
   { name: 'Presale bonus & referral', pct: 1.35, color: '#6ee7b7', vesting: 'Same vesting as the presale', onChain: true },
-  { name: 'Ecosystem & usage', pct: 23.65, color: '#3b82f6', vesting: 'Over 48 months, max 0.5% of supply per month' },
+  { name: 'Ecosystem & usage', pct: 25, color: '#3b82f6', vesting: 'Over 48 months, max 0.5% of supply per month' },
   { name: 'Treasury (Safe)', pct: 13, color: '#8b5cf6', vesting: '6-month cliff, then 36 months' },
   { name: 'Team', pct: 12, color: '#f59e0b', vesting: '12-month cliff, then 24 months' },
   { name: 'DEX liquidity', pct: 10, color: '#06b6d4', vesting: 'Paired at listing, LP locked 12 months or more' },
-  { name: 'Marketing', pct: 8, color: '#ec4899', vesting: '10% at TGE, then 18 months' },
+  { name: 'Marketing', pct: 6.65, color: '#ec4899', vesting: '10% at TGE, then 18 months' },
   { name: 'Partners & KOL', pct: 7, color: '#f97316', vesting: '3-month cliff, then 12 months, always disclosed' },
   { name: 'Airdrop (points)', pct: 5, color: '#eab308', vesting: '20% at TGE, then 6 months (audited contract)' },
   { name: 'CEX reserve', pct: 5, color: '#64748b', vesting: 'Used only for a centralized exchange listing' },
