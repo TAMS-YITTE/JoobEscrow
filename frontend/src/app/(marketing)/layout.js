@@ -3,7 +3,6 @@ import styles from './marketing.module.css';
 import dict from '../../i18n/en.json';
 
 import { Web3Provider } from '../../context/Web3Context';
-import CrispChat from '../../components/CrispChat';
 import PresaleNavButton from '../../components/PresaleNavButton';
 
 export default function MarketingLayout({ children }) {
@@ -72,7 +71,6 @@ export default function MarketingLayout({ children }) {
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginTop: '0.5rem' }}>© {new Date().getFullYear()} JoobEscrow. All rights reserved.</p>
           </div>
         </footer>
-        <CrispChat />
       </div>
     </Web3Provider>
   );
