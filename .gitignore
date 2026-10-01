@@ -26,3 +26,7 @@ contracts/typechain-types/
 
 # Kit contrats generique (depot prive separe)
 contracts-token/
+
+# Artefacts du deploiement de l instance demo
+contracts/artifacts-demo/
+contracts/cache-demo/
