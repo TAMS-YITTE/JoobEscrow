@@ -21,10 +21,14 @@ export default function LandingPage() {
             <img src="https://spywolf.co/images/SpyWolf-v2-logo.svg" alt="Audited by SpyWolf" style={{ height: '24px', objectFit: 'contain' }} />
           </Link>
         </div>
-        <Link href="/try" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginTop: '18px', color: '#fbbf24', fontWeight: 600, fontSize: '0.95rem' }}>
-          <span style={{ padding: '1px 8px', borderRadius: '999px', background: '#f59e0b', color: '#111', fontWeight: 800, fontSize: '0.7rem' }}>DEMO</span>
-          New here? Try it with $1 →
-        </Link>
+        <div className={styles.demoCtaWrap}>
+          <Link href="/try" className={styles.demoCta}>
+            <span className={styles.demoCtaTag}>DEMO</span>
+            New here? Try it with $1
+            <span aria-hidden="true">→</span>
+          </Link>
+          <p className={styles.demoCtaSub}>Full escrow cycle between two of your wallets · 0% fee · USDT or USDC</p>
+        </div>
       </section>
 
       {/* Video Section */}
