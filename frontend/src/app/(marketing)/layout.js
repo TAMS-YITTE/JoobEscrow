@@ -40,6 +40,7 @@ export default function MarketingLayout({ children }) {
         <footer className={styles.footer} style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '2rem', paddingBottom: '2rem' }}>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem' }}>
             <div className={styles.footerNav} style={{ flexWrap: 'wrap', justifyContent: 'center', gap: '1.5rem', marginTop: 0 }}>
+              <Link href="/try" className={styles.navLink}>Try it with $1</Link>
               <Link href="/faq" className={styles.navLink}>FAQ</Link>
               <Link href="/how-disputes-work" className={styles.navLink}>How Disputes Work</Link>
               <Link href="/security" className={styles.navLink}>Security & Trust</Link>
