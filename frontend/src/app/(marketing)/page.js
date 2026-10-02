@@ -108,6 +108,16 @@ export default function LandingPage() {
           Marketplace figures: typical published seller and buyer service fees on large freelance marketplaces, small orders included.
           JoobEscrow fees are read on-chain from each contract tier.
         </p>
+
+        <div className={styles.visionBox}>
+          <span className={styles.visionTag}>Where we are going</span>
+          <h3>Web3 security, Web2 simplicity</h3>
+          <p>
+            Today you need a crypto wallet to use JoobEscrow. Next, we hide that complexity: sign in with email, no seed phrase
+            to start, network fees covered, card payments. The same on-chain protection, as easy to use as the apps you already know.
+          </p>
+          <Link href="/presale#roadmap" className={styles.visionLink}>See the roadmap →</Link>
+        </div>
       </section>
 
       {/* Stats & Calculator Section */}

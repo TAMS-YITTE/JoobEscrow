@@ -444,3 +444,20 @@
 }
 .whyNote { margin-top: 18px; text-align: center; color: #64748b; font-size: 0.78rem; }
 @media (max-width: 860px) { .whyGrid { grid-template-columns: 1fr; } }
+
+/* --- Vision Web2 --- */
+.visionBox {
+  margin: 40px auto 0; max-width: 820px; padding: 28px 30px; border-radius: 18px; text-align: center;
+  border: 1px solid transparent;
+  background:
+    linear-gradient(#0d1117, #0d1117) padding-box,
+    linear-gradient(90deg, rgba(16, 185, 129, 0.6), rgba(59, 130, 246, 0.6)) border-box;
+}
+.visionTag {
+  display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 0.72rem; font-weight: 800;
+  letter-spacing: 0.05em; text-transform: uppercase; color: #93c5fd; background: rgba(59, 130, 246, 0.14);
+}
+.visionBox h3 { margin-top: 12px; font-size: 1.5rem; color: #fff; }
+.visionBox p { margin: 10px auto 0; max-width: 640px; color: var(--text-secondary); line-height: 1.6; }
+.visionLink { display: inline-block; margin-top: 14px; font-weight: 700; color: #6ee7b7; }
+.visionLink:hover { text-decoration: underline; }
