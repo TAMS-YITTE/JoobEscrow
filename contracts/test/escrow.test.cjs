@@ -14,7 +14,7 @@ async function deployFixture() {
   const std     = await (await ethers.getContractFactory("MockStandardToken")).connect(owner).deploy("Std", "STD");
 
   const escrow = await (await ethers.getContractFactory("UniversalServiceEscrow"))
-    .connect(owner).deploy(feeRecipient.address);
+    .connect(owner).deploy(feeRecipient.address, 800); // 8 % : valeur attendue par les assertions de frais
 
   const eAddr = await escrow.getAddress();
   for (const [t, sym] of [[usdt, "USDT"], [feeTok, "FEE"], [flaky, "FLKY"]]) {

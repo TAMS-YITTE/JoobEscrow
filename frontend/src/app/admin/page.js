@@ -114,7 +114,7 @@ export default function AdminGeneratorPage() {
     <div style={{ maxWidth: '760px', margin: '40px auto', padding: '0 20px' }}>
       <h1 className="text-2xl font-bold mb-1 text-white">KOL Link Generator</h1>
       <p className="text-gray-500 text-sm mb-6">
-        Fill in a partner's details → get their affiliate links and the JSON block to paste into
+        Fill in a partner&apos;s details → get their affiliate links and the JSON block to paste into
         <code style={{ color: '#93c5fd' }}> src/config/kols.json</code>.
       </p>
 

@@ -30,3 +30,11 @@ contracts-token/
 # Artefacts du deploiement de l instance demo
 contracts/artifacts-demo/
 contracts/cache-demo/
+
+# Rapports de couverture generes (regeneres en local, chemins machine)
+contracts/coverage/
+contracts/coverage.json
+
+# Archives et documents hors perimetre du depot public
+*.zip
+audit_market_cahier_des_charges.docx

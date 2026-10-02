@@ -109,7 +109,7 @@ export default function KolProfileClient({ handle }) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
         <h1 className="text-3xl font-bold mb-4 text-white">Partner Not Found</h1>
-        <p className="text-gray-400">The JoobEscrow partner "{handle}" does not exist or is not active yet.</p>
+        <p className="text-gray-400">The JoobEscrow partner &ldquo;{handle}&rdquo; does not exist or is not active yet.</p>
       </div>
     );
   }
