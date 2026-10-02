@@ -27,7 +27,7 @@ export default function WalletConnect() {
           onMouseOver={(e) => e.currentTarget.style.background = '#334155'}
           onMouseOut={(e) => e.currentTarget.style.background = 'var(--panel-bg, #1e293b)'}
         >
-          <img src="/logo.png" alt="JoobEscrow" style={{ width: '28px', height: '28px', borderRadius: '50%', marginRight: '8px', objectFit: 'cover' }} />
+          <img src="/logo.svg" alt="JoobEscrow" style={{ width: '28px', height: '28px', borderRadius: '50%', marginRight: '8px', objectFit: 'cover' }} />
           <span style={{ fontSize: '0.9rem', fontWeight: '500', fontFamily: 'monospace' }}>
             {address ? `${address.substring(0, 6)}...${address.substring(address.length - 4)}` : ''}
           </span>

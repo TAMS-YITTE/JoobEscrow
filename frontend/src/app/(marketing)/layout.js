@@ -25,7 +25,7 @@ export default function MarketingLayout({ children }) {
         <ZealyBanner />
         <header className={styles.header}>
           <Link href="/" className={styles.logoContainer}>
-            <img src="/logo.jpg" alt="JoobEscrow Logo" className={styles.logoImg} />
+            <img src="/logo.svg" alt="JoobEscrow Logo" className={styles.logoImg} />
             <span className={styles.logoText}>JoobEscrow</span>
           </Link>
 

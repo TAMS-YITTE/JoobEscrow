@@ -315,10 +315,7 @@
 }
 
 /* --- Header (logo, menu, reseaux, presale, app) --- */
-.logoImg {
-  width: 44px; height: 44px; border-radius: 50%; object-fit: cover; padding: 2px;
-  border: 1px solid rgba(59, 130, 246, 0.8); box-shadow: 0 0 15px rgba(59, 130, 246, 0.5); filter: brightness(1.4);
-}
+.logoImg { width: 44px; height: 44px; filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.35)); }
 .headerSocial {
   display: inline-flex; align-items: center; justify-content: center;
   width: 36px; height: 36px; border-radius: 50%;

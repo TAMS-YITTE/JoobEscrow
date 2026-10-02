@@ -20,7 +20,7 @@ export default function Sidebar() {
     <aside className="sidebar glass-panel">
       <div className="sidebar-brand">
         <Link href="/" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <img src="/logo.jpg" alt="JoobEscrow Logo" style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', border: '1px solid rgba(59, 130, 246, 0.8)', padding: '2px', boxShadow: '0 0 12px rgba(59, 130, 246, 0.5)', filter: 'brightness(1.4)' }} />
+          <img src="/logo.svg" alt="JoobEscrow Logo" style={{ width: '40px', height: '40px' }} />
           <h2>Joob</h2>
         </Link>
         <p style={{color: niche.theme.primary, marginTop: '8px'}}>{niche.name}</p>

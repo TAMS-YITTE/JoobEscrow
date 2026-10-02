@@ -11,8 +11,8 @@ export const metadata = {
   description: "Secure every payment. Pay only when the work is approved. The universal non-custodial escrow platform for freelancers, creators, and businesses.",
   keywords: ["escrow", "web3 escrow", "crypto escrow", "freelance crypto", "smart contract", "secure payment"],
   icons: {
-    icon: '/logo.png',
-    apple: '/logo.png',
+    icon: [{ url: '/logo.svg', type: 'image/svg+xml' }, { url: '/logo.png', type: 'image/png' }],
+    apple: '/apple-icon.png',
   },
   alternates: {
     canonical: '/',
