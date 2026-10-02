@@ -3,6 +3,8 @@ import styles from './marketing.module.css';
 import dict from '../../i18n/en.json';
 import LiveStats from '../../components/LiveStats';
 import FeeCalculator from '../../components/FeeCalculator';
+import PresaleHomeBanner from '../../components/PresaleHomeBanner';
+import { AUDITS } from '../../config/presale';
 
 export default function LandingPage() {
   const d = dict.landing;
@@ -17,9 +19,13 @@ export default function LandingPage() {
           <Link href="/app" className="btn btn-primary" style={{ padding: '12px 28px', fontSize: '1rem', height: '100%', display: 'flex', alignItems: 'center' }}>
             {d.hero.ctaPrimary}
           </Link>
-          <Link href="https://spywolf.co/audits/Universal_Service_Escrow_V4_Audit.pdf" target="_blank" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '10px 20px', background: '#e2e8f0', border: '1px solid #e2e8f0', borderRadius: '12px', height: '100%', transition: 'all 0.2s', minWidth: '160px' }} className="hover:opacity-90">
-            <img src="https://spywolf.co/images/SpyWolf-v2-logo.svg" alt="Audited by SpyWolf" style={{ height: '24px', objectFit: 'contain' }} />
-          </Link>
+          <a href={AUDITS.ESCROW_V4} target="_blank" rel="noopener noreferrer" className={styles.auditBadge}>
+            <img src="https://spywolf.co/images/SpyWolf-v2-logo.svg" alt="SpyWolf" className={styles.auditBadgeLogo} />
+            <span className={styles.auditBadgeText}>
+              <strong>Audited by SpyWolf</strong>
+              <span>0 critical · all findings fixed ↗</span>
+            </span>
+          </a>
         </div>
         <div className={styles.demoCtaWrap}>
           <Link href="/try" className={styles.demoCta}>
@@ -29,6 +35,7 @@ export default function LandingPage() {
           </Link>
           <p className={styles.demoCtaSub}>Full escrow cycle between two of your wallets · 0% fee · USDT or USDC</p>
         </div>
+        <PresaleHomeBanner />
       </section>
 
       {/* Video Section */}
@@ -96,7 +103,7 @@ export default function LandingPage() {
           </div>
           <div className="glass-panel p-6">
             <h3 className="font-bold text-lg text-white mb-2">Who resolves disputes?</h3>
-            <p className="text-gray-400">If a disagreement occurs, either party can open a dispute and submit evidence. JoobEscrow acts as an impartial arbitrator to review the evidence and distribute the funds fairly between both parties.</p>
+            <p className="text-gray-400">If a disagreement occurs, either party can open a dispute and share evidence. The JoobEscrow arbitration team reviews it and splits the funds between both parties (any split from 0 to 100%). If a dispute is abandoned for 30 days, either party can trigger a 50/50 split in the contract, so funds are never locked forever.</p>
           </div>
           <div className="glass-panel p-6">
             <h3 className="font-bold text-lg text-white mb-2">What fees do I pay?</h3>
@@ -104,7 +111,7 @@ export default function LandingPage() {
           </div>
           <div className="glass-panel p-6">
             <h3 className="font-bold text-lg text-white mb-2">Are my communications with the provider secure?</h3>
-            <p className="text-gray-400">Yes! We integrated the <strong>XMTP protocol</strong> to provide wallet-to-wallet, end-to-end encrypted messaging directly inside the contract. Your files and negotiations remain 100% private and decentralized.</p>
+            <p className="text-gray-400">The in-app chat uses the <strong>XMTP protocol</strong>: end-to-end encrypted messages from wallet to wallet, linked to your escrow. Messages travel encrypted over the XMTP network (not in the smart contract, not on JoobEscrow servers) and only the two wallets can read them.</p>
           </div>
         </div>
         <div className="mt-8 text-center">

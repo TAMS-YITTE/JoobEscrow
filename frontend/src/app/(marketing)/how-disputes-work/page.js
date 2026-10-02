@@ -33,8 +33,8 @@ export default function HowDisputesWorkPage() {
           <div className="absolute w-6 h-6 bg-blue-500/20 border-2 border-blue-500 rounded-full -left-[13px] top-1"></div>
           <h3 className="text-2xl font-bold text-white mb-2">2. Submit Evidence</h3>
           <p className="text-gray-400 mb-4">
-            Both parties have the opportunity to submit their proof of work or proof of failure. This evidence is anchored on-chain 
-            via a cryptographic hash (e.g., an IPFS CID containing chat logs, deliverables, and requirements).
+            Both parties share their proof of work or proof of failure (chat logs, deliverables, requirements). The contract supports
+            anchoring a cryptographic hash of each piece of evidence on-chain (<code>submitEvidence</code>); in-app evidence upload is coming.
           </p>
         </div>
 
@@ -43,7 +43,7 @@ export default function HowDisputesWorkPage() {
           <div className="absolute w-6 h-6 bg-purple-500/20 border-2 border-purple-500 rounded-full -left-[13px] top-1"></div>
           <h3 className="text-2xl font-bold text-white mb-2">3. Arbitration & Resolution</h3>
           <p className="text-gray-400 mb-4">
-            Our specialized arbitration team reviews the immutable evidence. We use the <code>resolveDispute(id, providerBps)</code> function 
+            Our arbitration team reviews the evidence from both parties. We use the <code>resolveDispute(id, providerBps)</code> function 
             to enforce a fair split based on the work completed.
           </p>
           <div className="glass-panel p-4 text-sm text-gray-300">

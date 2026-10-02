@@ -312,12 +312,104 @@
     align-items: stretch;
     padding: 0 20px;
   }
-  .header {
-    flex-direction: column;
-    padding: 15px 20px;
-  }
-  .navCenter {
-    flex-wrap: wrap;
-    gap: 15px;
-  }
 }
+
+/* --- Header (logo, menu, reseaux, presale, app) --- */
+.logoImg {
+  width: 44px; height: 44px; border-radius: 50%; object-fit: cover; padding: 2px;
+  border: 1px solid rgba(59, 130, 246, 0.8); box-shadow: 0 0 15px rgba(59, 130, 246, 0.5); filter: brightness(1.4);
+}
+.headerSocial {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px; border-radius: 50%;
+  color: var(--text-secondary); border: 1px solid var(--border-color);
+  transition: color 0.2s, border-color 0.2s;
+}
+.headerSocial:hover { color: #fff; border-color: rgba(255, 255, 255, 0.3); }
+.launchBtn { white-space: nowrap; }
+.navSocialMobile { display: none; }
+
+/* --- Bandeau Zealy --- */
+.zealyBar {
+  position: relative; display: flex; align-items: center; justify-content: center;
+  padding: 8px 44px; font-size: 0.88rem; color: #e9d5ff;
+  background: linear-gradient(90deg, rgba(124, 58, 237, 0.35), rgba(16, 185, 129, 0.25));
+  border-bottom: 1px solid rgba(167, 139, 250, 0.35);
+}
+.zealyLink { display: inline-flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: center; text-align: center; }
+.zealyLink:hover .zealyCta { text-decoration: underline; }
+.zealyTag { padding: 1px 8px; border-radius: 999px; background: #7c3aed; color: #fff; font-weight: 800; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.zealyCta { font-weight: 700; color: #fff; white-space: nowrap; }
+.zealyShort { display: none; }
+.zealyClose {
+  position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; color: #c4b5fd; font-size: 1.3rem; line-height: 1; cursor: pointer; padding: 4px 8px;
+}
+.zealyClose:hover { color: #fff; }
+
+@media (max-width: 1080px) {
+  .header { flex-wrap: wrap; gap: 10px 16px; padding: 14px 20px; }
+  .logoContainer { flex: 0 0 auto; }
+  .navRight { flex: 1 1 auto; }
+  .navCenter { order: 3; flex: 1 1 100%; justify-content: center; gap: 22px; }
+}
+@media (max-width: 640px) {
+  .header { padding: 10px 14px; gap: 8px 10px; }
+  .logoImg { width: 34px; height: 34px; }
+  .logoText { display: none; }
+  .navRight { gap: 8px; }
+  .headerSocial { display: none; }
+  .navSocialMobile { display: inline; }
+  .presaleBtn { padding: 7px 11px; font-size: 0.8rem; gap: 6px; }
+  .launchBtn { padding: 8px 12px !important; font-size: 0.82rem !important; }
+  .navCenter { justify-content: flex-start; gap: 18px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; min-width: 0; max-width: 100%; }
+  .header { max-width: 100vw; }
+  .navLink { white-space: nowrap; font-size: 0.88rem; }
+  .zealyBar { padding: 7px 36px 7px 12px; font-size: 0.78rem; }
+  .zealyTag { display: none; }
+  .zealyLong { display: none; }
+  .zealyShort { display: inline; }
+  .zealyLink { flex-wrap: nowrap; gap: 8px; }
+}
+
+/* --- Badge d'audit du hero --- */
+.auditBadge {
+  display: inline-flex; align-items: center; gap: 12px;
+  padding: 8px 16px 8px 10px; border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.14);
+  transition: border-color 0.2s, background 0.2s;
+}
+.auditBadge:hover { border-color: rgba(16, 185, 129, 0.5); background: rgba(16, 185, 129, 0.06); }
+.auditBadgeLogo { height: 30px; padding: 4px 8px; border-radius: 8px; background: #e2e8f0; }
+.auditBadgeText { display: flex; flex-direction: column; text-align: left; line-height: 1.25; }
+.auditBadgeText strong { color: #fff; font-size: 0.92rem; }
+.auditBadgeText span { color: #6ee7b7; font-size: 0.78rem; }
+
+/* --- Bandeau presale de l'accueil --- */
+.presaleBanner {
+  display: block; width: 100%; max-width: 620px; margin: 28px auto 0; padding: 14px 20px;
+  border-radius: 14px; text-align: center; border: 1px solid transparent;
+  background:
+    linear-gradient(#0d1117, #0d1117) padding-box,
+    linear-gradient(90deg, #f59e0b, #10b981, #3b82f6) border-box;
+  transition: transform 0.15s, box-shadow 0.2s;
+}
+.presaleBanner:hover { transform: translateY(-1px); box-shadow: 0 0 24px rgba(245, 158, 11, 0.25); }
+.presaleBannerHead { display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; }
+.presaleBannerTag {
+  padding: 2px 10px; border-radius: 999px; font-size: 0.72rem; font-weight: 800; text-transform: uppercase;
+  letter-spacing: 0.05em; color: #0d1117; background: linear-gradient(90deg, #fbbf24, #f59e0b);
+}
+.presaleBannerTime { color: #fff; font-weight: 700; font-size: 1.05rem; font-variant-numeric: tabular-nums; }
+.presaleBannerMeta { margin-top: 6px; color: var(--text-secondary); font-size: 0.85rem; display: flex; gap: 6px 14px; justify-content: center; flex-wrap: wrap; }
+.presaleBannerCta { color: #fbbf24; font-weight: 700; white-space: nowrap; }
+
+/* --- /security : cartes d'audit --- */
+.auditGrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.auditCard { display: flex; flex-direction: column; gap: 10px; padding: 22px !important; }
+.auditCard h3 { color: #fff; font-size: 1.1rem; }
+.auditCard p { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.55; flex: 1; }
+.auditCardTag { align-self: flex-start; padding: 2px 10px; border-radius: 999px; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: #6ee7b7; background: rgba(16, 185, 129, 0.12); }
+.auditCardLinks { display: flex; gap: 8px; flex-wrap: wrap; }
+.auditCardLinks :global(.btn) { padding: 8px 12px; font-size: 0.82rem; }
+@media (max-width: 760px) { .auditGrid { grid-template-columns: 1fr; } }

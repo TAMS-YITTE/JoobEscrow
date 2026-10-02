@@ -3,6 +3,32 @@ import styles from '../marketing.module.css';
 import dict from '../../../i18n/en.json';
 import { instances } from '../../../config/instances';
 import GovernanceTransparency from '../../../components/GovernanceTransparency';
+import { AUDITS, PRESALE_ADDRESSES } from '../../../config/presale';
+
+// Resultats repris des rapports SpyWolf publies (relus le 2026-10-01).
+const AUDIT_CARDS = [
+  {
+    title: 'Escrow contract (V4)',
+    summary: '0 critical, 0 high. 1 medium and 2 low findings, all fixed and re-checked by SpyWolf. Same code on all 5 fee tiers listed below.',
+    pdf: AUDITS.ESCROW_V4,
+    bscscan: '#contracts',
+    bscscanLabel: 'Contracts ↓',
+  },
+  {
+    title: 'JOOB token',
+    summary: 'Fixed supply of 1,000,000,000, no mint after deployment, no transfer tax. No critical, high or medium issue.',
+    pdf: AUDITS.TOKEN,
+    bscscan: `https://bscscan.com/address/${PRESALE_ADDRESSES.TOKEN}`,
+    bscscanLabel: 'BscScan ↗',
+  },
+  {
+    title: 'Presale vault',
+    summary: 'Sealed vault, public price schedule, on-chain vesting for every buyer. No critical, high or medium issue.',
+    pdf: AUDITS.PRESALE,
+    bscscan: `https://bscscan.com/address/${PRESALE_ADDRESSES.PRESALE}`,
+    bscscanLabel: 'BscScan ↗',
+  },
+];
 
 export const metadata = {
   title: 'Security & Trust - Joob Escrow',
@@ -19,32 +45,28 @@ export default function SecurityPage() {
         {d.subtitle}
       </p>
 
-      <div className="glass-panel" style={{ marginTop: '40px', padding: '40px' }}>
-        <h2 style={{ color: '#fff', marginBottom: '15px' }}>{d.auditSection.title}</h2>
-        <p style={{ color: 'var(--text-secondary)', marginBottom: '20px', lineHeight: 1.6 }}>
-          {d.auditSection.desc}
-        </p>
-        <Link href="https://spywolf.co/audits/Universal_Service_Escrow_V4_Audit.pdf" target="_blank" className="btn btn-primary">
-          View Audit Report (PDF)
-        </Link>
-      </div>
-
-      <div className="glass-panel" style={{ marginTop: '30px', padding: '40px' }}>
-        <h2 style={{ color: '#fff', marginBottom: '15px' }}>JOOB Token &amp; Presale Audits</h2>
-        <p style={{ color: 'var(--text-secondary)', marginBottom: '20px', lineHeight: 1.6 }}>
-          The JOOB token (0x4bf3…10E2) and the JoobEscrow presale contract (0xd3F3…F63d) were audited by SpyWolf: no critical, high or
-          medium issue; every finding was fixed or acknowledged. Both contracts are verified on BscScan and owned by the Safe multisig.
-        </p>
-        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-          <Link href="https://spywolf.co/audits/StandardToken_Audit_JoobEscrow.pdf" target="_blank" className="btn btn-primary">Token audit (PDF)</Link>
-          <Link href="https://spywolf.co/audits/VestingPresale_Airdrop_Audit_JoobEscrow.pdf" target="_blank" className="btn btn-primary">Presale audit (PDF)</Link>
+      <section style={{ marginTop: '40px' }}>
+        <h2 style={{ color: '#fff', marginBottom: '8px' }}>{d.auditSection.title}</h2>
+        <p style={{ color: 'var(--text-secondary)', marginBottom: '20px', lineHeight: 1.6 }}>{d.auditSection.desc}</p>
+        <div className={styles.auditGrid}>
+          {AUDIT_CARDS.map((c) => (
+            <div key={c.title} className={`glass-panel ${styles.auditCard}`}>
+              <span className={styles.auditCardTag}>SpyWolf</span>
+              <h3>{c.title}</h3>
+              <p>{c.summary}</p>
+              <div className={styles.auditCardLinks}>
+                <a href={c.pdf} target="_blank" rel="noopener noreferrer" className="btn btn-primary">Report (PDF)</a>
+                <a href={c.bscscan} target="_blank" rel="noopener noreferrer" className="btn btn-outline">{c.bscscanLabel}</a>
+              </div>
+            </div>
+          ))}
         </div>
-      </div>
+      </section>
 
-      <div className="glass-panel" style={{ marginTop: '30px', padding: '40px' }}>
+      <div id="contracts" className="glass-panel" style={{ marginTop: '30px', padding: '40px' }}>
         <h2 style={{ color: '#fff', marginBottom: '15px' }}>{d.contractSection.title}</h2>
         <p style={{ color: 'var(--text-secondary)', marginBottom: '20px', lineHeight: 1.6 }}>
-          {d.contractSection.desc} All contracts are <strong>Verified on BscScan</strong> and securely managed by a <strong>Gnosis Safe Multisig</strong> to ensure absolute transparency and trustless operations.
+          {d.contractSection.desc} All contracts are <strong>Verified on BscScan</strong> and securely managed by a <strong>Gnosis Safe Multisig</strong> (2 of 3 signatures required for any admin action).
         </p>
         <div style={{ marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px', background: 'rgba(16, 185, 129, 0.1)', padding: '10px 15px', borderRadius: '8px', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
           <span style={{ color: '#10b981', fontWeight: 'bold' }}>Treasury & Admin:</span>

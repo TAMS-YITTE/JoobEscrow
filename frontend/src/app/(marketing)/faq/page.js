@@ -19,9 +19,10 @@ export default function FAQPage() {
         <div className="glass-panel p-6">
           <h3 className="font-bold text-xl text-white mb-3">What if the smart contract has a bug?</h3>
           <p className="text-gray-400">
-            Our smart contract (`UniversalServiceEscrow.sol`) is based on industry standards (OpenZeppelin) and has been 
-            rigorously audited by an independent security firm (SpyWolf). We implement maximum safety measures such as 
-            pull-over-push accounting, Reentrancy Guards, and emergency pause mechanisms to prevent any loss of funds.
+            The escrow contract (<code>UniversalServiceEscrow.sol</code>) is built on OpenZeppelin libraries and was audited by
+            SpyWolf: no critical or high-severity issue, and every finding was fixed and re-checked. It uses pull-over-push
+            payouts, reentrancy guards and a pause switch for emergencies (dispute resolution and withdrawals of credited funds keep
+            working). An audit reduces risk but cannot rule out every bug: only escrow amounts you can afford to lose.
           </p>
         </div>
 
@@ -32,7 +33,7 @@ export default function FAQPage() {
             If the client and provider cannot agree, either party can open a dispute. During a dispute:
           </p>
           <ul className="list-disc pl-5 text-gray-400 space-y-1">
-            <li>Both parties submit their evidence to the blockchain via a cryptographic hash (e.g., an IPFS link).</li>
+            <li>Both parties share their evidence (deliverables, messages, requirements). The contract can record a fingerprint (hash) of each piece of evidence on-chain; in-app evidence upload is coming.</li>
             <li>JoobEscrow&apos;s arbitration team acts as the impartial Owner.</li>
             <li>We review the evidence and split the funds fairly (e.g., 70% to provider, 30% to client) depending on the work delivered.</li>
           </ul>
@@ -42,9 +43,10 @@ export default function FAQPage() {
         <div className="glass-panel p-6">
           <h3 className="font-bold text-xl text-white mb-3">What happens if the provider disappears?</h3>
           <p className="text-gray-400">
-            Every escrow is created with a strict timeout period. If the provider accepts the job but then disappears, they 
-            will fail to complete the work before the timeout date. In this scenario, either a dispute can be opened, or 
-            if no action is taken, the funds are handled through our stale dispute and timeout fallback mechanisms to protect the client.
+            Every escrow has a delivery deadline. If the provider never accepts, the client can cancel and get a full refund.
+            If the provider accepted but does not deliver, the client should open a dispute <strong>before the deadline</strong>:
+            after it, a provider who accepted can claim the payment. Once a dispute is open, the arbitration team decides the split;
+            if nobody resolves it within 30 days, either party can trigger a 50/50 split so funds are never locked forever.
           </p>
         </div>
 

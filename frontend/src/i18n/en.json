@@ -7,7 +7,7 @@
       "ctaSecondary": "How it works"
     },
     "howItWorks": {
-      "title": "How it works?",
+      "title": "How it works",
       "step1": {
         "title": "1. Secure Deposit",
         "desc": "The client deposits funds into a tamper-proof smart contract."
@@ -34,8 +34,8 @@
     "title": "Security & Transparency",
     "subtitle": "Our architecture is designed to ensure that no one (not even JoobEscrow) can access your funds without your consent.",
     "auditSection": {
-      "title": "Independent Audit",
-      "desc": "Our contracts have been rigorously audited by independent experts to guarantee the absence of flaws or backdoors."
+      "title": "Verified audits",
+      "desc": "Every contract that holds or distributes funds was audited by SpyWolf before launch. An audit reduces risk but cannot rule out every bug."
     },
     "contractSection": {
       "title": "Verified Public Contract",

@@ -1,38 +1,57 @@
 import Link from 'next/link';
 import styles from './marketing.module.css';
+import './marketing-utilities.css';
 import dict from '../../i18n/en.json';
 
 import { Web3Provider } from '../../context/Web3Context';
 import PresaleNavButton from '../../components/PresaleNavButton';
+import ZealyBanner from '../../components/ZealyBanner';
+import { TELEGRAM_URL, X_URL, ZEALY_URL } from '../../config/links';
+
+const TG_PATH = 'M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a50.363 50.363 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.892-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z';
+const X_PATH = 'M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z';
+
+const NAV = [
+  { href: '/try', label: 'Try $1' },
+  { href: '/#how-it-works', label: 'How it works' },
+  { href: '/security', label: 'Security' },
+  { href: '/faq', label: 'FAQ' },
+];
 
 export default function MarketingLayout({ children }) {
   return (
     <Web3Provider>
       <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+        <ZealyBanner />
         <header className={styles.header}>
           <Link href="/" className={styles.logoContainer}>
-            <img src="/logo.jpg" alt="JoobEscrow Logo" style={{ width: '48px', height: '48px', borderRadius: '50%', objectFit: 'cover', border: '1px solid rgba(59, 130, 246, 0.8)', padding: '2px', boxShadow: '0 0 15px rgba(59, 130, 246, 0.5)', filter: 'brightness(1.4)' }} />
+            <img src="/logo.jpg" alt="JoobEscrow Logo" className={styles.logoImg} />
             <span className={styles.logoText}>JoobEscrow</span>
           </Link>
-          
-          <nav className={styles.navCenter}>
-            <Link href="/#how-it-works" className={styles.navLink}>
-              How it works
-            </Link>
-            <Link href="/security" className={styles.navLink}>
-              Security
-            </Link>
+
+          <nav className={styles.navCenter} aria-label="Main">
+            {NAV.map((n) => (
+              <Link key={n.href} href={n.href} className={styles.navLink}>{n.label}</Link>
+            ))}
+            <a href={TELEGRAM_URL} target="_blank" rel="noopener noreferrer" className={`${styles.navLink} ${styles.navSocialMobile}`}>Telegram</a>
+            <a href={X_URL} target="_blank" rel="noopener noreferrer" className={`${styles.navLink} ${styles.navSocialMobile}`}>X</a>
           </nav>
 
           <div className={styles.navRight}>
+            <a href={TELEGRAM_URL} target="_blank" rel="noopener noreferrer" className={styles.headerSocial} aria-label="Telegram">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d={TG_PATH} /></svg>
+            </a>
+            <a href={X_URL} target="_blank" rel="noopener noreferrer" className={styles.headerSocial} aria-label="X (Twitter)">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d={X_PATH} /></svg>
+            </a>
             <PresaleNavButton />
-            <Link href="/app" className="btn btn-primary" style={{ whiteSpace: 'nowrap' }}>
+            <Link href="/app" className={`btn btn-primary ${styles.launchBtn}`}>
               Launch App
             </Link>
           </div>
         </header>
 
-        <main style={{ flex: 1 }}>
+        <main className="mkt-main" style={{ flex: 1 }}>
           {children}
         </main>
 
@@ -47,16 +66,17 @@ export default function MarketingLayout({ children }) {
               <Link href="/compliance" className={styles.navLink}>Regulatory & Compliance</Link>
               <Link href="/bug-bounty" className={styles.navLink}>Bug Bounty</Link>
               <Link href="/presale-terms" className={styles.navLink}>Presale Terms</Link>
+              <a href={ZEALY_URL} target="_blank" rel="noopener noreferrer" className={styles.navLink}>Zealy Quests</a>
               <Link href="https://spywolf.co/audits/Universal_Service_Escrow_V4_Audit.pdf" target="_blank" className={styles.navLink}>Audit Report</Link>
             </div>
             
             <div className={styles.socialIcons} style={{ marginBottom: 0 }}>
-              <a href="https://t.me/JoobEscrow_Official" target="_blank" rel="noopener noreferrer" className={styles.socialLink} aria-label="Telegram">
+              <a href={TELEGRAM_URL} target="_blank" rel="noopener noreferrer" className={styles.socialLink} aria-label="Telegram">
                 <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
                   <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a50.363 50.363 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.892-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
                 </svg>
               </a>
-              <a href="https://x.com/JoobEscrow" target="_blank" rel="noopener noreferrer" className={styles.socialLink} aria-label="X (Twitter)">
+              <a href={X_URL} target="_blank" rel="noopener noreferrer" className={styles.socialLink} aria-label="X (Twitter)">
                 <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
                   <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
                 </svg>

@@ -4,11 +4,16 @@ import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { useWeb3 } from '../context/Web3Context';
 import { ESCROW_ADDRESS, ESCROW_ABI } from '../config/contract';
+import { instances } from '../config/instances';
+
+// Une instance par niveau de frais ; les taux sont lus on-chain (defaultFeeBPS), jamais codes en dur.
+const FEE_CONTRACTS = [...new Set(Object.values(instances).map((i) => i.contractAddress))];
 
 export default function FeeCalculator() {
   const { readProvider } = useWeb3();
   const [amount, setAmount] = useState(1000);
-  const [feeBPS, setFeeBPS] = useState(500); // default 500 BPS = 5%
+  const [tiers, setTiers] = useState([]); // [{ address, bps }] tries par taux
+  const [selected, setSelected] = useState(ESCROW_ADDRESS);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -16,10 +21,12 @@ export default function FeeCalculator() {
     async function fetchFee() {
       if (!readProvider) return;
       try {
-        const contract = new ethers.Contract(ESCROW_ADDRESS, ESCROW_ABI, readProvider);
-        const bps = await contract.defaultFeeBPS();
+        const read = await Promise.all(FEE_CONTRACTS.map(async (address) => ({
+          address,
+          bps: Number(await new ethers.Contract(address, ESCROW_ABI, readProvider).defaultFeeBPS()),
+        })));
         if (isMounted) {
-          setFeeBPS(Number(bps));
+          setTiers(read.sort((a, b) => a.bps - b.bps));
           setLoading(false);
         }
       } catch (err) {
@@ -36,6 +43,7 @@ export default function FeeCalculator() {
     setAmount(val >= 0 ? val : 0);
   };
 
+  const feeBPS = tiers.find((t) => t.address === selected)?.bps ?? 0;
   const percentage = feeBPS / 100;
   const feeAmount = (amount * percentage) / 100;
   const providerReceives = amount - feeAmount;
@@ -60,6 +68,29 @@ export default function FeeCalculator() {
         </div>
       </div>
 
+      <div style={{ marginBottom: '20px' }}>
+        <span style={{ display: 'block', fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '8px' }}>Fee tier (depends on the category)</span>
+        <div role="radiogroup" aria-label="Fee tier" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+          {loading ? (
+            <span style={{ height: '34px', width: '100%', backgroundColor: 'rgba(255,255,255,0.06)', borderRadius: '8px' }} />
+          ) : tiers.map((t) => {
+            const active = t.address === selected;
+            return (
+              <button
+                key={t.address}
+                type="button"
+                role="radio"
+                aria-checked={active}
+                onClick={() => setSelected(t.address)}
+                style={{ flex: '1 1 0', minWidth: '52px', padding: '8px 0', borderRadius: '8px', cursor: 'pointer', fontWeight: 700, fontSize: '0.9rem', fontFamily: 'inherit', color: active ? '#0d1117' : '#fff', background: active ? '#10b981' : 'rgba(0,0,0,0.4)', border: active ? '1px solid #10b981' : '1px solid rgba(255,255,255,0.1)' }}
+              >
+                {t.bps / 100}%
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 15px', backgroundColor: 'rgba(0,0,0,0.4)', borderRadius: '8px' }}>
           <span style={{ color: 'var(--text-secondary)', fontSize: '0.95rem' }}>Client deposits:</span>
@@ -81,7 +112,7 @@ export default function FeeCalculator() {
       </div>
       
       <p style={{ fontSize: '0.8rem', textAlign: 'center', color: 'var(--text-secondary)', marginTop: '20px' }}>
-        The fee is only deducted from the provider's payout upon successful completion. 100% refund if cancelled.
+        The fee is only deducted from the provider&apos;s payout on completion. If the escrow is cancelled before the provider accepts, the client gets a full refund (minus network gas).
       </p>
     </div>
   );

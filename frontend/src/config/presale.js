@@ -16,6 +16,7 @@ export const BSCSCAN = 'https://bscscan.com';
 export const AUDITS = {
   PRESALE: 'https://spywolf.co/audits/VestingPresale_Airdrop_Audit_JoobEscrow.pdf',
   TOKEN: 'https://spywolf.co/audits/StandardToken_Audit_JoobEscrow.pdf',
+  ESCROW_V4: 'https://spywolf.co/audits/Universal_Service_Escrow_V4_Audit.pdf',
 };
 
 // Enum State du contrat.
