@@ -6,15 +6,16 @@ import { createAppKit, useAppKit, useAppKitProvider, useAppKitAccount, useAppKit
 import { EthersAdapter } from '@reown/appkit-adapter-ethers';
 import { bsc, bscTestnet, hardhat } from '@reown/appkit/networks';
 
-const projectId = 'f7c5b567dc730d97b126ba84ddc76278';
+// Projet Reown dedie a JoobEscrow (cloud.reown.com, equipe JoobEscrow). ID public par nature.
+const projectId = '63a257b332dae1f848b7dab85c8f0880';
 
 const networks = [bsc, bscTestnet, hardhat];
 
 const metadata = {
   name: 'JoobEscrow',
   description: 'The universal non-custodial escrow platform',
-  url: 'https://joobescrow.com', 
-  icons: ['https://joobescrow.com/logo.png']
+  url: 'https://www.joobescrow.com',
+  icons: ['https://www.joobescrow.com/logo.png']
 };
 
 const ethersAdapter = new EthersAdapter();
