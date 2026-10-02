@@ -1,6 +1,9 @@
 import { allInstances as instances } from '../../../config/instances';
 import { notFound } from 'next/navigation';
 
+// Seules les niches connues existent : toute autre URL renvoie un vrai 404.
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   return Object.keys(instances).map((slug) => ({
     niche: slug,
