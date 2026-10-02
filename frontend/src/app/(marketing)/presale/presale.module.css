@@ -466,3 +466,27 @@
 @media (max-width: 480px) {
   .refs { grid-template-columns: repeat(2, 1fr); row-gap: 12px; }
 }
+
+/* Blocs de confiance : verification BscScan + audits */
+.trustGrid { width: 100%; max-width: 720px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-bottom: 28px; }
+.trustBlock {
+  display: flex; flex-direction: column; gap: 6px; padding: 16px;
+  border-radius: 16px; border: 1px solid var(--border-color); background: var(--bg-glass);
+}
+.trustHead { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
+.trustIcon {
+  flex: 0 0 auto; width: 34px; height: 34px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center;
+  font-weight: 800; color: #34d399; background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.3);
+}
+.trustTitle { color: #fff; font-weight: 700; font-size: 0.95rem; }
+.trustSub { color: var(--text-secondary); font-size: 0.75rem; margin-top: 1px; }
+.trustRow {
+  display: flex; justify-content: space-between; align-items: center; gap: 10px;
+  padding: 9px 12px; border-radius: 10px; font-size: 0.85rem; color: #e2e8f0;
+  background: rgba(255, 255, 255, 0.03); border: 1px solid transparent; transition: border-color 0.15s, background 0.15s;
+}
+.trustRow:hover { border-color: rgba(16, 185, 129, 0.35); background: rgba(16, 185, 129, 0.06); }
+.trustMeta { color: #94a3b8; font-family: ui-monospace, monospace; font-size: 0.78rem; white-space: nowrap; }
+.trustOk { color: #34d399; font-weight: 600; font-size: 0.78rem; white-space: nowrap; }
+.trustWarn { color: #fbbf24; font-weight: 600; font-size: 0.78rem; white-space: nowrap; }
+@media (max-width: 640px) { .trustGrid { grid-template-columns: 1fr; } }

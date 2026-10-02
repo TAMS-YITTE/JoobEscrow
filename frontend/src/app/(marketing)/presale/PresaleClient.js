@@ -17,6 +17,7 @@ import styles from './presale.module.css';
 // qu'aux paliers : si un palier tombe entre les deux, l'achat est annule).
 const SLIPPAGE_BPS = 50n;
 const REFRESH_INTERVAL_MS = 15_000;
+const shortAddr = (a) => `${a.slice(0, 6)}…${a.slice(-4)}`;
 // Parametre distinct de ?ref= (deja utilise par ReferralTracker pour les KOL escrow).
 const REF_PARAM = 'referrer';
 const REF_STORAGE_KEY = 'joob_presale_referrer';
@@ -382,23 +383,47 @@ export default function PresaleClient() {
         vesting for every participant — all enforced by a verified smart contract.
       </p>
 
-      <div className={styles.chips}>
-        <a href={`${BSCSCAN}/address/${PRESALE_ADDRESSES.PRESALE}#code`} target="_blank" rel="noopener noreferrer" className={`${styles.chip} ${styles.chipOk}`}>
-          ✓ Verified presale contract ↗
-        </a>
-        <a href={`${BSCSCAN}/token/${PRESALE_ADDRESSES.TOKEN}`} target="_blank" rel="noopener noreferrer" className={styles.chip}>
-          JOOB token contract ↗
-        </a>
-        <a href={AUDITS.PRESALE} target="_blank" rel="noopener noreferrer" className={`${styles.chip} ${styles.chipOk}`}>
-          ✓ SpyWolf audit: presale ↗
-        </a>
-        <a href={AUDITS.TOKEN} target="_blank" rel="noopener noreferrer" className={`${styles.chip} ${styles.chipOk}`}>
-          ✓ SpyWolf audit: token ↗
-        </a>
-        <a href={`${BSCSCAN}/address/${PRESALE_ADDRESSES.PRESALE}#readContract`} target="_blank" rel="noopener noreferrer"
-          className={`${styles.chip} ${vaultSealed ? styles.chipOk : styles.chipWarn}`}>
-          {vaultSealed ? `🔒 Sealed vault: ${fmtToken(global.depositedTokens, td, 0)} JOOB locked` : 'Vault funding pending'} ↗
-        </a>
+      <div className={styles.trustGrid}>
+        <div className={styles.trustBlock}>
+          <div className={styles.trustHead}>
+            <span className={styles.trustIcon} aria-hidden="true">✓</span>
+            <div>
+              <div className={styles.trustTitle}>Verified on BscScan</div>
+              <div className={styles.trustSub}>Public source code, owned by the Safe multisig</div>
+            </div>
+          </div>
+          <a href={`${BSCSCAN}/address/${PRESALE_ADDRESSES.PRESALE}#code`} target="_blank" rel="noopener noreferrer" className={styles.trustRow}>
+            <span>Presale contract</span><span className={styles.trustMeta}>{shortAddr(PRESALE_ADDRESSES.PRESALE)} ↗</span>
+          </a>
+          <a href={`${BSCSCAN}/token/${PRESALE_ADDRESSES.TOKEN}`} target="_blank" rel="noopener noreferrer" className={styles.trustRow}>
+            <span>JOOB token</span><span className={styles.trustMeta}>{shortAddr(PRESALE_ADDRESSES.TOKEN)} ↗</span>
+          </a>
+          <a href={`${BSCSCAN}/address/${PRESALE_ADDRESSES.PRESALE}#readContract`} target="_blank" rel="noopener noreferrer" className={styles.trustRow}>
+            <span>Token vault</span>
+            <span className={vaultSealed ? styles.trustOk : styles.trustWarn}>
+              {vaultSealed ? `🔒 ${fmtToken(global.depositedTokens, td, 0)} JOOB locked` : 'Funding pending'} ↗
+            </span>
+          </a>
+        </div>
+
+        <div className={styles.trustBlock}>
+          <div className={styles.trustHead}>
+            <span className={styles.trustIcon} aria-hidden="true">🛡</span>
+            <div>
+              <div className={styles.trustTitle}>Audited by SpyWolf</div>
+              <div className={styles.trustSub}>No critical, high or medium issue</div>
+            </div>
+          </div>
+          <a href={AUDITS.PRESALE} target="_blank" rel="noopener noreferrer" className={styles.trustRow}>
+            <span>Presale contract audit</span><span className={styles.trustMeta}>PDF ↗</span>
+          </a>
+          <a href={AUDITS.TOKEN} target="_blank" rel="noopener noreferrer" className={styles.trustRow}>
+            <span>JOOB token audit</span><span className={styles.trustMeta}>PDF ↗</span>
+          </a>
+          <Link href="/security" className={styles.trustRow}>
+            <span>All audits &amp; contracts</span><span className={styles.trustMeta}>Security →</span>
+          </Link>
+        </div>
       </div>
 
       <div className={styles.column}>
