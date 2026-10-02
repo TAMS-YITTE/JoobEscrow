@@ -4,6 +4,6 @@ export default function robots() {
       userAgent: '*',
       allow: '/',
     },
-    sitemap: 'https://joobescrow.com/sitemap.xml',
+    sitemap: 'https://www.joobescrow.com/sitemap.xml',
   }
 }

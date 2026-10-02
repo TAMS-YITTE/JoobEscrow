@@ -6,7 +6,7 @@ import { Suspense } from "react";
 import ReferralTracker from "../components/ReferralTracker";
 
 export const metadata = {
-  metadataBase: new URL('https://joobescrow.com'),
+  metadataBase: new URL('https://www.joobescrow.com'),
   title: "JoobEscrow | The Universal Web3 Escrow",
   description: "Secure every payment. Pay only when the work is approved. The universal non-custodial escrow platform for freelancers, creators, and businesses.",
   keywords: ["escrow", "web3 escrow", "crypto escrow", "freelance crypto", "smart contract", "secure payment"],
@@ -22,7 +22,7 @@ export const metadata = {
     description: "Secure every payment. Pay only when the work is approved. The universal non-custodial escrow platform for freelancers, creators, and businesses.",
     images: [{ url: "/og-image.png", width: 1500, height: 500 }],
     type: "website",
-    url: 'https://joobescrow.com',
+    url: 'https://www.joobescrow.com',
   },
   twitter: {
     card: "summary_large_image",

@@ -9,8 +9,8 @@ export default function BadgeGenerator() {
   const [handle, setHandle] = useState('CryptoInfluence');
   const [niche, setNiche] = useState('influence');
 
-  const snippet = `<a href="https://joobescrow.com/${niche}/kol/${handle}" target="_blank" rel="noopener noreferrer">
-  <img src="https://joobescrow.com/badge.svg" alt="Protected by JoobEscrow" width="200" height="60" />
+  const snippet = `<a href="https://www.joobescrow.com/${niche}/kol/${handle}" target="_blank" rel="noopener noreferrer">
+  <img src="https://www.joobescrow.com/badge.svg" alt="Protected by JoobEscrow" width="200" height="60" />
 </a>`;
 
   const copyToClipboard = () => {

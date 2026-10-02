@@ -9,7 +9,7 @@ export const metadata = {
   openGraph: {
     title: 'JOOB Presale | JoobEscrow',
     description: 'Opens October 15, 2026 at 14:00 UTC. Starts at $0.001, sealed token vault, on-chain vesting, contracts audited by SpyWolf.',
-    url: 'https://joobescrow.com/presale',
+    url: 'https://www.joobescrow.com/presale',
     type: 'website',
   },
   twitter: {
