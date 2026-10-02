@@ -26,7 +26,10 @@ createAppKit({
   projectId,
   metadata,
   features: {
-    analytics: true
+    analytics: true,
+    // Wallets uniquement : pas de wallet heberge cree par email ou reseau social.
+    email: false,
+    socials: false
   }
 });
 
