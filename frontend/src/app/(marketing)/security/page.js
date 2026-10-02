@@ -66,7 +66,7 @@ export default function SecurityPage() {
       <div id="contracts" className="glass-panel" style={{ marginTop: '30px', padding: '40px' }}>
         <h2 style={{ color: '#fff', marginBottom: '15px' }}>{d.contractSection.title}</h2>
         <p style={{ color: 'var(--text-secondary)', marginBottom: '20px', lineHeight: 1.6 }}>
-          {d.contractSection.desc} All contracts are <strong>Verified on BscScan</strong> and securely managed by a <strong>Gnosis Safe Multisig</strong> (2 of 3 signatures required for any admin action).
+          {d.contractSection.desc} All contracts are <strong>Verified on BscScan</strong> and securely managed by a <strong>Gnosis Safe Multisig</strong> (3 of 5 signatures required for any admin action).
         </p>
         <div style={{ marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px', background: 'rgba(16, 185, 129, 0.1)', padding: '10px 15px', borderRadius: '8px', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
           <span style={{ color: '#10b981', fontWeight: 'bold' }}>Treasury & Admin:</span>
