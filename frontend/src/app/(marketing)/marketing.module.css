@@ -413,3 +413,24 @@
 .auditCardLinks { display: flex; gap: 8px; flex-wrap: wrap; }
 .auditCardLinks :global(.btn) { padding: 8px 12px; font-size: 0.82rem; }
 @media (max-width: 760px) { .auditGrid { grid-template-columns: 1fr; } }
+
+/* --- Video (chargee au clic) --- */
+.videoWrap { max-width: 480px; margin: 50px auto 0; }
+.videoFrame {
+  position: relative; width: 100%; aspect-ratio: 1 / 1; border-radius: 16px; overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.06); box-shadow: 0 10px 40px rgba(0, 255, 128, 0.12); background: #000;
+}
+.videoFrame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.videoPoster { position: absolute; inset: 0; width: 100%; height: 100%; padding: 0; border: 0; cursor: pointer; background: #000; }
+.videoPoster img { width: 100%; height: 100%; object-fit: cover; opacity: 0.75; transition: opacity 0.2s; }
+.videoPoster:hover img { opacity: 0.9; }
+.videoPlay {
+  position: absolute; top: 78%; left: 50%; transform: translate(-50%, -50%);
+  width: 72px; height: 72px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  color: #fff; background: #10b981; box-shadow: 0 0 30px rgba(16, 185, 129, 0.5); transition: transform 0.15s;
+}
+.videoPoster:hover .videoPlay { transform: translate(-50%, -50%) scale(1.08); }
+.videoLabel {
+  position: absolute; left: 16px; bottom: 14px; padding: 4px 12px; border-radius: 999px;
+  background: rgba(0, 0, 0, 0.65); color: #fff; font-size: 0.85rem; font-weight: 600;
+}
