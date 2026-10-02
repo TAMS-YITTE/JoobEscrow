@@ -62,7 +62,7 @@ const FAQ = [
 const ROADMAP = [
   { title: 'Foundations', status: 'done', items: 'Audited escrow contract, verified on BscScan, owned by a Safe multisig. 15 categories and encrypted in-app chat.' },
   { title: 'Trust layer', status: 'now', items: 'Check a deal before you pay. Live: $1 demo with a step-by-step guide, shareable escrow links. Next: public deal pages anyone can verify without a wallet, Telegram alerts, dispute evidence recorded on-chain.' },
-  { title: 'JOOB presale', status: 'next', items: 'October 15, 2026 → January 13, 2027. Sealed vault, vesting for every participant, unsold tokens burned.' },
+  { title: 'JOOB presale', status: 'next', items: 'October 15, 2026 → January 13, 2027. Sealed vault, vesting for every participant, unsold tokens returned to the Safe and burned in a public transaction.' },
   { title: 'TGE & liquidity', items: 'JOOB/USDT pool on PancakeSwap at an initial price of $0.02, first JOOB utilities (boosts & badges), Early Escrow points.' },
   { title: 'Escrow V5', items: 'On-chain affiliate rewards, gasless payouts, JOOB fee discount, verified reputation profiles.' },
   { title: 'Escrow V5.1', items: 'Milestone payments, partial releases, amicable settlement, bulk deals for agencies.' },
@@ -153,7 +153,7 @@ export default function PresalePage() {
             </ul>
           </div>
           <p className={styles.fine}>
-            Fixed supply, no mint function, no transfer tax. Presale tokens that are not sold are burned after the sale.
+            Fixed supply, no mint function, no transfer tax. Presale tokens that are not sold are returned to the Safe and burned in a public, verifiable transaction after the sale.
             &quot;Enforced on-chain&quot; means the vesting is held by the deployed, audited presale contract; &quot;Planned&quot;
             allocations stay in the JoobEscrow Safe multisig until their vesting contracts are deployed.
           </p>
