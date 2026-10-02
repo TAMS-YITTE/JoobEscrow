@@ -11,6 +11,13 @@ const projectId = '63a257b332dae1f848b7dab85c8f0880';
 
 const networks = [bsc, bscTestnet, hardhat];
 
+// RPC de lecture BSC, par ordre de priorite (le principal peut etre remplace via NEXT_PUBLIC_BSC_RPC_URL).
+const READ_RPC_URLS = [
+  process.env.NEXT_PUBLIC_BSC_RPC_URL || 'https://bnb-mainnet.g.alchemy.com/v2/mxiTTJDhhn7xwK4cXUdE2',
+  'https://bsc-rpc.publicnode.com',
+  'https://bsc-dataseed.bnbchain.org',
+];
+
 const metadata = {
   name: 'JoobEscrow',
   description: 'The universal non-custodial escrow platform',
@@ -48,9 +55,21 @@ export function Web3Provider({ children }) {
   const { chainId } = useAppKitNetwork();
   const { open } = useAppKit();
 
-  const readProvider = useMemo(() => 
-    new ethers.JsonRpcProvider(process.env.NEXT_PUBLIC_BSC_RPC_URL || 'https://bnb-mainnet.g.alchemy.com/v2/mxiTTJDhhn7xwK4cXUdE2')
-  , []);
+  // Lecture blockchain : RPC principal puis relais publics si une requete echoue ou traine (> 1,5 s),
+  // pour que le site reste lisible en cas d'afflux (limite de debit partagee par tous les visiteurs).
+  const readProvider = useMemo(() => {
+    const network = ethers.Network.from(56);
+    return new ethers.FallbackProvider(
+      READ_RPC_URLS.map((url, i) => ({
+        provider: new ethers.JsonRpcProvider(url, network, { staticNetwork: network, batchMaxCount: 1 }),
+        priority: i + 1,
+        stallTimeout: 1500,
+        weight: 1,
+      })),
+      network,
+      { quorum: 1 },
+    );
+  }, []);
 
   useEffect(() => {
     async function syncConnection() {
