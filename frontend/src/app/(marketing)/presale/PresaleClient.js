@@ -237,6 +237,9 @@ export default function PresaleClient() {
   const nextStep = config ? nextStepAt(config, now) : 0n;
   const nextPrice = config ? priceAt(config, nextStep) : 0n;
   const endPrice = config && global ? priceAt(config, global.endTime) : 0n;
+  // Prix maximal si toutes les prolongations restantes sont utilisees.
+  const extensionsLeft = config && global ? Math.max(config.maxExtensions - global.extensionsUsed, 0) : 0;
+  const maxPrice = config && global ? priceAt(config, global.endTime + BigInt(extensionsLeft) * config.extensionDuration) : 0n;
 
   const balance = paymentToken === 'USDT' ? user.balanceUSDT : user.balanceUSDC;
   const allowance = paymentToken === 'USDT' ? user.allowanceUSDT : user.allowanceUSDC;
@@ -410,7 +413,11 @@ export default function PresaleClient() {
         <form onSubmit={handleBuy} className={styles.card}>
           <div className={styles.refs}>
             <div><div className={styles.small}>Starting price</div><div className={styles.strong}>${fmtUsd(config.basePrice, pd)}</div></div>
-            <div><div className={styles.small}>Last presale price</div><div className={styles.strong}>${fmtUsd(endPrice, pd)}</div></div>
+            <div>
+              <div className={styles.small}>Last presale price</div>
+              <div className={styles.strong}>${fmtUsd(endPrice, pd)}</div>
+              {extensionsLeft > 0 && <div className={styles.small}>max ${fmtUsd(maxPrice, pd)} if extended</div>}
+            </div>
             <div><div className={styles.small}>Planned listing</div><div className={styles.strong}>${PLANNED_LISTING_PRICE}</div></div>
             <div><div className={styles.small}>Sale cap</div><div className={styles.strong}>{fmtNum(Number(ethers.formatUnits(config.cap, td)) / 1e6, 1)}M JOOB</div></div>
           </div>
