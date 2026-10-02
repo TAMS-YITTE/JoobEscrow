@@ -71,13 +71,13 @@ const ROADMAP = [
   { title: 'Community', items: 'Governance votes, staked arbitrators.' },
 ];
 // Repartition de l'offre fixe de 1 Md JOOB (MASTER_PROMPT §5). Les 13,5 M de bonus/parrainage
-// du plafond presale (163,5 M) sont pris sur le marketing (decision du 30/09). onChain = vesting impose par un contrat deploye.
+// du plafond presale (163,5 M) sont pris sur le marketing (decision du 30/09). onChain = vesting impose par un contrat deploye ; contract = VestingWallet OZ (deploye le 03/10/2026, beneficiaire Safe).
 const TOKENOMICS = [
   { name: 'Presale', pct: 15, color: '#10b981', vesting: '20% at sale end, then linear over 180 days', onChain: true },
   { name: 'Presale bonus & referral', pct: 1.35, color: '#6ee7b7', vesting: 'Same vesting as the presale', onChain: true },
   { name: 'Ecosystem & usage', pct: 25, color: '#3b82f6', vesting: 'Over 48 months, max 0.5% of supply per month' },
-  { name: 'Treasury (Safe)', pct: 13, color: '#8b5cf6', vesting: '6-month cliff, then 36 months' },
-  { name: 'Team', pct: 12, color: '#f59e0b', vesting: '12-month cliff, then 24 months' },
+  { name: 'Treasury (Safe)', pct: 13, color: '#8b5cf6', vesting: 'Locked until Jul 13, 2027, then linear over 36 months', onChain: true, contract: '0x8cbac3786F61572D4571C951e9215FC289FB2ff3' },
+  { name: 'Team', pct: 12, color: '#f59e0b', vesting: 'Locked until Jan 13, 2028, then linear over 24 months', onChain: true, contract: '0xc430f8C4E26FFc25326C4AA84947B3e2A1328012' },
   { name: 'DEX liquidity', pct: 10, color: '#06b6d4', vesting: 'Paired at listing, LP locked 12 months or more' },
   { name: 'Marketing', pct: 6.65, color: '#ec4899', vesting: '10% at TGE, then 18 months' },
   { name: 'Partners & KOL', pct: 7, color: '#f97316', vesting: '3-month cliff, then 12 months, always disclosed' },
@@ -137,9 +137,15 @@ export default function PresalePage() {
                     </div>
                     <div className={styles.allocMeta}>
                       {fmtM(t.pct)} JOOB · {t.vesting}
-                      <span className={`${styles.allocTag} ${t.onChain ? styles.allocTagOn : ''}`}>
-                        {t.onChain ? 'Enforced on-chain' : 'Planned'}
-                      </span>
+                      {t.contract ? (
+                        <a href={`https://bscscan.com/address/${t.contract}`} target="_blank" rel="noopener noreferrer" className={`${styles.allocTag} ${styles.allocTagOn}`}>
+                          Locked on-chain ↗
+                        </a>
+                      ) : (
+                        <span className={`${styles.allocTag} ${t.onChain ? styles.allocTagOn : ''}`}>
+                          {t.onChain ? 'Enforced on-chain' : 'Planned'}
+                        </span>
+                      )}
                     </div>
                   </div>
                 </li>
