@@ -8,16 +8,10 @@ export const metadata = {
 export default function BlogIndex() {
   const articles = [
     {
-      slug: 'how-to-hire-crypto-influencers',
-      title: 'How to Hire Crypto Influencers Without Getting Scammed',
-      date: 'June 24, 2026',
-      excerpt: 'The influencer marketing space in Web3 is notorious for rug pulls and unfulfilled promises. Learn how to protect your marketing budget using smart contracts.'
-    },
-    {
       slug: 'understanding-decentralized-arbitration',
-      title: 'Decentralized Arbitration: The Future of Dispute Resolution',
+      title: 'How Dispute Resolution Works on JoobEscrow',
       date: 'June 20, 2026',
-      excerpt: 'What happens when a freelancer and a client disagree? Discover how JoobEscrow uses impartial, transparent, and fast on-chain arbitration.'
+      excerpt: 'What happens when a freelancer and a client disagree? How disputes are opened, reviewed and settled on-chain, and what protects both sides.'
     }
   ];
 

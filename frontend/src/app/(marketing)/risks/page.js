@@ -17,7 +17,7 @@ export default function RisksPage() {
         <div className="glass-panel p-8">
           <h2 className="text-xl font-bold text-white mb-3">1. Smart Contract Risk</h2>
           <p className="text-gray-400">
-            While our smart contracts have been rigorously audited by SpyWolf (a reputable Web3 security firm), there is always a non-zero risk of undiscovered vulnerabilities in any software. If a critical bug is exploited, funds locked in the escrow could be lost. We mitigate this through continuous monitoring and our Bug Bounty program.
+            While our smart contracts were audited by SpyWolf (an independent Web3 security firm), there is always a non-zero risk of undiscovered vulnerabilities in any software. If a critical bug is exploited, funds locked in the escrow could be lost. We reduce this risk with an independent audit, a Safe multisig for admin actions and an emergency pause.
           </p>
         </div>
 

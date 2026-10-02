@@ -1,9 +1,9 @@
 import Link from 'next/link';
 
-// Static generation for the blog posts
+// Static generation for the blog posts; any other slug returns a 404.
+export const dynamicParams = false;
 export function generateStaticParams() {
   return [
-    { slug: 'how-to-hire-crypto-influencers' },
     { slug: 'understanding-decentralized-arbitration' }
   ];
 }
@@ -11,8 +11,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }) {
   const { slug } = await params;
   const titles = {
-    'how-to-hire-crypto-influencers': 'How to Hire Crypto Influencers Without Getting Scammed',
-    'understanding-decentralized-arbitration': 'Decentralized Arbitration: The Future of Dispute Resolution'
+    'understanding-decentralized-arbitration': 'How Dispute Resolution Works on JoobEscrow'
   };
   
   const title = titles[slug] || 'Blog Post';
@@ -26,24 +25,12 @@ export async function generateMetadata({ params }) {
 export default async function BlogPost({ params }) {
   const { slug } = await params;
   const content = {
-    'how-to-hire-crypto-influencers': (
-      <article className="prose prose-invert lg:prose-xl mx-auto">
-        <h1 className="text-4xl font-bold text-white mb-6">How to Hire Crypto Influencers Without Getting Scammed</h1>
-        <p className="text-gray-400 mb-4">In the Wild West of Web3, marketing budgets are often drained by KOLs (Key Opinion Leaders) who promise massive engagement but fail to deliver. The traditional approach of paying 50% upfront involves massive counter-party risk.</p>
-        <h2 className="text-2xl font-bold text-white mt-8 mb-4">The Solution: Trustless Escrow</h2>
-        <p className="text-gray-400 mb-4">By using JoobEscrow, you lock the agreed-upon funds into an immutable smart contract. The influencer sees that the money is guaranteed, so they do the work. You don&apos;t release the funds until the tweet, video, or thread is live and meets your criteria.</p>
-        <ul className="list-disc pl-5 text-gray-400 space-y-2 mb-8">
-          <li><strong>Zero Risk for Clients:</strong> If they don&apos;t post, you get 100% of your money back.</li>
-          <li><strong>Guarantee for KOLs:</strong> They know you can&apos;t run away with the payment after they post.</li>
-          <li><strong>Fair Arbitration:</strong> If the post is late or poorly made, open a dispute for a partial refund.</li>
-        </ul>
-      </article>
-    ),
     'understanding-decentralized-arbitration': (
       <article className="prose prose-invert lg:prose-xl mx-auto">
-        <h1 className="text-4xl font-bold text-white mb-6">Decentralized Arbitration: The Future of Dispute Resolution</h1>
+        <h1 className="text-4xl font-bold text-white mb-6">How Dispute Resolution Works on JoobEscrow</h1>
         <p className="text-gray-400 mb-4">When a freelance contract goes wrong, traditional legal systems are too slow and expensive. Web3 needs a better way.</p>
-        <p className="text-gray-400 mb-4">JoobEscrow introduces an arbitration system where evidence is stored immutably on IPFS, and a neutral third party evaluates the deliverables against the original requirements, distributing funds proportionally to the work completed.</p>
+        <p className="text-gray-400 mb-4">On JoobEscrow, either party can open a dispute while the funds are locked. Both sides share their evidence (deliverables, messages, original requirements), and the JoobEscrow arbitration team compares the work delivered with what was agreed. The decision is executed by the smart contract, which can split the funds in any proportion, from 0 to 100%.</p>
+        <p className="text-gray-400 mb-4">The contract can record a fingerprint (hash) of each piece of evidence on-chain; in-app evidence upload is coming. If a dispute is left unresolved for 30 days, either party can trigger a 50/50 split, so funds are never locked forever.</p>
       </article>
     )
   };

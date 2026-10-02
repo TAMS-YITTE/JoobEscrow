@@ -64,7 +64,6 @@ export default function MarketingLayout({ children }) {
               <Link href="/security" className={styles.navLink}>Security & Trust</Link>
               <Link href="/risks" className={styles.navLink}>Risks & Disclaimers</Link>
               <Link href="/compliance" className={styles.navLink}>Regulatory & Compliance</Link>
-              <Link href="/bug-bounty" className={styles.navLink}>Bug Bounty</Link>
               <Link href="/presale-terms" className={styles.navLink}>Presale Terms</Link>
               <a href={ZEALY_URL} target="_blank" rel="noopener noreferrer" className={styles.navLink}>Zealy Quests</a>
               <Link href="https://spywolf.co/audits/Universal_Service_Escrow_V4_Audit.pdf" target="_blank" className={styles.navLink}>Audit Report</Link>
