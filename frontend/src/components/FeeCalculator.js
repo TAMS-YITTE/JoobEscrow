@@ -111,6 +111,11 @@ export default function FeeCalculator() {
         </div>
       </div>
       
+      <div style={{ marginTop: '14px', padding: '10px 15px', borderRadius: '8px', border: '1px dashed rgba(255,255,255,0.15)', color: 'var(--text-secondary)', fontSize: '0.85rem', textAlign: 'center' }}>
+        On this deal, a marketplace keeping 20–30% would take <strong style={{ color: '#fff' }}>{(amount * 0.2).toFixed(0)}–{(amount * 0.3).toFixed(0)} USDT</strong>.
+        JoobEscrow: <strong style={{ color: '#4ade80' }}>{feeAmount.toFixed(0)} USDT</strong>, client pays 0%.
+      </div>
+
       <p style={{ fontSize: '0.8rem', textAlign: 'center', color: 'var(--text-secondary)', marginTop: '20px' }}>
         The fee is only deducted from the provider&apos;s payout on completion. If the escrow is cancelled before the provider accepts, the client gets a full refund (minus network gas).
       </p>

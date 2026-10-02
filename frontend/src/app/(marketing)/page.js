@@ -7,6 +7,24 @@ import PresaleHomeBanner from '../../components/PresaleHomeBanner';
 import { AUDITS } from '../../config/presale';
 import LiteYouTube from '../../components/LiteYouTube';
 
+const WHY = [
+  {
+    big: '0% · 2–10%',
+    title: 'Keep what you earn',
+    text: 'Marketplaces can keep 20–30% of a deal across client and freelancer fees. With JoobEscrow the client pays 0% and the provider 2–10%, only when the payment is released.',
+  },
+  {
+    big: 'Locked',
+    title: 'Paid only when approved',
+    text: 'Funds are locked in an audited smart contract, not held by us. The provider sees the money is there before starting the work.',
+  },
+  {
+    big: 'Fair',
+    title: 'Protected if it goes wrong',
+    text: 'Full refund if the client cancels before the provider accepts. Otherwise a dispute is arbitrated and the contract splits the funds, from 0 to 100%.',
+  },
+];
+
 export default function LandingPage() {
   const d = dict.landing;
 
@@ -72,6 +90,24 @@ export default function LandingPage() {
         <div className={styles.videoWrap}>
           <LiteYouTube id="NbLMUrY4bac" title="JoobEscrow: secure payments in 45 seconds" />
         </div>
+      </section>
+
+      {/* Why JoobEscrow */}
+      <section className={styles.section} style={{ paddingTop: 0 }}>
+        <h2 className={styles.sectionTitle}>Why JoobEscrow</h2>
+        <div className={styles.whyGrid}>
+          {WHY.map((w) => (
+            <div key={w.title} className={`glass-panel ${styles.whyCard}`}>
+              <div className={styles.whyBig}>{w.big}</div>
+              <h3 className={styles.stepTitle}>{w.title}</h3>
+              <p className={styles.stepDesc}>{w.text}</p>
+            </div>
+          ))}
+        </div>
+        <p className={styles.whyNote}>
+          Marketplace figures: typical published seller and buyer service fees on large freelance marketplaces, small orders included.
+          JoobEscrow fees are read on-chain from each contract tier.
+        </p>
       </section>
 
       {/* Stats & Calculator Section */}
