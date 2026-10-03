@@ -97,12 +97,12 @@ export default function FeeCalculator() {
           <span style={{ color: '#fff', fontWeight: 'bold' }}>{amount.toFixed(2)} USDT</span>
         </div>
         
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 15px', backgroundColor: 'rgba(255,50,50,0.1)', border: '1px solid rgba(255,50,50,0.2)', borderRadius: '8px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 15px', backgroundColor: 'rgba(190,242,100,0.08)', border: '1px solid rgba(190,242,100,0.28)', borderRadius: '8px' }}>
           <span style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
             JoobEscrow Fee 
             {loading ? <span style={{ backgroundColor: 'rgba(255,255,255,0.1)', height: '16px', width: '30px', borderRadius: '4px' }}></span> : <span style={{ fontSize: '0.75rem', backgroundColor: 'rgba(255,255,255,0.1)', padding: '2px 6px', borderRadius: '4px', color: '#fff' }}>{percentage}%</span>}
           </span>
-          <span style={{ color: '#ff6b6b', fontWeight: 'bold' }}>-{feeAmount.toFixed(2)} USDT</span>
+          <span style={{ color: '#d9f99d', fontWeight: 'bold' }}>-{feeAmount.toFixed(2)} USDT</span>
         </div>
 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 15px', backgroundColor: 'rgba(50,255,100,0.1)', border: '1px solid rgba(50,255,100,0.2)', borderRadius: '8px' }}>
