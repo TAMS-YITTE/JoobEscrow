@@ -278,3 +278,12 @@ h1, h2, h3 {
 .security-banner-links span { color: rgba(254, 240, 138, 0.55); }
 .security-banner-links a { color: #facc15; text-decoration: underline; text-underline-offset: 2px; }
 .security-banner-links a:hover { color: #fde047; }
+
+/* Impression / export PDF (litepaper) : fond blanc, texte sombre, sans navigation. */
+@media print {
+  header, footer, nav, button, [class*="Banner"], [class*="banner"] { display: none !important; }
+  html, body { background: #fff !important; }
+  body * { color: #111 !important; background: transparent !important; box-shadow: none !important; border-color: #ccc !important; }
+  a { color: #1d4ed8 !important; text-decoration: underline; }
+  section { break-inside: avoid; }
+}
