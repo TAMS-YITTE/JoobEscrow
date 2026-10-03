@@ -142,7 +142,7 @@ export default function WhitepaperPage() {
               <thead><tr><th style={th}>Allocation</th><th style={th}>%</th><th style={th}>JOOB</th><th style={th}>Release</th></tr></thead>
               <tbody>
                 {TOKENOMICS.map(([name, pct, amount, rule]) => (
-                  <tr key={name}><td style={td}>{name}</td><td style={td}>{pct}</td><td style={td}>{amount}</td><td style={td}>{rule}</td></tr>
+                  <tr key={name}><td style={td}>{name}{name === 'Ecosystem & usage' && <> (incl. <strong style={{ color: '#34d399' }}>staking rewards</strong>)</>}</td><td style={td}>{pct}</td><td style={td}>{amount}</td><td style={td}>{rule}</td></tr>
                 ))}
               </tbody>
             </table>

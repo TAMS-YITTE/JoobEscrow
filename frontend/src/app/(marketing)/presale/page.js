@@ -75,7 +75,7 @@ const ROADMAP = [
 const TOKENOMICS = [
   { name: 'Presale', pct: 15, color: '#10b981', vesting: '20% at sale end, then linear over 180 days', onChain: true },
   { name: 'Presale bonus & referral', pct: 1.35, color: '#6ee7b7', vesting: 'Same vesting as the presale', onChain: true },
-  { name: 'Ecosystem & usage', pct: 25, color: '#3b82f6', vesting: 'Distributed progressively over about 48 months, every transfer disclosed' },
+  { name: 'Ecosystem & usage', highlight: 'staking rewards', pct: 25, color: '#3b82f6', vesting: 'Distributed progressively over about 48 months, every transfer disclosed' },
   { name: 'Treasury (Safe)', pct: 13, color: '#8b5cf6', vesting: 'Locked until Jul 13, 2027, then linear over 36 months', onChain: true, contract: '0x8cbac3786F61572D4571C951e9215FC289FB2ff3' },
   { name: 'Team', pct: 12, color: '#f59e0b', vesting: 'Locked until Jan 13, 2028, then linear over 24 months', onChain: true, contract: '0xc430f8C4E26FFc25326C4AA84947B3e2A1328012' },
   { name: 'DEX liquidity', pct: 10, color: '#06b6d4', vesting: 'Paired at listing, LP locked 12 months or more' },
@@ -132,7 +132,7 @@ export default function PresalePage() {
                   <span className={styles.allocDot} style={{ background: t.color }} />
                   <div className={styles.allocBody}>
                     <div className={styles.allocHead}>
-                      <span className={styles.allocName}>{t.name}</span>
+                      <span className={styles.allocName}>{t.name}{t.highlight && <span className={styles.allocIncl}> (incl. <strong>{t.highlight}</strong>)</span>}</span>
                       <span className={styles.allocPct}>{t.pct}%</span>
                     </div>
                     <div className={styles.allocMeta}>
