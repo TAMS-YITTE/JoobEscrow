@@ -22,7 +22,7 @@ export const metadata = {
 const FAQ = [
   {
     q: 'What is JOOB?',
-    a: 'JOOB is the BEP-20 token of the JoobEscrow ecosystem on BNB Smart Chain (fixed supply of 1,000,000,000). It is designed to be the key to the protocol: governance (JOOB holders vote on protocol decisions such as new categories, fee tiers and ecosystem grants), fee reductions for holders who stake JOOB, by tier, up to a full fee waiver at the highest tier (with Escrow V5), JOOB staking (contract already deployed and audited by SpyWolf, opening after the TGE: stake JOOB, earn JOOB rewards, 7-day withdrawal delay, no guaranteed yield), plus boosts and badges, affiliate rewards in JOOB and Early Escrow points. These features ship progressively and are not guaranteed by a given date. JOOB gives no ownership, profit or revenue right in JoobEscrow, and using JoobEscrow escrows never requires JOOB.',
+    a: 'JOOB is the BEP-20 token of the JoobEscrow ecosystem on BNB Smart Chain (fixed supply of 1,000,000,000). It is designed to be the key to the protocol: governance (JOOB holders vote on protocol decisions such as new categories, fee tiers and ecosystem grants), fee reductions for holders who stake JOOB, by tier, up to a full fee waiver at the highest tier (with Escrow V5), JOOB staking (contract already deployed and audited by SpyWolf, opening after the TGE: stake JOOB, earn JOOB rewards, 7-day withdrawal delay, no guaranteed yield), 0% fees on PerShare (our audited collective-pool app) for holders above a threshold from the TGE, plus boosts and badges, affiliate rewards in JOOB and Early Escrow points. These features ship progressively and are not guaranteed by a given date. JOOB gives no ownership, profit or revenue right in JoobEscrow, and using JoobEscrow escrows never requires JOOB.',
   },
   {
     q: 'How is the price set during the presale?',
@@ -63,11 +63,11 @@ const ROADMAP = [
   { title: 'Foundations', status: 'done', items: 'Audited escrow contract, verified on BscScan, owned by a Safe multisig. 15 categories and encrypted in-app chat.' },
   { title: 'Trust layer', status: 'now', items: 'Check a deal before you pay. Live: $1 demo with a step-by-step guide, shareable escrow links. Next: public deal pages anyone can verify without a wallet, Telegram alerts, dispute evidence recorded on-chain.' },
   { title: 'JOOB presale', status: 'next', items: 'October 15, 2026 → January 13, 2027. Sealed vault, vesting for every participant, unsold tokens returned to the Safe and burned in a public transaction.' },
-  { title: 'TGE & liquidity', items: 'JOOB/USDT pool on PancakeSwap at an initial price of $0.02, JOOB staking opens (contract already audited), first JOOB utilities (boosts & badges), Early Escrow points.' },
+  { title: 'TGE & liquidity', items: 'JOOB/USDT pool on PancakeSwap at an initial price of $0.02, JOOB staking opens (contract already audited), JOOB activated on PerShare, first JOOB utilities (boosts & badges), Early Escrow points.' },
   { title: 'Escrow V5', items: 'JOOB holder fee tiers: stake JOOB to pay lower fees, up to a full fee waiver at the highest tier. On-chain affiliate rewards, gasless payouts, verified reputation profiles.' },
   { title: 'Escrow V5.1', items: 'Milestone payments, partial releases, amicable settlement, bulk deals for agencies.' },
   { title: 'As easy as a Web2 app', items: 'Hide the Web3 complexity: sign in with email or social accounts, no seed phrase to start, network fees covered for users, pay by card. Same on-chain security, your keys stay yours.' },
-  { title: 'Expansion', items: 'Multichain, API & "Pay me with JoobEscrow" widget, receipts & invoices.' },
+  { title: 'Expansion', items: 'Multichain, API & "Pay me with JoobEscrow" widget, receipts & invoices, PerShare pools that directly fund JoobEscrow deals.' },
   { title: 'JOOB governance', items: 'JOOB holders vote on protocol decisions: new categories, fee tiers, ecosystem grants. Off-chain votes first, then on-chain governance, and staked arbitrators.' },
 ];
 // Repartition de l'offre fixe de 1 Md JOOB (MASTER_PROMPT §5). Les 13,5 M de bonus/parrainage
@@ -162,6 +162,32 @@ export default function PresalePage() {
             multisig. Every outgoing JOOB transfer from the Safe is publicly disclosed with its purpose and transaction
             link. Tokens allocated to partners are locked in their own on-chain vesting contract.
           </p>
+        </section>
+
+        <section className={styles.faq} id="ecosystem">
+          <h2 className={styles.faqTitle}>The Joob ecosystem</h2>
+          <p className={styles.ecoLead}>Two building blocks, one token.</p>
+          <div className={styles.ecoGrid}>
+            <div className={styles.ecoCard}>
+              <span className={styles.ecoTag}>1 → 1</span>
+              <h3>JoobEscrow</h3>
+              <p>Secures a deal between two parties: funds stay locked on-chain until the work is approved. Live and audited.</p>
+            </div>
+            <div className={styles.ecoCard}>
+              <span className={styles.ecoTag}>Many → 1 goal</span>
+              <h3>PerShare</h3>
+              <p>A collective pool: up to 50 members fund one goal, the group validates together, or everyone is refunded automatically.
+                An advanced proof of concept, live on BNB Chain and{' '}
+                <a href="https://spywolf.co/audits/PerShare_Audit.pdf" target="_blank" rel="noopener noreferrer" className={styles.link}>audited by SpyWolf</a>.{' '}
+                <a href="https://www.pershare.org" target="_blank" rel="noopener noreferrer" className={styles.link}>pershare.org ↗</a></p>
+            </div>
+            <div className={styles.ecoCard}>
+              <span className={styles.ecoTag}>One token</span>
+              <h3>JOOB</h3>
+              <p>Powers both: governance, fee tiers and staking on JoobEscrow, and 0% fees on PerShare for holders above a threshold
+                (from the TGE). Next step: PerShare pools that directly fund a JoobEscrow escrow.</p>
+            </div>
+          </div>
         </section>
 
         <section className={styles.faq} id="roadmap">
