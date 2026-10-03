@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import CoFundedEscrowDiagram from '../../../components/CoFundedEscrowDiagram';
 import PresaleClient from './PresaleClient';
 import styles from './presale.module.css';
 
@@ -67,7 +68,8 @@ const ROADMAP = [
   { title: 'Escrow V5', items: 'JOOB holder fee tiers: stake JOOB to pay lower fees, up to a full fee waiver at the highest tier. On-chain affiliate rewards, gasless payouts, verified reputation profiles.' },
   { title: 'Escrow V5.1', items: 'Milestone payments, partial releases, amicable settlement, bulk deals for agencies.' },
   { title: 'As easy as a Web2 app', items: 'Hide the Web3 complexity: sign in with email or social accounts, no seed phrase to start, network fees covered for users, pay by card. Same on-chain security, your keys stay yours.' },
-  { title: 'Expansion', items: 'Multichain, API & "Pay me with JoobEscrow" widget, receipts & invoices, PerShare pools that directly fund JoobEscrow deals.' },
+  { title: 'Expansion', items: 'Multichain, API & "Pay me with JoobEscrow" widget, receipts & invoices.' },
+  { title: 'Joob ecosystem: co-funded escrow', items: 'With PerShare V2: several sponsors pool funds and open one JoobEscrow escrow, paid only on delivery; refunds return pro-rata in the same currency. Built on Escrow V5, audited before launch.' },
   { title: 'JOOB governance', items: 'JOOB holders vote on protocol decisions: new categories, fee tiers, ecosystem grants. Off-chain votes first, then on-chain governance, and staked arbitrators.' },
 ];
 // Repartition de l'offre fixe de 1 Md JOOB (MASTER_PROMPT §5). Les 13,5 M de bonus/parrainage
@@ -83,6 +85,14 @@ const TOKENOMICS = [
   { name: 'Partners & KOL', pct: 7, color: '#f97316', vesting: '3-month cliff, then 12 months, always disclosed' },
   { name: 'Airdrop (points)', pct: 5, color: '#eab308', vesting: '20% at TGE, then 6 months (audited contract)' },
   { name: 'CEX reserve', pct: 5, color: '#64748b', vesting: 'Used only for a centralized exchange listing' },
+];
+// Repartition de la levee (decision du 03/10/2026).
+const USE_OF_FUNDS = [
+  { name: 'PancakeSwap liquidity', pct: 40, color: '#06b6d4', text: 'JOOB/stablecoin pool at the $0.02 listing price, LP tokens locked 12 months or more.' },
+  { name: 'Product development', pct: 30, color: '#3b82f6', text: 'Escrow V5 (holder fee tiers, governance), PerShare V2 and the co-funded escrow, the "as easy as a Web2 app" layer.' },
+  { name: 'Audits & security', pct: 10, color: '#10b981', text: 'Audits of Escrow V5 and PerShare V2, bug bounty, monitoring.' },
+  { name: 'Growth', pct: 10, color: '#f59e0b', text: 'KOL campaigns, listings, partnerships.' },
+  { name: 'Operations & reserve', pct: 10, color: '#64748b', text: 'Infrastructure, legal, contingencies.' },
 ];
 const TOTAL_SUPPLY = 1_000_000_000;
 // Debut cumule de chaque segment, calcule une fois hors rendu.
@@ -164,6 +174,26 @@ export default function PresalePage() {
           </p>
         </section>
 
+        <section className={styles.faq} id="use-of-funds">
+          <h2 className={styles.faqTitle}>Use of funds</h2>
+          <div className={styles.fundsList}>
+            {USE_OF_FUNDS.map((f) => (
+              <div key={f.name} className={styles.fundsRow}>
+                <div className={styles.fundsHead}>
+                  <span className={styles.allocName}>{f.name}</span>
+                  <span className={styles.allocPct}>{f.pct}%</span>
+                </div>
+                <div className={styles.fundsBar}><span style={{ width: `${f.pct}%`, background: f.color }} /></div>
+                <p className={styles.fundsText}>{f.text}</p>
+              </div>
+            ))}
+          </div>
+          <p className={styles.fine}>
+            Funds raised are held by our 3-of-5 Safe multisig and every outgoing transfer is disclosed. Liquidity is added at the planned
+            listing price; the DEX allocation of the tokenomics is a cap, not a promise of liquidity depth.
+          </p>
+        </section>
+
         <section className={styles.faq} id="ecosystem">
           <h2 className={styles.faqTitle}>The Joob ecosystem</h2>
           <p className={styles.ecoLead}>Two building blocks, one token.</p>
@@ -187,6 +217,9 @@ export default function PresalePage() {
               <p>Powers both: governance, fee tiers and staking on JoobEscrow, and 0% fees on PerShare for holders above a threshold
                 (from the TGE). Next step: PerShare pools that directly fund a JoobEscrow escrow.</p>
             </div>
+          </div>
+          <div className={styles.ecoDiagram}>
+            <CoFundedEscrowDiagram />
           </div>
         </section>
 

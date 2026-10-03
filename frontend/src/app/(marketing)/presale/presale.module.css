@@ -515,3 +515,11 @@
   background: rgba(16, 185, 129, 0.15); color: #34d399;
 }
 @media (max-width: 768px) { .ecoGrid { grid-template-columns: 1fr; } }
+
+/* Use of funds + schema co-funded escrow */
+.fundsList { display: flex; flex-direction: column; gap: 14px; max-width: 720px; margin: 0 auto; }
+.fundsHead { display: flex; justify-content: space-between; align-items: baseline; }
+.fundsBar { height: 8px; border-radius: 999px; background: rgba(255, 255, 255, 0.06); overflow: hidden; margin: 6px 0; }
+.fundsBar span { display: block; height: 100%; border-radius: 999px; }
+.fundsText { color: var(--text-secondary); font-size: 0.85rem; line-height: 1.5; margin: 0; }
+.ecoDiagram { margin-top: 18px; background: rgba(0, 0, 0, 0.4); border: 1px solid var(--border-color); border-radius: 14px; padding: 12px; }

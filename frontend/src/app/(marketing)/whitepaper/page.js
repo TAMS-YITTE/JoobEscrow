@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import styles from '../presale/presale.module.css';
 import PrintButton from './PrintButton';
+import CoFundedEscrowDiagram from '../../../components/CoFundedEscrowDiagram';
 import { AUDITS, PRESALE_ADDRESSES, PLANNED_LISTING_PRICE } from '../../../config/presale';
 
 export const metadata = {
@@ -149,6 +150,13 @@ export default function WhitepaperPage() {
               0% fees on PerShare above a holding threshold. Next step: PerShare pools that directly fund a JoobEscrow escrow (e.g. several sponsors
               co-funding one campaign, paid only on delivery).</li>
           </ul>
+          <p style={p}>
+            <strong>Co-funded escrow (planned).</strong> Several sponsors or community members pool funds on PerShare, and the pool opens a
+            JoobEscrow escrow as one client. Funds stay locked until the work is delivered and approved by the group. If the deal is
+            cancelled or a dispute goes the group&apos;s way, the refund returns to the pool and each member gets their pro-rata share, in the
+            same currency. Planned with JoobEscrow V5 and PerShare V2; audited before launch.
+          </p>
+          <div style={{ ...box, padding: 12 }}><CoFundedEscrowDiagram /></div>
         </section>
 
         <section>
@@ -185,7 +193,27 @@ export default function WhitepaperPage() {
         </section>
 
         <section>
-          <h2 style={h2}>9. Roadmap</h2>
+          <h2 style={h2}>9. Use of funds</h2>
+          <div style={{ ...box, padding: 0, overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 480 }}>
+              <thead><tr><th style={th}>Use</th><th style={th}>Share</th><th style={th}>What it funds</th></tr></thead>
+              <tbody>
+                <tr><td style={td}>PancakeSwap liquidity</td><td style={td}>40%</td><td style={td}>JOOB/stablecoin pool at the ${PLANNED_LISTING_PRICE} listing price, LP locked 12 months or more</td></tr>
+                <tr><td style={td}>Product development</td><td style={td}>30%</td><td style={td}>Escrow V5, PerShare V2 and the co-funded escrow, the Web2-simple layer</td></tr>
+                <tr><td style={td}>Audits &amp; security</td><td style={td}>10%</td><td style={td}>Audits of Escrow V5 and PerShare V2, bug bounty, monitoring</td></tr>
+                <tr><td style={td}>Growth</td><td style={td}>10%</td><td style={td}>KOL campaigns, listings, partnerships</td></tr>
+                <tr><td style={td}>Operations &amp; reserve</td><td style={td}>10%</td><td style={td}>Infrastructure, legal, contingencies</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p style={{ ...p, marginTop: 12 }}>
+            Funds raised are held by our 3-of-5 Safe multisig and every outgoing transfer is disclosed. The DEX allocation of the
+            tokenomics is a cap: liquidity is added at the listing price with the share of funds above, without any promise of depth.
+          </p>
+        </section>
+
+        <section>
+          <h2 style={h2}>10. Roadmap</h2>
           <ol style={{ paddingLeft: 22 }}>
             <li style={li}><strong>Foundations (done):</strong> audited escrow contract, verified on BscScan, owned by a Safe multisig; 15 categories and encrypted chat.</li>
             <li style={li}><strong>Trust layer (now):</strong> $1 demo, shareable escrow links; next, public deal pages verifiable without a wallet, Telegram alerts, on-chain dispute evidence.</li>
@@ -193,14 +221,15 @@ export default function WhitepaperPage() {
             <li style={li}><strong>TGE &amp; liquidity:</strong> PancakeSwap pool at ${PLANNED_LISTING_PRICE}, JOOB staking opens, JOOB activated on PerShare, first JOOB utilities, Early Escrow points.</li>
             <li style={li}><strong>Escrow V5:</strong> JOOB holder fee tiers up to a full fee waiver, on-chain affiliate rewards, gasless payouts, verified reputation profiles (audit before deployment).</li>
             <li style={li}><strong>As easy as a Web2 app:</strong> email or social sign-in, no seed phrase to start, network fees covered, card payments.</li>
-            <li style={li}><strong>Expansion:</strong> multichain, API and widget, receipts and invoices, PerShare pools that directly fund JoobEscrow deals.</li>
+            <li style={li}><strong>Expansion:</strong> multichain, API and widget, receipts and invoices.</li>
+            <li style={li}><strong>Joob ecosystem, co-funded escrow:</strong> with PerShare V2, several sponsors pool funds and open one JoobEscrow escrow, paid only on delivery; built on Escrow V5, audited before launch.</li>
             <li style={li}><strong>JOOB governance:</strong> holders vote on categories, fee tiers and ecosystem grants; off-chain first, then on-chain; staked arbitrators.</li>
           </ol>
           <p style={p}>No dates are given beyond the presale: each step ships when it is ready and audited where needed.</p>
         </section>
 
         <section>
-          <h2 style={h2}>10. Contracts (BNB Smart Chain)</h2>
+          <h2 style={h2}>11. Contracts (BNB Smart Chain)</h2>
           <ul style={{ paddingLeft: 22 }}>
             <Addr label="JOOB token" address={PRESALE_ADDRESSES.TOKEN} path="token" />
             <Addr label="Presale" address={PRESALE_ADDRESSES.PRESALE} />
@@ -213,7 +242,7 @@ export default function WhitepaperPage() {
         </section>
 
         <section>
-          <h2 style={h2}>11. Risks &amp; legal notice</h2>
+          <h2 style={h2}>12. Risks &amp; legal notice</h2>
           <p style={p}>
             Smart contracts can contain undiscovered bugs; blockchain transactions are irreversible; stablecoin issuers can freeze
             addresses; disputes are resolved by the JoobEscrow arbitration multisig; the value of JOOB can go down to zero and is not

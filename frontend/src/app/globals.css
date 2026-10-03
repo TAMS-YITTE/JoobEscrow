@@ -286,4 +286,5 @@ h1, h2, h3 {
   body * { color: #111 !important; background: transparent !important; box-shadow: none !important; border-color: #ccc !important; }
   a { color: #1d4ed8 !important; text-decoration: underline; }
   section { break-inside: avoid; }
+  svg text { fill: #111 !important; }
 }
