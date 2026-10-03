@@ -6,6 +6,7 @@ import dict from '../../i18n/en.json';
 import { Web3Provider } from '../../context/Web3Context';
 import PresaleNavButton from '../../components/PresaleNavButton';
 import ZealyBanner from '../../components/ZealyBanner';
+import { AUDITS } from '../../config/presale';
 import { TELEGRAM_URL, X_URL, ZEALY_URL } from '../../config/links';
 
 const TG_PATH = 'M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a50.363 50.363 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.892-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z';
@@ -101,9 +102,16 @@ export default function MarketingLayout({ children }) {
             </div>
 
             <div className={styles.footerCol}>
+              <h3>Audits (SpyWolf)</h3>
+              <a href={AUDITS.ESCROW_V4} target="_blank" rel="noopener noreferrer">Escrow contract V4</a>
+              <a href={AUDITS.TOKEN} target="_blank" rel="noopener noreferrer">JOOB token</a>
+              <a href={AUDITS.PRESALE} target="_blank" rel="noopener noreferrer">Presale &amp; airdrop</a>
+              <a href={AUDITS.STAKING} target="_blank" rel="noopener noreferrer">Staking</a>
+            </div>
+
+            <div className={styles.footerCol}>
               <h3>Trust &amp; legal</h3>
               <Link href="/security">Security &amp; trust</Link>
-              <a href="https://spywolf.co/audits/Universal_Service_Escrow_V4_Audit.pdf" target="_blank" rel="noopener noreferrer">Audit report</a>
               <Link href="/risks">Risks &amp; disclaimers</Link>
               <Link href="/compliance">Regulatory &amp; compliance</Link>
             </div>
