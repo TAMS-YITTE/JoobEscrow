@@ -5,7 +5,7 @@ import { instances } from '../../../config/instances';
 import GovernanceTransparency from '../../../components/GovernanceTransparency';
 import { AUDITS, PRESALE_ADDRESSES } from '../../../config/presale';
 
-// Resultats repris des rapports SpyWolf publies (relus le 2026-10-01).
+// Resultats repris des rapports SpyWolf publies (relus le 2026-10-01 ; staking ajoute le 03/10).
 const AUDIT_CARDS = [
   {
     title: 'Escrow contract (V4)',
@@ -26,6 +26,13 @@ const AUDIT_CARDS = [
     summary: 'Sealed vault, public price schedule, on-chain vesting for every buyer. No critical, high or medium issue.',
     pdf: AUDITS.PRESALE,
     bscscan: `https://bscscan.com/address/${PRESALE_ADDRESSES.PRESALE}`,
+    bscscanLabel: 'BscScan ↗',
+  },
+  {
+    title: 'JOOB staking',
+    summary: 'Stake JOOB, earn JOOB in 30-day periods, 7-day withdrawal delay. Owned by the Safe multisig; opens after the TGE.',
+    pdf: AUDITS.STAKING,
+    bscscan: 'https://bscscan.com/address/0x7949528182876027b1F4B2e43E3a46eb2dADD32b',
     bscscanLabel: 'BscScan ↗',
   },
 ];

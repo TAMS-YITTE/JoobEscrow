@@ -12,6 +12,7 @@ export const metadata = {
 // Faits repris du code, des contrats et des pages publiques (verifies le 03/10/2026).
 const VESTING_TREASURY = '0x8cbac3786F61572D4571C951e9215FC289FB2ff3';
 const VESTING_TEAM = '0xc430f8C4E26FFc25326C4AA84947B3e2A1328012';
+const STAKING = '0x7949528182876027b1F4B2e43E3a46eb2dADD32b';
 
 const TOKENOMICS = [
   ['Presale', '15%', '150M', '20% at sale end, then linear over 180 days (presale contract)'],
@@ -100,7 +101,8 @@ export default function WhitepaperPage() {
             <li style={li}>Audits by SpyWolf:{' '}
               <a href={AUDITS.ESCROW_V4} target="_blank" rel="noopener noreferrer" className={styles.link}>escrow V4</a>,{' '}
               <a href={AUDITS.TOKEN} target="_blank" rel="noopener noreferrer" className={styles.link}>JOOB token</a>,{' '}
-              <a href={AUDITS.PRESALE} target="_blank" rel="noopener noreferrer" className={styles.link}>presale</a>. An audit reduces risk but does not remove it.
+              <a href={AUDITS.PRESALE} target="_blank" rel="noopener noreferrer" className={styles.link}>presale</a>,{' '}
+              <a href={AUDITS.STAKING} target="_blank" rel="noopener noreferrer" className={styles.link}>staking</a>. An audit reduces risk but does not remove it.
             </li>
             <li style={li}>All contracts are verified on BscScan and owned by a 3-of-5 Safe multisig: no single person can act alone.</li>
             <li style={li}>Fee, fee recipient and limit changes go through a public 2-day timelock.</li>
@@ -121,6 +123,10 @@ export default function WhitepaperPage() {
               ecosystem grants. Votes start off-chain and move to on-chain governance.</li>
             <li style={li}><strong>Fee reductions:</strong> providers who stake JOOB pay lower fees, by tier, up to a full fee waiver at the
               highest tier (with Escrow V5). Staked tokens are locked while the benefit applies.</li>
+            <li style={li}><strong>Staking:</strong> stake JOOB to earn JOOB rewards, distributed in 30-day periods from the ecosystem
+              allocation, with a 7-day withdrawal delay. The contract is already deployed and{' '}
+              <a href={AUDITS.STAKING} target="_blank" rel="noopener noreferrer" className={styles.link}>audited by SpyWolf</a>; it opens after the
+              TGE. Rewards depend on the amounts funded and the total staked: no yield is guaranteed.</li>
             <li style={li}><strong>Visibility &amp; rewards:</strong> boosts and badges paid in JOOB, affiliate rewards in JOOB, Early Escrow points.</li>
           </ul>
           <p style={p}>
@@ -168,7 +174,7 @@ export default function WhitepaperPage() {
             <li style={li}><strong>Foundations (done):</strong> audited escrow contract, verified on BscScan, owned by a Safe multisig; 15 categories and encrypted chat.</li>
             <li style={li}><strong>Trust layer (now):</strong> $1 demo, shareable escrow links; next, public deal pages verifiable without a wallet, Telegram alerts, on-chain dispute evidence.</li>
             <li style={li}><strong>JOOB presale:</strong> October 15, 2026 → January 13, 2027.</li>
-            <li style={li}><strong>TGE &amp; liquidity:</strong> PancakeSwap pool at ${PLANNED_LISTING_PRICE}, first JOOB utilities, Early Escrow points.</li>
+            <li style={li}><strong>TGE &amp; liquidity:</strong> PancakeSwap pool at ${PLANNED_LISTING_PRICE}, JOOB staking opens, first JOOB utilities, Early Escrow points.</li>
             <li style={li}><strong>Escrow V5:</strong> JOOB holder fee tiers up to a full fee waiver, on-chain affiliate rewards, gasless payouts, verified reputation profiles (audit before deployment).</li>
             <li style={li}><strong>As easy as a Web2 app:</strong> email or social sign-in, no seed phrase to start, network fees covered, card payments.</li>
             <li style={li}><strong>Expansion:</strong> multichain, API and widget, receipts and invoices.</li>
@@ -182,6 +188,7 @@ export default function WhitepaperPage() {
           <ul style={{ paddingLeft: 22 }}>
             <Addr label="JOOB token" address={PRESALE_ADDRESSES.TOKEN} path="token" />
             <Addr label="Presale" address={PRESALE_ADDRESSES.PRESALE} />
+            <Addr label="Staking (opens after the TGE)" address={STAKING} />
             <Addr label="Treasury vesting" address={VESTING_TREASURY} />
             <Addr label="Team vesting" address={VESTING_TEAM} />
             <Addr label="Safe multisig (3-of-5)" address={PRESALE_ADDRESSES.SAFE} />
