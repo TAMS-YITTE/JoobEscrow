@@ -219,6 +219,7 @@
   cursor: pointer;
 }
 .select option { background: #141414; }
+.chainIcon { width: 22px; height: 22px; flex-shrink: 0; margin-right: -4px; }
 .amount {
   flex: 1;
   min-width: 0;
