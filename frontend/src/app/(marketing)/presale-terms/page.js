@@ -19,7 +19,7 @@ export default function PresaleTermsPage() {
   return (
     <div style={{ maxWidth: 820, margin: '0 auto', padding: '48px 16px 64px' }}>
       <h1 style={{ fontSize: 'clamp(1.8rem, 5vw, 2.6rem)', fontWeight: 800, color: '#fff', marginBottom: 12 }}>JOOB Presale Terms &amp; Conditions</h1>
-      <p style={{ ...p, marginBottom: 24 }}><strong>Version 1.0 – October 2026</strong></p>
+      <p style={{ ...p, marginBottom: 24 }}><strong>Version 1.1 – October 2026</strong></p>
 
       <div style={{ ...box, paddingLeft: 20, marginBottom: 40, borderColor: 'rgba(59,130,246,0.35)', background: 'rgba(59,130,246,0.08)' }}>
         <p style={{ ...p, color: '#bfdbfe', fontSize: '0.92rem' }}>
@@ -39,9 +39,9 @@ export default function PresaleTermsPage() {
           <h2 style={h2}>Preamble – Nature of the token</h2>
           <p style={p}>
             JOOB is a utility token of the JoobEscrow ecosystem. It confers no ownership, equity, dividend, profit-sharing, revenue or
-            voting right in JoobEscrow or any legal entity, and no claim on the funds held in JoobEscrow escrows. Planned uses (boosts
-            and badges, affiliate rewards, advisory votes, and possibly a limited fee discount in a later contract version) may change
-            and are not guaranteed to be available at any given date.
+            shareholder voting right in JoobEscrow or any legal entity, and no claim on the funds held in JoobEscrow escrows. Planned
+            uses (protocol governance votes on product parameters, fee reductions for JOOB stakers up to a full fee waiver in a later
+            contract version, boosts and badges, affiliate rewards) may change and are not guaranteed to be available at any given date.
           </p>
         </section>
 

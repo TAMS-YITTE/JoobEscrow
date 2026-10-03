@@ -114,9 +114,18 @@ export default function WhitepaperPage() {
           <h2 style={h2}>5. The JOOB token</h2>
           <p style={p}>
             JOOB is the BEP-20 utility token of the JoobEscrow ecosystem, with a fixed supply of 1,000,000,000: no mint function,
-            no transfer tax. Planned uses include boosts and badges on JoobEscrow, affiliate rewards in JOOB, Early Escrow points
-            and advisory community votes; a limited fee discount paid in JOOB may follow in a later version of the escrow contracts.
-            JOOB gives no ownership, profit, dividend or revenue right in JoobEscrow, and the escrow service works without it.
+            no transfer tax. It is designed to be the key to the protocol:
+          </p>
+          <ul style={{ paddingLeft: 22 }}>
+            <li style={li}><strong>Governance:</strong> JOOB holders vote on protocol decisions such as new categories, fee tiers and
+              ecosystem grants. Votes start off-chain and move to on-chain governance.</li>
+            <li style={li}><strong>Fee reductions:</strong> providers who stake JOOB pay lower fees, by tier, up to a full fee waiver at the
+              highest tier (with Escrow V5). Staked tokens are locked while the benefit applies.</li>
+            <li style={li}><strong>Visibility &amp; rewards:</strong> boosts and badges paid in JOOB, affiliate rewards in JOOB, Early Escrow points.</li>
+          </ul>
+          <p style={p}>
+            These features ship progressively and are not guaranteed by a given date. JOOB gives no ownership, profit, dividend or
+            revenue right in JoobEscrow, and the escrow service works without it.
           </p>
         </section>
 
@@ -160,9 +169,10 @@ export default function WhitepaperPage() {
             <li style={li}><strong>Trust layer (now):</strong> $1 demo, shareable escrow links; next, public deal pages verifiable without a wallet, Telegram alerts, on-chain dispute evidence.</li>
             <li style={li}><strong>JOOB presale:</strong> October 15, 2026 → January 13, 2027.</li>
             <li style={li}><strong>TGE &amp; liquidity:</strong> PancakeSwap pool at ${PLANNED_LISTING_PRICE}, first JOOB utilities, Early Escrow points.</li>
-            <li style={li}><strong>Escrow V5:</strong> on-chain affiliate rewards, gasless payouts, JOOB fee discount, verified reputation profiles (audit before deployment).</li>
+            <li style={li}><strong>Escrow V5:</strong> JOOB holder fee tiers up to a full fee waiver, on-chain affiliate rewards, gasless payouts, verified reputation profiles (audit before deployment).</li>
             <li style={li}><strong>As easy as a Web2 app:</strong> email or social sign-in, no seed phrase to start, network fees covered, card payments.</li>
-            <li style={li}><strong>Expansion &amp; community:</strong> multichain, API and widget, governance votes, staked arbitrators.</li>
+            <li style={li}><strong>Expansion:</strong> multichain, API and widget, receipts and invoices.</li>
+            <li style={li}><strong>JOOB governance:</strong> holders vote on categories, fee tiers and ecosystem grants; off-chain first, then on-chain; staked arbitrators.</li>
           </ol>
           <p style={p}>No dates are given beyond the presale: each step ships when it is ready and audited where needed.</p>
         </section>

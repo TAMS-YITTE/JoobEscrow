@@ -22,7 +22,7 @@ export const metadata = {
 const FAQ = [
   {
     q: 'What is JOOB?',
-    a: 'JOOB is the BEP-20 token of the JoobEscrow ecosystem on BNB Smart Chain (fixed supply of 1,000,000,000). Planned uses include paying for boosts and badges on JoobEscrow, affiliate rewards in JOOB and advisory community votes; a limited fee discount paid in JOOB may follow in a later version of the escrow contracts. JOOB gives no ownership, profit or revenue right in JoobEscrow. Using JoobEscrow escrows never requires JOOB.',
+    a: 'JOOB is the BEP-20 token of the JoobEscrow ecosystem on BNB Smart Chain (fixed supply of 1,000,000,000). It is designed to be the key to the protocol: governance (JOOB holders vote on protocol decisions such as new categories, fee tiers and ecosystem grants), fee reductions for holders who stake JOOB, by tier, up to a full fee waiver at the highest tier (with Escrow V5), plus boosts and badges, affiliate rewards in JOOB and Early Escrow points. These features ship progressively and are not guaranteed by a given date. JOOB gives no ownership, profit or revenue right in JoobEscrow, and using JoobEscrow escrows never requires JOOB.',
   },
   {
     q: 'How is the price set during the presale?',
@@ -64,11 +64,11 @@ const ROADMAP = [
   { title: 'Trust layer', status: 'now', items: 'Check a deal before you pay. Live: $1 demo with a step-by-step guide, shareable escrow links. Next: public deal pages anyone can verify without a wallet, Telegram alerts, dispute evidence recorded on-chain.' },
   { title: 'JOOB presale', status: 'next', items: 'October 15, 2026 → January 13, 2027. Sealed vault, vesting for every participant, unsold tokens returned to the Safe and burned in a public transaction.' },
   { title: 'TGE & liquidity', items: 'JOOB/USDT pool on PancakeSwap at an initial price of $0.02, first JOOB utilities (boosts & badges), Early Escrow points.' },
-  { title: 'Escrow V5', items: 'On-chain affiliate rewards, gasless payouts, JOOB fee discount, verified reputation profiles.' },
+  { title: 'Escrow V5', items: 'JOOB holder fee tiers: stake JOOB to pay lower fees, up to a full fee waiver at the highest tier. On-chain affiliate rewards, gasless payouts, verified reputation profiles.' },
   { title: 'Escrow V5.1', items: 'Milestone payments, partial releases, amicable settlement, bulk deals for agencies.' },
   { title: 'As easy as a Web2 app', items: 'Hide the Web3 complexity: sign in with email or social accounts, no seed phrase to start, network fees covered for users, pay by card. Same on-chain security, your keys stay yours.' },
   { title: 'Expansion', items: 'Multichain, API & "Pay me with JoobEscrow" widget, receipts & invoices.' },
-  { title: 'Community', items: 'Governance votes, staked arbitrators.' },
+  { title: 'JOOB governance', items: 'JOOB holders vote on protocol decisions: new categories, fee tiers, ecosystem grants. Off-chain votes first, then on-chain governance, and staked arbitrators.' },
 ];
 // Repartition de l'offre fixe de 1 Md JOOB (MASTER_PROMPT §5). Les 13,5 M de bonus/parrainage
 // du plafond presale (163,5 M) sont pris sur le marketing (decision du 30/09). onChain = vesting impose par un contrat deploye ; contract = VestingWallet OZ (deploye le 03/10/2026, beneficiaire Safe).
