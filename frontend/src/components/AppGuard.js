@@ -1,9 +1,14 @@
 'use client';
 
+import { usePathname } from 'next/navigation';
 import { useWeb3 } from '../context/Web3Context';
+
+// Pages consultables sans wallet (profils publics des partenaires KOL).
+const PUBLIC_PATH = /^\/[^/]+\/kol\/[^/]+\/?$/;
 
 export default function AppGuard({ children }) {
   const { account, error, isTestnet, connectWallet } = useWeb3();
+  const isPublic = PUBLIC_PATH.test(usePathname() || '');
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100%' }}>
@@ -17,7 +22,7 @@ export default function AppGuard({ children }) {
           {error}
         </div>
       )}
-      {!account ? (
+      {!account && !isPublic ? (
         <div style={{ display: 'flex', flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px' }}>
           <div className="glass-panel" style={{ textAlign: 'center', maxWidth: '500px', padding: '40px' }}>
             <h2 style={{ marginBottom: '15px' }}>Wallet Not Connected</h2>

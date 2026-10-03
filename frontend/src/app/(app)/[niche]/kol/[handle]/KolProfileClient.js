@@ -1,19 +1,25 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { ethers } from 'ethers';
 import { useWeb3 } from '../../../../../context/Web3Context';
 import { useToast } from '../../../../../context/ToastContext';
-import { useEscrowContract } from '../../../../../hooks/useEscrowContract';
+import { useNiche } from '../../../../../context/NicheContext';
+import { ESCROW_ABI } from '../../../../../config/contract';
 import WalletConnect from '../../../../../components/WalletConnect';
 import CreateEscrowModal from '../../../../../components/CreateEscrowModal';
 import kolsConfig from '../../../../../config/kols.json';
 import './kol.css';
 
 export default function KolProfileClient({ handle }) {
-  const { readProvider } = useWeb3();
+  const { readProvider, account, connectWallet } = useWeb3();
   const { showToast } = useToast();
-  const contract = useEscrowContract();
+  const contractAddress = useNiche()?.contractAddress;
+  // Lecture seule (RPC public) : le profil et ses stats s'affichent sans wallet connecte.
+  const contract = useMemo(
+    () => (readProvider && contractAddress ? new ethers.Contract(contractAddress, ESCROW_ABI, readProvider) : null),
+    [readProvider, contractAddress]
+  );
 
   const kolData = kolsConfig[handle];
   const isValid = !!kolData;
@@ -101,6 +107,11 @@ export default function KolProfileClient({ handle }) {
   }, [contract, readProvider, kolProfile?.address, isValid]);
 
   const handleOrder = (service) => {
+    // Commander exige un wallet : on propose la connexion au lieu d'ouvrir le formulaire.
+    if (!account) {
+      connectWallet();
+      return;
+    }
     setSelectedService(service);
     setShowModal(true);
   };

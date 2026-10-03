@@ -38,3 +38,7 @@ contracts/coverage.json
 # Archives et documents hors perimetre du depot public
 *.zip
 audit_market_cahier_des_charges.docx
+
+# Foundry (artefacts locaux)
+contracts/out/
+contracts/cache_forge/

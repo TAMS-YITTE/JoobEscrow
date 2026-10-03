@@ -5,21 +5,12 @@ import { ethers } from 'ethers';
 import { useToast } from '../../context/ToastContext';
 import { instances } from '../../config/instances';
 
-// NOTE: This is a client-side gate. The password is visible in the shipped
-// bundle, so it is NOT real security — it only hides the page from casual
-// visitors. That is acceptable here because this page has NO write access and
-// cannot route any funds: it only GENERATES links and a JSON snippet that you
-// still have to paste + deploy yourself. Do NOT reuse a sensitive password.
-// When you move to a real datastore (Vercel KV), replace this with server auth.
-const ADMIN_PASSWORD = 'joob-admin-2026';
-
+// Outil interne (generateur de liens KOL + bloc JSON) : sans ecriture on-chain.
+// Servi uniquement en developpement local (voir layout.js) : rien dans le build public.
 const SITE = 'https://www.joobescrow.com';
 
 export default function AdminGeneratorPage() {
   const { showToast } = useToast();
-
-  const [authed, setAuthed] = useState(false);
-  const [pwd, setPwd] = useState('');
 
   const [handle, setHandle] = useState('');
   const [name, setName] = useState('');
@@ -74,37 +65,6 @@ export default function AdminGeneratorPage() {
     navigator.clipboard.writeText(text);
     showToast('success', `${label} copied!`);
   };
-
-  // --- Password gate ---
-  if (!authed) {
-    return (
-      <div style={{ maxWidth: '380px', margin: '15vh auto', padding: '0 20px' }}>
-        <div className="glass-panel p-6" style={{ background: '#0d0f17', border: '1px solid #333' }}>
-          <h1 className="text-xl font-bold mb-4 text-white">🔒 JoobEscrow Admin</h1>
-          <p className="text-gray-400 text-sm mb-4">Enter the admin password to access the KOL link generator.</p>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              if (pwd === ADMIN_PASSWORD) setAuthed(true);
-              else showToast('error', 'Wrong password');
-            }}
-          >
-            <input
-              type="password"
-              value={pwd}
-              onChange={(e) => setPwd(e.target.value)}
-              placeholder="Password"
-              autoFocus
-              style={{ width: '100%', padding: '10px 14px', borderRadius: '8px', background: '#161922', border: '1px solid #333', color: '#fff', marginBottom: '12px' }}
-            />
-            <button type="submit" className="btn btn-primary" style={{ width: '100%' }}>
-              Unlock
-            </button>
-          </form>
-        </div>
-      </div>
-    );
-  }
 
   const labelStyle = { display: 'block', fontSize: '0.8rem', color: '#9ca3af', marginBottom: '4px' };
   const inputStyle = { width: '100%', padding: '9px 12px', borderRadius: '8px', background: '#161922', border: '1px solid #333', color: '#fff', marginBottom: '14px' };
