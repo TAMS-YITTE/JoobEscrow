@@ -589,3 +589,7 @@
 
 .amountCompact { font-size: 1.25rem; }
 @media (min-width: 768px) { .amountCompact { font-size: 1.5rem; } }
+
+/* Tableau de bord : meme largeur que la grille (2 colonnes reunies) */
+.columnWide { max-width: 1000px; }
+@media (min-width: 1024px) { .allocStats { grid-template-columns: repeat(6, minmax(0, 1fr)); } }

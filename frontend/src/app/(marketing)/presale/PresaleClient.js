@@ -593,12 +593,12 @@ export default function PresaleClient() {
         </div>
       </div>
 
-      <div className={styles.column}>
+      <div className={`${styles.column} ${styles.columnWide}`}>
         {/* ── Tableau de bord ───────────────────────────────────────────── */}
         {account && (
           <div className={styles.card}>
             <h2 className={styles.h2}>Your allocation</h2>
-            <div className={styles.stats}>
+            <div className={`${styles.stats} ${styles.allocStats}`}>
               {[
                 { l: 'Total JOOB', v: fmtToken(user.allocation, td), accent: true },
                 { l: 'Bought', v: fmtToken(user.purchased, td) },
