@@ -382,6 +382,14 @@ export default function PresaleClient() {
         JOOB is the token of the JoobEscrow ecosystem. Public time-based price schedule, sealed token vault and
         vesting for every participant — all enforced by a verified smart contract.
       </p>
+      <nav className={styles.quickLinks} aria-label="Presale documents">
+        <Link href="/whitepaper">Litepaper</Link>
+        <a href="#tokenomics">Tokenomics</a>
+        <a href="#use-of-funds">Use of funds</a>
+        <a href="#ecosystem">Ecosystem</a>
+        <a href="#roadmap">Roadmap</a>
+        <Link href="/presale-terms">Terms</Link>
+      </nav>
 
       <div className={styles.trustGrid}>
         <div className={styles.trustBlock}>

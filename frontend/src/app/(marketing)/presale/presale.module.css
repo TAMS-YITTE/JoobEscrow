@@ -523,3 +523,10 @@
 .fundsBar span { display: block; height: 100%; border-radius: 999px; }
 .fundsText { color: var(--text-secondary); font-size: 0.85rem; line-height: 1.5; margin: 0; }
 .ecoDiagram { margin-top: 18px; background: rgba(0, 0, 0, 0.4); border: 1px solid var(--border-color); border-radius: 14px; padding: 12px; }
+
+.quickLinks { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 4px 0 22px; }
+.quickLinks a {
+  padding: 5px 12px; border-radius: 999px; border: 1px solid var(--border-color);
+  color: var(--text-secondary); font-size: 0.82rem; text-decoration: none; transition: color 0.2s, border-color 0.2s;
+}
+.quickLinks a:hover { color: #fff; border-color: rgba(255, 255, 255, 0.35); }
