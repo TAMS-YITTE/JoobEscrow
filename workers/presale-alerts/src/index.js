@@ -9,8 +9,6 @@
 const TOPIC_BOUGHT = '0xbd37c6c26f83ab804758436c263701c75879733903991b821180916fd6726eb6'; // TokensBought(address,uint256,uint256,bool,address,uint256)
 const TOPIC_BONUS = '0x43f13eddb62d931341dc084f228017290dbd879d3b2a3e727f35921afed3a8fa'; // VolumeBonusCredited(address,uint256,uint256)
 const SEL_TOTAL_RAISED = '0xc5c4744c'; // totalRaised()
-const SEL_TOKENS_OWED = '0x6d350d9d'; // totalTokensOwed()
-const SEL_CAP = '0x2c6382b2'; // presaleTokensCap()
 
 const CONFIRMATIONS = 3n;
 const MAX_RANGE = 2000n; // blocs par requete eth_getLogs
@@ -49,7 +47,7 @@ const toNum = (v) => Number(v) / 10 ** DECIMALS;
 const fmt = (n, max = 2) => n.toLocaleString('en-US', { maximumFractionDigits: max });
 const short = (a) => `${a.slice(0, 6)}…${a.slice(-4)}`;
 const ZERO = '0x0000000000000000000000000000000000000000';
-const FIRE_USD = 25; // un 🔥 par tranche de 25 $ (au moins 1, au plus 40)
+const FIRE_USD = 25; // un 🔥 par tranche de 25 $ (aucun en dessous, au plus 40)
 const fmtTok = (v) => { const n = toNum(v); return fmt(n, n < 1000 ? 2 : 0); };
 
 function decodePurchases(logs) {
@@ -80,17 +78,16 @@ function decodePurchases(logs) {
 
 async function readProgress(env) {
   const call = (sel) => rpc(env, 'eth_call', [{ to: env.PRESALE_ADDRESS, data: sel }, 'latest']).then(BigInt);
-  const [raised, owed, cap] = await Promise.all([call(SEL_TOTAL_RAISED), call(SEL_TOKENS_OWED), call(SEL_CAP)]);
-  return { raised, pct: cap > 0n ? Number((owed * 10_000n) / cap) / 100 : 0 };
+  return { raised: await call(SEL_TOTAL_RAISED) };
 }
 
 function formatMessage(p, progress) {
   const token = p.useUSDT ? 'USDT' : 'USDC';
   const paid = toNum(p.paid);
-  const fires = Math.min(40, Math.max(1, Math.floor(paid / FIRE_USD)));
+  const fires = Math.min(40, Math.floor(paid / FIRE_USD));
   const lines = [
     '🟢 <b>New JOOB presale purchase</b>',
-    '🔥'.repeat(fires),
+    ...(fires > 0 ? ['🔥'.repeat(fires)] : []),
     '',
     `💵 <b>${fmt(paid)} ${token}</b> → <b>${fmtTok(p.tokens + p.volumeBonus)} JOOB</b>`,
   ];
@@ -102,7 +99,7 @@ function formatMessage(p, progress) {
     lines.push(`🤝 Referral: +${pct}% to the referrer (+${fmtTok(p.referralBonus)} JOOB)`);
   }
   lines.push(`👤 Buyer: <a href="${BSCSCAN}/address/${p.buyer}">${short(p.buyer)}</a>`);
-  if (progress) lines.push(`📊 Raised so far: $${fmt(toNum(progress.raised), 0)} · ${progress.pct.toFixed(2)}% of the cap allocated`);
+  if (progress) lines.push(`📊 Raised so far: $${fmt(toNum(progress.raised), 0)}`);
   lines.push(`🔗 <a href="${BSCSCAN}/tx/${p.tx}">View the transaction on BscScan</a>`, '', `👉 <a href="${PRESALE_URL}">${PRESALE_URL.replace(/^https:\/\/(www\.)?/, '')}</a>`);
   return lines.join('\n');
 }
