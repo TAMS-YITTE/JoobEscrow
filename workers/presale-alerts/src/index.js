@@ -16,6 +16,9 @@ const CONFIRMATIONS = 3n;
 const MAX_RANGE = 2000n; // blocs par requete eth_getLogs
 const MAX_LAG = 4000n; // ~30 min de blocs BSC (~0,45 s par bloc) : au-dela, publicnode exige une cle d'archive
 const MAX_SENDS_PER_RUN = 15; // limite Telegram ~20 messages/min par groupe
+// KV gratuit : 1 000 ecritures/jour par compte. Le curseur n'est enregistre qu'apres un
+// envoi ou tous les SAVE_EVERY blocs (~7 min) ; au pire on relit ces blocs, sans doublon.
+const SAVE_EVERY = 1000n;
 const CURSOR_KEY = 'cursor';
 const DECIMALS = 18; // USDT, USDC (BSC) et JOOB : 18 decimales
 const BSCSCAN = 'https://bscscan.com';
@@ -153,7 +156,9 @@ async function run(env) {
     already.add(p.key);
     sends++;
   }
-  await env.STATE.put(CURSOR_KEY, JSON.stringify({ block: to.toString(), sent: [] }));
+  if (sends > 0 || to - BigInt(cursor.block) >= SAVE_EVERY) {
+    await env.STATE.put(CURSOR_KEY, JSON.stringify({ block: to.toString(), sent: [] }));
+  }
 }
 
 export default {
