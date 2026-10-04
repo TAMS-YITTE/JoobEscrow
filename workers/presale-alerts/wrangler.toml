@@ -4,10 +4,11 @@ compatibility_date = "2026-10-01"
 workers_dev = false
 
 [triggers]
-crons = ["* * * * *"]
+crons = [ "* * * * *" ]
 
 [[kv_namespaces]]
 binding = "STATE"
+id = "b4b4b9ae03864ae7a4a51dda80b5fd5e"
 
 [vars]
 PRESALE_ADDRESS = "0xd3F3598Ff8efB2cF6643488e66e8df683804F63d"
