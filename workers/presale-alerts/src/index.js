@@ -108,7 +108,7 @@ function formatMessage(p, progress) {
 }
 
 async function telegram(env, method, body) {
-  return fetch(`https://api.telegram.org/bot${env.TELEGRAM_BOT_JOOBEN}/${method}`, {
+  return fetch(`https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/${method}`, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({ chat_id: env.TELEGRAM_CHAT_ID, parse_mode: 'HTML', ...body }),
