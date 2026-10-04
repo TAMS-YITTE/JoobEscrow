@@ -14,3 +14,6 @@ id = "b4b4b9ae03864ae7a4a51dda80b5fd5e"
 PRESALE_ADDRESS = "0xd3F3598Ff8efB2cF6643488e66e8df683804F63d"
 RPC_URLS = "https://bsc-rpc.publicnode.com"
 DRY_RUN = "0"
+
+[observability]
+enabled = true
