@@ -1,0 +1,15 @@
+name = "joob-presale-alerts"
+main = "src/index.js"
+compatibility_date = "2026-10-01"
+workers_dev = false
+
+[triggers]
+crons = ["* * * * *"]
+
+[[kv_namespaces]]
+binding = "STATE"
+
+[vars]
+PRESALE_ADDRESS = "0xd3F3598Ff8efB2cF6643488e66e8df683804F63d"
+RPC_URLS = "https://bsc-rpc.publicnode.com"
+DRY_RUN = "0"
