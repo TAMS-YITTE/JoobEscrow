@@ -374,194 +374,226 @@ export default function PresaleClient() {
 
   const tierPct = nextTier ? Math.min(100, Number(((user.contribution + amountWei) * 10_000n) / nextTier.threshold) / 100) : 100;
 
+  const capM = fmtNum(Number(ethers.formatUnits(config.cap, td)) / 1e6, 1);
+  const paymentAddr = paymentToken === 'USDT' ? PRESALE_ADDRESSES.USDT : PRESALE_ADDRESSES.USDC;
+
+  // ── Widgets (definis une fois, places en colonne laterale ou mobile) ─────
+  const keyFigures = (
+    <section className={`${styles.card} ${styles.widget}`} aria-label="Key figures">
+      {beforeStart && (
+        <div className={styles.opensIn}>
+          <span className={styles.muted}>Sale opens in</span>
+          <span className={styles.countdown}><Countdown seconds={config.startTime - now} /></span>
+        </div>
+      )}
+      <div className={styles.kpiGrid}>
+        {[
+          { l: 'Current price', v: `$${fmtUsd(currentPrice, pd)}`, accent: true },
+          { l: 'Next price', v: isEnded ? '—' : `$${fmtUsd(nextPrice, pd)}` },
+          { l: 'Raised so far', v: `$${fmtNum(Number(ethers.formatUnits(global.totalRaised, pd)), 0)}` },
+          { l: 'Allocated', v: `${soldPct.toFixed(2)}%`, sub: `of ${capM}M JOOB cap` },
+        ].map((b) => (
+          <div key={b.l} className={styles.stat}>
+            <div className={styles.statLabel}>{b.l}</div>
+            <div className={`${styles.statValue} ${b.accent ? styles.accent : ''}`}>{b.v}</div>
+            {b.sub && <div className={styles.statSub}>{b.sub}</div>}
+          </div>
+        ))}
+      </div>
+      <div className={styles.progress}><div style={{ width: `${Math.min(100, soldPct)}%` }} /></div>
+      <div className={styles.miniGrid}>
+        <div className={styles.mini}><div className={styles.miniLabel}>Starting price</div><div className={styles.strong}>${fmtUsd(config.basePrice, pd)}</div></div>
+        <div className={styles.mini}>
+          <div className={styles.miniLabel}>Last presale price</div>
+          <div className={styles.strong}>${fmtUsd(endPrice, pd)}</div>
+          {extensionsLeft > 0 && <div className={styles.miniLabel}>max ${fmtUsd(maxPrice, pd)} if extended</div>}
+        </div>
+        <div className={styles.mini}><div className={styles.miniLabel}>Planned listing</div><div className={styles.strong}>${PLANNED_LISTING_PRICE}</div></div>
+      </div>
+      <div className={styles.scheduleSmall}>
+        +${fmtUsd((config.basePrice * config.priceIncreaseBps) / 10_000n, pd)} every {Number(config.priceIncreasePeriod) / 86400} days · {fmtDate(config.startTime)} → {fmtDate(global.endTime)}
+      </div>
+    </section>
+  );
+
+  const getToken = (
+    <section className={`${styles.card} ${styles.widget}`} aria-label={`Get ${paymentToken} on BNB Chain`}>
+      <h2 className={styles.widgetTitle}>Get {paymentToken} on BNB Chain</h2>
+      <div className={styles.getGrid}>
+        <a href={`https://pancakeswap.finance/swap?chain=bsc&outputCurrency=${paymentAddr}`} target="_blank" rel="noopener noreferrer" className={styles.getTile}>
+          <span className={styles.getName}>Swap ↗</span>
+          <span className={styles.getSub}>BNB → {paymentToken} on PancakeSwap</span>
+        </a>
+        <a href="https://bnbchain.org/en/bnb-chain-bridge" target="_blank" rel="noopener noreferrer" className={styles.getTile}>
+          <span className={styles.getName}>Bridge ↗</span>
+          <span className={styles.getSub}>Official BNB Chain bridge</span>
+        </a>
+      </div>
+      <div className={styles.extNote}>Both links open outside joobescrow.com.</div>
+    </section>
+  );
+
+  const guide = (
+    <details className={`${styles.card} ${styles.widget} ${styles.guide}`}>
+      <summary>How to buy in 3 steps</summary>
+      <ol>
+        <li>Connect your wallet on BNB Smart Chain.</li>
+        <li>Choose the amount in {paymentToken}, keeping a little BNB for gas (~0.001 BNB is enough).</li>
+        <li>Approve {paymentToken}, then buy: two confirmations in your wallet.</li>
+      </ol>
+    </details>
+  );
+
   return (
     <div className={styles.page}>
-      <span className={`${styles.badge} ${badge[1]}`}>{isLive && <span className={styles.dot} />}{badge[0]}</span>
-      <h1 className={styles.title}>{config.presaleName}</h1>
-      <p className={styles.lead}>
-        JOOB is the token of the JoobEscrow ecosystem. Public time-based price schedule, sealed token vault and
-        vesting for every participant — all enforced by a verified smart contract.
-      </p>
-      <nav className={styles.quickLinks} aria-label="Presale documents">
-        <Link href="/whitepaper">Litepaper</Link>
-        <a href="#tokenomics">Tokenomics</a>
-        <a href="#use-of-funds">Use of funds</a>
-        <a href="#ecosystem">Ecosystem</a>
-        <a href="#roadmap">Roadmap</a>
-        <Link href="/presale-terms">Terms</Link>
-      </nav>
-
-      <div className={styles.trustGrid}>
-        <div className={styles.trustBlock}>
-          <div className={styles.trustHead}>
-            <span className={styles.trustIcon} aria-hidden="true">✓</span>
-            <div>
-              <div className={styles.trustTitle}>Verified on BscScan</div>
-              <div className={styles.trustSub}>Public source code, owned by the Safe multisig</div>
-            </div>
-          </div>
-          <a href={`${BSCSCAN}/address/${PRESALE_ADDRESSES.PRESALE}#code`} target="_blank" rel="noopener noreferrer" className={styles.trustRow}>
-            <span>Presale contract</span><span className={styles.trustMeta}>{shortAddr(PRESALE_ADDRESSES.PRESALE)} ↗</span>
-          </a>
-          <a href={`${BSCSCAN}/token/${PRESALE_ADDRESSES.TOKEN}`} target="_blank" rel="noopener noreferrer" className={styles.trustRow}>
-            <span>JOOB token</span><span className={styles.trustMeta}>{shortAddr(PRESALE_ADDRESSES.TOKEN)} ↗</span>
-          </a>
-          <a href={`${BSCSCAN}/address/${PRESALE_ADDRESSES.PRESALE}#readContract`} target="_blank" rel="noopener noreferrer" className={styles.trustRow}>
-            <span>Token vault</span>
-            <span className={vaultSealed ? styles.trustOk : styles.trustWarn}>
-              {vaultSealed ? `🔒 ${fmtToken(global.depositedTokens, td, 0)} JOOB locked` : 'Funding pending'} ↗
-            </span>
-          </a>
+      <header className={styles.hero}>
+        <div className={styles.heroTop}>
+          <span className={`${styles.badge} ${styles.heroBadge} ${badge[1]}`}>{isLive && <span className={styles.dot} />}{badge[0]}</span>
+          <h1 className={styles.heroTitle}>{config.presaleName}</h1>
         </div>
+        <p className={styles.heroLead}>
+          The JoobEscrow ecosystem token: public price schedule, sealed token vault and vesting, enforced by a verified smart contract.
+        </p>
+        <div className={styles.trustBadges}>
+          <a href={`${BSCSCAN}/address/${PRESALE_ADDRESSES.PRESALE}#code`} target="_blank" rel="noopener noreferrer" className={styles.trustBadge}
+            title={`Presale contract ${shortAddr(PRESALE_ADDRESSES.PRESALE)}: public source code, owned by the Safe multisig`}>
+            <span className={styles.trustBadgeOk}>✓</span> Verified contract ↗
+          </a>
+          <a href={`${BSCSCAN}/token/${PRESALE_ADDRESSES.TOKEN}`} target="_blank" rel="noopener noreferrer" className={styles.trustBadge}
+            title={`JOOB token ${shortAddr(PRESALE_ADDRESSES.TOKEN)}`}>
+            JOOB token ↗
+          </a>
+          <a href={`${BSCSCAN}/address/${PRESALE_ADDRESSES.PRESALE}#readContract`} target="_blank" rel="noopener noreferrer" className={styles.trustBadge}>
+            <span className={vaultSealed ? styles.trustOk : styles.trustWarn}>
+              {vaultSealed ? `🔒 ${fmtToken(global.depositedTokens, td, 0)} JOOB locked` : 'Vault: funding pending'}
+            </span> ↗
+          </a>
+          <a href={AUDITS.PRESALE} target="_blank" rel="noopener noreferrer" className={styles.trustBadge}
+            title="SpyWolf audit of the presale contract: no critical, high or medium issue">
+            <span className={styles.trustBadgeOk}>🛡</span> Audited by SpyWolf ↗
+          </a>
+          <a href={AUDITS.TOKEN} target="_blank" rel="noopener noreferrer" className={styles.trustBadge}>Token audit ↗</a>
+          <Link href="/security" className={styles.trustBadge}>All audits →</Link>
+        </div>
+        <nav className={styles.quickLinks} aria-label="Presale documents">
+          <Link href="/whitepaper">Litepaper</Link>
+          <a href="#tokenomics">Tokenomics</a>
+          <a href="#use-of-funds">Use of funds</a>
+          <a href="#ecosystem">Ecosystem</a>
+          <a href="#roadmap">Roadmap</a>
+          <Link href="/presale-terms">Terms</Link>
+        </nav>
+      </header>
 
-        <div className={styles.trustBlock}>
-          <div className={styles.trustHead}>
-            <span className={styles.trustIcon} aria-hidden="true">🛡</span>
-            <div>
-              <div className={styles.trustTitle}>Audited by SpyWolf</div>
-              <div className={styles.trustSub}>No critical, high or medium issue</div>
+      <div className={styles.layout}>
+        <aside className={`${styles.side} ${styles.desktopOnly}`}>
+          {keyFigures}
+          {getToken}
+          {guide}
+        </aside>
+
+        <div className={styles.main}>
+          <div className={styles.mobileOnly}>{keyFigures}</div>
+
+          {/* ── Carte d'achat ─────────────────────────────────────────────── */}
+          <form onSubmit={handleBuy} className={`${styles.card} ${styles.buyCard}`}>
+            <Feedback status={status} step={step} success={successMsg} error={txError} />
+
+            <div className={styles.fieldHead}>
+              <span>You pay</span>
+              <span>
+                Balance: {account ? fmtUsd(balance, pd, 2) : '—'}
+                {account && (
+                  <button type="button" className={styles.max} onClick={() => {
+                    const cap = maxPurchasable > 0n && maxPurchasable < balance ? maxPurchasable : balance;
+                    setAmount(ethers.formatUnits(cap, pd));
+                  }}>Max</button>
+                )}
+              </span>
             </div>
+            <div className={styles.field}>
+              <svg className={styles.chainIcon} viewBox="0 0 32 32" role="img" aria-label="BNB Chain">
+                <title>BNB Chain</title>
+                <circle cx="16" cy="16" r="16" fill="#F0B90B" />
+                <path fill="#fff" d="M12.116 14.404L16 10.52l3.886 3.886 2.26-2.26L16 6l-6.144 6.144 2.26 2.26zM6 16l2.26-2.26L10.52 16l-2.26 2.26L6 16zm6.116 1.596L16 21.48l3.886-3.886 2.26 2.259L16 26l-6.144-6.144-.003-.003 2.263-2.257zM21.48 16l2.26-2.26L26 16l-2.26 2.26L21.48 16zm-3.188-.002h.002V16L16 18.294l-2.291-2.29-.004-.004.004-.003.401-.402.195-.195L16 13.706l2.293 2.293z" />
+              </svg>
+              <select value={paymentToken} onChange={(e) => setPaymentToken(e.target.value)} aria-label="Payment token" className={styles.select}>
+                <option value="USDT">USDT (BEP-20)</option>
+                <option value="USDC">USDC (BEP-20)</option>
+              </select>
+              <input type="number" inputMode="decimal" min="0" step="any" placeholder="0.00" value={amount} aria-label="Amount to pay"
+                onChange={(e) => { setAmount(e.target.value); if (status !== 'loading') { setStatus('idle'); setTxError(null); } }}
+                className={`${styles.amount} ${styles.amountCompact}`} />
+            </div>
+
+            <div className={styles.fieldHead}><span>You receive (vested)</span></div>
+            <div className={styles.field}>
+              <span className={styles.tokenTag}>JOOB</span>
+              <div className={styles.receive}>
+                <div className={`${styles.receiveValue} ${styles.amountCompact}`}>{fmtToken(estimate.tokens + estimate.bonus, td)}</div>
+                {estimate.bonus > 0n && <div className={styles.bonusNote}>incl. +{fmtToken(estimate.bonus, td)} volume bonus</div>}
+              </div>
+            </div>
+
+            <div className={styles.tier}>
+              <span className={styles.tierPill}>{Number(volumeTierBps(config, user.contribution + amountWei)) / 100}%</span>
+              <div className={styles.tierBar}><div style={{ width: `${tierPct}%` }} /></div>
+              <span className={`${styles.tierPill} ${styles.tierNext}`}>{nextTier ? `${Number(nextTier.bps) / 100}%` : 'MAX'}</span>
+            </div>
+            <div className={styles.small}>
+              {nextTier
+                ? <>Contribute another <b>${fmtUsd(nextTier.missing, pd, 0)}</b> (cumulative) to reach the <b>+{Number(nextTier.bps) / 100}%</b> volume bonus tier.</>
+                : <>Highest volume bonus tier reached (+{Number(config.tierBps[config.tierBps.length - 1] ?? 0n) / 100}%).</>}
+            </div>
+
+            {isLive && maxPurchasable > 0n && <div className={styles.small}>Maximum currently purchasable: ~${fmtUsd(maxPurchasable, pd, 0)} (bonuses included).</div>}
+            {amountError && <div className={styles.error}>{amountError}</div>}
+
+            <label className={styles.terms}>
+              <input type="checkbox" checked={termsAccepted} disabled={!account} onChange={(e) => onTerms(e.target.checked)} />
+              <span>
+                I have read and accept the <Link href="/presale-terms" className={styles.link}>Presale Terms</Link>. I confirm I am not a resident
+                of a restricted jurisdiction, I understand that tokens are vested, that the price after the sale is set by the market and
+                not guaranteed, and that I may lose all the funds I contribute.
+              </span>
+            </label>
+
+            {!account ? (
+              <button type="button" onClick={connectWallet} className={styles.cta}>Connect wallet</button>
+            ) : !isCorrectNetwork ? (
+              <button type="button" onClick={doSwitch} className={`${styles.cta} ${styles.ctaWarn}`}>Switch to BNB Smart Chain</button>
+            ) : (
+              <button type="submit" disabled={!canBuy} className={styles.cta}>{buyLabel}</button>
+            )}
+
+            <div className={styles.refRow}>
+              <label htmlFor="ref-code" className={styles.muted}>Referral code</label>
+              <input id="ref-code" value={refInput} onChange={(e) => { setRefInput(e.target.value); setRefError(null); }}
+                onBlur={applyReferral} placeholder="0x… referrer address" className={styles.refInput} />
+              <button type="button" onClick={applyReferral} className={styles.refBtn}>Apply</button>
+            </div>
+            {refError && <div className={styles.error}>{refError}</div>}
+            {effectiveReferrer && (
+              <div className={styles.small}>
+                Referred by {effectiveReferrer.slice(0, 6)}…{effectiveReferrer.slice(-4)} — they receive {Number(config.referralBps) / 100}% in JOOB (same vesting).
+              </div>
+            )}
+
+            <p className={styles.fine}>
+              Vesting: {Number(config.tgeBps) / 100}% when the sale ends, the rest linearly over {Math.round(Number(config.vestingDuration) / 86400)} days.
+              The {capM}M JOOB cap includes referral and volume bonuses; unsold tokens are
+              returned to the JoobEscrow multisig and burned. Never send funds directly to the contract address: always buy with the button above.
+            </p>
+          </form>
+
+          <div className={styles.mobileOnly}>
+            {getToken}
+            {guide}
           </div>
-          <a href={AUDITS.PRESALE} target="_blank" rel="noopener noreferrer" className={styles.trustRow}>
-            <span>Presale contract audit</span><span className={styles.trustMeta}>PDF ↗</span>
-          </a>
-          <a href={AUDITS.TOKEN} target="_blank" rel="noopener noreferrer" className={styles.trustRow}>
-            <span>JOOB token audit</span><span className={styles.trustMeta}>PDF ↗</span>
-          </a>
-          <Link href="/security" className={styles.trustRow}>
-            <span>All audits &amp; contracts</span><span className={styles.trustMeta}>Security →</span>
-          </Link>
         </div>
       </div>
 
       <div className={styles.column}>
-        {beforeStart && (
-          <div className={`${styles.card} ${styles.row}`}>
-            <span className={styles.muted}>Sale opens in</span>
-            <span className={styles.countdown}><Countdown seconds={config.startTime - now} /></span>
-          </div>
-        )}
-
-        {/* ── Carte d'achat ─────────────────────────────────────────────── */}
-        <form onSubmit={handleBuy} className={styles.card}>
-          <div className={styles.refs}>
-            <div><div className={styles.small}>Starting price</div><div className={styles.strong}>${fmtUsd(config.basePrice, pd)}</div></div>
-            <div>
-              <div className={styles.small}>Last presale price</div>
-              <div className={styles.strong}>${fmtUsd(endPrice, pd)}</div>
-              {extensionsLeft > 0 && <div className={styles.small}>max ${fmtUsd(maxPrice, pd)} if extended</div>}
-            </div>
-            <div><div className={styles.small}>Planned listing</div><div className={styles.strong}>${PLANNED_LISTING_PRICE}</div></div>
-            <div><div className={styles.small}>Sale cap</div><div className={styles.strong}>{fmtNum(Number(ethers.formatUnits(config.cap, td)) / 1e6, 1)}M JOOB</div></div>
-          </div>
-          <div className={styles.schedule}>
-            +${fmtUsd((config.basePrice * config.priceIncreaseBps) / 10_000n, pd)} every {Number(config.priceIncreasePeriod) / 86400} days · {fmtDate(config.startTime)} → {fmtDate(global.endTime)}
-          </div>
-
-          <div className={styles.stats}>
-            {[
-              { l: 'Current price', v: `$${fmtUsd(currentPrice, pd)}`, accent: true },
-              { l: 'Next price', v: isEnded ? '—' : `$${fmtUsd(nextPrice, pd)}` },
-              { l: 'Raised so far', v: `$${fmtNum(Number(ethers.formatUnits(global.totalRaised, pd)), 0)}` },
-              { l: 'Allocated', v: `${soldPct.toFixed(2)}%` },
-            ].map((b) => (
-              <div key={b.l} className={styles.stat}>
-                <div className={styles.statLabel}>{b.l}</div>
-                <div className={`${styles.statValue} ${b.accent ? styles.accent : ''}`}>{b.v}</div>
-              </div>
-            ))}
-          </div>
-          <div className={styles.progress}><div style={{ width: `${Math.min(100, soldPct)}%` }} /></div>
-
-          <Feedback status={status} step={step} success={successMsg} error={txError} />
-
-          <div className={styles.fieldHead}>
-            <span>You pay</span>
-            <span>
-              Balance: {account ? fmtUsd(balance, pd, 2) : '—'}
-              {account && (
-                <button type="button" className={styles.max} onClick={() => {
-                  const cap = maxPurchasable > 0n && maxPurchasable < balance ? maxPurchasable : balance;
-                  setAmount(ethers.formatUnits(cap, pd));
-                }}>Max</button>
-              )}
-            </span>
-          </div>
-          <div className={styles.field}>
-            <svg className={styles.chainIcon} viewBox="0 0 32 32" role="img" aria-label="BNB Chain">
-              <title>BNB Chain</title>
-              <circle cx="16" cy="16" r="16" fill="#F0B90B" />
-              <path fill="#fff" d="M12.116 14.404L16 10.52l3.886 3.886 2.26-2.26L16 6l-6.144 6.144 2.26 2.26zM6 16l2.26-2.26L10.52 16l-2.26 2.26L6 16zm6.116 1.596L16 21.48l3.886-3.886 2.26 2.259L16 26l-6.144-6.144-.003-.003 2.263-2.257zM21.48 16l2.26-2.26L26 16l-2.26 2.26L21.48 16zm-3.188-.002h.002V16L16 18.294l-2.291-2.29-.004-.004.004-.003.401-.402.195-.195L16 13.706l2.293 2.293z" />
-            </svg>
-            <select value={paymentToken} onChange={(e) => setPaymentToken(e.target.value)} aria-label="Payment token" className={styles.select}>
-              <option value="USDT">USDT (BEP-20)</option>
-              <option value="USDC">USDC (BEP-20)</option>
-            </select>
-            <input type="number" inputMode="decimal" min="0" step="any" placeholder="0.00" value={amount} aria-label="Amount to pay"
-              onChange={(e) => { setAmount(e.target.value); if (status !== 'loading') { setStatus('idle'); setTxError(null); } }}
-              className={styles.amount} />
-          </div>
-
-          <div className={styles.fieldHead}><span>You receive (vested)</span></div>
-          <div className={styles.field}>
-            <span className={styles.tokenTag}>JOOB</span>
-            <div className={styles.receive}>
-              <div className={styles.receiveValue}>{fmtToken(estimate.tokens + estimate.bonus, td)}</div>
-              {estimate.bonus > 0n && <div className={styles.bonusNote}>incl. +{fmtToken(estimate.bonus, td)} volume bonus</div>}
-            </div>
-          </div>
-
-          <div className={styles.tier}>
-            <span className={styles.tierPill}>{Number(volumeTierBps(config, user.contribution + amountWei)) / 100}%</span>
-            <div className={styles.tierBar}><div style={{ width: `${tierPct}%` }} /></div>
-            <span className={`${styles.tierPill} ${styles.tierNext}`}>{nextTier ? `${Number(nextTier.bps) / 100}%` : 'MAX'}</span>
-          </div>
-          <div className={styles.small}>
-            {nextTier
-              ? <>Contribute another <b>${fmtUsd(nextTier.missing, pd, 0)}</b> (cumulative) to reach the <b>+{Number(nextTier.bps) / 100}%</b> volume bonus tier.</>
-              : <>Highest volume bonus tier reached (+{Number(config.tierBps[config.tierBps.length - 1] ?? 0n) / 100}%).</>}
-          </div>
-
-          {isLive && maxPurchasable > 0n && <div className={styles.small}>Maximum currently purchasable: ~${fmtUsd(maxPurchasable, pd, 0)} (bonuses included).</div>}
-          {amountError && <div className={styles.error}>{amountError}</div>}
-
-          <label className={styles.terms}>
-            <input type="checkbox" checked={termsAccepted} disabled={!account} onChange={(e) => onTerms(e.target.checked)} />
-            <span>
-              I have read and accept the <Link href="/presale-terms" className={styles.link}>Presale Terms</Link>. I confirm I am not a resident
-              of a restricted jurisdiction, I understand that tokens are vested, that the price after the sale is set by the market and
-              not guaranteed, and that I may lose all the funds I contribute.
-            </span>
-          </label>
-
-          {!account ? (
-            <button type="button" onClick={connectWallet} className={styles.cta}>Connect wallet</button>
-          ) : !isCorrectNetwork ? (
-            <button type="button" onClick={doSwitch} className={`${styles.cta} ${styles.ctaWarn}`}>Switch to BNB Smart Chain</button>
-          ) : (
-            <button type="submit" disabled={!canBuy} className={styles.cta}>{buyLabel}</button>
-          )}
-
-          <div className={styles.refRow}>
-            <label htmlFor="ref-code" className={styles.muted}>Referral code</label>
-            <input id="ref-code" value={refInput} onChange={(e) => { setRefInput(e.target.value); setRefError(null); }}
-              onBlur={applyReferral} placeholder="0x… referrer address" className={styles.refInput} />
-            <button type="button" onClick={applyReferral} className={styles.refBtn}>Apply</button>
-          </div>
-          {refError && <div className={styles.error}>{refError}</div>}
-          {effectiveReferrer && (
-            <div className={styles.small}>
-              Referred by {effectiveReferrer.slice(0, 6)}…{effectiveReferrer.slice(-4)} — they receive {Number(config.referralBps) / 100}% in JOOB (same vesting).
-            </div>
-          )}
-
-          <p className={styles.fine}>
-            Vesting: {Number(config.tgeBps) / 100}% when the sale ends, the rest linearly over {Math.round(Number(config.vestingDuration) / 86400)} days.
-            The {fmtNum(Number(ethers.formatUnits(config.cap, td)) / 1e6, 1)}M JOOB cap includes referral and volume bonuses; unsold tokens are
-            returned to the JoobEscrow multisig and burned. Never send funds directly to the contract address: always buy with the button above.
-          </p>
-        </form>
-
         {/* ── Tableau de bord ───────────────────────────────────────────── */}
         {account && (
           <div className={styles.card}>

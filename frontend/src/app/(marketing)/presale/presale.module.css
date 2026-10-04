@@ -530,3 +530,62 @@
   color: var(--text-secondary); font-size: 0.82rem; text-decoration: none; transition: color 0.2s, border-color 0.2s;
 }
 .quickLinks a:hover { color: #fff; border-color: rgba(255, 255, 255, 0.35); }
+
+/* ── Presale compacte : infos a gauche, achat a droite ─────────────── */
+.hero { width: 100%; max-width: 1000px; display: flex; flex-direction: column; align-items: center; text-align: center; margin-bottom: 20px; }
+.heroTop { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px 14px; }
+.heroBadge { margin-bottom: 0; }
+.heroTitle {
+  font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.02em;
+  background: linear-gradient(90deg, #fff, #bfdbfe, #94a3b8); -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.heroLead { color: var(--text-secondary); max-width: 640px; margin: 8px 0 12px; line-height: 1.5; font-size: 0.95rem; }
+.trustBadges { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-bottom: 10px; }
+.trustBadge {
+  display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 999px;
+  border: 1px solid var(--border-color); background: rgba(255, 255, 255, 0.03); color: #e2e8f0;
+  font-size: 0.76rem; text-decoration: none; white-space: nowrap; transition: border-color 0.15s, background 0.15s;
+}
+.trustBadge:hover { border-color: rgba(16, 185, 129, 0.35); background: rgba(16, 185, 129, 0.06); }
+.trustBadgeOk { color: #34d399; font-weight: 800; }
+.hero .quickLinks { margin: 0; }
+
+.layout { width: 100%; max-width: 1000px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; margin-bottom: 16px; }
+.side { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.main { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.mobileOnly { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.desktopOnly { display: none; }
+@media (min-width: 1024px) {
+  .layout { grid-template-columns: 440px 540px; justify-content: center; align-items: start; gap: 20px; }
+  .side { position: sticky; top: 16px; }
+  .desktopOnly { display: flex; }
+  .mobileOnly { display: none; }
+}
+
+.widget { padding: 16px; border-radius: 16px; }
+.buyCard { padding: 20px; }
+.widgetTitle { font-size: 0.95rem; font-weight: 800; color: #fff; margin-bottom: 10px; }
+.opensIn { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.kpiGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-bottom: 10px; }
+.kpiGrid .stat { padding: 10px 12px; }
+.statSub { font-size: 0.68rem; color: var(--text-secondary); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.miniGrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin-top: 10px; }
+.mini { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color); border-radius: 10px; padding: 7px 8px; text-align: center; min-width: 0; }
+.miniLabel { font-size: 0.64rem; color: var(--text-secondary); line-height: 1.35; }
+.scheduleSmall { font-size: 0.7rem; color: #64748b; text-align: center; margin-top: 10px; line-height: 1.5; }
+
+.getGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.getTile {
+  display: flex; flex-direction: column; gap: 2px; padding: 10px 12px; border-radius: 12px; min-width: 0;
+  background: rgba(0, 0, 0, 0.4); border: 1px solid var(--border-color); text-decoration: none; transition: border-color 0.15s;
+}
+.getTile:hover { border-color: var(--accent-primary); }
+.getName { color: #fff; font-weight: 700; font-size: 0.9rem; }
+.getSub { color: var(--text-secondary); font-size: 0.72rem; line-height: 1.4; }
+.extNote { font-size: 0.68rem; color: #64748b; margin-top: 8px; text-align: center; }
+
+.guide summary { cursor: pointer; font-weight: 800; color: #fff; font-size: 0.95rem; }
+.guide ol { margin: 10px 0 0 18px; display: flex; flex-direction: column; gap: 6px; color: var(--text-secondary); font-size: 0.82rem; line-height: 1.45; }
+
+.amountCompact { font-size: 1.25rem; }
+@media (min-width: 768px) { .amountCompact { font-size: 1.5rem; } }
