@@ -150,7 +150,7 @@ export default function SecurityPage() {
           <li><strong>Fund Withdrawals (<code>withdrawFunds()</code>):</strong> Raised USDT and USDC can only be withdrawn to the verified Safe multisig wallet (<code>owner()</code>). No arbitrary destination address is accepted.</li>
           <li><strong>Unsold Tokens (<code>withdrawUnsoldTokens()</code>):</strong> Only callable once the sale has concluded (<code>State.Ended</code>). The contract accurately computes investor debt, returning only excess unsold tokens to the Safe for permanent burn.</li>
           <li><strong>Rescue Guard (<code>rescueERC20()</code>):</strong> The owner cannot withdraw deposited JOOB tokens, USDT, or USDC under the guise of stuck tokens. Those core assets are explicitly locked out of rescue functions.</li>
-          <li><strong>Public Functions (<code>finalize() & claim()</code>):</strong> Finalization is permissionless once the end date or cap is reached. Every participant directly and independently claims their vested allocation.</li>
+          <li><strong>Public Functions (<code>finalize() & claim()</code>):</strong> Finalization is permissionless once the end date has passed. Every participant directly and independently claims their vested allocation.</li>
         </ul>
       </div>
 

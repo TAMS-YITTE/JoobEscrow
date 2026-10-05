@@ -19,7 +19,7 @@ export default function PresaleTermsPage() {
   return (
     <div style={{ maxWidth: 820, margin: '0 auto', padding: '48px 16px 64px' }}>
       <h1 style={{ fontSize: 'clamp(1.8rem, 5vw, 2.6rem)', fontWeight: 800, color: '#fff', marginBottom: 12 }}>JOOB Presale Terms &amp; Conditions</h1>
-      <p style={{ ...p, marginBottom: 24 }}><strong>Version 1.1 – October 2026</strong></p>
+      <p style={{ ...p, marginBottom: 24 }}><strong>Version 1.2 – October 2026</strong></p>
 
       <div style={{ ...box, paddingLeft: 20, marginBottom: 40, borderColor: 'rgba(59,130,246,0.35)', background: 'rgba(59,130,246,0.08)' }}>
         <p style={{ ...p, color: '#bfdbfe', fontSize: '0.92rem' }}>
@@ -59,7 +59,7 @@ export default function PresaleTermsPage() {
           <ul style={box}>
             <li style={li}><strong>Start:</strong> October 15, 2026, 14:00 UTC, at <strong>0.001 USD</strong> per JOOB. The sale only opens once the multisig has started it on-chain after the full deposit (Article 3).</li>
             <li style={li}><strong>Increase:</strong> +0.0002 USD every 2 days from the start time. The applicable price is the one computed by the smart contract when your transaction is executed.</li>
-            <li style={li}><strong>End:</strong> January 13, 2027, 13:59:59 UTC, unless the sale is extended (Article 3) or all tokens are allocated earlier.</li>
+            <li style={li}><strong>End:</strong> January 13, 2027, 13:59:59 UTC, unless the sale is extended (Article 3). If the cap is reached earlier, no further purchases are accepted; the sale still ends, and claims open, at the end time.</li>
             <li style={li}><strong>Payment:</strong> USDT or USDC (BEP-20) on BNB Smart Chain, only through the presale page. No minimum or maximum contribution. Network fees (BNB) are paid by the participant.</li>
             <li style={li}><strong>Slippage protection:</strong> if the price changes between your confirmation and the execution, the transaction is cancelled and nothing is charged.</li>
           </ul>
@@ -71,7 +71,7 @@ export default function PresaleTermsPage() {
             <li style={li}><strong>Cap:</strong> 163,500,000 JOOB, including purchased tokens, volume bonuses and referral rewards.</li>
             <li style={li}><strong>Sealed vault:</strong> the contract cannot open the sale before the full cap has been deposited in it; the deposit is verifiable at any time on BscScan.</li>
             <li style={li}><strong>Extensions:</strong> the sale may be extended at most 3 times, by 20 days each, at least 24 hours before the current end. Extensions are announced on official channels.</li>
-            <li style={li}><strong>Closing:</strong> the sale ends at the end time, or automatically when the cap is fully allocated. Anyone can then execute the finalization on-chain.</li>
+            <li style={li}><strong>Closing:</strong> the sale ends at the end time (including any extension). Anyone can then execute the finalization on-chain, which opens the claims.</li>
             <li style={li}><strong>No soft cap, no refund:</strong> there is no minimum amount to raise. Funds raised are withdrawn by the JoobEscrow Safe multisig after the sale. Unsold tokens are returned to the same multisig and burned on-chain.</li>
           </ul>
         </section>

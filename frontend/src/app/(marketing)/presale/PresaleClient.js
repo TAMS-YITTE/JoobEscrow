@@ -233,6 +233,8 @@ export default function PresaleClient() {
   const beforeStart = !!config && now < config.startTime;
   const isLive = state === PRESALE_STATE.ACTIVE && !!global && !global.paused && now <= global.endTime;
   const isEnded = state === PRESALE_STATE.ENDED;
+  // Date de fin passee mais finalize() pas encore appele : les claims s'ouvrent au finalize (public).
+  const awaitingFinalize = state === PRESALE_STATE.ACTIVE && !!global && now > global.endTime;
 
   const currentPrice = global?.currentPrice ?? config?.basePrice ?? 0n;
   const nextStep = config ? nextStepAt(config, now) : 0n;
@@ -276,8 +278,12 @@ export default function PresaleClient() {
     return (tokens * currentPrice) / 10n ** BigInt(td);
   }, [config, global, currentPrice, td]);
 
+  // Plafond atteint : le reste (poussiere) ne permet plus aucun achat, mais la vente ne se
+  // finalise qu'a endTime (finalize() exige block.timestamp > endTime).
+  const soldOut = isLive && currentPrice > 0n && maxPurchasable === 0n;
+
   const vaultSealed = !!config && !!global && global.depositedTokens >= config.cap;
-  const soldPct = config && global && config.cap > 0n ? Number((global.totalTokensOwed * 10_000n) / config.cap) / 100 : 0;
+  const soldPct = soldOut ? 100 : config && global && config.cap > 0n ? Number((global.totalTokensOwed * 10_000n) / config.cap) / 100 : 0;
   const referralLink = account && typeof window !== 'undefined' ? `${window.location.origin}/presale?${REF_PARAM}=${account}` : '';
 
   const amountError = useMemo(() => {
@@ -287,7 +293,7 @@ export default function PresaleClient() {
     return null;
   }, [amountWei, balance, account, paymentToken, maxPurchasable, pd]);
 
-  const canBuy = isLive && isCorrectNetwork && termsAccepted && amountWei > 0n && !amountError && status !== 'loading';
+  const canBuy = isLive && !soldOut && isCorrectNetwork && termsAccepted && amountWei > 0n && !amountError && status !== 'loading';
 
   const doSwitch = async () => { try { await switchNetwork(bsc); } catch { /* annule */ } };
 
@@ -336,6 +342,22 @@ export default function PresaleClient() {
   };
 
   // ── Claim (apres la fin de la vente) ─────────────────────────────────────
+  const handleFinalize = async () => {
+    if (!provider || !account) return;
+    if (!isCorrectNetwork) { await doSwitch(); return; }
+    setTxError(null); setSuccessMsg(null); setStatus('loading'); setStep('Finalizing the sale…');
+    try {
+      const signer = await provider.getSigner();
+      const presale = new ethers.Contract(PRESALE_ADDRESSES.PRESALE, PRESALE_ABI, signer);
+      await (await presale.finalize()).wait();
+      setStatus('success'); setSuccessMsg('Sale finalized: claims are open.');
+      await refreshAll();
+    } catch (err) {
+      console.error('[Presale] finalize:', err);
+      setStatus('error'); setTxError(readableError(err));
+    } finally { setStep(''); }
+  };
+
   const handleClaim = async () => {
     if (!provider || !account) return;
     if (!isCorrectNetwork) { await doSwitch(); return; }
@@ -360,14 +382,16 @@ export default function PresaleClient() {
   if (loadError) return <div className={styles.center}><p className={styles.error}>{loadError}</p></div>;
   if (!config || !global) return <div className={styles.center}><p className={styles.muted}>Loading presale data from BNB Smart Chain…</p></div>;
 
-  const badge = isLive ? ['Live', styles.badgeLive]
+  const badge = isLive ? (soldOut ? ['Sold out', styles.badgeMuted] : ['Live', styles.badgeLive])
     : isEnded ? ['Sale ended', styles.badgeMuted]
+      : awaitingFinalize ? ['Sale ended · finalization pending', styles.badgeMuted]
       : beforeStart ? ['Opening soon', styles.badgeInfo]
         : global.paused ? ['Paused', styles.badgeWarn]
           : ['Opening shortly — awaiting on-chain start', styles.badgeInfo];
 
   const buyLabel = status === 'loading' ? (step || 'Processing…')
-    : !isLive ? (isEnded ? 'Sale ended' : 'Sale not open yet')
+    : !isLive ? (isEnded || awaitingFinalize ? 'Sale ended' : 'Sale not open yet')
+      : soldOut ? 'Sold out'
       : !termsAccepted ? 'Accept the terms to continue'
         : amountWei === 0n ? 'Enter an amount'
           : allowance < amountWei ? `Approve & buy with ${paymentToken}` : 'Buy JOOB';
@@ -448,7 +472,7 @@ export default function PresaleClient() {
     <div className={styles.page}>
       <header className={styles.hero}>
         <div className={styles.heroTop}>
-          <span className={`${styles.badge} ${styles.heroBadge} ${badge[1]}`}>{isLive && <span className={styles.dot} />}{badge[0]}</span>
+          <span className={`${styles.badge} ${styles.heroBadge} ${badge[1]}`}>{isLive && !soldOut && <span className={styles.dot} />}{badge[0]}</span>
           <h1 className={styles.heroTitle}>{config.presaleName}</h1>
         </div>
         <p className={styles.heroLead}>
@@ -546,6 +570,7 @@ export default function PresaleClient() {
                 : <>Highest volume bonus tier reached (+{Number(config.tierBps[config.tierBps.length - 1] ?? 0n) / 100}%).</>}
             </div>
 
+            {soldOut && <div className={styles.small}>The cap is reached: no further purchases are accepted. Claims open after the end date ({fmtDate(global.endTime)}).</div>}
             {isLive && maxPurchasable > 0n && <div className={styles.small}>Maximum currently purchasable: ~${fmtUsd(maxPurchasable, pd, 0)} (bonuses included).</div>}
             {amountError && <div className={styles.error}>{amountError}</div>}
 
@@ -620,8 +645,13 @@ export default function PresaleClient() {
               <button onClick={handleClaim} disabled={user.claimable === 0n || status === 'loading'} className={styles.cta}>
                 {user.claimable > 0n ? `Claim ${fmtToken(user.claimable, td)} JOOB` : 'Nothing to claim yet'}
               </button>
+            ) : awaitingFinalize ? (
+              <>
+                <p className={styles.small}>The sale has ended. Anyone can finalize it on-chain to open the claims.</p>
+                <button onClick={handleFinalize} disabled={status === 'loading'} className={styles.cta}>Finalize the sale and open claims</button>
+              </>
             ) : (
-              <p className={styles.small}>Claims open when the sale ends: {Number(config.tgeBps) / 100}% immediately, then linear vesting.</p>
+              <p className={styles.small}>Claims open when the sale ends ({fmtDate(global.endTime)}): {Number(config.tgeBps) / 100}% immediately, then linear vesting.</p>
             )}
 
             <div className={styles.divider} />

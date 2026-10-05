@@ -58,6 +58,7 @@ export const PRESALE_ABI = [
   'function contributionsUSDT(address) view returns (uint256)',
   'function buy(uint256 payment, uint256 minTokensExpected, bool useUSDT, address referrer)',
   'function claim()',
+  'function finalize()',
 ];
 
 export const ERC20_ABI = [
