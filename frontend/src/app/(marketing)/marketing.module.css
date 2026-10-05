@@ -64,25 +64,25 @@
   border: 1px solid transparent;
   background:
     linear-gradient(#0d1117, #0d1117) padding-box,
-    linear-gradient(90deg, #f59e0b, #10b981, #3b82f6) border-box;
-  box-shadow: 0 0 18px rgba(245, 158, 11, 0.25);
+    linear-gradient(90deg, #a3e635, #10b981, #3b82f6) border-box;
+  box-shadow: 0 0 18px rgba(163, 230, 53, 0.25);
   transition: transform 0.15s, box-shadow 0.2s;
 }
 .presaleBtn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 0 24px rgba(245, 158, 11, 0.45);
+  box-shadow: 0 0 24px rgba(163, 230, 53, 0.45);
 }
 .presaleDot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #f59e0b;
-  box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7);
+  background: #a3e635;
+  box-shadow: 0 0 0 0 rgba(163, 230, 53, 0.7);
   animation: presalePulse 1.8s infinite;
 }
 @keyframes presalePulse {
-  70% { box-shadow: 0 0 0 7px rgba(245, 158, 11, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+  70% { box-shadow: 0 0 0 7px rgba(163, 230, 53, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(163, 230, 53, 0); }
 }
 .presaleTag {
   padding: 2px 8px;
@@ -92,7 +92,7 @@
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: #0d1117;
-  background: linear-gradient(90deg, #fbbf24, #f59e0b);
+  background: linear-gradient(90deg, #d9f99d, #a3e635);
 }
 
 .navLink {
@@ -193,9 +193,9 @@
   font-size: 1.2rem;
   font-weight: 800;
   color: #111;
-  background: linear-gradient(90deg, #fbbf24, #f59e0b, #fb923c);
+  background: linear-gradient(90deg, #d9f99d, #a3e635, #4ade80);
   background-size: 200% 100%;
-  box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.6), 0 8px 30px rgba(245, 158, 11, 0.35);
+  box-shadow: 0 0 0 0 rgba(163, 230, 53, 0.6), 0 8px 30px rgba(163, 230, 53, 0.35);
   animation: demoGlow 2.2s infinite, demoShift 4s linear infinite;
   transition: transform 0.15s;
 }
@@ -204,15 +204,15 @@
   padding: 3px 10px;
   border-radius: 999px;
   background: #111;
-  color: #fbbf24;
+  color: #bef264;
   font-size: 0.75rem;
   letter-spacing: 0.08em;
 }
 .demoCtaSub { color: var(--text-secondary); font-size: 0.85rem; text-align: center; }
 @keyframes demoGlow {
-  0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.55), 0 8px 30px rgba(245, 158, 11, 0.35); }
-  70% { box-shadow: 0 0 0 14px rgba(245, 158, 11, 0), 0 8px 30px rgba(245, 158, 11, 0.35); }
-  100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0), 0 8px 30px rgba(245, 158, 11, 0.35); }
+  0% { box-shadow: 0 0 0 0 rgba(163, 230, 53, 0.55), 0 8px 30px rgba(163, 230, 53, 0.35); }
+  70% { box-shadow: 0 0 0 14px rgba(163, 230, 53, 0), 0 8px 30px rgba(163, 230, 53, 0.35); }
+  100% { box-shadow: 0 0 0 0 rgba(163, 230, 53, 0), 0 8px 30px rgba(163, 230, 53, 0.35); }
 }
 @keyframes demoShift {
   0% { background-position: 0% 0; }
@@ -372,18 +372,18 @@
   border-radius: 14px; text-align: center; border: 1px solid transparent;
   background:
     linear-gradient(#0d1117, #0d1117) padding-box,
-    linear-gradient(90deg, #f59e0b, #10b981, #3b82f6) border-box;
+    linear-gradient(90deg, #a3e635, #10b981, #3b82f6) border-box;
   transition: transform 0.15s, box-shadow 0.2s;
 }
-.presaleBanner:hover { transform: translateY(-1px); box-shadow: 0 0 24px rgba(245, 158, 11, 0.25); }
+.presaleBanner:hover { transform: translateY(-1px); box-shadow: 0 0 24px rgba(163, 230, 53, 0.25); }
 .presaleBannerHead { display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; }
 .presaleBannerTag {
   padding: 2px 10px; border-radius: 999px; font-size: 0.72rem; font-weight: 800; text-transform: uppercase;
-  letter-spacing: 0.05em; color: #0d1117; background: linear-gradient(90deg, #fbbf24, #f59e0b);
+  letter-spacing: 0.05em; color: #0d1117; background: linear-gradient(90deg, #d9f99d, #a3e635);
 }
 .presaleBannerTime { color: #fff; font-weight: 700; font-size: 1.05rem; font-variant-numeric: tabular-nums; }
 .presaleBannerMeta { margin-top: 6px; color: var(--text-secondary); font-size: 0.85rem; display: flex; gap: 6px 14px; justify-content: center; flex-wrap: wrap; }
-.presaleBannerCta { color: #fbbf24; font-weight: 700; white-space: nowrap; }
+.presaleBannerCta { color: #bef264; font-weight: 700; white-space: nowrap; }
 
 /* --- /security : cartes d'audit --- */
 .auditGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
