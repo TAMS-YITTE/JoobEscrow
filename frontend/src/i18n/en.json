@@ -18,7 +18,7 @@
       },
       "step3": {
         "title": "3. Release",
-        "desc": "Upon approval, the funds are instantly transferred to the provider."
+        "desc": "Upon approval, funds are released to the provider, available for withdrawal at any time."
       }
     },
     "trust": {
@@ -32,7 +32,7 @@
   },
   "security": {
     "title": "Security & Transparency",
-    "subtitle": "Our architecture is designed to ensure that no one (not even JoobEscrow) can access your funds without your consent.",
+    "subtitle": "Our non-custodial architecture ensures deposited funds cannot be diverted by the team. While the multi-sig Safe can pause new activity or resolve disputes, withdrawals of credited funds remain accessible at all times.",
     "auditSection": {
       "title": "Verified audits",
       "desc": "Every contract that holds or distributes funds was audited by SpyWolf before launch. An audit reduces risk but cannot rule out every bug."

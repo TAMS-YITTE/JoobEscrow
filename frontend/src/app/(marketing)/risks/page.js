@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 export const metadata = {
   title: 'Risks & Disclaimers | JoobEscrow',
-  description: 'Understand the risks involved in using JoobEscrow. We believe in 100% transparency.',
+  description: 'Understand the risks involved in using JoobEscrow. We believe in complete transparency.',
 };
 
 export default function RisksPage() {
@@ -45,7 +45,7 @@ export default function RisksPage() {
         <div className="glass-panel p-8 border-yellow-500/30 bg-yellow-900/10">
           <h2 className="text-xl font-bold text-yellow-500 mb-3">5. Administrator Dispute Resolution</h2>
           <p className="text-gray-400">
-            In the event of a dispute, the JoobEscrow administrator acts as a neutral third party to resolve it based on the evidence provided. By using the platform, you agree to abide by the administrator&apos;s final decision. If the administrator is unavailable for a prolonged period, the protocol has a &quot;stale dispute&quot; fallback that allows anyone to force a 50/50 split of the funds.
+            In the event of a dispute, the JoobEscrow administrator acts as a neutral third party to resolve it based on the evidence provided. By using the platform, you agree to abide by the administrator&apos;s final decision. If a dispute remains unresolved for 30 days, the protocol has a &quot;stale dispute&quot; fallback that allows either party (client or provider) to trigger a 50/50 split of the funds.
           </p>
         </div>
 

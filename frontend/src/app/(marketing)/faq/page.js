@@ -43,10 +43,10 @@ export default function FAQPage() {
         <div className="glass-panel p-6">
           <h3 className="font-bold text-xl text-white mb-3">What happens if the provider disappears?</h3>
           <p className="text-gray-400">
-            Every escrow has a delivery deadline. If the provider never accepts, the client can cancel and get a full refund.
-            If the provider accepted but does not deliver, the client should open a dispute <strong>before the deadline</strong>:
-            after it, a provider who accepted can claim the payment. Once a dispute is open, the arbitration team decides the split;
-            if nobody resolves it within 30 days, either party can trigger a 50/50 split so funds are never locked forever.
+            Every escrow has a delivery deadline set at creation. If the provider never accepts, the client can cancel at any time and retrieve the full deposit.
+            If the provider accepted but stops communicating without delivering, the client must open a dispute <strong>before the deadline</strong>:
+            otherwise, after the deadline, the provider can trigger <code>claimTimeout</code>. Once a dispute is open, our arbitration team reviews the case to decide a fair split.
+            If a dispute remains unresolved for 30 days, either party can call <code>resolveStaleDispute</code> on-chain to trigger a 50/50 fallback split, so funds are never permanently locked.
           </p>
         </div>
 
@@ -65,9 +65,7 @@ export default function FAQPage() {
         <div className="glass-panel p-6">
           <h3 className="font-bold text-xl text-white mb-3">Is my money safe? Can JoobEscrow access it?</h3>
           <p className="text-gray-400">
-            Your money is 100% safe. JoobEscrow is a non-custodial platform. We do not hold your private keys, and we cannot 
-            withdraw your deposited funds for ourselves. The smart contract acts as an immutable vault that can only be unlocked 
-            by the Client&apos;s approval, or by the Arbitrator strictly resolving a dispute between the two parties.
+            JoobEscrow operates on non-custodial smart contracts audited by SpyWolf. We never hold your private keys, and the protocol has no function allowing the team to withdraw deposited escrow funds to arbitrary addresses. Funds can only be released upon client approval, claimed after the agreed deadline, or split by the multi-sig Safe strictly during dispute arbitration. As with any smart contract system, residual technical risks exist. Read our full disclosure on the <Link href="/risks" className="text-emerald-400 underline hover:text-emerald-300">Risks page</Link>.
           </p>
         </div>
 
@@ -75,10 +73,10 @@ export default function FAQPage() {
         <div className="glass-panel p-6">
           <h3 className="font-bold text-xl text-white mb-3">Are my messages and files secure? What is XMTP?</h3>
           <p className="text-gray-400">
-            Absolutely. JoobEscrow uses the <strong>XMTP (Extensible Message Transport Protocol)</strong> for all in-app communications. 
-            This means every message, link, or file you share with the other party is <strong>End-to-End Encrypted</strong> and tied directly to your wallet addresses. 
+            JoobEscrow integrates <strong>XMTP (Extensible Message Transport Protocol)</strong> for in-app communications. 
+            All chat messages and shared links between client and provider are end-to-end encrypted directly between wallet identities, meaning neither JoobEscrow nor external third parties can read the content of your private conversations. 
             <br/><br/>
-            Because it is decentralized, neither JoobEscrow nor any third party can read your messages. It guarantees total privacy for your negotiations and deliverables.
+            Note that on-chain transactions, contract interactions, and wallet addresses remain publicly recorded on the BNB Smart Chain ledger.
           </p>
         </div>
 

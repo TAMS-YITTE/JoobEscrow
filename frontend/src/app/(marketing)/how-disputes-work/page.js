@@ -57,9 +57,9 @@ export default function HowDisputesWorkPage() {
           <div className="absolute w-6 h-6 bg-gray-500/20 border-2 border-gray-500 rounded-full -left-[13px] top-1"></div>
           <h3 className="text-2xl font-bold text-white mb-2">4. Stale Dispute Fallback</h3>
           <p className="text-gray-400">
-            If a dispute is opened but abandoned by all parties for 30 days, the smart contract activates a stale dispute 
-            fallback mechanism. It automatically splits the locked funds <strong>50/50</strong> between the client and provider, 
-            ensuring funds are never locked forever.
+            If a dispute is opened but left unresolved for 30 days, either party (client or provider) can call 
+            <code>resolveStaleDispute(id)</code> on the smart contract. This executes a <strong>50/50 split</strong> of 
+            the locked funds between client and provider, ensuring capital is never permanently trapped.
           </p>
         </div>
 
