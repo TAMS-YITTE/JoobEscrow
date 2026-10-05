@@ -57,48 +57,70 @@ a {
   box-shadow: 0 0 20px rgba(56, 189, 248, 0.05);
 }
 
-/* Buttons */
+/* Buttons : un seul systeme (pilule), partout sur le site.
+   .btn + .btn-primary | .btn-outline | .btn-ghost ; tailles .btn-sm / .btn-lg */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 10px 20px;
-  border-radius: 8px;
-  font-weight: 500;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  border: none;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 22px;
+  border-radius: 999px;
+  border: 1px solid transparent;
   font-family: var(--font-main);
+  font-weight: 600;
+  font-size: 0.92rem;
+  line-height: 1;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+.btn:focus-visible {
+  outline: 2px solid #34d399;
+  outline-offset: 2px;
 }
 
 .btn-primary {
-  background: var(--accent-primary);
+  background: linear-gradient(90deg, #059669, #10b981);
   color: #fff;
-  box-shadow: 0 4px 14px 0 rgba(16, 185, 129, 0.39);
+  box-shadow: 0 6px 18px rgba(16, 185, 129, 0.28);
 }
-
 .btn-primary:hover {
-  background: var(--accent-hover);
-  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.23);
+  background: linear-gradient(90deg, #047857, #059669);
+  box-shadow: 0 8px 22px rgba(16, 185, 129, 0.35);
   transform: translateY(-1px);
 }
 
 .btn-outline {
-  background: transparent;
-  border: 1px solid var(--border-color);
+  background: rgba(255, 255, 255, 0.02);
+  border-color: rgba(255, 255, 255, 0.16);
   color: var(--text-primary);
 }
-
 .btn-outline:hover {
-  border-color: var(--text-secondary);
-  background: rgba(255,255,255,0.02);
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.05);
+  transform: translateY(-1px);
 }
 
-.btn:disabled {
-  opacity: 0.5;
+.btn-ghost {
+  background: transparent;
+  border-color: var(--border-color);
+  color: var(--accent-primary);
+}
+.btn-ghost:hover { border-color: var(--accent-primary); }
+
+.btn-sm { min-height: 32px; padding: 0 14px; font-size: 0.8rem; }
+.btn-lg { min-height: 50px; padding: 0 30px; font-size: 1rem; }
+
+.btn:disabled,
+.btn[aria-disabled='true'] {
+  opacity: 0.45;
   cursor: not-allowed;
   pointer-events: none;
+  box-shadow: none;
+  transform: none;
 }
 
 /* Typography */

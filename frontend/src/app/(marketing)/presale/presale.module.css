@@ -190,8 +190,8 @@
 }
 .max {
   margin-left: 8px;
-  padding: 2px 8px;
-  border-radius: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
   border: 1px solid var(--border-color);
   background: transparent;
   color: #e2e8f0;
@@ -300,7 +300,8 @@
 
 .cta {
   width: 100%;
-  padding: 14px;
+  min-height: 50px;
+  padding: 0 22px;
   border: none;
   border-radius: 999px;
   background: linear-gradient(90deg, #059669, #10b981);
@@ -308,11 +309,17 @@
   font-weight: 700;
   font-size: 1rem;
   cursor: pointer;
-  transition: opacity 0.2s, transform 0.1s;
+  box-shadow: 0 6px 18px rgba(16, 185, 129, 0.28);
+  transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
-.cta:hover:not(:disabled) { transform: translateY(-1px); }
-.cta:disabled { opacity: 0.4; cursor: not-allowed; }
-.ctaWarn { background: #d97706; }
+.cta:hover:not(:disabled) {
+  background: linear-gradient(90deg, #047857, #059669);
+  box-shadow: 0 8px 22px rgba(16, 185, 129, 0.35);
+  transform: translateY(-1px);
+}
+.cta:focus-visible { outline: 2px solid #34d399; outline-offset: 2px; }
+.cta:disabled { opacity: 0.45; cursor: not-allowed; box-shadow: none; }
+.ctaWarn { background: linear-gradient(90deg, #b45309, #d97706); box-shadow: 0 6px 18px rgba(217, 119, 6, 0.28); }
 
 .refRow {
   display: flex;
@@ -338,8 +345,8 @@
 }
 .refInput::placeholder { color: #475569; }
 .refBtn {
-  padding: 4px 12px;
-  border-radius: 8px;
+  padding: 5px 14px;
+  border-radius: 999px;
   border: 1px solid var(--border-color);
   background: transparent;
   color: var(--accent-primary);

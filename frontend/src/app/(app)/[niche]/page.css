@@ -113,7 +113,7 @@
   background: rgba(20, 83, 45, 0.3); color: #86efac; font-size: 0.875rem;
   animation: pulse 2s infinite;
 }
-.claim-box .btn { background: #22c55e; padding: 6px 12px; font-size: 0.875rem; }
+.claim-box .btn { min-height: 32px; padding: 0 14px; font-size: 0.8rem; }
 
 /* --- Invitation --- */
 .invite-panel { border-color: var(--niche-primary, var(--accent-primary)); background: rgba(0, 0, 0, 0.3); }
