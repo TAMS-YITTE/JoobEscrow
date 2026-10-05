@@ -88,36 +88,36 @@
 .mkt-main .text-gray-500{color:#6b7280}
 .mkt-main .text-gray-700{color:#374151}
 .mkt-main .text-gray-800{color:#1f2937}
-.mkt-main .text-blue-400{color:#60a5fa}
-.mkt-main .text-blue-500{color:#3b82f6}
+.mkt-main .text-blue-400{color:#bef264}
+.mkt-main .text-blue-500{color:#84cc16}
 .mkt-main .text-green-400{color:#4ade80}
 .mkt-main .text-red-200{color:#fecaca}
 .mkt-main .text-red-400{color:#f87171}
 .mkt-main .text-red-500{color:#ef4444}
 .mkt-main .text-yellow-400{color:#facc15}
 .mkt-main .text-yellow-500{color:#eab308}
-.mkt-main .text-purple-500{color:#a855f7}
+.mkt-main .text-purple-500{color:#facc15}
 .mkt-main .bg-gray-800{background-color:#1f2937}
 .mkt-main .bg-black\/40{background-color:rgba(0,0,0,0.4)}
 .mkt-main .bg-black\/50{background-color:rgba(0,0,0,0.5)}
 .mkt-main .bg-black\/60{background-color:rgba(0,0,0,0.6)}
-.mkt-main .bg-blue-500\/20{background-color:rgba(59,130,246,0.2)}
-.mkt-main .bg-blue-900\/10{background-color:rgba(30,58,138,0.1)}
+.mkt-main .bg-blue-500\/20{background-color:rgba(132, 204, 22,0.2)}
+.mkt-main .bg-blue-900\/10{background-color:rgba(54, 83, 20,0.1)}
 .mkt-main .bg-gray-500\/20{background-color:rgba(107,114,128,0.2)}
 .mkt-main .bg-green-900\/10{background-color:rgba(20,83,45,0.1)}
-.mkt-main .bg-purple-500\/20{background-color:rgba(168,85,247,0.2)}
+.mkt-main .bg-purple-500\/20{background-color:rgba(250, 204, 21,0.2)}
 .mkt-main .bg-red-500\/20{background-color:rgba(239,68,68,0.2)}
 .mkt-main .bg-red-900\/10{background-color:rgba(127,29,29,0.1)}
 .mkt-main .bg-red-900\/50{background-color:rgba(127,29,29,0.5)}
 .mkt-main .bg-white\/5{background-color:rgba(255,255,255,0.05)}
 .mkt-main .bg-yellow-900\/10{background-color:rgba(113,63,18,0.1)}
-.mkt-main .border-blue-500{border-color:#3b82f6}
+.mkt-main .border-blue-500{border-color:#84cc16}
 .mkt-main .border-gray-500{border-color:#6b7280}
 .mkt-main .border-gray-700{border-color:#374151}
 .mkt-main .border-gray-800{border-color:#1f2937}
-.mkt-main .border-purple-500{border-color:#a855f7}
+.mkt-main .border-purple-500{border-color:#facc15}
 .mkt-main .border-red-500{border-color:#ef4444}
-.mkt-main .border-blue-500\/30{border-color:rgba(59,130,246,0.3)}
+.mkt-main .border-blue-500\/30{border-color:rgba(132, 204, 22,0.3)}
 .mkt-main .border-green-500\/30{border-color:rgba(34,197,94,0.3)}
 .mkt-main .border-red-500\/30{border-color:rgba(239,68,68,0.3)}
 .mkt-main .border-white\/10{border-color:rgba(255,255,255,0.1)}
@@ -185,7 +185,7 @@
 .mkt-main .hover\:bg-white\/10:hover{background-color:rgba(255,255,255,.1)}
 .mkt-main .hover\:border-green-500\/50:hover{border-color:rgba(34,197,94,.5)}
 .mkt-main .hover\:opacity-90:hover{opacity:.9}
-.mkt-main .hover\:text-blue-300:hover{color:#93c5fd}
+.mkt-main .hover\:text-blue-300:hover{color:#d9f99d}
 .mkt-main .hover\:text-green-300:hover{color:#86efac}
 .mkt-main .hover\:text-green-400:hover{color:#4ade80}
 .mkt-main .hover\:text-white:hover{color:#fff}
@@ -200,7 +200,7 @@
 .mkt-main .prose ul{list-style:disc}
 .mkt-main .prose ol{list-style:decimal}
 .mkt-main .prose li{margin:.4em 0}
-.mkt-main .prose a{color:#60a5fa;text-decoration:underline}
+.mkt-main .prose a{color:#bef264;text-decoration:underline}
 .mkt-main .prose strong{color:#fff}
 .mkt-main .prose code{background:rgba(255,255,255,.08);padding:.1em .35em;border-radius:4px;font-size:.9em}
 .mkt-main .prose blockquote{border-left:3px solid #374151;padding-left:1em;color:#9ca3af;margin:1.2em 0}

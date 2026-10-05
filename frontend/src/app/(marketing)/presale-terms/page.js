@@ -21,8 +21,8 @@ export default function PresaleTermsPage() {
       <h1 style={{ fontSize: 'clamp(1.8rem, 5vw, 2.6rem)', fontWeight: 800, color: '#fff', marginBottom: 12 }}>JOOB Presale Terms &amp; Conditions</h1>
       <p style={{ ...p, marginBottom: 24 }}><strong>Version 1.2 – October 2026</strong></p>
 
-      <div style={{ ...box, paddingLeft: 20, marginBottom: 40, borderColor: 'rgba(59,130,246,0.35)', background: 'rgba(59,130,246,0.08)' }}>
-        <p style={{ ...p, color: '#bfdbfe', fontSize: '0.92rem' }}>
+      <div style={{ ...box, paddingLeft: 20, marginBottom: 40, borderColor: 'rgba(132, 204, 22,0.35)', background: 'rgba(132, 204, 22,0.08)' }}>
+        <p style={{ ...p, color: '#ecfccb', fontSize: '0.92rem' }}>
           <strong>Scope:</strong> these Terms apply to purchases made through the presale smart contract{' '}
           <a href={`https://bscscan.com/address/${PRESALE}#code`} target="_blank" rel="noopener noreferrer" className={styles.link} style={{ wordBreak: 'break-all' }}>{PRESALE}</a>{' '}
           selling the JOOB token{' '}

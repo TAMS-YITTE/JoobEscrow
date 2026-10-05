@@ -67,7 +67,7 @@ export default function DisputesPage() {
     <div className="dashboard">
       <header className="dashboard-header">
         <div>
-          <h1 className="text-gradient" style={{ backgroundImage: 'linear-gradient(to right, #ef4444, #8b5cf6)' }}>Active Disputes</h1>
+          <h1 className="text-gradient" style={{ backgroundImage: 'linear-gradient(to right, #ef4444, #facc15)' }}>Active Disputes</h1>
           <p className="subtitle">Manage disputes between {niche.lexicon.client} and {niche.lexicon.provider}</p>
         </div>
       </header>

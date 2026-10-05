@@ -12,7 +12,7 @@
   
   --accent-primary: #10b981; /* Emerald Green */
   --accent-hover: #059669;
-  --accent-purple: #8b5cf6;
+  --accent-purple: #facc15;
   --accent-red: #ef4444;
   
   --font-main: 'Inter', -apple-system, sans-serif;
@@ -31,7 +31,7 @@ body {
   line-height: 1.5;
   background-image: 
     radial-gradient(circle at 15% 50%, rgba(16, 185, 129, 0.04), transparent 25%),
-    radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.04), transparent 25%);
+    radial-gradient(circle at 85% 30%, rgba(250, 204, 21, 0.04), transparent 25%);
   background-attachment: fixed;
   min-height: 100vh;
 }
@@ -130,7 +130,7 @@ h1, h2, h3 {
 }
 
 .text-gradient {
-  background: linear-gradient(to right, #10b981, #8b5cf6);
+  background: linear-gradient(to right, #10b981, #a3e635, #facc15);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -147,7 +147,7 @@ h1, h2, h3 {
 
 .status-funded { background: rgba(16, 185, 129, 0.1); color: var(--accent-primary); border: 1px solid rgba(16, 185, 129, 0.2); }
 .status-disputed { background: rgba(239, 68, 68, 0.1); color: var(--accent-red); border: 1px solid rgba(239, 68, 68, 0.2); }
-.status-resolved { background: rgba(139, 92, 246, 0.1); color: var(--accent-purple); border: 1px solid rgba(139, 92, 246, 0.2); }
+.status-resolved { background: rgba(250, 204, 21, 0.1); color: var(--accent-purple); border: 1px solid rgba(250, 204, 21, 0.2); }
 
 /* Layout utilities */
 .app-container {

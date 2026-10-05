@@ -26,7 +26,7 @@
   margin-bottom: 16px;
 }
 .badgeLive { background: rgba(16, 185, 129, 0.12); border-color: rgba(16, 185, 129, 0.4); color: #34d399; }
-.badgeInfo { background: rgba(59, 130, 246, 0.12); border-color: rgba(59, 130, 246, 0.4); color: #60a5fa; }
+.badgeInfo { background: rgba(132, 204, 22, 0.12); border-color: rgba(132, 204, 22, 0.4); color: #bef264; }
 .badgeWarn { background: rgba(245, 158, 11, 0.12); border-color: rgba(245, 158, 11, 0.4); color: #fbbf24; }
 .badgeMuted { background: rgba(148, 163, 184, 0.12); border-color: rgba(148, 163, 184, 0.4); color: #cbd5e1; }
 
@@ -46,7 +46,7 @@
   line-height: 1.1;
   letter-spacing: -0.02em;
   margin-bottom: 16px;
-  background: linear-gradient(90deg, #fff, #bfdbfe, #94a3b8);
+  background: linear-gradient(90deg, #fff, #ecfccb, #94a3b8);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -72,11 +72,11 @@
   border-radius: 999px;
   font-size: 0.75rem;
   font-weight: 600;
-  border: 1px solid rgba(59, 130, 246, 0.35);
-  background: rgba(59, 130, 246, 0.08);
-  color: #93c5fd;
+  border: 1px solid rgba(132, 204, 22, 0.35);
+  background: rgba(132, 204, 22, 0.08);
+  color: #d9f99d;
 }
-.chip:hover { background: rgba(59, 130, 246, 0.18); }
+.chip:hover { background: rgba(132, 204, 22, 0.18); }
 .chipOk { border-color: rgba(16, 185, 129, 0.35); background: rgba(16, 185, 129, 0.08); color: #34d399; }
 .chipWarn { border-color: rgba(245, 158, 11, 0.35); background: rgba(245, 158, 11, 0.08); color: #fbbf24; }
 
@@ -176,7 +176,7 @@
   font-size: 0.85rem;
   border: 1px solid;
 }
-.feedbackInfo { background: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.35); color: #bfdbfe; }
+.feedbackInfo { background: rgba(132, 204, 22, 0.1); border-color: rgba(132, 204, 22, 0.35); color: #ecfccb; }
 .feedbackOk { background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.35); color: #a7f3d0; }
 .feedbackErr { background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.35); color: #fecaca; }
 
@@ -235,7 +235,7 @@
 .tokenTag {
   padding: 6px 12px;
   border-radius: 999px;
-  background: linear-gradient(135deg, #059669, #3b82f6);
+  background: linear-gradient(135deg, #059669, #a3e635);
   color: #fff;
   font-weight: 800;
   font-size: 0.85rem;
@@ -284,7 +284,7 @@
 .strong { font-size: 0.9rem; font-weight: 700; color: #fff; }
 .muted { color: var(--text-secondary); font-size: 0.9rem; }
 .error { font-size: 0.8rem; color: #f87171; margin-top: 6px; }
-.link { color: #60a5fa; text-decoration: underline; }
+.link { color: #bef264; text-decoration: underline; }
 
 .terms {
   display: flex;
@@ -415,8 +415,8 @@
 }
 .phase_done { border-left-color: #10b981; }
 .phase_done .phaseTag { background: rgba(16, 185, 129, 0.15); color: #34d399; }
-.phase_now { border-left-color: #3b82f6; }
-.phase_now .phaseTag { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
+.phase_now { border-left-color: #84cc16; }
+.phase_now .phaseTag { background: rgba(132, 204, 22, 0.15); color: #bef264; }
 .phase_next { border-left-color: #f59e0b; }
 .phase_next .phaseTag { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
 
@@ -544,7 +544,7 @@
 .heroBadge { margin-bottom: 0; }
 .heroTitle {
   font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.02em;
-  background: linear-gradient(90deg, #fff, #bfdbfe, #94a3b8); -webkit-background-clip: text; background-clip: text; color: transparent;
+  background: linear-gradient(90deg, #fff, #ecfccb, #94a3b8); -webkit-background-clip: text; background-clip: text; color: transparent;
 }
 .heroLead { color: var(--text-secondary); max-width: 640px; margin: 8px 0 12px; line-height: 1.5; font-size: 0.95rem; }
 .trustBadges { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-bottom: 10px; }

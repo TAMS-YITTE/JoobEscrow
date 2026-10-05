@@ -1,7 +1,7 @@
 // Schema public du co-funded escrow (prevu : PerShare V2 + JoobEscrow V5, audite avant lancement).
 const W = 150, H = 60, ROW = 124;
 const C1 = 100, C2 = 290, C3 = 480, C4 = 670;
-const EDGE = '#64748b', ACCENT = '#3b82f6', GOOD = '#10b981', INK = '#f8fafc', QUIET = '#94a3b8';
+const EDGE = '#64748b', ACCENT = '#84cc16', GOOD = '#10b981', INK = '#f8fafc', QUIET = '#94a3b8';
 
 function Box({ cx, title, sub, color, fill }) {
   return (

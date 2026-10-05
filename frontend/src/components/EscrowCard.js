@@ -28,7 +28,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate })
 
   const getStatusBadge = () => {
     if (escrow.status === 'FUNDED' && escrow.accepted) {
-      return <span className="status-badge" style={{ backgroundColor: 'rgba(59, 130, 246, 0.1)', color: '#60a5fa', border: '1px solid #3b82f6' }}>🔵 Secured</span>;
+      return <span className="status-badge" style={{ backgroundColor: 'rgba(132, 204, 22, 0.1)', color: '#bef264', border: '1px solid #84cc16' }}>🔵 Secured</span>;
     }
     switch (escrow.status) {
       case 'FUNDED':

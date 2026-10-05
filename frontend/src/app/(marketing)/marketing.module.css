@@ -64,7 +64,7 @@
   border: 1px solid transparent;
   background:
     linear-gradient(#0d1117, #0d1117) padding-box,
-    linear-gradient(90deg, #a3e635, #10b981, #3b82f6) border-box;
+    linear-gradient(90deg, #a3e635, #10b981, #facc15) border-box;
   box-shadow: 0 0 18px rgba(163, 230, 53, 0.25);
   transition: transform 0.15s, box-shadow 0.2s;
 }
@@ -299,7 +299,7 @@
 }
 
 /* --- Header (logo, menu, reseaux, presale, app) --- */
-.logoImg { width: 44px; height: 44px; filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.35)); }
+.logoImg { width: 44px; height: 44px; filter: drop-shadow(0 0 10px rgba(132, 204, 22, 0.35)); }
 .headerSocial {
   display: inline-flex; align-items: center; justify-content: center;
   width: 36px; height: 36px; border-radius: 50%;
@@ -372,7 +372,7 @@
   border-radius: 14px; text-align: center; border: 1px solid transparent;
   background:
     linear-gradient(#0d1117, #0d1117) padding-box,
-    linear-gradient(90deg, #a3e635, #10b981, #3b82f6) border-box;
+    linear-gradient(90deg, #a3e635, #10b981, #facc15) border-box;
   transition: transform 0.15s, box-shadow 0.2s;
 }
 .presaleBanner:hover { transform: translateY(-1px); box-shadow: 0 0 24px rgba(163, 230, 53, 0.25); }
@@ -421,7 +421,7 @@
 .whyCard { padding: 30px 24px !important; text-align: left; }
 .whyBig {
   font-size: 1.7rem; font-weight: 800; margin-bottom: 12px;
-  background: linear-gradient(90deg, #10b981, #3b82f6); -webkit-background-clip: text; background-clip: text; color: transparent;
+  background: linear-gradient(90deg, #10b981, #a3e635); -webkit-background-clip: text; background-clip: text; color: transparent;
 }
 .whyNote { margin-top: 18px; text-align: center; color: #64748b; font-size: 0.78rem; }
 @media (max-width: 860px) { .whyGrid { grid-template-columns: 1fr; } }
@@ -432,11 +432,11 @@
   border: 1px solid transparent;
   background:
     linear-gradient(#0d1117, #0d1117) padding-box,
-    linear-gradient(90deg, rgba(16, 185, 129, 0.6), rgba(59, 130, 246, 0.6)) border-box;
+    linear-gradient(90deg, rgba(16, 185, 129, 0.6), rgba(132, 204, 22, 0.6)) border-box;
 }
 .visionTag {
   display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 0.72rem; font-weight: 800;
-  letter-spacing: 0.05em; text-transform: uppercase; color: #93c5fd; background: rgba(59, 130, 246, 0.14);
+  letter-spacing: 0.05em; text-transform: uppercase; color: #d9f99d; background: rgba(132, 204, 22, 0.14);
 }
 .visionBox h3 { margin-top: 12px; font-size: 1.5rem; color: #fff; }
 .visionBox p { margin: 10px auto 0; max-width: 640px; color: var(--text-secondary); line-height: 1.6; }
