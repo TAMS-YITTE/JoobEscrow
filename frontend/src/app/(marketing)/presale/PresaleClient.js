@@ -500,7 +500,7 @@ export default function PresaleClient() {
           <Link href="/security" className={styles.trustBadge}>All audits →</Link>
         </div>
         <nav className={styles.quickLinks} aria-label="Presale documents">
-          <Link href="/whitepaper">Litepaper</Link>
+          <Link href="/whitepaper">Whitepaper</Link>
           <a href="#tokenomics">Tokenomics</a>
           <a href="#use-of-funds">Use of funds</a>
           <a href="#ecosystem">Ecosystem</a>

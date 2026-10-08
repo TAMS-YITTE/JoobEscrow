@@ -96,7 +96,7 @@ export default function MarketingLayout({ children }) {
             <div className={styles.footerCol}>
               <h3>JOOB token</h3>
               <Link href="/presale">Presale</Link>
-              <Link href="/whitepaper">Litepaper</Link>
+              <Link href="/whitepaper">Whitepaper</Link>
               <Link href="/presale-terms">Presale terms</Link>
               <a href={ZEALY_URL} target="_blank" rel="noopener noreferrer">Zealy quests</a>
             </div>

@@ -1,256 +1,388 @@
 import Link from 'next/link';
-import styles from '../presale/presale.module.css';
+import styles from './whitepaper.module.css';
 import PrintButton from './PrintButton';
 import CoFundedEscrowDiagram from '../../../components/CoFundedEscrowDiagram';
 import { AUDITS, PRESALE_ADDRESSES, PLANNED_LISTING_PRICE } from '../../../config/presale';
+import { TOKENOMICS, TOKENOMICS_SEGMENTS, fmtM } from '../../../config/tokenomics';
 
 export const metadata = {
-  title: 'JoobEscrow Litepaper | On-chain escrow on BNB Chain',
+  title: 'JoobEscrow Whitepaper | On-chain escrow on BNB Chain',
   description: 'How JoobEscrow secures payments between clients and freelancers, its security model, the JOOB token, tokenomics and presale.',
   alternates: { canonical: '/whitepaper' },
 };
 
-// Faits repris du code, des contrats et des pages publiques (verifies le 03/10/2026).
+// Faits repris du code, des contrats et des pages publiques (verifies le 03/10/2026, revus le 08/10/2026).
 const VESTING_TREASURY = '0x8cbac3786F61572D4571C951e9215FC289FB2ff3';
 const VESTING_TEAM = '0xc430f8C4E26FFc25326C4AA84947B3e2A1328012';
 const STAKING = '0x7949528182876027b1F4B2e43E3a46eb2dADD32b';
 
-const TOKENOMICS = [
-  ['Presale', '15%', '150M', '20% at sale end, then linear over 180 days (presale contract)'],
-  ['Presale bonus & referral', '1.35%', '13.5M', 'Same vesting as the presale (presale contract)'],
-  ['Ecosystem & usage', '25%', '250M', 'Distributed progressively over about 48 months; every transfer disclosed'],
-  ['Treasury', '13%', '130M', 'Locked until Jul 13, 2027, then linear over 36 months (vesting contract)'],
-  ['Team', '12%', '120M', 'Locked until Jan 13, 2028, then linear over 24 months (vesting contract)'],
-  ['DEX liquidity', '10%', '100M', 'Paired at listing, LP tokens locked 12 months or more'],
-  ['Partners & KOL', '7%', '70M', '3-month cliff, then 12 months, always disclosed'],
-  ['Marketing', '6.65%', '66.5M', '10% at TGE, then 18 months'],
-  ['Airdrop (points)', '5%', '50M', '20% at TGE, then 6 months (audited airdrop contract)'],
-  ['CEX reserve', '5%', '50M', 'Used only for a centralized exchange listing'],
+const SECTIONS = [
+  ['problem', 'The problem'],
+  ['solution', 'The solution: on-chain escrow'],
+  ['fees', 'Fees'],
+  ['security', 'Security model'],
+  ['token', 'The JOOB token'],
+  ['ecosystem', 'The Joob ecosystem'],
+  ['tokenomics', 'Tokenomics'],
+  ['presale', 'Presale'],
+  ['funds', 'Use of funds'],
+  ['roadmap', 'Roadmap'],
+  ['contracts', 'Contracts'],
+  ['risks', 'Risks & legal notice'],
 ];
 
-const wrap = { maxWidth: 820, margin: '0 auto', padding: '48px 16px 64px' };
-const h2 = { fontSize: '1.3rem', fontWeight: 700, color: '#fff', margin: '0 0 12px' };
-const p = { color: 'var(--text-secondary)', lineHeight: 1.75, marginBottom: 12 };
-const li = { color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: 6 };
-const box = { background: 'rgba(0,0,0,0.4)', border: '1px solid var(--border-color)', borderRadius: 14, padding: '16px 20px' };
-const th = { textAlign: 'left', padding: '8px 10px', color: '#fff', fontSize: '0.85rem', borderBottom: '1px solid var(--border-color)' };
-const td = { padding: '8px 10px', color: 'var(--text-secondary)', fontSize: '0.85rem', borderBottom: '1px solid rgba(255,255,255,0.05)', verticalAlign: 'top' };
+const FLOW = [
+  ['Create & fund', 'The client locks the payment in the contract.'],
+  ['Accept', 'The provider accepts the deal. Before acceptance, the client can cancel for a full refund.'],
+  ['Release', 'When the work is approved, the client releases the funds.'],
+  ['Timeout', 'If the client stays silent after the deadline, the provider can claim the payment.'],
+  ['Withdraw', 'Each party withdraws what it is owed (pull payments), at any time, even if the contract is paused.'],
+];
 
-function Addr({ label, address, path = 'address' }) {
+const USE_OF_FUNDS = [
+  ['PancakeSwap liquidity', 40, `JOOB/stablecoin pool at the $${PLANNED_LISTING_PRICE} listing price, LP locked 12 months or more`],
+  ['Product development', 30, 'Escrow V5, PerShare V2 and the co-funded escrow, the Web2-simple layer'],
+  ['Audits & security', 10, 'Audits of Escrow V5 and PerShare V2, bug bounty, monitoring'],
+  ['Growth', 10, 'KOL campaigns, listings, partnerships'],
+  ['Operations & reserve', 10, 'Infrastructure, legal, contingencies'],
+];
+
+const ROADMAP = [
+  ['Foundations', 'done', 'Audited escrow contract, verified on BscScan, owned by a Safe multisig; 15 categories and encrypted chat.'],
+  ['Trust layer', 'now', '$1 demo, shareable escrow links; next, public deal pages verifiable without a wallet, Telegram alerts, on-chain dispute evidence.'],
+  ['JOOB presale', 'next', 'October 15, 2026 → January 13, 2027.'],
+  ['TGE & liquidity', null, `PancakeSwap pool at $${PLANNED_LISTING_PRICE}, JOOB staking opens, JOOB activated on PerShare, first JOOB utilities, Early Escrow points.`],
+  ['Escrow V5', null, 'JOOB holder fee tiers up to a full fee waiver, on-chain affiliate rewards, gasless payouts, verified reputation profiles (audit before deployment).'],
+  ['As easy as a Web2 app', null, 'Email or social sign-in, no seed phrase to start, network fees covered, card payments.'],
+  ['Expansion', null, 'Multichain, API and widget, receipts and invoices.'],
+  ['Joob ecosystem: co-funded escrow', null, 'With PerShare V2, several sponsors pool funds and open one JoobEscrow escrow, paid only on delivery; built on Escrow V5, audited before launch.'],
+  ['JOOB governance', null, 'Holders vote on categories, fee tiers and ecosystem grants; off-chain first, then on-chain; staked arbitrators.'],
+];
+const STEP_CLASS = { done: styles.stepDone, now: styles.stepNow, next: styles.stepNext };
+const STATUS = { done: ['Done', styles.statusDone], now: ['In progress', styles.statusNow], next: ['Next', styles.statusNext] };
+
+const CONTRACTS = [
+  ['JOOB token', PRESALE_ADDRESSES.TOKEN, 'token'],
+  ['Presale', PRESALE_ADDRESSES.PRESALE, 'address'],
+  ['Safe multisig (3-of-5)', PRESALE_ADDRESSES.SAFE, 'address'],
+  ['Staking (opens after the TGE)', STAKING, 'address'],
+  ['Treasury vesting', VESTING_TREASURY, 'address'],
+  ['Team vesting', VESTING_TEAM, 'address'],
+];
+
+function Section({ id, n, title, className = '', children }) {
   return (
-    <li style={li}>
-      {label}:{' '}
-      <a href={`https://bscscan.com/${path}/${address}`} target="_blank" rel="noopener noreferrer" className={styles.link} style={{ wordBreak: 'break-all' }}>
-        {address}
-      </a>
-    </li>
+    <section id={id} className={`${styles.section} ${className}`}>
+      <div className={styles.sectionHead}>
+        <span className={styles.num}>{String(n).padStart(2, '0')}</span>
+        <h2 className={styles.h2}>{title}</h2>
+      </div>
+      {children}
+    </section>
+  );
+}
+
+function Ext({ href, children }) {
+  return <a href={href} target="_blank" rel="noopener noreferrer" className={styles.link}>{children}</a>;
+}
+
+function TokenomicsDonut() {
+  const R = 15.9155; // circonference = 100
+  return (
+    <svg viewBox="0 0 42 42" width="240" height="240" role="img" aria-label="JOOB token allocation">
+      <circle cx="21" cy="21" r={R} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="5" />
+      {TOKENOMICS_SEGMENTS.map((t) => {
+        const len = Math.max(t.pct - 0.3, 0.2);
+        return (
+          <circle key={t.name} cx="21" cy="21" r={R} fill="none" stroke={t.color} strokeWidth="5"
+            strokeDasharray={`${len} ${100 - len}`} strokeDashoffset={25 - t.start}>
+            <title>{`${t.name}: ${t.pct}% (${fmtM(t.pct)} JOOB)`}</title>
+          </circle>
+        );
+      })}
+    </svg>
   );
 }
 
 export default function WhitepaperPage() {
+  const sec = (id) => SECTIONS.findIndex(([s]) => s === id) + 1;
+  const title = (id) => SECTIONS.find(([s]) => s === id)[1];
   return (
-    <div style={wrap}>
-      <h1 style={{ fontSize: 'clamp(1.8rem, 5vw, 2.6rem)', fontWeight: 800, color: '#fff', marginBottom: 8 }}>JoobEscrow Litepaper</h1>
-      <p style={{ ...p, marginBottom: 20 }}><strong>Version 1.0 – October 2026.</strong> In case of discrepancy, the on-chain parameters of the contracts prevail.</p>
-      <PrintButton />
+    <div className={styles.page}>
+      <header className={styles.hero}>
+        <span className={styles.badge}><span className={styles.badgeDot} />Whitepaper · v1.1 · October 2026</span>
+        <h1 className={styles.title}>JoobEscrow <span className={styles.gradient}>Whitepaper</span></h1>
+        <p className={styles.lead}>
+          An audited escrow contract on BNB Chain that holds payments until the work is approved, and the JOOB token that powers its ecosystem.
+        </p>
+        <p className={styles.note}>In case of discrepancy, the on-chain parameters of the contracts prevail.</p>
+        <div className={styles.heroActions}>
+          <PrintButton />
+          <Link href="/presale" className="btn btn-primary">Join the presale</Link>
+        </div>
+        <div className={styles.stats}>
+          <div className={styles.stat}><div className={`${styles.statVal} ${styles.gradient}`}>1B</div><div className={styles.statLabel}>Fixed supply</div></div>
+          <div className={styles.stat}><div className={`${styles.statVal} ${styles.gradient}`}>0%</div><div className={styles.statLabel}>Client fee</div></div>
+          <div className={styles.stat}><div className={`${styles.statVal} ${styles.gradient}`}>4</div><div className={styles.statLabel}>SpyWolf audits</div></div>
+          <div className={styles.stat}><div className={`${styles.statVal} ${styles.gradient}`}>3/5</div><div className={styles.statLabel}>Safe multisig</div></div>
+        </div>
+      </header>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 36, marginTop: 28 }}>
-        <section>
-          <h2 style={h2}>1. The problem</h2>
-          <p style={p}>
-            Paying someone you have never met is a trust problem. The client fears paying for work that never arrives; the freelancer
-            fears delivering work that is never paid. Marketplaces solve this by holding the money, but many keep 20–30% of the deal,
-            control the funds and can freeze accounts. In Web3 deals (KOL campaigns, development, design, OTC), there is often no
-            trusted middleman at all, and someone has to send first.
-          </p>
-        </section>
-
-        <section>
-          <h2 style={h2}>2. The solution: on-chain escrow</h2>
-          <p style={p}>
-            JoobEscrow replaces the middleman with an audited smart contract on BNB Smart Chain. The client&apos;s USDT or USDC is locked
-            in the contract and released to the provider when the work is approved. Nobody, including JoobEscrow, can move escrowed
-            funds outside the rules of the contract.
-          </p>
-          <ol style={{ paddingLeft: 22 }}>
-            <li style={li}><strong>Create &amp; fund:</strong> the client locks the payment in the contract.</li>
-            <li style={li}><strong>Accept:</strong> the provider accepts the deal. Before acceptance, the client can cancel for a full refund.</li>
-            <li style={li}><strong>Release:</strong> when the work is approved, the client releases the funds.</li>
-            <li style={li}><strong>Timeout:</strong> if the client stays silent after the deadline, the provider can claim the payment.</li>
-            <li style={li}><strong>Withdraw:</strong> each party withdraws what it is owed (pull payments), at any time, even if the contract is paused.</li>
+      <div className={styles.layout}>
+        <nav className={styles.toc} aria-label="Contents">
+          <div className={styles.tocTitle}>Contents</div>
+          <ol>
+            {SECTIONS.map(([id, label], i) => (
+              <li key={id}><a href={`#${id}`}><span className={styles.tocNum}>{String(i + 1).padStart(2, '0')}</span>{label}</a></li>
+            ))}
           </ol>
-          <p style={p}>
-            <strong>Disputes:</strong> either party can open a dispute and submit evidence. The JoobEscrow arbitration multisig can
-            split the funds in any proportion from 0 to 100%. If a dispute is abandoned for 30 days, either party can trigger a 50/50
-            split directly in the contract, so funds are never locked forever. Parties can talk through end-to-end encrypted
-            wallet-to-wallet messaging (XMTP). Details: <Link href="/how-disputes-work" className={styles.link}>how disputes work</Link>.
-          </p>
-        </section>
+        </nav>
 
-        <section>
-          <h2 style={h2}>3. Fees</h2>
-          <p style={p}>
-            The client pays 0%. The provider pays a fee of 10%, 8%, 5%, 3% or 2% depending on the category (one audited contract
-            per tier), taken only on the amount the provider actually receives. Using JoobEscrow never requires the JOOB token. A $1 demo lets anyone run a real escrow between two of their own
-            wallets: <Link href="/try" className={styles.link}>try it with $1</Link>.
-          </p>
-        </section>
+        <div className={styles.content}>
+          <Section id="problem" n={sec('problem')} title={title('problem')}>
+            <p className={styles.p}>
+              Paying someone you have never met is a trust problem. The client fears paying for work that never arrives; the freelancer
+              fears delivering work that is never paid. Marketplaces solve this by holding the money, but many keep 20–30% of the deal,
+              control the funds and can freeze accounts. In Web3 deals (KOL campaigns, development, design, OTC), there is often no
+              trusted middleman at all, and someone has to send first.
+            </p>
+          </Section>
 
-        <section>
-          <h2 style={h2}>4. Security model</h2>
-          <ul style={{ paddingLeft: 22 }}>
-            <li style={li}>Audits by SpyWolf:{' '}
-              <a href={AUDITS.ESCROW_V4} target="_blank" rel="noopener noreferrer" className={styles.link}>escrow V4</a>,{' '}
-              <a href={AUDITS.TOKEN} target="_blank" rel="noopener noreferrer" className={styles.link}>JOOB token</a>,{' '}
-              <a href={AUDITS.PRESALE} target="_blank" rel="noopener noreferrer" className={styles.link}>presale</a>,{' '}
-              <a href={AUDITS.STAKING} target="_blank" rel="noopener noreferrer" className={styles.link}>staking</a>. An audit reduces risk but does not remove it.
-            </li>
-            <li style={li}>All contracts are verified on BscScan and owned by a 3-of-5 Safe multisig: no single person can act alone.</li>
-            <li style={li}>Fee, fee recipient and limit changes go through a public 2-day timelock.</li>
-            <li style={li}>Accounting invariant: the contract balance always covers locked funds plus amounts owed to users.</li>
-            <li style={li}>Emergency pause stops new escrows and releases, never withdrawals or dispute resolution.</li>
-            <li style={li}>Full list of contracts and audit details: <Link href="/security#contracts" className={styles.link}>security page</Link>.</li>
-          </ul>
-        </section>
+          <Section id="solution" n={sec('solution')} title={title('solution')}>
+            <p className={styles.p}>
+              JoobEscrow replaces the middleman with an audited smart contract on BNB Smart Chain. The client&apos;s USDT or USDC is locked
+              in the contract and released to the provider when the work is approved. Nobody, including JoobEscrow, can move escrowed
+              funds outside the rules of the contract.
+            </p>
+            <div className={styles.grid}>
+              {FLOW.map(([t, d], i) => (
+                <div key={t} className={styles.card}>
+                  <span className={styles.cardTag}>Step {i + 1}</span>
+                  <div className={styles.cardTitle}>{t}</div>
+                  <div className={styles.cardText}>{d}</div>
+                </div>
+              ))}
+            </div>
+            <p className={styles.p}>
+              <strong>Disputes:</strong> either party can open a dispute and submit evidence. The JoobEscrow arbitration multisig can
+              split the funds in any proportion from 0 to 100%. If a dispute is abandoned for 30 days, either party can trigger a 50/50
+              split directly in the contract, so funds are never locked forever. Parties can talk through end-to-end encrypted
+              wallet-to-wallet messaging (XMTP). Details: <Link href="/how-disputes-work" className={styles.link}>how disputes work</Link>.
+            </p>
+          </Section>
 
-        <section>
-          <h2 style={h2}>5. The JOOB token</h2>
-          <p style={p}>
-            JOOB is the BEP-20 utility token of the JoobEscrow ecosystem, with a fixed supply of 1,000,000,000: no mint function,
-            no transfer tax. It is designed to be the key to the protocol:
-          </p>
-          <ul style={{ paddingLeft: 22 }}>
-            <li style={li}><strong>Governance:</strong> JOOB holders vote on protocol decisions such as new categories, fee tiers and
-              ecosystem grants. Votes start off-chain and move to on-chain governance.</li>
-            <li style={li}><strong>Fee reductions:</strong> providers who stake JOOB pay lower fees, by tier, up to a full fee waiver at the
-              highest tier (with Escrow V5). Staked tokens are locked while the benefit applies.</li>
-            <li style={li}><strong>Staking:</strong> stake JOOB to earn JOOB rewards, distributed in 30-day periods from the ecosystem
-              allocation, with a 7-day withdrawal delay. The contract is already deployed and{' '}
-              <a href={AUDITS.STAKING} target="_blank" rel="noopener noreferrer" className={styles.link}>audited by SpyWolf</a>; it opens after the
-              TGE. Rewards depend on the amounts funded and the total staked: no yield is guaranteed.</li>
-            <li style={li}><strong>PerShare:</strong> JOOB holders above a threshold pay 0% fees on PerShare, our collective-pool app (from the TGE).</li>
-            <li style={li}><strong>Visibility &amp; rewards:</strong> boosts and badges paid in JOOB, affiliate rewards in JOOB, Early Escrow points.</li>
-          </ul>
-          <p style={p}>
-            These features ship progressively and are not guaranteed by a given date. JOOB gives no ownership, profit, dividend or
-            revenue right in JoobEscrow, and the escrow service works without it.
-          </p>
-        </section>
+          <Section id="fees" n={sec('fees')} title={title('fees')}>
+            <p className={styles.p}>
+              The client pays 0%. The provider pays a fee of 10%, 8%, 5%, 3% or 2% depending on the category (one audited contract
+              per tier), taken only on the amount the provider actually receives. Using JoobEscrow never requires the JOOB token. A $1 demo
+              lets anyone run a real escrow between two of their own wallets: <Link href="/try" className={styles.link}>try it with $1</Link>.
+            </p>
+          </Section>
 
-        <section>
-          <h2 style={h2}>6. The Joob ecosystem</h2>
-          <p style={p}>Two building blocks, one token.</p>
-          <ul style={{ paddingLeft: 22 }}>
-            <li style={li}><strong>JoobEscrow (1 → 1):</strong> secures a deal between two parties; funds stay locked on-chain until the work is approved.</li>
-            <li style={li}><strong>PerShare (many → 1 goal):</strong> a collective pool where up to 50 members fund one goal, the group validates together, or
-              everyone is refunded automatically. An advanced proof of concept, live on BNB Chain with three fee tiers (0.5%, 1%, 2%) and{' '}
-              <a href="https://spywolf.co/audits/PerShare_Audit.pdf" target="_blank" rel="noopener noreferrer" className={styles.link}>audited by SpyWolf</a>{' '}
-              (<a href="https://www.pershare.org" target="_blank" rel="noopener noreferrer" className={styles.link}>pershare.org</a>).</li>
-            <li style={li}><strong>One token, JOOB:</strong> no second token and no second sale. JOOB powers governance, fee tiers and staking on JoobEscrow, and
-              0% fees on PerShare above a holding threshold. Next step: PerShare pools that directly fund a JoobEscrow escrow (e.g. several sponsors
-              co-funding one campaign, paid only on delivery).</li>
-          </ul>
-          <p style={p}>
-            <strong>Co-funded escrow (planned).</strong> Several sponsors or community members pool funds on PerShare, and the pool opens a
-            JoobEscrow escrow as one client. Funds stay locked until the work is delivered and approved by the group. If the deal is
-            cancelled or a dispute goes the group&apos;s way, the refund returns to the pool and each member gets their pro-rata share, in the
-            same currency. Planned with JoobEscrow V5 and PerShare V2; audited before launch.
-          </p>
-          <div style={{ ...box, padding: 12 }}><CoFundedEscrowDiagram /></div>
-        </section>
+          <Section id="security" n={sec('security')} title={title('security')}>
+            <div className={styles.grid}>
+              <div className={styles.card}>
+                <div className={styles.cardTitle}>Audited by SpyWolf</div>
+                <div className={styles.cardText}>
+                  <Ext href={AUDITS.ESCROW_V4}>Escrow V4</Ext>, <Ext href={AUDITS.TOKEN}>JOOB token</Ext>, <Ext href={AUDITS.PRESALE}>presale</Ext>,{' '}
+                  <Ext href={AUDITS.STAKING}>staking</Ext>. An audit reduces risk but does not remove it.
+                </div>
+              </div>
+              <div className={styles.card}>
+                <div className={styles.cardTitle}>3-of-5 Safe multisig</div>
+                <div className={styles.cardText}>All contracts are verified on BscScan and owned by a 3-of-5 Safe multisig: no single person can act alone.</div>
+              </div>
+              <div className={styles.card}>
+                <div className={styles.cardTitle}>2-day timelock</div>
+                <div className={styles.cardText}>Fee, fee recipient and limit changes go through a public 2-day timelock.</div>
+              </div>
+              <div className={styles.card}>
+                <div className={styles.cardTitle}>Accounting invariant</div>
+                <div className={styles.cardText}>The contract balance always covers locked funds plus amounts owed to users.</div>
+              </div>
+              <div className={styles.card}>
+                <div className={styles.cardTitle}>Pause without lock-in</div>
+                <div className={styles.cardText}>The emergency pause stops new escrows and releases, never withdrawals or dispute resolution.</div>
+              </div>
+            </div>
+            <p className={styles.p}>Full list of contracts and audit details: <Link href="/security#contracts" className={styles.link}>security page</Link>.</p>
+          </Section>
 
-        <section>
-          <h2 style={h2}>7. Tokenomics</h2>
-          <div style={{ ...box, padding: 0, overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 560 }}>
-              <thead><tr><th style={th}>Allocation</th><th style={th}>%</th><th style={th}>JOOB</th><th style={th}>Release</th></tr></thead>
-              <tbody>
-                {TOKENOMICS.map(([name, pct, amount, rule]) => (
-                  <tr key={name}><td style={td}>{name}{name === 'Ecosystem & usage' && <> (incl. <strong style={{ color: '#34d399' }}>staking rewards</strong>)</>}</td><td style={td}>{pct}</td><td style={td}>{amount}</td><td style={td}>{rule}</td></tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <p style={{ ...p, marginTop: 12 }}>
-            <strong>Transparency commitment:</strong> allocations not yet in a vesting contract stay in our 3-of-5 Safe multisig.
-            Every outgoing JOOB transfer from the Safe is publicly disclosed with its purpose and transaction link. Tokens allocated
-            to partners are locked in their own on-chain vesting contract. 100% of unsold presale tokens are returned to the Safe and
-            burned in a public, verifiable transaction after the sale.
-          </p>
-        </section>
+          <Section id="token" n={sec('token')} title={title('token')}>
+            <p className={styles.p}>
+              JOOB is the BEP-20 utility token of the JoobEscrow ecosystem, with a fixed supply of 1,000,000,000: no mint function,
+              no transfer tax. It is designed to be the key to the protocol:
+            </p>
+            <div className={styles.grid}>
+              <div className={styles.card}>
+                <div className={styles.cardTitle}>Governance</div>
+                <div className={styles.cardText}>JOOB holders vote on protocol decisions such as new categories, fee tiers and ecosystem grants. Votes start off-chain and move to on-chain governance.</div>
+              </div>
+              <div className={styles.card}>
+                <div className={styles.cardTitle}>Fee reductions</div>
+                <div className={styles.cardText}>Providers who stake JOOB pay lower fees, by tier, up to a full fee waiver at the highest tier (with Escrow V5). Staked tokens are locked while the benefit applies.</div>
+              </div>
+              <div className={styles.card}>
+                <div className={styles.cardTitle}>Staking</div>
+                <div className={styles.cardText}>
+                  Stake JOOB to earn JOOB rewards, distributed in 30-day periods from the ecosystem allocation, with a 7-day withdrawal delay.
+                  Already deployed and <Ext href={AUDITS.STAKING}>audited by SpyWolf</Ext>; it opens after the TGE. Rewards depend on the
+                  amounts funded and the total staked: no yield is guaranteed.
+                </div>
+              </div>
+              <div className={styles.card}>
+                <div className={styles.cardTitle}>PerShare</div>
+                <div className={styles.cardText}>JOOB holders above a threshold pay 0% fees on PerShare, our collective-pool app (from the TGE).</div>
+              </div>
+              <div className={styles.card}>
+                <div className={styles.cardTitle}>Visibility &amp; rewards</div>
+                <div className={styles.cardText}>Boosts and badges paid in JOOB, affiliate rewards in JOOB, Early Escrow points.</div>
+              </div>
+            </div>
+            <p className={styles.p}>
+              These features ship progressively and are not guaranteed by a given date. JOOB gives no ownership, profit, dividend or
+              revenue right in JoobEscrow, and the escrow service works without it.
+            </p>
+          </Section>
 
-        <section>
-          <h2 style={h2}>8. Presale</h2>
-          <ul style={{ paddingLeft: 22 }}>
-            <li style={li}>Opens October 15, 2026, 14:00 UTC; ends January 13, 2027, 13:59:59 UTC (up to 3 extensions of 20 days).</li>
-            <li style={li}>Price: $0.001 at start, +$0.0002 every 2 days, computed by the contract. Payment in USDT or USDC (BEP-20).</li>
-            <li style={li}>Sealed vault: the full cap of 163,500,000 JOOB was deposited before the sale could open, verifiable on BscScan.</li>
-            <li style={li}>Vesting for every buyer: 20% at sale end, then linear over 180 days. No soft cap, no refund.</li>
-            <li style={li}>Volume bonus 2% to 7% from $100 to $1,000 cumulative; referrers receive 2% of the tokens bought through their link.</li>
-            <li style={li}>Planned listing: JOOB/USDT pool on PancakeSwap at ${PLANNED_LISTING_PRICE}. After listing, the price is set by the market only.</li>
-          </ul>
-          <p style={p}>Full rules: <Link href="/presale-terms" className={styles.link}>presale terms</Link> · <Link href="/presale" className={styles.link}>presale page</Link>.</p>
-        </section>
+          <Section id="ecosystem" n={sec('ecosystem')} title={title('ecosystem')}>
+            <p className={styles.p}>Two building blocks, one token.</p>
+            <div className={styles.grid}>
+              <div className={styles.card}>
+                <span className={styles.cardTag}>1 → 1</span>
+                <div className={styles.cardTitle}>JoobEscrow</div>
+                <div className={styles.cardText}>Secures a deal between two parties; funds stay locked on-chain until the work is approved.</div>
+              </div>
+              <div className={styles.card}>
+                <span className={styles.cardTag}>Many → 1 goal</span>
+                <div className={styles.cardTitle}>PerShare</div>
+                <div className={styles.cardText}>
+                  A collective pool where up to 50 members fund one goal, the group validates together, or everyone is refunded automatically.
+                  An advanced proof of concept, live on BNB Chain with three fee tiers (0.5%, 1%, 2%) and{' '}
+                  <Ext href="https://spywolf.co/audits/PerShare_Audit.pdf">audited by SpyWolf</Ext> (<Ext href="https://www.pershare.org">pershare.org</Ext>).
+                </div>
+              </div>
+              <div className={styles.card}>
+                <span className={styles.cardTag}>One token</span>
+                <div className={styles.cardTitle}>JOOB</div>
+                <div className={styles.cardText}>
+                  No second token and no second sale. JOOB powers governance, fee tiers and staking on JoobEscrow, and 0% fees on PerShare
+                  above a holding threshold.
+                </div>
+              </div>
+            </div>
+            <p className={styles.p}>
+              <strong>Co-funded escrow (planned).</strong> Several sponsors or community members pool funds on PerShare, and the pool opens a
+              JoobEscrow escrow as one client. Funds stay locked until the work is delivered and approved by the group. If the deal is
+              cancelled or a dispute goes the group&apos;s way, the refund returns to the pool and each member gets their pro-rata share, in the
+              same currency. Planned with JoobEscrow V5 and PerShare V2; audited before launch.
+            </p>
+            <div className={styles.diagram}><CoFundedEscrowDiagram /></div>
+          </Section>
 
-        <section>
-          <h2 style={h2}>9. Use of funds</h2>
-          <div style={{ ...box, padding: 0, overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 480 }}>
-              <thead><tr><th style={th}>Use</th><th style={th}>Share</th><th style={th}>What it funds</th></tr></thead>
-              <tbody>
-                <tr><td style={td}>PancakeSwap liquidity</td><td style={td}>40%</td><td style={td}>JOOB/stablecoin pool at the ${PLANNED_LISTING_PRICE} listing price, LP locked 12 months or more</td></tr>
-                <tr><td style={td}>Product development</td><td style={td}>30%</td><td style={td}>Escrow V5, PerShare V2 and the co-funded escrow, the Web2-simple layer</td></tr>
-                <tr><td style={td}>Audits &amp; security</td><td style={td}>10%</td><td style={td}>Audits of Escrow V5 and PerShare V2, bug bounty, monitoring</td></tr>
-                <tr><td style={td}>Growth</td><td style={td}>10%</td><td style={td}>KOL campaigns, listings, partnerships</td></tr>
-                <tr><td style={td}>Operations &amp; reserve</td><td style={td}>10%</td><td style={td}>Infrastructure, legal, contingencies</td></tr>
-              </tbody>
-            </table>
-          </div>
-          <p style={{ ...p, marginTop: 12 }}>
-            Funds raised are held by our 3-of-5 Safe multisig and every outgoing transfer is disclosed. The DEX allocation of the
-            tokenomics is a cap: liquidity is added at the listing price with the share of funds above, without any promise of depth.
-          </p>
-        </section>
+          <Section id="tokenomics" n={sec('tokenomics')} title={title('tokenomics')}>
+            <div className={styles.tokenomics}>
+              <div className={styles.donutWrap}>
+                <TokenomicsDonut />
+                <div className={styles.donutCenter}>
+                  <div className={`${styles.donutBig} ${styles.gradient}`}>1B</div>
+                  <div className={styles.donutSmall}>JOOB · fixed supply</div>
+                </div>
+              </div>
+              <div className={styles.tableWrap}>
+                <table className={styles.table}>
+                  <thead><tr><th>Allocation</th><th>%</th><th>JOOB</th><th>Release</th></tr></thead>
+                  <tbody>
+                    {TOKENOMICS.map((t) => (
+                      <tr key={t.name}>
+                        <td><span className={styles.dot} style={{ background: t.color }} />{t.name}{t.highlight && <> (incl. <strong>{t.highlight}</strong>)</>}</td>
+                        <td>{t.pct}%</td>
+                        <td>{fmtM(t.pct)}</td>
+                        <td>
+                          {t.vesting}{' '}
+                          {t.contract
+                            ? <a href={`https://bscscan.com/address/${t.contract}`} target="_blank" rel="noopener noreferrer" className={styles.onChain}>locked on-chain ↗</a>
+                            : t.onChain ? <span className={styles.onChain}>enforced on-chain</span> : null}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <p className={styles.p}>
+              <strong>Transparency commitment:</strong> allocations not yet in a vesting contract stay in our 3-of-5 Safe multisig.
+              Every outgoing JOOB transfer from the Safe is publicly disclosed with its purpose and transaction link. Tokens allocated
+              to partners are locked in their own on-chain vesting contract. 100% of unsold presale tokens are returned to the Safe and
+              burned in a public, verifiable transaction after the sale.
+            </p>
+          </Section>
 
-        <section>
-          <h2 style={h2}>10. Roadmap</h2>
-          <ol style={{ paddingLeft: 22 }}>
-            <li style={li}><strong>Foundations (done):</strong> audited escrow contract, verified on BscScan, owned by a Safe multisig; 15 categories and encrypted chat.</li>
-            <li style={li}><strong>Trust layer (now):</strong> $1 demo, shareable escrow links; next, public deal pages verifiable without a wallet, Telegram alerts, on-chain dispute evidence.</li>
-            <li style={li}><strong>JOOB presale:</strong> October 15, 2026 → January 13, 2027.</li>
-            <li style={li}><strong>TGE &amp; liquidity:</strong> PancakeSwap pool at ${PLANNED_LISTING_PRICE}, JOOB staking opens, JOOB activated on PerShare, first JOOB utilities, Early Escrow points.</li>
-            <li style={li}><strong>Escrow V5:</strong> JOOB holder fee tiers up to a full fee waiver, on-chain affiliate rewards, gasless payouts, verified reputation profiles (audit before deployment).</li>
-            <li style={li}><strong>As easy as a Web2 app:</strong> email or social sign-in, no seed phrase to start, network fees covered, card payments.</li>
-            <li style={li}><strong>Expansion:</strong> multichain, API and widget, receipts and invoices.</li>
-            <li style={li}><strong>Joob ecosystem, co-funded escrow:</strong> with PerShare V2, several sponsors pool funds and open one JoobEscrow escrow, paid only on delivery; built on Escrow V5, audited before launch.</li>
-            <li style={li}><strong>JOOB governance:</strong> holders vote on categories, fee tiers and ecosystem grants; off-chain first, then on-chain; staked arbitrators.</li>
-          </ol>
-          <p style={p}>No dates are given beyond the presale: each step ships when it is ready and audited where needed.</p>
-        </section>
+          <Section id="presale" n={sec('presale')} title={title('presale')}>
+            <ul className={styles.list}>
+              <li className={styles.li}>Opens October 15, 2026, 14:00 UTC; ends January 13, 2027, 13:59:59 UTC (up to 3 extensions of 20 days).</li>
+              <li className={styles.li}>Price: $0.001 at start, +$0.0002 every 2 days, computed by the contract. Payment in USDT or USDC (BEP-20).</li>
+              <li className={styles.li}>Sealed vault: the full cap of 163,500,000 JOOB was deposited before the sale could open, verifiable on BscScan.</li>
+              <li className={styles.li}>Vesting for every buyer: 20% at sale end, then linear over 180 days. No soft cap, no refund.</li>
+              <li className={styles.li}>Volume bonus 2% to 7% from $100 to $1,000 cumulative; referrers receive 2% of the tokens bought through their link.</li>
+              <li className={styles.li}>Planned listing: JOOB/USDT pool on PancakeSwap at ${PLANNED_LISTING_PRICE}. After listing, the price is set by the market only.</li>
+            </ul>
+            <p className={styles.p}>Full rules: <Link href="/presale-terms" className={styles.link}>presale terms</Link> · <Link href="/presale" className={styles.link}>presale page</Link>.</p>
+          </Section>
 
-        <section>
-          <h2 style={h2}>11. Contracts (BNB Smart Chain)</h2>
-          <ul style={{ paddingLeft: 22 }}>
-            <Addr label="JOOB token" address={PRESALE_ADDRESSES.TOKEN} path="token" />
-            <Addr label="Presale" address={PRESALE_ADDRESSES.PRESALE} />
-            <Addr label="Staking (opens after the TGE)" address={STAKING} />
-            <Addr label="Treasury vesting" address={VESTING_TREASURY} />
-            <Addr label="Team vesting" address={VESTING_TEAM} />
-            <Addr label="Safe multisig (3-of-5)" address={PRESALE_ADDRESSES.SAFE} />
-            <li style={li}>Escrow contracts per fee tier: <Link href="/security#contracts" className={styles.link}>security page</Link>.</li>
-          </ul>
-        </section>
+          <Section id="funds" n={sec('funds')} title={title('funds')}>
+            <div className={styles.bars}>
+              {USE_OF_FUNDS.map(([name, pct, text]) => (
+                <div key={name}>
+                  <div className={styles.barHead}><span>{name}</span><span className={styles.barPct}>{pct}%</span></div>
+                  <div className={styles.barTrack}><div className={styles.barFill} style={{ width: `${pct}%` }} /></div>
+                  <div className={styles.barText}>{text}</div>
+                </div>
+              ))}
+            </div>
+            <p className={styles.p}>
+              Funds raised are held by our 3-of-5 Safe multisig and every outgoing transfer is disclosed. The DEX allocation of the
+              tokenomics is a cap: liquidity is added at the listing price with the share of funds above, without any promise of depth.
+            </p>
+          </Section>
 
-        <section>
-          <h2 style={h2}>12. Risks &amp; legal notice</h2>
-          <p style={p}>
-            Smart contracts can contain undiscovered bugs; blockchain transactions are irreversible; stablecoin issuers can freeze
-            addresses; disputes are resolved by the JoobEscrow arbitration multisig; the value of JOOB can go down to zero and is not
-            guaranteed by anyone. This document is not an offer of securities or investment advice. The presale is not open to
-            residents of restricted jurisdictions listed in the presale terms. Read the full <Link href="/risks" className={styles.link}>risks &amp; disclaimers</Link> and{' '}
-            <Link href="/presale-terms" className={styles.link}>presale terms</Link> before participating.
-          </p>
-        </section>
+          <Section id="roadmap" n={sec('roadmap')} title={title('roadmap')}>
+            <ol className={styles.timeline}>
+              {ROADMAP.map(([t, st, d]) => (
+                <li key={t} className={`${styles.step} ${st ? STEP_CLASS[st] : ''}`}>
+                  <div className={styles.stepTitle}>
+                    {t}
+                    {st && <span className={`${styles.status} ${STATUS[st][1]}`}>{STATUS[st][0]}</span>}
+                  </div>
+                  <div className={styles.stepText}>{d}</div>
+                </li>
+              ))}
+            </ol>
+            <p className={styles.p}>No dates are given beyond the presale: each step ships when it is ready and audited where needed.</p>
+          </Section>
+
+          <Section id="contracts" n={sec('contracts')} title={`${title('contracts')} (BNB Smart Chain)`}>
+            <div className={styles.addrGrid}>
+              {CONTRACTS.map(([label, address, path]) => (
+                <a key={address} href={`https://bscscan.com/${path}/${address}`} target="_blank" rel="noopener noreferrer" className={styles.addr}>
+                  <div className={styles.addrLabel}>{label}</div>
+                  <div className={styles.addrValue}>{address}</div>
+                </a>
+              ))}
+            </div>
+            <p className={styles.p}>Escrow contracts per fee tier: <Link href="/security#contracts" className={styles.link}>security page</Link>.</p>
+          </Section>
+
+          <Section id="risks" n={sec('risks')} title={title('risks')} className={styles.warn}>
+            <p className={styles.p}>
+              Smart contracts can contain undiscovered bugs; blockchain transactions are irreversible; stablecoin issuers can freeze
+              addresses; disputes are resolved by the JoobEscrow arbitration multisig; the value of JOOB can go down to zero and is not
+              guaranteed by anyone. This document is not an offer of securities or investment advice. The presale is not open to
+              residents of restricted jurisdictions listed in the presale terms. Read the full <Link href="/risks" className={styles.link}>risks &amp; disclaimers</Link> and{' '}
+              <Link href="/presale-terms" className={styles.link}>presale terms</Link> before participating.
+            </p>
+          </Section>
+        </div>
       </div>
     </div>
   );
