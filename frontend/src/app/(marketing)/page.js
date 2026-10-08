@@ -81,6 +81,26 @@ export default function LandingPage() {
       {/* Marquee Partner Section */}
       <PartnerMarquee />
 
+      {/* Referral Banner : juste sous le hero, bien visible */}
+      <section className={styles.referralSection} id="referral">
+        <div className={styles.container}>
+          <div className={styles.referralBanner}>
+            <div>
+              <span className={styles.refTag}>REFERRAL PROGRAM · 2%</span>
+              <h3 className={styles.refTitle}>
+                Share JoobEscrow, earn <span className={styles.textGradient}>2% on-chain.</span>
+              </h3>
+              <p className={styles.refSub}>
+                Referrers receive 2% of the JOOB bought through their link, with the same vesting as the presale.
+              </p>
+            </div>
+            <Link href="/presale#referral" className={`btn btn-primary ${styles.refBtn}`}>
+              Get Your Referral Link →
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Narrative 3 Eras */}
       <section className={styles.section} id="how-it-works">
         <div className={styles.container}>
@@ -203,19 +223,6 @@ export default function LandingPage() {
             </div>
           </div>
 
-          <div className={styles.referralBanner}>
-            <div>
-              <h3 className={styles.refTitle}>
-                Share JoobEscrow, earn <span className={styles.textGradient}>2% on-chain.</span>
-              </h3>
-              <p className={styles.refSub}>
-                Referrers receive 2% of the JOOB bought through their link, with the same vesting as the presale.
-              </p>
-            </div>
-            <Link href="/presale#referral" className={`btn btn-primary ${styles.refBtn}`}>
-              Get Your Referral Link →
-            </Link>
-          </div>
         </div>
       </section>
 

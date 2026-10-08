@@ -228,8 +228,8 @@
 }
 
 .videoWrap {
-  max-width: 800px;
-  margin: 0 auto;
+  max-width: 340px;
+  margin: 40px auto 0;
 }
 
 /* Layered Architecture */
@@ -877,3 +877,24 @@
   .heroCtas { flex-wrap: wrap; justify-content: center; }
   .navCenter { flex-wrap: wrap; gap: 6px 16px; }
 }
+
+/* --- Parrainage sous le hero --- */
+.referralSection { padding: 36px 0 8px; }
+.referralSection .referralBanner {
+  margin-top: 0;
+  border: 1px solid rgba(163, 230, 53, 0.45);
+  box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.15), 0 0 40px -6px rgba(163, 230, 53, 0.35);
+}
+.refTag {
+  display: inline-block; margin-bottom: 10px; padding: 3px 10px; border-radius: 999px;
+  font-size: 0.7rem; font-weight: 800; letter-spacing: 0.08em; color: #0d1117;
+  background: linear-gradient(90deg, #d9f99d, #a3e635);
+}
+@media (max-width: 640px) {
+  .referralSection { padding: 24px 0 0; }
+  .videoWrap { max-width: 280px; }
+}
+
+/* Video compacte : bouton lecture au centre, titre sur une ligne en bas */
+.videoWrap .videoPlay { top: 74%; width: 50px; height: 50px; }
+.videoWrap .videoLabel { left: 10px; right: 10px; bottom: 10px; text-align: center; font-size: 0.72rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
