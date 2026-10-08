@@ -448,7 +448,7 @@ export default function PresaleClient() {
           <span className={styles.getName}>Swap ↗</span>
           <span className={styles.getSub}>BNB → {paymentToken} on PancakeSwap</span>
         </a>
-        <a href="https://bnbchain.org/en/bnb-chain-bridge" target="_blank" rel="noopener noreferrer" className={styles.getTile}>
+        <a href="https://www.bnbchain.org/en/bnb-chain-bridge" target="_blank" rel="noopener noreferrer" className={styles.getTile}>
           <span className={styles.getName}>Bridge ↗</span>
           <span className={styles.getSub}>Official BNB Chain bridge</span>
         </a>

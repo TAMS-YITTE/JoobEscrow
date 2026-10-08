@@ -42,3 +42,4 @@ audit_market_cahier_des_charges.docx
 # Foundry (artefacts locaux)
 contracts/out/
 contracts/cache_forge/
+captures_refonte/

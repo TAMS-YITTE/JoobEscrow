@@ -1,160 +1,454 @@
 import Link from 'next/link';
 import styles from './marketing.module.css';
-import dict from '../../i18n/en.json';
+import AmbientConstellation from '../../components/AmbientConstellation';
+import PresaleGlassCard from '../../components/PresaleGlassCard';
+import PartnerMarquee from '../../components/PartnerMarquee';
+import HomeFaq from '../../components/HomeFaq';
 import LiveStats from '../../components/LiveStats';
 import FeeCalculator from '../../components/FeeCalculator';
-import PresaleHomeBanner from '../../components/PresaleHomeBanner';
-import { AUDITS } from '../../config/presale';
 import LiteYouTube from '../../components/LiteYouTube';
+import { AUDITS } from '../../config/presale';
+import { TOKENOMICS, TOKENOMICS_SEGMENTS, fmtM } from '../../config/tokenomics';
 
-const WHY = [
-  {
-    big: '0% · 2–10%',
-    title: 'Keep what you earn',
-    text: 'Marketplaces can keep 20–30% of a deal across client and freelancer fees. With JoobEscrow the client pays 0% and the provider 2–10%, only when the payment is released.',
-  },
-  {
-    big: 'Locked',
-    title: 'Paid only when approved',
-    text: 'Funds are locked in an audited smart contract, not held by us. The provider sees the money is there before starting the work.',
-  },
-  {
-    big: 'Fair',
-    title: 'Protected if it goes wrong',
-    text: 'Full refund if the client cancels before the provider accepts. Otherwise a dispute is arbitrated and the contract splits the funds, from 0 to 100%.',
-  },
-];
+export const metadata = {
+  title: 'JoobEscrow — Non-Custodial Smart Escrow & JOOB Presale',
+  description: 'Secure every freelance and commercial payment with non-custodial smart contracts on BNB Smart Chain. Audited by SpyWolf, governed by 3-of-5 multisig.',
+};
 
 export default function LandingPage() {
-  const d = dict.landing;
-
   return (
-    <div>
+    <div className={styles.pageWrap}>
+      <AmbientConstellation />
+
       {/* Hero Section */}
-      <section className={styles.hero}>
-        <h1 className={styles.heroTitle}>{d.hero.title}</h1>
-        <p className={styles.heroSubtitle}>{d.hero.subtitle}</p>
-        <div className={styles.heroCtas} style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center', gap: '15px' }}>
-          <Link href="/app" className="btn btn-primary" style={{ padding: '12px 28px', fontSize: '1rem', height: '100%', display: 'flex', alignItems: 'center' }}>
-            {d.hero.ctaPrimary}
-          </Link>
-          <a href={AUDITS.ESCROW_V4} target="_blank" rel="noopener noreferrer" className={styles.auditBadge}>
-            <img src="https://spywolf.co/images/SpyWolf-v2-logo.svg" alt="SpyWolf" className={styles.auditBadgeLogo} />
-            <span className={styles.auditBadgeText}>
-              <strong>Audited by SpyWolf</strong>
-              <span>0 critical · all findings fixed ↗</span>
-            </span>
-          </a>
+      <section className={styles.heroSection}>
+        <div className={styles.container}>
+          <div className={styles.heroGrid}>
+            <div className={styles.heroLeft}>
+              <div className={styles.pillBadge}>
+                <span className={styles.pulseDot}></span>
+                <span>JOOB PRESALE · OPENS OCT 15 · 14:00 UTC</span>
+              </div>
+
+              <h1 className={styles.heroTitle}>
+                Secure every deal with <span className={styles.textGradient}>smart escrow.</span>
+              </h1>
+
+              <p className={styles.heroSubtitle}>
+                Marketplaces take 20–30%. With JoobEscrow, clients pay 0%, providers keep 90–98%, and funds remain locked in an audited smart contract until the work is approved.
+              </p>
+
+              <div className={styles.heroTechLine}>
+                AUDITED · NON-CUSTODIAL · BNB SMART CHAIN
+              </div>
+
+              <div className={styles.quickTiles}>
+                <Link href="/try" className={styles.quickTile}>
+                  <span className={styles.tileBadge}>DEMO</span>
+                  <span>Try it with $1</span>
+                  <span aria-hidden="true">→</span>
+                </Link>
+                <a
+                  href="https://bscscan.com/address/0xd3F3598Ff8efB2cF6643488e66e8df683804F63d"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.quickTile}
+                >
+                  <span className={styles.tileBadgeLive}>LIVE</span>
+                  <span>Verify on BscScan</span>
+                  <span aria-hidden="true">↗</span>
+                </a>
+              </div>
+
+              <div className={styles.heroCtas}>
+                <Link href="/presale" className="btn btn-primary" style={{ padding: '14px 34px', fontSize: '1rem' }}>
+                  Join the Presale
+                </Link>
+                <Link href="/app" className="btn btn-outline" style={{ padding: '14px 30px', fontSize: '1rem' }}>
+                  Launch App
+                </Link>
+              </div>
+            </div>
+
+            <div className={styles.heroRight}>
+              <PresaleGlassCard />
+            </div>
+          </div>
+
+          {/* Get Ready To Buy Tiles */}
+          <div className={styles.readyTilesGrid}>
+            <a
+              href="https://pancakeswap.finance/swap?outputCurrency=0x55d398326f99059fF775485246999027B3197955"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.readyTile}
+            >
+              <div className={styles.readyTileHead}>
+                <span>PancakeSwap</span>
+                <span className={styles.readyBadge}>GET USDT</span>
+              </div>
+              <p className={styles.readyTileDesc}>
+                Swap BNB for USDT on BNB Smart Chain prior to joining the presale.
+              </p>
+            </a>
+
+            <a
+              href="https://www.bnbchain.org/en/bnb-chain-bridge"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.readyTile}
+            >
+              <div className={styles.readyTileHead}>
+                <span>BNB Chain Bridge</span>
+                <span className={styles.readyBadge}>BRIDGE</span>
+              </div>
+              <p className={styles.readyTileDesc}>
+                Transfer USDT or USDC from Ethereum, Polygon or Arbitrum.
+              </p>
+            </a>
+
+            <div className={styles.readyTile}>
+              <div className={styles.readyTileHead}>
+                <span>Reown AppKit</span>
+                <span className={styles.readyBadge}>CONNECT</span>
+              </div>
+              <p className={styles.readyTileDesc}>
+                Connect 700+ Web3 wallets with mobile QR codes. Powered by Reown.
+              </p>
+            </div>
+          </div>
+          <p className={styles.readyNotice}>These links open outside joobescrow.com.</p>
         </div>
-        <div className={styles.demoCtaWrap}>
-          <Link href="/try" className={styles.demoCta}>
-            <span className={styles.demoCtaTag}>DEMO</span>
-            New here? Try it with $1
-            <span aria-hidden="true">→</span>
-          </Link>
-          <p className={styles.demoCtaSub}>Full escrow cycle between two of your wallets · 0% fee · USDT or USDC</p>
-        </div>
-        <PresaleHomeBanner />
       </section>
 
-      {/* How It Works */}
-      <section id="how-it-works" className={styles.section}>
-        <h2 className={styles.sectionTitle}>{d.howItWorks.title}</h2>
-        <div className={styles.stepsGrid}>
-          {/* Step 1 */}
-          <div className={`glass-panel ${styles.stepCard}`}>
-            <div className={styles.stepIcon}>
-              <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-            </div>
-            <h3 className={styles.stepTitle}>{d.howItWorks.step1.title}</h3>
-            <p className={styles.stepDesc}>{d.howItWorks.step1.desc}</p>
-          </div>
-          {/* Step 2 */}
-          <div className={`glass-panel ${styles.stepCard}`}>
-            <div className={styles.stepIcon}>
-              <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
-            </div>
-            <h3 className={styles.stepTitle}>{d.howItWorks.step2.title}</h3>
-            <p className={styles.stepDesc}>{d.howItWorks.step2.desc}</p>
-          </div>
-          {/* Step 3 */}
-          <div className={`glass-panel ${styles.stepCard}`}>
-            <div className={styles.stepIcon}>
-              <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-            </div>
-            <h3 className={styles.stepTitle}>{d.howItWorks.step3.title}</h3>
-            <p className={styles.stepDesc}>{d.howItWorks.step3.desc}</p>
-          </div>
-        </div>
+      {/* Marquee Partner Section */}
+      <PartnerMarquee />
 
-        <div className={styles.videoWrap}>
-          <LiteYouTube id="NbLMUrY4bac" title="JoobEscrow: secure payments in 45 seconds" />
+      {/* Narrative 3 Eras */}
+      <section className={styles.section} id="how-it-works">
+        <div className={styles.container}>
+          <div className={styles.sectionHead}>
+            <span className={styles.sectionTag}>THE PROBLEM & THE SHIFT</span>
+            <h2 className={styles.sectionTitle}>The Evolution of Online Deals</h2>
+          </div>
+
+          <div className={styles.erasGrid}>
+            <div className={`glass-panel ${styles.eraCard}`}>
+              <div className={`${styles.eraNum} ${styles.textGradient}`}>01</div>
+              <h3 className={styles.eraTitle}>Marketplaces keep 20–30%</h3>
+              <p className={styles.eraDesc}>
+                Traditional platforms take heavy fees from both clients and service providers. Payments can be frozen without warning, and disputes take weeks.
+              </p>
+            </div>
+
+            <div className={`glass-panel ${styles.eraCard}`}>
+              <div className={`${styles.eraNum} ${styles.textGradient}`}>02</div>
+              <h3 className={styles.eraTitle}>Direct deals mean blind trust</h3>
+              <p className={styles.eraDesc}>
+                Skipping marketplaces eliminates platform fees, but creates an eternal dilemma: who pays first? Who delivers first? Unpaid work remains common.
+              </p>
+            </div>
+
+            <div className={`glass-panel ${styles.eraCard} ${styles.eraCardHighlight}`}>
+              <div className={`${styles.eraNum} ${styles.textGradient}`}>03</div>
+              <h3 className={styles.eraTitle}>JoobEscrow: Code is law</h3>
+              <p className={styles.eraDesc}>
+                Funds are locked on-chain before the work begins. Released only upon approved delivery. 0% for clients, 2–10% for providers.
+              </p>
+            </div>
+          </div>
+
+          <div className={styles.videoWrap}>
+            <LiteYouTube id="NbLMUrY4bac" title="JoobEscrow: secure payments in 45 seconds" />
+          </div>
         </div>
       </section>
 
-      {/* Why JoobEscrow */}
-      <section className={styles.section} style={{ paddingTop: 0 }}>
-        <h2 className={styles.sectionTitle}>Why JoobEscrow</h2>
-        <div className={styles.whyGrid}>
-          {WHY.map((w) => (
-            <div key={w.title} className={`glass-panel ${styles.whyCard}`}>
-              <div className={styles.whyBig}>{w.big}</div>
-              <h3 className={styles.stepTitle}>{w.title}</h3>
-              <p className={styles.stepDesc}>{w.text}</p>
+      {/* Layered Protocol Architecture */}
+      <section className={styles.sectionAlt}>
+        <div className={styles.container}>
+          <div className={styles.sectionHead}>
+            <span className={styles.sectionTag}>PROTOCOL ARCHITECTURE</span>
+            <h2 className={styles.sectionTitle}>The JoobEscrow Infrastructure</h2>
+          </div>
+
+          <div className={styles.layersContainer}>
+            <div className={`glass-panel ${styles.layerCard} ${styles.layerCardActive}`}>
+              <div className={styles.layerBadge}>03</div>
+              <div className={styles.layerInfo}>
+                <h4>Application & Integration Layer</h4>
+                <p>Shareable escrow contract links, $1 interactive sandbox (/try), real-time dashboards and status alerts.</p>
+              </div>
+              <span className={styles.layerTagLive}>LIVE MAINNET</span>
             </div>
-          ))}
-        </div>
-        <p className={styles.whyNote}>
-          Marketplace figures: typical published seller and buyer service fees on large freelance marketplaces, small orders included.
-          JoobEscrow fees are read on-chain from each contract tier.
-        </p>
 
-        <div className={styles.visionBox}>
-          <span className={styles.visionTag}>Where we are going</span>
-          <h3>Web3 security, Web2 simplicity</h3>
-          <p>
-            Today you need a crypto wallet to use JoobEscrow. Next, we hide that complexity: sign in with email, no seed phrase
-            to start, network fees covered, card payments. The same on-chain protection, as easy to use as the apps you already know.
-          </p>
-          <Link href="/presale#roadmap" className={styles.visionLink}>See the roadmap →</Link>
+            <div className={`glass-panel ${styles.layerCard}`}>
+              <div className={styles.layerBadge}>02</div>
+              <div className={styles.layerInfo}>
+                <h4>Arbitration & Messaging Layer</h4>
+                <p>Wallet-to-wallet E2E encrypted chat powered by XMTP. Granular multi-split dispute settlement (0% to 100%).</p>
+              </div>
+              <span className={styles.layerTagLive}>LIVE MAINNET</span>
+            </div>
+
+            <div className={`glass-panel ${styles.layerCard}`}>
+              <div className={styles.layerBadge}>01</div>
+              <div className={styles.layerInfo}>
+                <h4>On-Chain Settlement Layer</h4>
+                <p>Non-custodial Universal Escrow V4 smart contract deployed on BNB Smart Chain. Emergency withdrawal guaranteed.</p>
+              </div>
+              <span className={styles.layerTagLive}>AUDITED (SPYWOLF)</span>
+            </div>
+
+            <div className={`glass-panel ${styles.layerCard}`} style={{ opacity: 0.75 }}>
+              <div className={styles.layerBadge}>00</div>
+              <div className={styles.layerInfo}>
+                <h4>Escrow V5 & Co-Funded Deals</h4>
+                <p>Multi-sponsor collective funding and fee waivers for JOOB token stakers.</p>
+              </div>
+              <span className={styles.layerTagPlanned}>PLANNED (Q1 2027)</span>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Stats & Calculator Section */}
-      <section style={{ backgroundColor: 'rgba(0,0,0,0.5)', borderTop: '1px solid rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.05)', padding: '60px 20px' }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', flexWrap: 'wrap', gap: '30px', alignItems: 'stretch' }}>
-          <LiveStats />
-          <FeeCalculator />
+      {/* How to Buy JOOB in 4 steps */}
+      <section className={styles.section}>
+        <div className={styles.container}>
+          <div className={styles.sectionHead}>
+            <span className={styles.sectionTag}>PRESALE PARTICIPATION</span>
+            <h2 className={styles.sectionTitle}>How to Buy $JOOB</h2>
+          </div>
+
+          <div className={styles.stepsGrid}>
+            <div className={`glass-panel ${styles.stepCard}`}>
+              <span className={styles.stepNumPill}>STEP 01</span>
+              <h3 className={styles.stepTitle}>Connect Wallet</h3>
+              <p className={styles.stepDesc}>Connect your Web3 wallet (700+ wallets supported via Reown AppKit).</p>
+            </div>
+
+            <div className={`glass-panel ${styles.stepCard}`}>
+              <span className={styles.stepNumPill}>STEP 02</span>
+              <h3 className={styles.stepTitle}>Choose Currency</h3>
+              <p className={styles.stepDesc}>Select Binance-Peg USDT or USDC on BNB Smart Chain (Chain ID: 56).</p>
+            </div>
+
+            <div className={`glass-panel ${styles.stepCard}`}>
+              <span className={styles.stepNumPill}>STEP 03</span>
+              <h3 className={styles.stepTitle}>Enter Amount</h3>
+              <p className={styles.stepDesc}>Preview your JOOB token allocation, linear vesting schedule and potential volume bonus.</p>
+            </div>
+
+            <div className={`glass-panel ${styles.stepCard}`}>
+              <span className={styles.stepNumPill}>STEP 04</span>
+              <h3 className={styles.stepTitle}>Approve & Buy</h3>
+              <p className={styles.stepDesc}>Confirm the on-chain deposit. Your allocation is sealed directly in the Presale Vault.</p>
+            </div>
+          </div>
         </div>
       </section>
 
+      {/* Tokenomics Donut Section */}
+      <section className={styles.sectionAlt} id="tokenomics">
+        <div className={styles.container}>
+          <div className={styles.sectionHead}>
+            <span className={styles.sectionTag}>TOKENOMICS & ALLOCATION</span>
+            <h2 className={styles.sectionTitle}>Sustainable On-Chain Economics</h2>
+          </div>
 
+          <div className={styles.tokenomicsWrap}>
+            <div className={styles.donutHolder}>
+              <svg width="280" height="280" viewBox="0 0 42 42" role="img" aria-label="JOOB token allocation">
+                <circle cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke="rgba(255,255,255,0.05)" strokeWidth="4.5" />
+                {TOKENOMICS_SEGMENTS.map((t) => {
+                  const len = Math.max(t.pct - 0.3, 0.2);
+                  return (
+                    <circle key={t.name} cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke={t.color} strokeWidth="4.5"
+                      strokeDasharray={`${len} ${100 - len}`} strokeDashoffset={25 - t.start}>
+                      <title>{`${t.name}: ${t.pct}% (${fmtM(t.pct)} JOOB)`}</title>
+                    </circle>
+                  );
+                })}
+              </svg>
+              <div className={styles.donutCenter}>
+                <div className={`${styles.donutBigVal} ${styles.textGradient}`}>1B</div>
+                <div className={styles.donutSubLabel}>FIXED SUPPLY JOOB</div>
+              </div>
+            </div>
 
-      {/* Mini FAQ */}
-      <section className={`${styles.section} max-w-4xl mx-auto px-4`}>
-        <h2 className={styles.sectionTitle}>Frequently Asked Questions</h2>
-        <div className="space-y-4 text-left">
-          <div className="glass-panel p-6">
-            <h3 className="font-bold text-lg text-white mb-2">Is my money safe? Can JoobEscrow access it?</h3>
-            <p className="text-gray-400">Your funds are locked in a non-custodial smart contract. We never have direct access to your tokens. The contract ensures that funds can only be released to the provider upon your approval, or refunded if canceled.</p>
-          </div>
-          <div className="glass-panel p-6">
-            <h3 className="font-bold text-lg text-white mb-2">Who resolves disputes?</h3>
-            <p className="text-gray-400">If a disagreement occurs, either party can open a dispute and share evidence. The JoobEscrow arbitration team reviews it and splits the funds between both parties (any split from 0 to 100%). If a dispute is abandoned for 30 days, either party can trigger a 50/50 split in the contract, so funds are never locked forever.</p>
-          </div>
-          <div className="glass-panel p-6">
-            <h3 className="font-bold text-lg text-white mb-2">What fees do I pay?</h3>
-            <p className="text-gray-400">Fees depend on the niche (ranging from 2% to 10%). The fee is only deducted from the provider&apos;s payout upon successful completion. There are no hidden setup fees.</p>
-          </div>
-          <div className="glass-panel p-6">
-            <h3 className="font-bold text-lg text-white mb-2">Are my communications with the provider secure?</h3>
-            <p className="text-gray-400">The in-app chat uses the <strong>XMTP protocol</strong>: end-to-end encrypted messages from wallet to wallet, linked to your escrow. Messages travel encrypted over the XMTP network (not in the smart contract, not on JoobEscrow servers) and only the two wallets can read them.</p>
+            <div className={styles.tokenLegend}>
+              {TOKENOMICS.map((t) => (
+                <div key={t.name} className={styles.legendRow}>
+                  <div className={styles.legendTop}>
+                    <span>{t.name}{t.contract ? ' · locked on-chain' : t.onChain ? ' · enforced on-chain' : ''}</span>
+                    <span className={styles.monoLime}>{t.pct}% ({fmtM(t.pct)})</span>
+                  </div>
+                  <div className={styles.legendTrack}><div className={styles.legendFill} style={{ width: `${(t.pct / 25) * 100}%`, background: t.color }}></div></div>
+                </div>
+              ))}
+              <Link href="/presale#tokenomics" className="text-gradient font-bold hover:underline">Full tokenomics and vesting →</Link>
+            </div>
           </div>
         </div>
-        <div className="mt-8 text-center">
-          <Link href="/faq" className="text-gradient font-bold hover:underline">
-            Read all FAQs →
-          </Link>
+      </section>
+
+      {/* Live Stats & Fee Calculator */}
+      <section className={styles.section} id="demo">
+        <div className={styles.container}>
+          <div className={styles.sectionHead}>
+            <span className={styles.sectionTag}>ON-CHAIN ACTIVITY & FEES</span>
+            <h2 className={styles.sectionTitle}>Transparent Fee Structure</h2>
+          </div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '30px', alignItems: 'stretch' }}>
+            <LiveStats />
+            <FeeCalculator />
+          </div>
+        </div>
+      </section>
+
+      {/* Horizontal Roadmap */}
+      <section className={styles.sectionAlt} id="roadmap">
+        <div className={styles.container}>
+          <div className={styles.sectionHead}>
+            <span className={styles.sectionTag}>DEVELOPMENT TIMELINE</span>
+            <h2 className={styles.sectionTitle}>Strategic Roadmap</h2>
+          </div>
+
+          <div className={styles.roadmapGrid}>
+            <div className={`glass-panel ${styles.roadCard}`}>
+              <div className={styles.roadPhaseHeader}>
+                <span className={styles.phaseTag}>PHASE 01</span>
+                <span className={styles.phaseStatusDone}>COMPLETED</span>
+              </div>
+              <h3 className={styles.roadTitle}>Architecture & Security</h3>
+              <p className={styles.roadDesc}>
+                Contract deployment on BSC, SpyWolf security audit pass, 3-of-5 multisig and linear vesting architecture.
+              </p>
+            </div>
+
+            <div className={`glass-panel ${styles.roadCard} ${styles.roadCardActive}`}>
+              <div className={styles.roadPhaseHeader}>
+                <span className={styles.phaseTag}>PHASE 02</span>
+                <span className={styles.phaseStatusActive}>IN PROGRESS</span>
+              </div>
+              <h3 className={styles.roadTitle}>Presale & Traction</h3>
+              <p className={styles.roadDesc}>
+                Presale Vault activation, $1 interactive sandbox (/try), BscScan verification and CoinMarketCap community launch.
+              </p>
+            </div>
+
+            <div className={`glass-panel ${styles.roadCard}`}>
+              <div className={styles.roadPhaseHeader}>
+                <span className={styles.phaseTag}>PHASE 03</span>
+                <span className={styles.phaseStatusUpcoming}>UPCOMING</span>
+              </div>
+              <h3 className={styles.roadTitle}>TGE & Staking</h3>
+              <p className={styles.roadDesc}>
+                PancakeSwap DEX pool launch with locked liquidity, burn of 100% unsold presale tokens, and audited staking activation.
+              </p>
+            </div>
+
+            <div className={`glass-panel ${styles.roadCard}`}>
+              <div className={styles.roadPhaseHeader}>
+                <span className={styles.phaseTag}>PHASE 04</span>
+                <span className={styles.phaseStatusUpcoming}>UPCOMING</span>
+              </div>
+              <h3 className={styles.roadTitle}>Web2 Simplicity & V5</h3>
+              <p className={styles.roadDesc}>
+                Account abstraction (email sign-in, card fiat onramp, gasless transactions) and Escrow V5 fee-waivers.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Security Pillars */}
+      <section className={styles.section} id="security">
+        <div className={styles.container}>
+          <div className={styles.sectionHead}>
+            <span className={styles.sectionTag}>SECURITY FIRST</span>
+            <h2 className={styles.sectionTitle}>Built Without Compromise</h2>
+          </div>
+
+          <div className={styles.securityGrid}>
+            <div className={`glass-panel ${styles.secCard}`}>
+              <div className={styles.secIcon}>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+              </div>
+              <h3 className={styles.secTitle}>Non-Custodial</h3>
+              <p className={styles.secDesc}>
+                Your private keys remain yours. We never hold your assets nor ask for seed phrases.
+              </p>
+            </div>
+
+            <div className={`glass-panel ${styles.secCard}`}>
+              <div className={styles.secIcon}>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+              </div>
+              <h3 className={styles.secTitle}>Anti-Rug Withdrawals</h3>
+              <p className={styles.secDesc}>
+                Participant withdrawal paths remain operational even if contracts are ever placed in pause.
+              </p>
+            </div>
+
+            <div className={`glass-panel ${styles.secCard}`}>
+              <div className={styles.secIcon}>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                  <circle cx="9" cy="7" r="4"/>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
+              </div>
+              <h3 className={styles.secTitle}>3-of-5 Governance</h3>
+              <p className={styles.secDesc}>
+                Treasury actions require 3 separate hardware wallet signatures on Safe. No single point of failure.
+              </p>
+            </div>
+
+            <div className={`glass-panel ${styles.secCard}`}>
+              <div className={styles.secIcon}>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </div>
+              <h3 className={styles.secTitle}>Audited by SpyWolf</h3>
+              <p className={styles.secDesc}>
+                0 critical findings. Public reports verifiable directly on SpyWolf Network and BscScan.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ & Referral Banner */}
+      <section className={styles.sectionAlt} id="faq">
+        <div className={styles.container}>
+          <div className={styles.sectionHead}>
+            <span className={styles.sectionTag}>QUESTIONS & ANSWERS</span>
+            <h2 className={styles.sectionTitle}>Frequently Asked Questions</h2>
+          </div>
+
+          <HomeFaq />
+
+          <div className={styles.referralBanner}>
+            <div>
+              <h3 className={styles.refTitle}>
+                Share JoobEscrow, earn <span className={styles.textGradient}>2% on-chain.</span>
+              </h3>
+              <p className={styles.refSub}>
+                Referrers receive 2% of the JOOB bought through their link, with the same vesting as the presale.
+              </p>
+            </div>
+            <Link href="/presale" className="btn btn-primary" style={{ padding: '14px 34px', fontSize: '1rem', whiteSpace: 'nowrap' }}>
+              Get Your Referral Link →
+            </Link>
+          </div>
         </div>
       </section>
     </div>
