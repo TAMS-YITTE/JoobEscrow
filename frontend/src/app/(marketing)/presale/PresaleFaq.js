@@ -7,7 +7,7 @@ import styles from './presale.module.css';
 const FAQS = [
   {
     q: 'What is JOOB?',
-    a: 'JOOB is the BEP-20 token of the JoobEscrow ecosystem on BNB Smart Chain (fixed supply of 1,000,000,000). It is designed to be the key to the protocol: governance (JOOB holders vote on protocol decisions such as new categories, fee tiers and ecosystem grants), fee reductions for holders who stake JOOB up to a full fee waiver at the highest tier (with Escrow V5), JOOB staking (contract already deployed and audited by SpyWolf, opening after the TGE), 0% fees on PerShare for holders above a threshold from the TGE, plus boosts, badges, and Early Escrow points. JOOB gives no ownership, profit or revenue right in JoobEscrow, and using JoobEscrow escrows never requires JOOB.',
+    a: 'JOOB is the BEP-20 token of the JoobEscrow ecosystem on BNB Smart Chain (fixed supply of 1,000,000,000). It is designed to be the key to the protocol: governance (JOOB holders vote on protocol decisions such as new categories, fee tiers and ecosystem grants), fee reductions for holders who stake JOOB, by tier, up to a full fee waiver at the highest tier (with Escrow V5), JOOB staking (contract already deployed and audited by SpyWolf, opening after the TGE: stake JOOB, earn JOOB rewards, 7-day withdrawal delay, no guaranteed yield), 0% fees on PerShare (our audited collective-pool app) for holders above a threshold from the TGE, plus boosts and badges, affiliate rewards in JOOB and Early Escrow points. These features ship progressively and are not guaranteed by a given date. JOOB gives no ownership, profit or revenue right in JoobEscrow, and using JoobEscrow escrows never requires JOOB.',
   },
   {
     q: 'How is the price set during the presale?',
@@ -15,27 +15,27 @@ const FAQS = [
   },
   {
     q: 'When can I claim my tokens?',
-    a: 'Nothing is claimable before the sale ends. When it ends, 20% of your allocation (purchases and bonuses) becomes claimable immediately, and the remaining 80% unlocks linearly, second by second, over 180 days. You claim directly from this page at any time; claims cannot be paused.',
+    a: 'Nothing is claimable before the sale ends. When it ends, 20% of your allocation (purchases and bonuses) becomes claimable, and the remaining 80% unlocks linearly, second by second, over 180 days. You claim from this page at any time; claims cannot be paused.',
   },
   {
     q: 'What is the "sealed vault"?',
-    a: 'The contract cannot open the sale until the full 163.5M JOOB cap has been deposited into it. You can check the deposited amount at any time on BscScan (depositedTokens). Buyer allocations are always fully covered by tokens already held by the contract.',
+    a: 'The contract cannot open the sale until the full 163.5M JOOB cap has been deposited in it. You can check the deposited amount at any time on BscScan (depositedTokens). Buyer allocations are always covered by tokens already held by the contract.',
   },
   {
     q: 'Are the contracts audited?',
-    a: 'Yes. The JOOB token and the presale contract were audited by SpyWolf: no critical, high or medium issue, and every reported finding was fixed or acknowledged. Reports are public on SpyWolf Network and BscScan. An audit reduces technical risk but does not eliminate it.',
+    a: 'Yes. The JOOB token and the presale contract were audited by SpyWolf: no critical, high or medium issue, and every reported finding was fixed or acknowledged. Reports: spywolf.co/audits/StandardToken_Audit_JoobEscrow.pdf and spywolf.co/audits/VestingPresale_Airdrop_Audit_JoobEscrow.pdf. An audit reduces technical risk but does not remove it.',
   },
   {
     q: 'How do the volume bonus and referral work?',
-    a: 'The volume bonus depends on your cumulative USDT + USDC contribution: 2% from $100, 3.5% from $250, 5% from $500 and 7% from $1,000, applied to all tokens bought (earlier purchases are topped up automatically). Referrers receive 2% of the tokens bought through their link. Bonuses follow the same linear vesting and count toward the cap.',
+    a: 'The volume bonus depends on your cumulative USDT + USDC contribution: 2% from $100, 3.5% from $250, 5% from $500 and 7% from $1,000, applied to all the tokens you bought (earlier purchases are topped up automatically). A referrer receives 2% of the tokens bought through their link. Bonuses follow the same vesting and count toward the cap.',
   },
   {
     q: 'What happens to unsold tokens and to the funds raised?',
-    a: 'After the sale, unsold tokens are returned to the JoobEscrow Safe multisig and burned on-chain in a public, verifiable transaction. The stablecoins raised are withdrawn by the same Safe multisig. There is no soft cap and no refund.',
+    a: 'After the sale, unsold tokens are returned to the JoobEscrow Safe multisig and burned on-chain. The stablecoins raised are withdrawn by the same multisig. There is no soft cap and no refund.',
   },
   {
     q: 'Will JOOB be tradable after the sale?',
-    a: 'A JOOB/USDT pool on PancakeSwap is planned right after the sale ends, opened by the JoobEscrow Safe at an initial listing price of $0.02 (50 JOOB per USDT), above every presale price. Once trading starts, the price is set by the market alone. Only contribute what you can afford to lose.',
+    a: 'A JOOB/USDT pool on PancakeSwap is planned right after the sale ends, opened by the JoobEscrow Safe at an initial price of $0.02 (50 JOOB per USDT), above every presale price. Once trading starts, the price is set by the market alone: it is not guaranteed and may be lower than the price you paid. Only contribute what you can afford to lose.',
   },
   {
     q: 'Who can participate?',

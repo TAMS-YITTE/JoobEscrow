@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import styles from '../presale/presale.module.css';
+import styles from './try.module.css';
 import { CONTRACT_DEMO } from '../../../config/instances';
 
 export const metadata = {
@@ -44,52 +44,53 @@ const STEPS = [
 export default function TryPage() {
   return (
     <div className={styles.page}>
-      <span className={`${styles.badge} ${styles.badgeWarn}`}>Demo</span>
-      <h1 className={styles.title}>Try JoobEscrow with $1</h1>
-      <p className={styles.lead}>
-        Live the full escrow cycle in about 10 minutes, with your own money moving between two of your own wallets.
-        Same audited contract as real deals, 0% fee, amounts capped at 20.
-      </p>
+      <header className={styles.hero}>
+        <span className={styles.badge}><span className={styles.badgeDot} />Demo</span>
+        <h1 className={styles.title}>Try JoobEscrow <span className={styles.gradient}>with $1</span></h1>
+        <p className={styles.lead}>
+          Live the full escrow cycle in about 10 minutes, with your own money moving between two of your own wallets.
+          Same audited contract as real deals, 0% fee, amounts capped at 20.
+        </p>
+        <div className={styles.chips}>
+          <a href={`https://bscscan.com/address/${CONTRACT_DEMO}`} target="_blank" rel="noopener noreferrer" className={`${styles.chip} ${styles.chipOk}`}>
+            Demo contract on BscScan ↗
+          </a>
+          <Link href="/security" className={styles.chip}>Audit & Safe multisig</Link>
+        </div>
+      </header>
 
-      <div className={styles.chips}>
-        <a href={`https://bscscan.com/address/${CONTRACT_DEMO}`} target="_blank" rel="noopener noreferrer" className={`${styles.chip} ${styles.chipOk}`}>
-          Demo contract on BscScan ↗
-        </a>
-        <Link href="/security" className={styles.chip}>Audit & Safe multisig</Link>
+      <div className={styles.card}>
+        <h2 className={styles.h2}>What you need</h2>
+        <ul className={styles.needs}>
+          <li>Two wallets on BNB Smart Chain (e.g. two accounts in the same wallet app)</li>
+          <li>1 to 20 USDT or USDC (BEP-20) on wallet A</li>
+          <li>About 0.001 BNB (less than $1) on each wallet for gas — the whole demo usually costs a few cents</li>
+        </ul>
       </div>
 
-      <div className={styles.column}>
-        <div className={styles.card}>
-          <h2 className={styles.h2}>What you need</h2>
-          <ul style={{ color: 'var(--text-secondary)', lineHeight: 1.8, paddingLeft: 20 }}>
-            <li>Two wallets on BNB Smart Chain (e.g. two accounts in the same wallet app)</li>
-            <li>1 to 20 USDT or USDC (BEP-20) on wallet A</li>
-            <li>About 0.001 BNB (less than $1) on each wallet for gas — the whole demo usually costs a few cents</li>
-          </ul>
-        </div>
+      <ol className={styles.steps}>
+        {STEPS.map((s, i) => (
+          <li key={s.title} className={styles.step}>
+            <span className={styles.stepNum}>{i + 1}</span>
+            <div className={styles.stepHead}>
+              <span className={styles.stepTitle}>{s.title}</span>
+              <span className={styles.who}>{s.who}</span>
+            </div>
+            <p className={styles.stepText}>{s.text}</p>
+          </li>
+        ))}
+      </ol>
 
-        <ol className={styles.roadmap}>
-          {STEPS.map((s, i) => (
-            <li key={s.title} className={styles.phase}>
-              <div className={styles.phaseHead}>
-                <span className={styles.phaseNum}>{i + 1}</span>
-                <span className={styles.phaseTitle}>{s.title}</span>
-                <span className={styles.phaseTag} style={{ background: 'rgba(255,255,255,0.06)', color: '#cbd5e1' }}>{s.who}</span>
-              </div>
-              <p>{s.text}</p>
-            </li>
-          ))}
-        </ol>
-
-        <Link href="/demo" className={styles.cta} style={{ textAlign: 'center', display: 'block' }}>
+      <div className={styles.ctaWrap}>
+        <Link href="/demo" className={`btn btn-primary btn-lg ${styles.cta}`}>
           Open the demo
         </Link>
-
-        <p className={styles.fine}>
-          Demo escrows are never counted in JoobEscrow statistics or volume. The demo contract only accepts 1 to 20 USDT or USDC per escrow.
-          Only use joobescrow.com, and never share your seed phrase.
-        </p>
       </div>
+
+      <p className={styles.fine}>
+        Demo escrows are never counted in JoobEscrow statistics or volume. The demo contract only accepts 1 to 20 USDT or USDC per escrow.
+        Only use joobescrow.com, and never share your seed phrase.
+      </p>
     </div>
   );
 }

@@ -106,10 +106,10 @@ export default function SecurityPage() {
                };
                const tierName = tierMap[addr] || "Custom Tier";
                return (
-                 <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: idx < 4 ? '1px solid rgba(255,255,255,0.1)' : 'none', paddingBottom: idx < 4 ? '10px' : '0' }}>
-                   <div style={{ display: 'flex', flexDirection: 'column' }}>
+                 <div key={idx} style={{ display: 'flex', flexWrap: 'wrap', gap: '8px 12px', justifyContent: 'space-between', alignItems: 'center', borderBottom: idx < 4 ? '1px solid rgba(255,255,255,0.1)' : 'none', paddingBottom: idx < 4 ? '10px' : '0' }}>
+                   <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
                      <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{tierName}</span>
-                     <span>{addr}</span>
+                     <span style={{ wordBreak: 'break-all' }}>{addr}</span>
                    </div>
                    <Link href={`https://bscscan.com/address/${addr}`} target="_blank" className="btn btn-outline" style={{ padding: '4px 12px', fontSize: '0.8rem' }}>
                      BscScan
@@ -131,15 +131,15 @@ export default function SecurityPage() {
             {[
               { label: 'JOOB Token', addr: PRESALE_ADDRESSES.TOKEN, note: 'Fixed 1B supply, no mint, no transfer tax' },
               { label: 'Presale Vault', addr: PRESALE_ADDRESSES.PRESALE, note: 'Sealed vault, linear 180-day vesting' },
-              { label: 'Governance & Treasury Safe (3/5)', addr: '0x872F979aa868145bE3c3A6EA787614BE2A18C7f7', note: 'Gnosis Safe multisig (3 signatures required)' },
+              { label: 'Governance & Treasury Safe (3/5)', addr: '0x872F979aa868145bE3c3A6EA787614BE2A18C7f7', note: 'Safe multisig (3 signatures required)' },
               { label: 'JOOB Staking', addr: '0x7949528182876027b1F4B2e43E3a46eb2dADD32b', note: 'Audited staking pool (opens post-TGE)' },
               { label: 'Treasury Vesting (36m)', addr: '0x8cbac3786F61572D4571C951e9215FC289FB2ff3', note: '130M JOOB on-chain vesting' },
               { label: 'Team Vesting (24m)', addr: '0xc430f8C4E26FFc25326C4AA84947B3e2A1328012', note: '120M JOOB locked until 2028' },
             ].map((item) => (
-              <div key={item.addr} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(0,0,0,0.4)', padding: '12px 16px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.06)' }}>
-                <div>
+              <div key={item.addr} style={{ display: 'flex', flexWrap: 'wrap', gap: '10px 12px', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(0,0,0,0.4)', padding: '12px 16px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.06)' }}>
+                <div style={{ minWidth: 0 }}>
                   <div style={{ color: '#fff', fontWeight: 'bold', fontSize: '0.95rem' }}>{item.label}</div>
-                  <div style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', fontFamily: 'monospace' }}>{item.addr}</div>
+                  <div style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', fontFamily: 'monospace', wordBreak: 'break-all' }}>{item.addr}</div>
                   <div style={{ color: '#94a3b8', fontSize: '0.75rem', marginTop: '2px' }}>{item.note}</div>
                 </div>
                 <Link href={`https://bscscan.com/address/${item.addr}`} target="_blank" className="btn btn-outline" style={{ padding: '6px 14px', fontSize: '0.8rem' }}>

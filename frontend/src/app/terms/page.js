@@ -56,7 +56,7 @@ export default function TermsPage() {
         <section style={{ marginBottom: '30px' }}>
           <h2 style={{ fontSize: '1.5rem', marginBottom: '15px', color: '#fff' }}>5. Stale Disputes</h2>
           <div style={{ padding: '15px', backgroundColor: 'rgba(245, 158, 11, 0.1)', borderLeft: '4px solid #f59e0b', borderRadius: '4px', marginBottom: '15px' }}>
-            <strong style={{ color: '#f59e0b' }}>Warning:</strong> To avoid paralyzing funds, if a dispute is opened and no solution is found within 30 days, the smart contract allows the automatic resolution of the dispute at 50/50 to unlock the funds.
+            <strong style={{ color: '#f59e0b' }}>Warning:</strong> To avoid paralyzing funds, if a dispute is opened and no solution is found within 30 days, either party can trigger a 50/50 split directly in the smart contract to unlock the funds.
           </div>
         </section>
 

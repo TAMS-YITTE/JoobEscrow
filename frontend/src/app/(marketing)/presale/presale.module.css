@@ -197,7 +197,7 @@
 /* --- Presale Hero Two-Column Layout --- */
 .presaleGrid {
   display: grid;
-  grid-template-columns: 1.15fr 0.85fr;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
   gap: 32px;
   align-items: start;
   margin-bottom: 64px;
@@ -1212,8 +1212,11 @@
    ========================================================================== */
 @media (max-width: 1024px) {
   .presaleGrid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 36px;
+  }
+  .glassBuyCard, .sideColumn {
+    min-width: 0;
   }
   .tokenomicsWrap {
     grid-template-columns: 1fr;
@@ -1234,6 +1237,11 @@
   .quickNavWrap {
     margin: 0 -16px 36px;
     padding: 8px 16px;
+    overflow: hidden;
+  }
+  .quickNav {
+    min-width: 0;
+    width: 100%;
   }
   .glassBuyCard {
     padding: 24px 18px;
@@ -1269,3 +1277,7 @@
     transition: none;
   }
 }
+
+/* Liens de texte (utilises aussi par /presale-terms) */
+.link { color: #a3e635; text-decoration: underline; text-underline-offset: 3px; }
+.link:hover { color: #d9f99d; }

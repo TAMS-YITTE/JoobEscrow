@@ -1,0 +1,55 @@
+/* Guide de la demo $1 : meme langage visuel que l'accueil et le whitepaper. */
+.page { position: relative; max-width: 860px; margin: 0 auto; padding: 56px 24px 80px; }
+.page::before {
+  content: ''; position: absolute; inset: 0 0 auto 0; height: 460px; pointer-events: none; z-index: -1;
+  background: radial-gradient(ellipse at 50% 0%, rgba(16, 185, 129, 0.14), transparent 65%);
+}
+
+.hero { text-align: center; margin-bottom: 36px; }
+.badge {
+  display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 999px;
+  border: 1px solid rgba(163, 230, 53, 0.35); background: rgba(163, 230, 53, 0.08);
+  color: #bef264; font-size: 0.75rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase;
+}
+.badgeDot { width: 7px; height: 7px; border-radius: 50%; background: #a3e635; }
+.title { font-size: clamp(2.1rem, 6vw, 3.2rem); font-weight: 800; line-height: 1.1; letter-spacing: -0.02em; color: #fff; margin: 18px 0 14px; }
+.gradient { background: linear-gradient(90deg, #10b981, #a3e635, #facc15); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.lead { color: var(--text-secondary); font-size: 1.08rem; line-height: 1.7; max-width: 640px; margin: 0 auto 22px; }
+.chips { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.chip {
+  display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 999px; font-size: 0.86rem; font-weight: 600;
+  color: #e2e8f0; text-decoration: none; background: rgba(17, 24, 31, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); transition: border-color 0.15s;
+}
+.chip:hover { border-color: rgba(163, 230, 53, 0.45); }
+.chipOk { color: #bef264; border-color: rgba(163, 230, 53, 0.3); }
+
+.card {
+  padding: 24px 26px; border-radius: 20px; margin-bottom: 22px;
+  background: rgba(17, 24, 31, 0.55); border: 1px solid rgba(255, 255, 255, 0.07); backdrop-filter: blur(10px);
+}
+.h2 { font-size: 1.2rem; font-weight: 800; color: #fff; margin: 0 0 12px; }
+.needs { margin: 0; padding-left: 20px; color: var(--text-secondary); line-height: 1.8; }
+
+.steps { list-style: none; margin: 0 0 26px; padding: 0 0 0 26px; border-left: 2px solid rgba(163, 230, 53, 0.2); display: flex; flex-direction: column; gap: 14px; }
+.step { position: relative; padding: 18px 20px; border-radius: 16px; background: rgba(17, 24, 31, 0.55); border: 1px solid rgba(255, 255, 255, 0.07); }
+.stepNum {
+  position: absolute; left: -42px; top: 18px; width: 30px; height: 30px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.85rem;
+  color: #0d1117; background: linear-gradient(135deg, #d9f99d, #a3e635); box-shadow: 0 0 0 4px #0b0f14;
+}
+.stepHead { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 6px; }
+.stepTitle { color: #fff; font-weight: 700; }
+.who { font-size: 0.7rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; padding: 2px 9px; border-radius: 999px; color: #cbd5e1; background: rgba(255, 255, 255, 0.06); }
+.stepText { color: var(--text-secondary); font-size: 0.93rem; line-height: 1.65; margin: 0; }
+
+.ctaWrap { text-align: center; margin-bottom: 18px; }
+.cta { min-width: 240px; }
+.fine { color: #64748b; font-size: 0.84rem; line-height: 1.6; text-align: center; }
+
+@media (max-width: 640px) {
+  .page { padding: 40px 16px 64px; }
+  .card { padding: 20px 18px; }
+  .steps { padding-left: 22px; }
+  .stepNum { left: -38px; width: 28px; height: 28px; }
+  .cta { width: 100%; min-width: 0; }
+}

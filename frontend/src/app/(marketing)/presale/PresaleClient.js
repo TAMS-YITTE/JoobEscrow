@@ -231,6 +231,8 @@ export default function PresaleClient() {
   const currentPrice = global?.currentPrice ?? config?.basePrice ?? 0n;
   const nextStep = config ? nextStepAt(config, now) : 0n;
   const nextPrice = config ? priceAt(config, nextStep) : 0n;
+  // Vente close (fin passee ou finalisee) : on affiche le prix du dernier palier, pas un prix calcule sur l'horloge.
+  const finalPrice = config && global ? priceAt(config, global.endTime) : 0n;
   const nextStepRemaining = config && nextStep > now ? nextStep - now : 0n;
 
   const balance = paymentToken === 'USDT' ? user.balanceUSDT : user.balanceUSDC;
@@ -463,10 +465,12 @@ export default function PresaleClient() {
           {/* Sub-cards: Price & Allocation */}
           <div className={styles.metricsGrid}>
             <div className={styles.metricCard}>
-              <span className={styles.metricLabel}>Current Price</span>
-              <span className={styles.metricMainVal}>${fmtUsd(currentPrice, pd)}</span>
+              <span className={styles.metricLabel}>{isEnded || awaitingFinalize ? 'Final Price' : 'Current Price'}</span>
+              <span className={styles.metricMainVal}>${fmtUsd(isEnded || awaitingFinalize ? finalPrice : currentPrice, pd)}</span>
               <span className={styles.metricSubVal}>
-                Next: <strong className={styles.nextPriceHighlight}>{isEnded ? '—' : `$${fmtUsd(nextPrice, pd)}`}</strong>
+                {isEnded || awaitingFinalize
+                  ? 'Sale closed'
+                  : <>Next: <strong className={styles.nextPriceHighlight}>${fmtUsd(nextPrice, pd)}</strong></>}
               </span>
             </div>
 
@@ -492,8 +496,14 @@ export default function PresaleClient() {
             </div>
           </div>
 
+          {soldOut && (
+            <div className={`${styles.feedback} ${styles.feedbackInfo}`}>
+              The cap is reached: no further purchases are accepted. Claims open after the end date ({fmtDate(global.endTime)}).
+            </div>
+          )}
+
           {/* Next Price Bar */}
-          {!isEnded && (
+          {isLive && !soldOut && (
             <div className={styles.nextPriceBar}>
               <span>Next price increase in:</span>
               <span className={styles.nextPriceCountdown}>
@@ -592,7 +602,9 @@ export default function PresaleClient() {
             <label className={styles.termsLabel}>
               <input type="checkbox" checked={termsAccepted} disabled={!account} onChange={(e) => onTerms(e.target.checked)} />
               <span>
-                I agree to the <Link href="/presale-terms">Presale Terms</Link>. I understand that allocations are vested on-chain, and only contribute funds I can afford to lose.
+                I have read and accept the <Link href="/presale-terms">Presale Terms</Link>. I confirm I am not a resident
+                of a restricted jurisdiction, I understand that tokens are vested, that the price after the sale is set by the market and
+                not guaranteed, and that I may lose all the funds I contribute.
               </span>
             </label>
 
@@ -602,7 +614,7 @@ export default function PresaleClient() {
                 Connect Wallet
               </button>
             ) : !isCorrectNetwork ? (
-              <button type="button" onClick={doSwitch} className="btn btn-primary" style={{ width: '100%', padding: '16px', background: '#f59e0b', borderColor: '#f59e0b', color: '#111' }}>
+              <button type="button" onClick={doSwitch} className="btn btn-primary" style={{ width: '100%', padding: '16px' }}>
                 Switch to BNB Smart Chain
               </button>
             ) : (
@@ -648,6 +660,7 @@ export default function PresaleClient() {
                 <div className={styles.getTileSub}>Official BNB Chain Bridge</div>
               </a>
             </div>
+            <div className={styles.getTileSub} style={{ marginTop: 10 }}>Both links open outside joobescrow.com.</div>
           </div>
 
           {/* User Allocation Dashboard if Connected */}

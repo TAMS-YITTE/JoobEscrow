@@ -131,6 +131,11 @@ export default function PresalePage() {
           &quot;Enforced on-chain&quot; means the vesting is held by the deployed, audited presale contract; &quot;Planned&quot;
           allocations stay in the JoobEscrow Safe multisig until their vesting contracts are deployed.
         </p>
+        <p className={styles.fineText}>
+          <strong>Transparency commitment:</strong> allocations not yet in a vesting contract stay in our 3-of-5 Safe
+          multisig. Every outgoing JOOB transfer from the Safe is publicly disclosed with its purpose and transaction
+          link. Tokens allocated to partners are locked in their own on-chain vesting contract.
+        </p>
       </section>
 
       {/* ── Use of Funds Section ───────────────────────────────── */}
