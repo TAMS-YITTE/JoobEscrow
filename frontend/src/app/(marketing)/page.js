@@ -75,49 +75,6 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* Get Ready To Buy Tiles */}
-          <div className={styles.readyTilesGrid}>
-            <a
-              href="https://pancakeswap.finance/swap?outputCurrency=0x55d398326f99059fF775485246999027B3197955"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.readyTile}
-            >
-              <div className={styles.readyTileHead}>
-                <span>PancakeSwap</span>
-                <span className={styles.readyBadge}>GET USDT</span>
-              </div>
-              <p className={styles.readyTileDesc}>
-                Swap BNB for USDT on BNB Smart Chain prior to joining the presale.
-              </p>
-            </a>
-
-            <a
-              href="https://www.bnbchain.org/en/bnb-chain-bridge"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.readyTile}
-            >
-              <div className={styles.readyTileHead}>
-                <span>BNB Chain Bridge</span>
-                <span className={styles.readyBadge}>BRIDGE</span>
-              </div>
-              <p className={styles.readyTileDesc}>
-                Transfer USDT or USDC from Ethereum, Polygon or Arbitrum.
-              </p>
-            </a>
-
-            <div className={styles.readyTile}>
-              <div className={styles.readyTileHead}>
-                <span>Reown AppKit</span>
-                <span className={styles.readyBadge}>CONNECT</span>
-              </div>
-              <p className={styles.readyTileDesc}>
-                Connect 700+ Web3 wallets with mobile QR codes. Powered by Reown.
-              </p>
-            </div>
-          </div>
-          <p className={styles.readyNotice}>These links open outside joobescrow.com.</p>
         </div>
       </section>
 

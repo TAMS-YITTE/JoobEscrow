@@ -1281,3 +1281,7 @@
 /* Liens de texte (utilises aussi par /presale-terms) */
 .link { color: #a3e635; text-decoration: underline; text-underline-offset: 3px; }
 .link:hover { color: #d9f99d; }
+
+/* Mention discrete sous le bouton de connexion */
+.poweredBy { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 10px; color: #64748b; font-size: 0.78rem; }
+.poweredBy img { opacity: 0.8; }

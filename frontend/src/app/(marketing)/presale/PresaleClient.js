@@ -610,9 +610,15 @@ export default function PresaleClient() {
 
             {/* Action Button */}
             {!account ? (
-              <button type="button" onClick={connectWallet} className="btn btn-primary" style={{ width: '100%', padding: '16px' }}>
-                Connect Wallet
-              </button>
+              <>
+                <button type="button" onClick={connectWallet} className="btn btn-primary" style={{ width: '100%', padding: '16px' }}>
+                  Connect Wallet
+                </button>
+                <div className={styles.poweredBy}>
+                  <img src="/logos/reown.svg" alt="" width={18} height={12} />
+                  Powered by Reown · 700+ wallets
+                </div>
+              </>
             ) : !isCorrectNetwork ? (
               <button type="button" onClick={doSwitch} className="btn btn-primary" style={{ width: '100%', padding: '16px' }}>
                 Switch to BNB Smart Chain
