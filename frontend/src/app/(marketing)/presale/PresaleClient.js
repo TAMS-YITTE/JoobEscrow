@@ -755,17 +755,30 @@ export default function PresaleClient() {
             </div>
           </div>
 
-          {/* Quick Guide in 3 steps */}
-          <details className={styles.guideBox}>
-            <summary>How to buy in 3 steps ▾</summary>
-            <ol>
-              <li>Connect your Web3 wallet on BNB Smart Chain (Chain ID: 56).</li>
-              <li>Select USDT or USDC and specify the amount (keep ~0.001 BNB for gas).</li>
-              <li>Approve the token and confirm the purchase. Your tokens vest on-chain.</li>
-            </ol>
-          </details>
         </aside>
       </div>
+
+      {/* How to buy JOOB in 4 steps */}
+      <section className={styles.buySteps} aria-label="How to buy JOOB">
+        <div className={styles.buyStepsHead}>
+          <span className={styles.buyStepsTag}>PRESALE PARTICIPATION</span>
+          <h2 className={styles.buyStepsTitle}>How to buy $JOOB</h2>
+        </div>
+        <div className={styles.buyStepsGrid}>
+          {[
+            ['Connect wallet', 'Connect your Web3 wallet on BNB Smart Chain (Chain ID: 56). 700+ wallets supported via Reown.'],
+            ['Choose currency', 'Select USDT or USDC (BEP-20). Keep about 0.001 BNB in the wallet for gas.'],
+            ['Enter amount', 'Preview your JOOB allocation, the linear vesting schedule and your volume bonus tier.'],
+            ['Approve & buy', 'Two confirmations in your wallet: approve the stablecoin, then buy. Your allocation is recorded on-chain in the presale contract.'],
+          ].map(([t, d], i) => (
+            <div key={t} className={styles.buyStepCard}>
+              <span className={styles.buyStepNum}>STEP {String(i + 1).padStart(2, '0')}</span>
+              <h3 className={styles.buyStepName}>{t}</h3>
+              <p className={styles.buyStepText}>{d}</p>
+            </div>
+          ))}
+        </div>
+      </section>
     </>
   );
 }

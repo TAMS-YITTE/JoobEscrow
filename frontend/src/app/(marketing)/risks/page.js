@@ -10,7 +10,7 @@ export default function RisksPage() {
     <div className="w-full max-w-4xl mx-auto py-16 px-4">
       <div className="text-center mb-12">
         <h1 className="text-4xl md:text-5xl font-bold mb-4">Risks & <span className="text-gradient">Disclaimers</span></h1>
-        <p className="text-gray-400 text-lg">We believe in absolute transparency. Before using JoobEscrow, please read and understand the following risks.</p>
+        <p className="text-gray-400 text-lg">We believe in full transparency. Before using JoobEscrow, please read and understand the following risks.</p>
       </div>
 
       <div className="space-y-6">

@@ -114,6 +114,7 @@ export default function MarketingLayout({ children }) {
               <Link href="/security">Security &amp; trust</Link>
               <Link href="/risks">Risks &amp; disclaimers</Link>
               <Link href="/compliance">Regulatory &amp; compliance</Link>
+              <Link href="/terms">Terms of service</Link>
             </div>
           </div>
 

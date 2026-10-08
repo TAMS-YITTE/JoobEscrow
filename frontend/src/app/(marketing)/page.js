@@ -172,7 +172,7 @@ export default function LandingPage() {
               <div className={styles.layerBadge}>01</div>
               <div className={styles.layerInfo}>
                 <h4>On-Chain Settlement Layer</h4>
-                <p>Non-custodial Universal Escrow V4 smart contract deployed on BNB Smart Chain. Emergency withdrawal guaranteed.</p>
+                <p>Non-custodial Universal Escrow V4 smart contract deployed on BNB Smart Chain. Withdrawals keep working even when paused.</p>
               </div>
               <span className={styles.layerTagLive}>AUDITED (SPYWOLF)</span>
             </div>
@@ -183,46 +183,9 @@ export default function LandingPage() {
                 <h4>Escrow V5 & Co-Funded Deals</h4>
                 <p>Multi-sponsor collective funding and fee waivers for JOOB token stakers.</p>
               </div>
-              <span className={styles.layerTagPlanned}>PLANNED (Q1 2027)</span>
+              <span className={styles.layerTagPlanned}>PLANNED</span>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* How to Buy JOOB in 4 steps */}
-      <section className={styles.section}>
-        <div className={styles.container}>
-          <div className={styles.sectionHead}>
-            <span className={styles.sectionTag}>PRESALE PARTICIPATION</span>
-            <h2 className={styles.sectionTitle}>How to Buy $JOOB</h2>
-          </div>
-
-          <div className={styles.stepsGrid}>
-            <div className={`glass-panel ${styles.stepCard}`}>
-              <span className={styles.stepNumPill}>STEP 01</span>
-              <h3 className={styles.stepTitle}>Connect Wallet</h3>
-              <p className={styles.stepDesc}>Connect your Web3 wallet (700+ wallets supported via Reown AppKit).</p>
-            </div>
-
-            <div className={`glass-panel ${styles.stepCard}`}>
-              <span className={styles.stepNumPill}>STEP 02</span>
-              <h3 className={styles.stepTitle}>Choose Currency</h3>
-              <p className={styles.stepDesc}>Select Binance-Peg USDT or USDC on BNB Smart Chain (Chain ID: 56).</p>
-            </div>
-
-            <div className={`glass-panel ${styles.stepCard}`}>
-              <span className={styles.stepNumPill}>STEP 03</span>
-              <h3 className={styles.stepTitle}>Enter Amount</h3>
-              <p className={styles.stepDesc}>Preview your JOOB token allocation, linear vesting schedule and potential volume bonus.</p>
-            </div>
-
-            <div className={`glass-panel ${styles.stepCard}`}>
-              <span className={styles.stepNumPill}>STEP 04</span>
-              <h3 className={styles.stepTitle}>Approve & Buy</h3>
-              <p className={styles.stepDesc}>Confirm the on-chain deposit. Your allocation is sealed directly in the Presale Vault.</p>
-            </div>
-          </div>
-
         </div>
       </section>
 

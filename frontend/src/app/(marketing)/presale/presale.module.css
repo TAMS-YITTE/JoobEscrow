@@ -1285,3 +1285,16 @@
 /* Mention discrete sous le bouton de connexion */
 .poweredBy { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 10px; color: #64748b; font-size: 0.78rem; }
 .poweredBy img { opacity: 0.8; }
+
+/* --- Comment acheter (4 etapes) --- */
+.buySteps { max-width: 1200px; margin: 0 auto 64px; padding: 0 24px; }
+.buyStepsHead { text-align: center; margin-bottom: 26px; }
+.buyStepsTag { color: #a3e635; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.12em; }
+.buyStepsTitle { color: #fff; font-size: clamp(1.6rem, 4vw, 2.2rem); font-weight: 800; margin: 8px 0 0; }
+.buyStepsGrid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
+.buyStepCard { padding: 24px 20px; border-radius: 18px; background: rgba(17, 24, 31, 0.6); border: 1px solid rgba(255, 255, 255, 0.07); backdrop-filter: blur(10px); }
+.buyStepNum { display: inline-block; font-size: 0.7rem; font-weight: 800; color: #a3e635; padding: 4px 10px; border-radius: 6px; background: rgba(163, 230, 53, 0.1); margin-bottom: 14px; }
+.buyStepName { color: #fff; font-size: 1.02rem; font-weight: 700; margin: 0 0 8px; }
+.buyStepText { color: #94a3b8; font-size: 0.86rem; line-height: 1.55; margin: 0; }
+@media (max-width: 1024px) { .buyStepsGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 640px) { .buySteps { padding: 0 16px; } .buyStepsGrid { grid-template-columns: minmax(0, 1fr); } }
