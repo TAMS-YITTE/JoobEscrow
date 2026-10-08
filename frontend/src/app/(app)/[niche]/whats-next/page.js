@@ -13,7 +13,7 @@ export default function WhatsNextPage() {
         <div>
           <h1 className="text-gradient">What&apos;s next 🚀</h1>
           <p className="subtitle">
-            Our public roadmap, no dates: each milestone ships when it is ready, and audited where needed.
+            Our public roadmap: each milestone ships when it is ready, and audited where needed.
           </p>
         </div>
       </header>

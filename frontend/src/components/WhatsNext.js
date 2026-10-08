@@ -19,7 +19,7 @@ export default function WhatsNextWidget({ title = "What's coming" }) {
     <div className="coming-widget">
       <div className="coming-widget-head">
         <h3>{title} <span aria-hidden="true">›</span></h3>
-        <span className="coming-widget-note">Public roadmap · no dates</span>
+        <span className="coming-widget-note">Public roadmap</span>
       </div>
       <ol className="coming-list">
         {COMING.map((c, i) => (
