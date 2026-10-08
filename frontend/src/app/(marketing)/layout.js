@@ -102,7 +102,7 @@ export default function MarketingLayout({ children }) {
             </div>
 
             <div className={styles.footerCol}>
-              <h3>Audits (SpyWolf)</h3>
+              <h3>Audits</h3>
               <a href={AUDITS.ESCROW_V4} target="_blank" rel="noopener noreferrer">Escrow contract V4</a>
               <a href={AUDITS.TOKEN} target="_blank" rel="noopener noreferrer">JOOB token</a>
               <a href={AUDITS.PRESALE} target="_blank" rel="noopener noreferrer">Presale &amp; airdrop</a>
