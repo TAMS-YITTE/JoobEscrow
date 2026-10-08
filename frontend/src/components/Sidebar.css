@@ -113,3 +113,6 @@
   .nav-link { padding: 8px 12px; font-size: 0.85rem; white-space: nowrap; }
   .sidebar-footer { display: none; }
 }
+
+/* Pastille d'onglet (ex. « NEW ») */
+.nav-badge { margin-left: 8px; padding: 1px 7px; border-radius: 999px; font-size: 0.6rem; font-weight: 800; letter-spacing: 0.06em; color: #0d1117; background: linear-gradient(90deg, #d9f99d, #a3e635); vertical-align: middle; }

@@ -13,6 +13,7 @@ export default function Sidebar() {
     { name: 'Dashboard', path: `/${niche.slug}` },
     { name: 'Contracts', path: `/${niche.slug}/contracts` },
     { name: 'Disputes', path: `/${niche.slug}/disputes` },
+    { name: "What's next", path: `/${niche.slug}/whats-next`, badge: 'NEW' },
     { name: 'Settings', path: `/${niche.slug}/settings` },
   ];
 
@@ -37,6 +38,7 @@ export default function Sidebar() {
               style={isActive ? { borderLeftColor: niche.theme.primary, color: niche.theme.primary } : {}}
             >
               {item.name}
+              {item.badge && <span className="nav-badge">{item.badge}</span>}
             </Link>
           );
         })}

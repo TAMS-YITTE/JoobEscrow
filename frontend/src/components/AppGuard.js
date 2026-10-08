@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation';
 import { useWeb3 } from '../context/Web3Context';
 
 // Pages consultables sans wallet (profils publics des partenaires KOL).
-const PUBLIC_PATH = /^\/[^/]+\/kol\/[^/]+\/?$/;
+const PUBLIC_PATH = /^\/[^/]+\/(kol\/[^/]+|whats-next)\/?$/;
 
 export default function AppGuard({ children }) {
   const { account, error, isTestnet, connectWallet } = useWeb3();

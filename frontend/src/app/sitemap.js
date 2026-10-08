@@ -43,6 +43,12 @@ export default function sitemap() {
       priority: 0.7,
     },
     {
+      url: 'https://www.joobescrow.com/influence/whats-next',
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.6,
+    },
+    {
       url: 'https://www.joobescrow.com/terms',
       lastModified: new Date(),
       changeFrequency: 'monthly',
