@@ -14,7 +14,7 @@ export default function CompliancePage() {
       </div>
 
       <div className="space-y-6">
-        <div className="glass-panel p-8 border-blue-500/30 bg-blue-900/10">
+        <div className="glass-panel p-8" style={{ border: '1px solid rgba(163, 230, 53, 0.3)', background: 'rgba(163, 230, 53, 0.05)' }}>
           <h2 className="text-xl font-bold text-white mb-3">1. Non-Custodial Software Protocol</h2>
           <p className="text-gray-400">
             JoobEscrow is a non-custodial software protocol deployed on the BNB Smart Chain (BSC). <strong>We do not take custody of your funds.</strong> All funds are locked and managed autonomously by immutable smart contracts. JoobEscrow does not provide investment services, financial advice, or portfolio management. Our service is strictly limited to providing a technological infrastructure for escrow and an optional arbitration layer.

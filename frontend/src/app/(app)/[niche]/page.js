@@ -306,7 +306,7 @@ function DashboardContent() {
           banner = <p>You created this escrow ({niche.lexicon.client}). Waiting for the {niche.lexicon.provider.toLowerCase()} to accept.</p>;
         } else {
           banner = (
-            <p style={{ color: '#f59e0b' }}>
+            <p style={{ color: '#facc15' }}>
               ⚠️ This escrow is addressed to <strong style={{ fontFamily: 'monospace' }}>{short(invitedEscrow.provider)}</strong>, but you&apos;re connected as <strong style={{ fontFamily: 'monospace' }}>{short(account)}</strong>. Switch to the correct wallet to accept it.
             </p>
           );

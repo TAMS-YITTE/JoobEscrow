@@ -245,6 +245,20 @@ export default function LandingPage() {
               <p className={styles.stepDesc}>Confirm the on-chain deposit. Your allocation is sealed directly in the Presale Vault.</p>
             </div>
           </div>
+
+          <div className={styles.referralBanner}>
+            <div>
+              <h3 className={styles.refTitle}>
+                Share JoobEscrow, earn <span className={styles.textGradient}>2% on-chain.</span>
+              </h3>
+              <p className={styles.refSub}>
+                Referrers receive 2% of the JOOB bought through their link, with the same vesting as the presale.
+              </p>
+            </div>
+            <Link href="/presale#referral" className={`btn btn-primary ${styles.refBtn}`}>
+              Get Your Referral Link →
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -435,20 +449,6 @@ export default function LandingPage() {
           </div>
 
           <HomeFaq />
-
-          <div className={styles.referralBanner}>
-            <div>
-              <h3 className={styles.refTitle}>
-                Share JoobEscrow, earn <span className={styles.textGradient}>2% on-chain.</span>
-              </h3>
-              <p className={styles.refSub}>
-                Referrers receive 2% of the JOOB bought through their link, with the same vesting as the presale.
-              </p>
-            </div>
-            <Link href="/presale" className="btn btn-primary" style={{ padding: '14px 34px', fontSize: '1rem', whiteSpace: 'nowrap' }}>
-              Get Your Referral Link →
-            </Link>
-          </div>
         </div>
       </section>
     </div>

@@ -90,7 +90,7 @@
 }
 
 .is-me .chat-bubble {
-  background: var(--primary-color, #3b82f6);
+  background: var(--primary-color, #10b981);
   color: #fff;
   border-bottom-right-radius: 2px;
 }

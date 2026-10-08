@@ -30,7 +30,7 @@ export default function HowDisputesWorkPage() {
 
         {/* Step 2: Submit Evidence */}
         <div className="relative pl-8">
-          <div className="absolute w-6 h-6 bg-blue-500/20 border-2 border-blue-500 rounded-full -left-[13px] top-1"></div>
+          <div className="absolute w-6 h-6 border-2 rounded-full -left-[13px] top-1" style={{ background: 'rgba(16, 185, 129, 0.2)', borderColor: '#10b981' }}></div>
           <h3 className="text-2xl font-bold text-white mb-2">2. Submit Evidence</h3>
           <p className="text-gray-400 mb-4">
             Both parties share their proof of work or proof of failure (chat logs, deliverables, requirements). The contract supports
@@ -40,7 +40,7 @@ export default function HowDisputesWorkPage() {
 
         {/* Step 3: Arbitration & Split */}
         <div className="relative pl-8">
-          <div className="absolute w-6 h-6 bg-purple-500/20 border-2 border-purple-500 rounded-full -left-[13px] top-1"></div>
+          <div className="absolute w-6 h-6 border-2 rounded-full -left-[13px] top-1" style={{ background: 'rgba(163, 230, 53, 0.2)', borderColor: '#a3e635' }}></div>
           <h3 className="text-2xl font-bold text-white mb-2">3. Arbitration & Resolution</h3>
           <p className="text-gray-400 mb-4">
             Our arbitration team reviews the evidence from both parties. We use the <code>resolveDispute(id, providerBps)</code> function 

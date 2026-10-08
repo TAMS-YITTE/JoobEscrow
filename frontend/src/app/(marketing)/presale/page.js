@@ -1,8 +1,10 @@
 import Link from 'next/link';
 import CoFundedEscrowDiagram from '../../../components/CoFundedEscrowDiagram';
 import PresaleClient from './PresaleClient';
+import PresaleFaq from './PresaleFaq';
 import styles from './presale.module.css';
 import { TOKENOMICS, TOKENOMICS_SEGMENTS, fmtM } from '../../../config/tokenomics';
+import { PLANNED_LISTING_PRICE } from '../../../config/presale';
 
 export const metadata = {
   title: 'JOOB Token Presale | JoobEscrow',
@@ -21,51 +23,11 @@ export const metadata = {
   },
 };
 
-const FAQ = [
-  {
-    q: 'What is JOOB?',
-    a: 'JOOB is the BEP-20 token of the JoobEscrow ecosystem on BNB Smart Chain (fixed supply of 1,000,000,000). It is designed to be the key to the protocol: governance (JOOB holders vote on protocol decisions such as new categories, fee tiers and ecosystem grants), fee reductions for holders who stake JOOB, by tier, up to a full fee waiver at the highest tier (with Escrow V5), JOOB staking (contract already deployed and audited by SpyWolf, opening after the TGE: stake JOOB, earn JOOB rewards, 7-day withdrawal delay, no guaranteed yield), 0% fees on PerShare (our audited collective-pool app) for holders above a threshold from the TGE, plus boosts and badges, affiliate rewards in JOOB and Early Escrow points. These features ship progressively and are not guaranteed by a given date. JOOB gives no ownership, profit or revenue right in JoobEscrow, and using JoobEscrow escrows never requires JOOB.',
-  },
-  {
-    q: 'How is the price set during the presale?',
-    a: 'The price is computed by the smart contract from a public schedule: it starts at $0.001 and increases by $0.0002 every 2 days. The price applied is the one at the moment your transaction is executed. If a price step happens between your confirmation and the execution, the transaction is cancelled and nothing is charged.',
-  },
-  {
-    q: 'When can I claim my tokens?',
-    a: 'Nothing is claimable before the sale ends. When it ends, 20% of your allocation (purchases and bonuses) becomes claimable, and the remaining 80% unlocks linearly, second by second, over 180 days. You claim from this page at any time; claims cannot be paused.',
-  },
-  {
-    q: 'What is the "sealed vault"?',
-    a: 'The contract cannot open the sale until the full 163.5M JOOB cap has been deposited in it. You can check the deposited amount at any time on BscScan (depositedTokens). Buyer allocations are always covered by tokens already held by the contract.',
-  },
-  {
-    q: 'Are the contracts audited?',
-    a: 'Yes. The JOOB token and the presale contract were audited by SpyWolf: no critical, high or medium issue, and every reported finding was fixed or acknowledged. Reports: spywolf.co/audits/StandardToken_Audit_JoobEscrow.pdf and spywolf.co/audits/VestingPresale_Airdrop_Audit_JoobEscrow.pdf. An audit reduces technical risk but does not remove it.',
-  },
-  {
-    q: 'How do the volume bonus and referral work?',
-    a: 'The volume bonus depends on your cumulative USDT + USDC contribution: 2% from $100, 3.5% from $250, 5% from $500 and 7% from $1,000, applied to all the tokens you bought (earlier purchases are topped up automatically). A referrer receives 2% of the tokens bought through their link. Bonuses follow the same vesting and count toward the cap.',
-  },
-  {
-    q: 'What happens to unsold tokens and to the funds raised?',
-    a: 'After the sale, unsold tokens are returned to the JoobEscrow Safe multisig and burned on-chain. The stablecoins raised are withdrawn by the same multisig. There is no soft cap and no refund.',
-  },
-  {
-    q: 'Will JOOB be tradable after the sale?',
-    a: 'A JOOB/USDT pool on PancakeSwap is planned right after the sale ends, opened by the JoobEscrow Safe at an initial price of $0.02 (50 JOOB per USDT), above every presale price. Once trading starts, the price is set by the market alone: it is not guaranteed and may be lower than the price you paid. Only contribute what you can afford to lose.',
-  },
-  {
-    q: 'Who can participate?',
-    a: 'Only adults who are not residents of a restricted jurisdiction listed in the Presale Terms. You are responsible for checking that participation is legal where you live.',
-  },
-];
-
-// Feuille de route publique : aucune date au-dela de la presale (rien de signe ni planifie).
 const ROADMAP = [
   { title: 'Foundations', status: 'done', items: 'Audited escrow contract, verified on BscScan, owned by a Safe multisig. 15 categories and encrypted in-app chat.' },
   { title: 'Trust layer', status: 'now', items: 'Check a deal before you pay. Live: $1 demo with a step-by-step guide, shareable escrow links. Next: public deal pages anyone can verify without a wallet, Telegram alerts, dispute evidence recorded on-chain.' },
   { title: 'JOOB presale', status: 'next', items: 'October 15, 2026 → January 13, 2027. Sealed vault, vesting for every participant, unsold tokens returned to the Safe and burned in a public transaction.' },
-  { title: 'TGE & liquidity', items: 'JOOB/USDT pool on PancakeSwap at an initial price of $0.02, JOOB staking opens (contract already audited), JOOB activated on PerShare, first JOOB utilities (boosts & badges), Early Escrow points.' },
+  { title: 'TGE & liquidity', items: `JOOB/USDT pool on PancakeSwap at an initial price of $${PLANNED_LISTING_PRICE}, JOOB staking opens (contract already audited), JOOB activated on PerShare, first JOOB utilities (boosts & badges), Early Escrow points.` },
   { title: 'Escrow V5', items: 'JOOB holder fee tiers: stake JOOB to pay lower fees, up to a full fee waiver at the highest tier. On-chain affiliate rewards, gasless payouts, verified reputation profiles.' },
   { title: 'Escrow V5.1', items: 'Milestone payments, partial releases, amicable settlement, bulk deals for agencies.' },
   { title: 'As easy as a Web2 app', items: 'Hide the Web3 complexity: sign in with email or social accounts, no seed phrase to start, network fees covered for users, pay by card. Same on-chain security, your keys stay yours.' },
@@ -73,174 +35,216 @@ const ROADMAP = [
   { title: 'Joob ecosystem: co-funded escrow', items: 'With PerShare V2: several sponsors pool funds and open one JoobEscrow escrow, paid only on delivery; refunds return pro-rata in the same currency. Built on Escrow V5, audited before launch.' },
   { title: 'JOOB governance', items: 'JOOB holders vote on protocol decisions: new categories, fee tiers, ecosystem grants. Off-chain votes first, then on-chain governance, and staked arbitrators.' },
 ];
-// Repartition de la levee (decision du 03/10/2026).
+
 const USE_OF_FUNDS = [
-  { name: 'PancakeSwap liquidity', pct: 40, color: '#06b6d4', text: 'JOOB/stablecoin pool at the $0.02 listing price, LP tokens locked 12 months or more.' },
-  { name: 'Product development', pct: 30, color: '#3b82f6', text: 'Escrow V5 (holder fee tiers, governance), PerShare V2 and the co-funded escrow, the "as easy as a Web2 app" layer.' },
-  { name: 'Audits & security', pct: 10, color: '#10b981', text: 'Audits of Escrow V5 and PerShare V2, bug bounty, monitoring.' },
-  { name: 'Growth', pct: 10, color: '#f59e0b', text: 'KOL campaigns, listings, partnerships.' },
-  { name: 'Operations & reserve', pct: 10, color: '#64748b', text: 'Infrastructure, legal, contingencies.' },
+  { name: 'PancakeSwap liquidity', pct: 40, text: `JOOB/stablecoin pool at the $${PLANNED_LISTING_PRICE} listing price, LP tokens locked 12 months or more.` },
+  { name: 'Product development', pct: 30, text: 'Escrow V5 (holder fee tiers, governance), PerShare V2 and the co-funded escrow, the "as easy as a Web2 app" layer.' },
+  { name: 'Audits & security', pct: 10, text: 'Audits of Escrow V5 and PerShare V2, bug bounty, monitoring.' },
+  { name: 'Growth', pct: 10, text: 'KOL campaigns, listings, partnerships.' },
+  { name: 'Operations & reserve', pct: 10, text: 'Infrastructure, legal, contingencies.' },
 ];
-const SEGMENTS = TOKENOMICS_SEGMENTS;
 
 function TokenomicsDonut() {
-  const R = 15.9155; // circonference = 100
+  const R = 15.9155;
   return (
-    <svg viewBox="0 0 42 42" className={styles.donut} role="img" aria-label="JOOB token allocation">
-      <circle cx="21" cy="21" r={R} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="6" />
-      {SEGMENTS.map((t) => (
-        <circle
+    <svg viewBox="0 0 42 42" width="240" height="240" role="img" aria-label="JOOB token allocation">
+      <circle cx="21" cy="21" r={R} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="5" />
+      {TOKENOMICS_SEGMENTS.map((t) => {
+        const len = Math.max(t.pct - 0.3, 0.2);
+        return (
+          <circle
             key={t.name}
-            cx="21" cy="21" r={R} fill="none" stroke={t.color} strokeWidth="6"
-            strokeDasharray={`${Math.max(t.pct - 0.3, 0.2)} ${100 - Math.max(t.pct - 0.3, 0.2)}`}
+            cx="21"
+            cy="21"
+            r={R}
+            fill="none"
+            stroke={t.color}
+            strokeWidth="5"
+            strokeDasharray={`${len} ${100 - len}`}
             strokeDashoffset={25 - t.start}
-            className={styles.donutSeg}
           >
             <title>{`${t.name}: ${t.pct}% (${fmtM(t.pct)} JOOB)`}</title>
           </circle>
-      ))}
+        );
+      })}
     </svg>
   );
 }
 
 const STATUS_LABEL = { done: 'Done', now: 'In progress', next: 'Next' };
+const STATUS_CLASS = { done: styles.tagDone, now: styles.tagNow, next: styles.tagNext };
+const TIMELINE_CLASS = { done: styles.timelineDone, now: styles.timelineNow, next: styles.timelineNext };
 
 export default function PresalePage() {
   return (
-    <>
+    <div className={styles.page}>
       <PresaleClient />
-      <div className={styles.page} style={{ paddingTop: 0 }}>
-        <section className={styles.faq} id="tokenomics">
-          <h2 className={styles.faqTitle}>Tokenomics</h2>
-          <div className={styles.tokenomics}>
-            <div className={styles.donutWrap}>
-              <TokenomicsDonut />
-              <div className={styles.donutCenter}>
-                <strong>1,000,000,000</strong>
-                <span>JOOB · fixed supply</span>
-              </div>
+
+      {/* ── Tokenomics Section ─────────────────────────────────── */}
+      <section className={styles.contentSection} id="tokenomics">
+        <div className={styles.sectionHead}>
+          <span className={styles.sectionTag}>TOKENOMICS & ALLOCATION</span>
+          <h2 className={styles.sectionTitle}>Sustainable On-Chain Economics</h2>
+        </div>
+
+        <div className={styles.tokenomicsWrap}>
+          <div className={styles.donutHolder}>
+            <TokenomicsDonut />
+            <div className={styles.donutCenter}>
+              <div className={`${styles.donutBigVal} ${styles.titleGradient}`}>1B</div>
+              <div className={styles.donutSubLabel}>MAX SUPPLY JOOB</div>
             </div>
-            <ul className={styles.allocList}>
-              {TOKENOMICS.map((t) => (
-                <li key={t.name} className={styles.allocItem}>
-                  <span className={styles.allocDot} style={{ background: t.color }} />
-                  <div className={styles.allocBody}>
-                    <div className={styles.allocHead}>
-                      <span className={styles.allocName}>{t.name}{t.highlight && <span className={styles.allocIncl}> (incl. <strong>{t.highlight}</strong>)</span>}</span>
-                      <span className={styles.allocPct}>{t.pct}%</span>
-                    </div>
-                    <div className={styles.allocMeta}>
-                      {fmtM(t.pct)} JOOB · {t.vesting}
-                      {t.contract ? (
-                        <a href={`https://bscscan.com/address/${t.contract}`} target="_blank" rel="noopener noreferrer" className={`${styles.allocTag} ${styles.allocTagOn}`}>
-                          Locked on-chain ↗
-                        </a>
-                      ) : (
-                        <span className={`${styles.allocTag} ${t.onChain ? styles.allocTagOn : ''}`}>
-                          {t.onChain ? 'Enforced on-chain' : 'Planned'}
-                        </span>
-                      )}
-                    </div>
+          </div>
+
+          <ul className={styles.tokenomicsList}>
+            {TOKENOMICS.map((t) => (
+              <li key={t.name} className={styles.tokenomicsItem}>
+                <span className={styles.tokenomicsDot} style={{ background: t.color }} />
+                <div className={styles.tokenomicsDetails}>
+                  <div className={styles.tokenomicsRow1}>
+                    <span>
+                      {t.name}
+                      {t.highlight && <span style={{ color: '#a3e635', fontSize: '0.8rem', marginLeft: '6px' }}>({t.highlight})</span>}
+                    </span>
+                    <span>{t.pct}%</span>
                   </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <p className={styles.fine}>
-            Fixed supply, no mint function, no transfer tax. Presale tokens that are not sold are returned to the Safe and burned in a public, verifiable transaction after the sale.
-            &quot;Enforced on-chain&quot; means the vesting is held by the deployed, audited presale contract; &quot;Planned&quot;
-            allocations stay in the JoobEscrow Safe multisig until their vesting contracts are deployed.
-          </p>
-          <p className={styles.commitment}>
-            <strong>Transparency commitment:</strong> allocations not yet in a vesting contract stay in our 3-of-5 Safe
-            multisig. Every outgoing JOOB transfer from the Safe is publicly disclosed with its purpose and transaction
-            link. Tokens allocated to partners are locked in their own on-chain vesting contract.
-          </p>
-        </section>
-
-        <section className={styles.faq} id="use-of-funds">
-          <h2 className={styles.faqTitle}>Use of funds</h2>
-          <div className={styles.fundsList}>
-            {USE_OF_FUNDS.map((f) => (
-              <div key={f.name} className={styles.fundsRow}>
-                <div className={styles.fundsHead}>
-                  <span className={styles.allocName}>{f.name}</span>
-                  <span className={styles.allocPct}>{f.pct}%</span>
+                  <div className={styles.tokenomicsRow2}>
+                    <span>{fmtM(t.pct)} JOOB · {t.vesting}</span>
+                    {t.contract ? (
+                      <a href={`https://bscscan.com/address/${t.contract}`} target="_blank" rel="noopener noreferrer" className={`${styles.tokenomicsTag} ${styles.tokenomicsTagOn}`}>
+                        Locked on-chain ↗
+                      </a>
+                    ) : (
+                      <span className={`${styles.tokenomicsTag} ${t.onChain ? styles.tokenomicsTagOn : ''}`}>
+                        {t.onChain ? 'Enforced on-chain' : 'Planned'}
+                      </span>
+                    )}
+                  </div>
                 </div>
-                <div className={styles.fundsBar}><span style={{ width: `${f.pct}%`, background: f.color }} /></div>
-                <p className={styles.fundsText}>{f.text}</p>
-              </div>
+              </li>
             ))}
-          </div>
-          <p className={styles.fine}>
-            Funds raised are held by our 3-of-5 Safe multisig and every outgoing transfer is disclosed. Liquidity is added at the planned
-            listing price; the DEX allocation of the tokenomics is a cap, not a promise of liquidity depth.
-          </p>
-        </section>
+          </ul>
+        </div>
 
-        <section className={styles.faq} id="ecosystem">
-          <h2 className={styles.faqTitle}>The Joob ecosystem</h2>
-          <p className={styles.ecoLead}>Two building blocks, one token.</p>
-          <div className={styles.ecoGrid}>
-            <div className={styles.ecoCard}>
-              <span className={styles.ecoTag}>1 → 1</span>
-              <h3>JoobEscrow</h3>
-              <p>Secures a deal between two parties: funds stay locked on-chain until the work is approved. Live and audited.</p>
-            </div>
-            <div className={styles.ecoCard}>
-              <span className={styles.ecoTag}>Many → 1 goal</span>
-              <h3>PerShare</h3>
-              <p>A collective pool: up to 50 members fund one goal, the group validates together, or everyone is refunded automatically.
-                An advanced proof of concept, live on BNB Chain and{' '}
-                <a href="https://spywolf.co/audits/PerShare_Audit.pdf" target="_blank" rel="noopener noreferrer" className={styles.link}>audited by SpyWolf</a>.{' '}
-                <a href="https://www.pershare.org" target="_blank" rel="noopener noreferrer" className={styles.link}>pershare.org ↗</a></p>
-            </div>
-            <div className={styles.ecoCard}>
-              <span className={styles.ecoTag}>One token</span>
-              <h3>JOOB</h3>
-              <p>Powers both: governance, fee tiers and staking on JoobEscrow, and 0% fees on PerShare for holders above a threshold
-                (from the TGE). Next step: PerShare pools that directly fund a JoobEscrow escrow.</p>
-            </div>
-          </div>
-          <div className={styles.ecoDiagram}>
-            <CoFundedEscrowDiagram />
-          </div>
-        </section>
+        <p className={styles.fineText}>
+          Fixed supply, no mint function, no transfer tax. Presale tokens that are not sold are returned to the Safe and burned in a public, verifiable transaction after the sale.
+          &quot;Enforced on-chain&quot; means the vesting is held by the deployed, audited presale contract; &quot;Planned&quot;
+          allocations stay in the JoobEscrow Safe multisig until their vesting contracts are deployed.
+        </p>
+      </section>
 
-        <section className={styles.faq} id="roadmap">
-          <h2 className={styles.faqTitle}>Roadmap</h2>
-          <ol className={styles.roadmap}>
-            {ROADMAP.map((phase, i) => (
-              <li key={phase.title} className={`${styles.phase} ${phase.status ? styles[`phase_${phase.status}`] : ''}`}>
-                <div className={styles.phaseHead}>
-                  <span className={styles.phaseNum}>{i + 1}</span>
-                  <span className={styles.phaseTitle}>{phase.title}</span>
-                  {phase.status && <span className={styles.phaseTag}>{STATUS_LABEL[phase.status]}</span>}
+      {/* ── Use of Funds Section ───────────────────────────────── */}
+      <section className={styles.contentSection} id="use-of-funds">
+        <div className={styles.sectionHead}>
+          <span className={styles.sectionTag}>CAPITAL ALLOCATION</span>
+          <h2 className={styles.sectionTitle}>Use of Funds</h2>
+        </div>
+
+        <div className={styles.fundsWrap}>
+          {USE_OF_FUNDS.map((f) => (
+            <div key={f.name} className={styles.fundsRow}>
+              <div className={styles.fundsHead}>
+                <span>{f.name}</span>
+                <span style={{ color: '#a3e635' }}>{f.pct}%</span>
+              </div>
+              <div className={styles.fundsBar}>
+                <div className={styles.fundsFill} style={{ width: `${f.pct}%` }} />
+              </div>
+              <p className={styles.fundsText}>{f.text}</p>
+            </div>
+          ))}
+        </div>
+
+        <p className={styles.fineText}>
+          Funds raised are held by our 3-of-5 Safe multisig and every outgoing transfer is disclosed. Liquidity is added at the planned
+          listing price; the DEX allocation of the tokenomics is a cap, not a promise of liquidity depth.
+        </p>
+      </section>
+
+      {/* ── Ecosystem Section ──────────────────────────────────── */}
+      <section className={styles.contentSection} id="ecosystem">
+        <div className={styles.sectionHead}>
+          <span className={styles.sectionTag}>SYNERGY & UTILITY</span>
+          <h2 className={styles.sectionTitle}>The Joob Ecosystem</h2>
+        </div>
+
+        <div className={styles.ecoCardsGrid}>
+          <div className={styles.ecoCard}>
+            <span className={styles.ecoTag}>1 → 1</span>
+            <h3>JoobEscrow</h3>
+            <p>Secures a deal between two parties: funds stay locked on-chain until the work is approved. Live and audited.</p>
+          </div>
+
+          <div className={styles.ecoCard}>
+            <span className={styles.ecoTag}>Many → 1 goal</span>
+            <h3>PerShare</h3>
+            <p>
+              A collective pool: up to 50 members fund one goal, the group validates together, or everyone is refunded automatically.
+              Live on BNB Chain and <a href="https://spywolf.co/audits/PerShare_Audit.pdf" target="_blank" rel="noopener noreferrer">audited by SpyWolf</a>.{' '}
+              <a href="https://www.pershare.org" target="_blank" rel="noopener noreferrer">pershare.org ↗</a>
+            </p>
+          </div>
+
+          <div className={styles.ecoCard}>
+            <span className={styles.ecoTag}>One token</span>
+            <h3>JOOB</h3>
+            <p>
+              Powers both: governance, fee tiers and staking on JoobEscrow, and 0% fees on PerShare for holders above a threshold
+              (from the TGE). Next step: PerShare pools that directly fund a JoobEscrow escrow.
+            </p>
+          </div>
+        </div>
+
+        <div className={styles.diagramFrame}>
+          <CoFundedEscrowDiagram />
+        </div>
+      </section>
+
+      {/* ── Roadmap Section ────────────────────────────────────── */}
+      <section className={styles.contentSection} id="roadmap">
+        <div className={styles.sectionHead}>
+          <span className={styles.sectionTag}>DEVELOPMENT PHASES</span>
+          <h2 className={styles.sectionTitle}>Roadmap &amp; Milestones</h2>
+        </div>
+
+        <div style={{ background: 'rgba(17, 24, 31, 0.55)', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '24px', padding: '36px 32px', marginBottom: '24px' }}>
+          <ol className={styles.timeline}>
+            {ROADMAP.map((phase) => (
+              <li key={phase.title} className={`${styles.timelineStep} ${phase.status ? TIMELINE_CLASS[phase.status] : ''}`}>
+                <div className={styles.timelineHead}>
+                  <span className={styles.timelineTitle}>{phase.title}</span>
+                  {phase.status && (
+                    <span className={`${styles.timelineTag} ${STATUS_CLASS[phase.status]}`}>
+                      {STATUS_LABEL[phase.status]}
+                    </span>
+                  )}
                 </div>
-                <p>{phase.items}</p>
+                <p className={styles.timelineDesc}>{phase.items}</p>
               </li>
             ))}
           </ol>
-          <p className={styles.fine}>
-            Every new contract version is audited before launch. Phases after the presale have no fixed date: they depend on
-            development, audits and adoption, and may change.
-          </p>
-        </section>
+        </div>
 
-        <section className={styles.faq} id="faq">
-          <h2 className={styles.faqTitle}>JOOB token FAQ</h2>
-          {FAQ.map((item) => (
-            <details key={item.q} className={styles.faqItem}>
-              <summary>{item.q}</summary>
-              <p>{item.a}</p>
-            </details>
-          ))}
-          <p className={styles.fine}>
-            Read the full <Link href="/presale-terms" className={styles.link}>Presale Terms</Link> and
-            the <Link href="/risks" className={styles.link}>Risks &amp; Disclaimers</Link> before participating.
-          </p>
-        </section>
-      </div>
-    </>
+        <p className={styles.fineText}>
+          Every new contract version is audited before launch. Phases after the presale have no fixed date: they depend on
+          development, audits and adoption, and may change.
+        </p>
+      </section>
+
+      {/* ── FAQ Section ────────────────────────────────────────── */}
+      <section className={styles.contentSection} id="faq">
+        <div className={styles.sectionHead}>
+          <span className={styles.sectionTag}>QUESTIONS &amp; ANSWERS</span>
+          <h2 className={styles.sectionTitle}>JOOB Token FAQ</h2>
+        </div>
+
+        <PresaleFaq />
+
+        <p className={styles.fineText} style={{ textAlign: 'center', marginTop: '28px' }}>
+          Read the full <Link href="/presale-terms">Presale Terms</Link> and
+          the <Link href="/risks">Risks &amp; Disclaimers</Link> before participating.
+        </p>
+      </section>
+    </div>
   );
 }

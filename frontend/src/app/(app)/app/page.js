@@ -12,13 +12,13 @@ export default function HubPage() {
       </p>
 
       <Link href="/try" style={{ textDecoration: 'none', display: 'block', maxWidth: '720px', margin: '0 auto 40px' }}>
-        <div className="glass-panel" style={{ borderColor: 'rgba(245, 158, 11, 0.5)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px', flexWrap: 'wrap' }}>
+        <div className="glass-panel" style={{ borderColor: 'rgba(163, 230, 53, 0.4)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px', flexWrap: 'wrap' }}>
           <div>
-            <span style={{ padding: '2px 10px', borderRadius: '999px', background: '#f59e0b', color: '#111', fontWeight: 800, fontSize: '0.75rem' }}>DEMO</span>
+            <span style={{ padding: '2px 10px', borderRadius: '999px', background: 'linear-gradient(90deg, #d9f99d, #a3e635)', color: '#0d1117', fontWeight: 800, fontSize: '0.75rem', letterSpacing: '0.04em' }}>DEMO</span>
             <h2 style={{ color: '#fff', fontSize: '1.2rem', margin: '8px 0 4px' }}>New here? Try it with $1</h2>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Run a full escrow between two of your own wallets. 0% fee, 1 to 20 USDT or USDC.</p>
           </div>
-          <span className="btn btn-primary" style={{ background: '#f59e0b', borderColor: '#f59e0b', color: '#111' }}>Start the demo →</span>
+          <span className="btn btn-primary">Start the demo →</span>
         </div>
       </Link>
 

@@ -576,6 +576,13 @@
   color: #cbd5e1;
 }
 
+.refBtn {
+  padding: 14px 34px;
+  font-size: 1rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
 /* Responsive */
 @media (max-width: 1024px) {
   .heroGrid {
@@ -609,6 +616,13 @@
   }
   .referralBanner {
     flex-direction: column;
+    text-align: center;
+    padding: 36px 20px;
+    gap: 20px;
+  }
+  .refBtn {
+    width: 100%;
+    justify-content: center;
     text-align: center;
   }
 }
