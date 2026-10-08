@@ -24,14 +24,21 @@ export default function AppGuard({ children }) {
       )}
       {!account && !isPublic ? (
         <div style={{ display: 'flex', flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px' }}>
-          <div className="glass-panel" style={{ textAlign: 'center', maxWidth: '500px', padding: '40px' }}>
-            <h2 style={{ marginBottom: '15px' }}>Wallet Not Connected</h2>
-            <p style={{ color: 'var(--text-secondary)', marginBottom: '25px', lineHeight: 1.6 }}>
+          <div className="glass-panel connect-card">
+            <div className="connect-icon" aria-hidden="true">🔐</div>
+            <h2 className="connect-title">Connect your <span className="text-gradient">wallet</span></h2>
+            <p className="connect-text">
               Please connect your Web3 wallet (MetaMask, TrustWallet) to access the dashboard, manage your contracts, and secure your transactions.
             </p>
-            <button className="btn btn-primary" onClick={connectWallet} style={{ fontSize: '1.1rem', padding: '12px 30px' }}>
+            <ul className="connect-points">
+              <li>Funds locked in an audited contract</li>
+              <li>0% fee for the client</li>
+              <li>We never ask for your seed phrase</li>
+            </ul>
+            <button className="btn btn-primary btn-lg" onClick={connectWallet}>
               Connect Wallet
             </button>
+            <div className="connect-powered">Powered by Reown · 700+ wallets</div>
           </div>
         </div>
       ) : (
