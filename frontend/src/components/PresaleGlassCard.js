@@ -87,7 +87,7 @@ export default function PresaleGlassCard() {
       {isPending ? (
         <div className={styles.countdownBox}>
           <div className={styles.boxLabel}>Presale Opens In</div>
-          <CountdownDisplay seconds={countdownSeconds} />
+          {computedState === 'LOADING' ? <span style={{ opacity: 0.6 }}>Loading…</span> : <CountdownDisplay seconds={countdownSeconds} />}
         </div>
       ) : (
         <div className={styles.raisedBox}>

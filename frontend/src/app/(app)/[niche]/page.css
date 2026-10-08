@@ -177,3 +177,12 @@
   .demo-guide-link { width: 100%; text-align: center; }
   .empty-panel { padding: 20px; }
 }
+
+/* Stats compactes (inspiration widget de cotations) */
+.stats-grid { gap: 12px; }
+.stat-card { padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.stat-card .stat-value { margin-top: 0; font-size: 1.45rem; }
+@media (max-width: 640px) {
+  .stat-card { flex-direction: column; justify-content: center; gap: 4px; padding: 10px; }
+  .stat-card .stat-value { font-size: 1.2rem; }
+}
