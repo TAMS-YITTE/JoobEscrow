@@ -5,6 +5,7 @@ import PresaleFaq from './PresaleFaq';
 import styles from './presale.module.css';
 import { TOKENOMICS, TOKENOMICS_SEGMENTS, fmtM } from '../../../config/tokenomics';
 import { PLANNED_LISTING_PRICE } from '../../../config/presale';
+import { ROADMAP_STEPS, ROADMAP_STATUS_LABEL } from '../../../config/roadmap';
 
 export const metadata = {
   title: 'JOOB Token Presale | JoobEscrow',
@@ -22,19 +23,6 @@ export const metadata = {
     description: 'Opens October 15, 2026 at 14:00 UTC. Starts at $0.001, sealed token vault, on-chain vesting, contracts audited by SpyWolf.',
   },
 };
-
-const ROADMAP = [
-  { title: 'Foundations', status: 'done', items: 'Audited escrow contract, verified on BscScan, owned by a Safe multisig. 15 categories and encrypted in-app chat.' },
-  { title: 'Trust layer', status: 'now', items: 'Check a deal before you pay. Live: $1 demo with a step-by-step guide, shareable escrow links. Next: public deal pages anyone can verify without a wallet, Telegram alerts, dispute evidence recorded on-chain.' },
-  { title: 'JOOB presale', status: 'next', items: 'October 15, 2026 → January 13, 2027. Sealed vault, vesting for every participant, unsold tokens returned to the Safe and burned in a public transaction.' },
-  { title: 'TGE & liquidity', items: `JOOB/USDT pool on PancakeSwap at an initial price of $${PLANNED_LISTING_PRICE}, JOOB staking opens (contract already audited), JOOB activated on PerShare, first JOOB utilities (boosts & badges), Early Escrow points.` },
-  { title: 'Escrow V5', items: 'JOOB holder fee tiers: stake JOOB to pay lower fees, up to a full fee waiver at the highest tier. On-chain affiliate rewards, gasless payouts, verified reputation profiles.' },
-  { title: 'Escrow V5.1', items: 'Milestone payments, partial releases, amicable settlement, bulk deals for agencies.' },
-  { title: 'As easy as a Web2 app', items: 'Hide the Web3 complexity: sign in with email or social accounts, no seed phrase to start, network fees covered for users, pay by card. Same on-chain security, your keys stay yours.' },
-  { title: 'Expansion', items: 'Multichain, API & "Pay me with JoobEscrow" widget, receipts & invoices.' },
-  { title: 'Joob ecosystem: co-funded escrow', items: 'With PerShare V2: several sponsors pool funds and open one JoobEscrow escrow, paid only on delivery; refunds return pro-rata in the same currency. Built on Escrow V5, audited before launch.' },
-  { title: 'JOOB governance', items: 'JOOB holders vote on protocol decisions: new categories, fee tiers, ecosystem grants. Off-chain votes first, then on-chain governance, and staked arbitrators.' },
-];
 
 const USE_OF_FUNDS = [
   { name: 'PancakeSwap liquidity', pct: 40, text: `JOOB/stablecoin pool at the $${PLANNED_LISTING_PRICE} listing price, LP tokens locked 12 months or more.` },
@@ -71,7 +59,6 @@ function TokenomicsDonut() {
   );
 }
 
-const STATUS_LABEL = { done: 'Done', now: 'In progress', next: 'Next' };
 const STATUS_CLASS = { done: styles.tagDone, now: styles.tagNow, next: styles.tagNext };
 const TIMELINE_CLASS = { done: styles.timelineDone, now: styles.timelineNow, next: styles.timelineNext };
 
@@ -214,13 +201,13 @@ export default function PresalePage() {
 
         <div style={{ background: 'rgba(17, 24, 31, 0.55)', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '24px', padding: '36px 32px', marginBottom: '24px' }}>
           <ol className={styles.timeline}>
-            {ROADMAP.map((phase) => (
+            {ROADMAP_STEPS.map((phase) => (
               <li key={phase.title} className={`${styles.timelineStep} ${phase.status ? TIMELINE_CLASS[phase.status] : ''}`}>
                 <div className={styles.timelineHead}>
                   <span className={styles.timelineTitle}>{phase.title}</span>
                   {phase.status && (
                     <span className={`${styles.timelineTag} ${STATUS_CLASS[phase.status]}`}>
-                      {STATUS_LABEL[phase.status]}
+                      {ROADMAP_STATUS_LABEL[phase.status]}
                     </span>
                   )}
                 </div>

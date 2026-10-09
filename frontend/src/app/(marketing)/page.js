@@ -9,6 +9,14 @@ import FeeCalculator from '../../components/FeeCalculator';
 import LiteYouTube from '../../components/LiteYouTube';
 import { AUDITS } from '../../config/presale';
 import { TOKENOMICS, TOKENOMICS_SEGMENTS, fmtM } from '../../config/tokenomics';
+import { ROADMAP_PHASES_WITH_STATUS } from '../../config/roadmap';
+
+const PHASE_STATUS = {
+  done: ['COMPLETED', styles.phaseStatusDone],
+  now: ['IN PROGRESS', styles.phaseStatusActive],
+  next: ['NEXT', styles.phaseStatusUpcoming],
+  upcoming: ['UPCOMING', styles.phaseStatusUpcoming],
+};
 
 export const metadata = {
   title: 'JoobEscrow — Non-Custodial Smart Escrow & JOOB Presale',
@@ -256,49 +264,19 @@ export default function LandingPage() {
           </div>
 
           <div className={styles.roadmapGrid}>
-            <div className={`glass-panel ${styles.roadCard}`}>
-              <div className={styles.roadPhaseHeader}>
-                <span className={styles.phaseTag}>PHASE 01</span>
-                <span className={styles.phaseStatusDone}>COMPLETED</span>
+            {ROADMAP_PHASES_WITH_STATUS.map((p) => (
+              <div key={p.phase} className={`glass-panel ${styles.roadCard} ${p.status === 'now' ? styles.roadCardActive : ''}`}>
+                <div className={styles.roadPhaseHeader}>
+                  <span className={styles.phaseTag}>PHASE {p.phase}</span>
+                  <span className={PHASE_STATUS[p.status ?? 'upcoming'][1]}>{PHASE_STATUS[p.status ?? 'upcoming'][0]}</span>
+                </div>
+                <h3 className={styles.roadTitle}>{p.title}</h3>
+                <p className={styles.roadDesc}>{p.summary}</p>
               </div>
-              <h3 className={styles.roadTitle}>Architecture & Security</h3>
-              <p className={styles.roadDesc}>
-                Contract deployment on BSC, SpyWolf security audit pass, 3-of-5 multisig and linear vesting architecture.
-              </p>
-            </div>
-
-            <div className={`glass-panel ${styles.roadCard} ${styles.roadCardActive}`}>
-              <div className={styles.roadPhaseHeader}>
-                <span className={styles.phaseTag}>PHASE 02</span>
-                <span className={styles.phaseStatusActive}>IN PROGRESS</span>
-              </div>
-              <h3 className={styles.roadTitle}>Presale & Traction</h3>
-              <p className={styles.roadDesc}>
-                Presale Vault activation, $1 interactive sandbox (/try), BscScan verification and CoinMarketCap community launch.
-              </p>
-            </div>
-
-            <div className={`glass-panel ${styles.roadCard}`}>
-              <div className={styles.roadPhaseHeader}>
-                <span className={styles.phaseTag}>PHASE 03</span>
-                <span className={styles.phaseStatusUpcoming}>UPCOMING</span>
-              </div>
-              <h3 className={styles.roadTitle}>TGE & Staking</h3>
-              <p className={styles.roadDesc}>
-                PancakeSwap DEX pool launch with locked liquidity, burn of 100% unsold presale tokens, and audited staking activation.
-              </p>
-            </div>
-
-            <div className={`glass-panel ${styles.roadCard}`}>
-              <div className={styles.roadPhaseHeader}>
-                <span className={styles.phaseTag}>PHASE 04</span>
-                <span className={styles.phaseStatusUpcoming}>UPCOMING</span>
-              </div>
-              <h3 className={styles.roadTitle}>Web2 Simplicity & V5</h3>
-              <p className={styles.roadDesc}>
-                Account abstraction (email sign-in, card fiat onramp, gasless transactions) and Escrow V5 fee-waivers.
-              </p>
-            </div>
+            ))}
+          </div>
+          <div style={{ textAlign: 'center', marginTop: '24px' }}>
+            <Link href="/presale#roadmap" className="text-gradient font-bold hover:underline">Detailed roadmap →</Link>
           </div>
         </div>
       </section>

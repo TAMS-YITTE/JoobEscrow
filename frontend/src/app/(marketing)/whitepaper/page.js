@@ -3,6 +3,7 @@ import styles from './whitepaper.module.css';
 import PrintButton from './PrintButton';
 import CoFundedEscrowDiagram from '../../../components/CoFundedEscrowDiagram';
 import { AUDITS, PRESALE_ADDRESSES, PLANNED_LISTING_PRICE } from '../../../config/presale';
+import { ROADMAP_STEPS, ROADMAP_STATUS_LABEL } from '../../../config/roadmap';
 import { TOKENOMICS, TOKENOMICS_SEGMENTS, fmtM } from '../../../config/tokenomics';
 
 export const metadata = {
@@ -47,19 +48,8 @@ const USE_OF_FUNDS = [
   ['Operations & reserve', 10, 'Infrastructure, legal, contingencies'],
 ];
 
-const ROADMAP = [
-  ['Foundations', 'done', 'Audited escrow contract, verified on BscScan, owned by a Safe multisig; 15 categories and encrypted chat.'],
-  ['Trust layer', 'now', '$1 demo, shareable escrow links; next, public deal pages verifiable without a wallet, Telegram alerts, on-chain dispute evidence.'],
-  ['JOOB presale', 'next', 'October 15, 2026 → January 13, 2027.'],
-  ['TGE & liquidity', null, `PancakeSwap pool at $${PLANNED_LISTING_PRICE}, JOOB staking opens, JOOB activated on PerShare, first JOOB utilities, Early Escrow points.`],
-  ['Escrow V5', null, 'JOOB holder fee tiers up to a full fee waiver, on-chain affiliate rewards, gasless payouts, verified reputation profiles (audit before deployment).'],
-  ['As easy as a Web2 app', null, 'Email or social sign-in, no seed phrase to start, network fees covered, card payments.'],
-  ['Expansion', null, 'Multichain, API and widget, receipts and invoices.'],
-  ['Joob ecosystem: co-funded escrow', null, 'With PerShare V2, several sponsors pool funds and open one JoobEscrow escrow, paid only on delivery; built on Escrow V5, audited before launch.'],
-  ['JOOB governance', null, 'Holders vote on categories, fee tiers and ecosystem grants; off-chain first, then on-chain; staked arbitrators.'],
-];
 const STEP_CLASS = { done: styles.stepDone, now: styles.stepNow, next: styles.stepNext };
-const STATUS = { done: ['Done', styles.statusDone], now: ['In progress', styles.statusNow], next: ['Next', styles.statusNext] };
+const STATUS_CLASS = { done: styles.statusDone, now: styles.statusNow, next: styles.statusNext };
 
 const CONTRACTS = [
   ['JOOB token', PRESALE_ADDRESSES.TOKEN, 'token'],
@@ -348,13 +338,13 @@ export default function WhitepaperPage() {
 
           <Section id="roadmap" n={sec('roadmap')} title={title('roadmap')}>
             <ol className={styles.timeline}>
-              {ROADMAP.map(([t, st, d]) => (
+              {ROADMAP_STEPS.map(({ title: t, status: st, items }) => (
                 <li key={t} className={`${styles.step} ${st ? STEP_CLASS[st] : ''}`}>
                   <div className={styles.stepTitle}>
                     {t}
-                    {st && <span className={`${styles.status} ${STATUS[st][1]}`}>{STATUS[st][0]}</span>}
+                    {st && <span className={`${styles.status} ${STATUS_CLASS[st]}`}>{ROADMAP_STATUS_LABEL[st]}</span>}
                   </div>
-                  <div className={styles.stepText}>{d}</div>
+                  <div className={styles.stepText}>{items}</div>
                 </li>
               ))}
             </ol>
