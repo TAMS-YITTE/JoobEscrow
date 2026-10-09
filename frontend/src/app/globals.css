@@ -338,3 +338,13 @@ h1, h2, h3 {
 .connect-points li::before { content: '✓'; color: #0d1117; background: #a3e635; width: 18px; height: 18px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 900; flex: 0 0 auto; }
 .connect-powered { margin-top: 12px; color: #64748b; font-size: 0.78rem; }
 @media (max-width: 640px) { .connect-card { padding: 28px 20px; } .connect-card .btn { width: 100%; } }
+
+/* Mouvement reduit : coupe animations et transitions decoratives sur tout le site. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
