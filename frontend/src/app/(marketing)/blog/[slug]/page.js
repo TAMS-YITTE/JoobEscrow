@@ -17,8 +17,9 @@ export async function generateMetadata({ params }) {
   const title = titles[slug] || 'Blog Post';
   
   return {
-    title: `${title} | JoobEscrow Blog`,
+    title: `${title} | JoobEscrow`,
     description: `Read about ${title.toLowerCase()} on the JoobEscrow Web3 security blog.`,
+    alternates: { canonical: `/blog/${slug}` },
   };
 }
 

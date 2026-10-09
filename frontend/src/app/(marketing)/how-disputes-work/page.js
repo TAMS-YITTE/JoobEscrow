@@ -3,6 +3,7 @@ import Link from 'next/link';
 export const metadata = {
   title: 'How Disputes Work | JoobEscrow',
   description: 'Understand the lifecycle of a dispute and how our arbitration process ensures fairness.',
+  alternates: { canonical: '/how-disputes-work' },
 };
 
 export default function HowDisputesWorkPage() {

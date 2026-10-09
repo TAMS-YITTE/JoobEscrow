@@ -38,8 +38,9 @@ const AUDIT_CARDS = [
 ];
 
 export const metadata = {
-  title: 'Security & Trust - Joob Escrow',
-  description: 'Our decentralized escrow architecture and security model.',
+  title: 'Security & Trust | JoobEscrow',
+  description: 'JoobEscrow security model: non-custodial escrow contracts audited by SpyWolf, admin actions approved by a 3-of-5 Safe multisig, verified contract addresses and presale permissions.',
+  alternates: { canonical: '/security' },
 };
 
 export default function SecurityPage() {

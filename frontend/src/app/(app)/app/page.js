@@ -1,6 +1,12 @@
 import Link from 'next/link';
 import { instances } from '../../../config/instances';
 
+export const metadata = {
+  title: 'Launch App | JoobEscrow',
+  description: 'Open a JoobEscrow escrow in your category: funds stay locked in an audited non-custodial contract on BNB Smart Chain until the work is approved, the deadline passes or a dispute is settled.',
+  alternates: { canonical: '/app' },
+};
+
 export default function HubPage() {
   const niches = Object.values(instances);
 

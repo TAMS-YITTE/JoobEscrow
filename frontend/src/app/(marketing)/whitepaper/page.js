@@ -7,7 +7,7 @@ import { ROADMAP_STEPS, ROADMAP_STATUS_LABEL } from '../../../config/roadmap';
 import { TOKENOMICS, TOKENOMICS_SEGMENTS, fmtM } from '../../../config/tokenomics';
 
 export const metadata = {
-  title: 'JoobEscrow Whitepaper | On-chain escrow on BNB Chain',
+  title: 'Whitepaper | JoobEscrow',
   description: 'How JoobEscrow secures payments between clients and freelancers, its security model, the JOOB token, tokenomics and presale.',
   alternates: { canonical: '/whitepaper' },
 };

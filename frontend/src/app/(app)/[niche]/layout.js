@@ -17,12 +17,12 @@ export async function generateMetadata({ params }) {
   
   if (!niche) {
     return {
-      title: 'Page Not Found - Joob'
+      title: 'Page not found | JoobEscrow'
     };
   }
 
   return {
-    title: `Joob Escrow | ${niche.name}`,
+    title: `${niche.name} | JoobEscrow`,
     description: niche.isDemo
       ? 'Try JoobEscrow with $1: run a full escrow between two of your own wallets. 0% fee, 1 to 20 USDT or USDC.'
       : `Secure payments between ${niche.lexicon.client} and ${niche.lexicon.provider} with Joob Escrow. ${niche.feeTier}% platform fee.`,

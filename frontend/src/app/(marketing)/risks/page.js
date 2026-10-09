@@ -3,6 +3,7 @@ import Link from 'next/link';
 export const metadata = {
   title: 'Risks & Disclaimers | JoobEscrow',
   description: 'Understand the risks involved in using JoobEscrow. We believe in complete transparency.',
+  alternates: { canonical: '/risks' },
 };
 
 export default function RisksPage() {

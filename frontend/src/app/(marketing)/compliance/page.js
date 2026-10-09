@@ -3,6 +3,7 @@ import React from 'react';
 export const metadata = {
   title: 'Regulatory & Compliance | JoobEscrow',
   description: 'Information regarding JoobEscrow\'s regulatory positioning, arbitration role, and non-custodial nature.',
+  alternates: { canonical: '/compliance' },
 };
 
 export default function CompliancePage() {

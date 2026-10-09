@@ -1,10 +1,14 @@
 import Link from 'next/link';
 import WhatsNextWidget from '../../../../components/WhatsNext';
 
-export const metadata = {
-  title: "What's next | JoobEscrow",
-  description: 'The next JoobEscrow milestones from our public roadmap: alerts, JOOB staking, lower fees, milestone payments and more.',
-};
+export async function generateMetadata({ params }) {
+  const { niche } = await params;
+  return {
+    title: "What's next | JoobEscrow",
+    description: 'The next JoobEscrow milestones from our public roadmap: alerts, JOOB staking, lower fees, milestone payments and more.',
+    alternates: { canonical: `/${niche}/whats-next` },
+  };
+}
 
 export default function WhatsNextPage() {
   return (

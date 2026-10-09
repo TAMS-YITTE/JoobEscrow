@@ -11,12 +11,13 @@ export function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }) {
-  const { handle } = await params;
+  const { niche, handle } = await params;
   return {
-    title: `${handle} - JoobEscrow KOL Profile`,
+    title: `${handle} · KOL profile | JoobEscrow`,
+    alternates: { canonical: `/${niche}/kol/${handle}` },
     description: `Hire ${handle} through JoobEscrow: your payment stays locked on-chain until the work is delivered.`,
     openGraph: {
-      title: `${handle} - JoobEscrow Verified KOL`,
+      title: `${handle} · Verified KOL | JoobEscrow`,
       description: `Hire ${handle} with on-chain escrow: pay only when the work is delivered.`,
     }
   };

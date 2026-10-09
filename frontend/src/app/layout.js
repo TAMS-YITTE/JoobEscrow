@@ -14,15 +14,11 @@ export const metadata = {
     icon: [{ url: '/logo.svg', type: 'image/svg+xml' }, { url: '/logo.png', type: 'image/png' }],
     apple: '/apple-icon.png',
   },
-  alternates: {
-    canonical: '/',
-  },
   openGraph: {
     title: "JoobEscrow | The Universal Web3 Escrow",
     description: "Secure every payment. Pay only when the work is approved. The universal non-custodial escrow platform for freelancers, creators, and businesses.",
     images: [{ url: "/og-image.png", width: 1500, height: 500 }],
     type: "website",
-    url: 'https://www.joobescrow.com',
   },
   twitter: {
     card: "summary_large_image",

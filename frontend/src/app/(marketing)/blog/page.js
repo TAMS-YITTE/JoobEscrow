@@ -3,6 +3,7 @@ import Link from 'next/link';
 export const metadata = {
   title: 'Blog | JoobEscrow',
   description: 'News, guides, and insights on decentralized escrow, freelancing, and Web3 security.',
+  alternates: { canonical: '/blog' },
 };
 
 export default function BlogIndex() {

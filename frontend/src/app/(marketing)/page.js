@@ -19,8 +19,9 @@ const PHASE_STATUS = {
 };
 
 export const metadata = {
-  title: 'JoobEscrow — Non-Custodial Smart Escrow & JOOB Presale',
+  title: 'Non-Custodial Smart Escrow & JOOB Presale | JoobEscrow',
   description: 'Secure every freelance and commercial payment with non-custodial smart contracts on BNB Smart Chain. Audited by SpyWolf, governed by 3-of-5 multisig.',
+  alternates: { canonical: '/' },
 };
 
 export default function LandingPage() {
