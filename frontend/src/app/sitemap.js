@@ -37,6 +37,24 @@ export default function sitemap() {
       priority: 0.7,
     },
     {
+      url: 'https://www.joobescrow.com/tokenomics',
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
+      url: 'https://www.joobescrow.com/ecosystem',
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
+      url: 'https://www.joobescrow.com/roadmap',
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
       url: 'https://www.joobescrow.com/whitepaper',
       lastModified: new Date(),
       changeFrequency: 'monthly',

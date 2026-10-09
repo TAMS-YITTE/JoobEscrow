@@ -236,7 +236,7 @@ export default function LandingPage() {
                   <div className={styles.legendTrack}><div className={styles.legendFill} style={{ width: `${(t.pct / 25) * 100}%`, background: t.color }}></div></div>
                 </div>
               ))}
-              <Link href="/presale#tokenomics" className="text-gradient font-bold hover:underline">Full tokenomics and vesting →</Link>
+              <Link href="/tokenomics" className="text-gradient font-bold hover:underline">Full tokenomics and vesting →</Link>
             </div>
           </div>
         </div>
@@ -277,7 +277,7 @@ export default function LandingPage() {
             ))}
           </div>
           <div style={{ textAlign: 'center', marginTop: '24px' }}>
-            <Link href="/presale#roadmap" className="text-gradient font-bold hover:underline">Detailed roadmap →</Link>
+            <Link href="/roadmap" className="text-gradient font-bold hover:underline">Detailed roadmap →</Link>
           </div>
         </div>
       </section>

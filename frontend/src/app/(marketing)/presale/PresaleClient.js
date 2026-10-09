@@ -424,10 +424,10 @@ export default function PresaleClient() {
       <div className={styles.quickNavWrap}>
         <nav className={styles.quickNav} aria-label="Quick links">
           <Link href="/whitepaper" className={styles.quickPill}>Whitepaper</Link>
-          <a href="#tokenomics" className={styles.quickPill}>Tokenomics</a>
-          <a href="#use-of-funds" className={styles.quickPill}>Use of funds</a>
-          <a href="#ecosystem" className={styles.quickPill}>Ecosystem</a>
-          <a href="#roadmap" className={styles.quickPill}>Roadmap</a>
+          <Link href="/tokenomics" className={styles.quickPill}>Tokenomics</Link>
+          <Link href="/tokenomics#use-of-funds" className={styles.quickPill}>Use of funds</Link>
+          <Link href="/ecosystem" className={styles.quickPill}>Ecosystem</Link>
+          <Link href="/roadmap" className={styles.quickPill}>Roadmap</Link>
           <a href="#referral" className={styles.quickPill}>Referral</a>
           <a href="#faq" className={styles.quickPill}>FAQ</a>
           <Link href="/presale-terms" className={styles.quickPill}>Terms</Link>

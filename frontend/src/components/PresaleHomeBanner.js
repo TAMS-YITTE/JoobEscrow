@@ -24,7 +24,7 @@ export default function PresaleHomeBanner() {
   const open = now !== null && now >= PRESALE_START;
 
   return (
-    <Link href="/presale#tokenomics" className={styles.presaleBanner}>
+    <Link href="/tokenomics" className={styles.presaleBanner}>
       <div className={styles.presaleBannerHead}>
         <span className={styles.presaleBannerTag}>JOOB presale</span>
         <span className={styles.presaleBannerTime}>

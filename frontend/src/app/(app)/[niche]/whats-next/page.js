@@ -25,7 +25,7 @@ export default function WhatsNextPage() {
       <WhatsNextWidget title="Coming to JoobEscrow" />
 
       <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-        <Link href="/whitepaper#roadmap" className="btn btn-outline">Full roadmap in the whitepaper →</Link>
+        <Link href="/roadmap" className="btn btn-outline">Full roadmap →</Link>
         <Link href="/presale" className="btn btn-primary">Join the JOOB presale →</Link>
       </div>
     </div>
