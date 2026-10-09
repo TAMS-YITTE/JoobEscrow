@@ -494,7 +494,7 @@ export default function PresaleClient() {
 
           {soldOut && (
             <div className={`${styles.feedback} ${styles.feedbackInfo}`}>
-              The cap is reached: no further purchases are accepted. Claims open after the end date ({fmtDate(global.endTime)}).
+              The cap is reached: less than 1 JOOB is left to sell. Claims open after the end date ({fmtDate(global.endTime)}).
             </div>
           )}
 

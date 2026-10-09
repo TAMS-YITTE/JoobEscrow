@@ -1,5 +1,4 @@
 // Presale JOOB (VestingPresale) — BNB Smart Chain mainnet.
-import { parseUnits } from 'ethers';
 // Adresses verifiees on-chain : token(), paymentToken() (USDC), usdtToken().
 export const PRESALE_CHAIN_ID = 56;
 
@@ -112,11 +111,6 @@ export function readableError(err) {
 // Prix d'ouverture fixe par le Safe, pas une garantie : le marche fixe ensuite le prix.
 export const PLANNED_LISTING_PRICE = '0.02';
 
-// Seuil de "poussiere" pour l'etat sold-out, en unites du token de paiement (USDT/USDC, ex. '1' = 1 $).
-// La vente se finalise seule quand le plafond est atteint au wei pres ; sinon il peut rester un reliquat
-// trop petit pour un achat utile. '0' = sold-out seulement quand plus rien n'est achetable. Valeur A CONFIRMER.
-export const SOLD_OUT_DUST_PAYMENT = '0';
-
 /** Montant maximal achetable (en unites de paiement) avec le reliquat, bonus maximum inclus. */
 export function maxPurchasablePayment(config, global, price) {
   if (!config || !global || !price) return 0n;
@@ -125,11 +119,13 @@ export function maxPurchasablePayment(config, global, price) {
   return (tokens * price) / 10n ** BigInt(config.tokenDecimals);
 }
 
-/** Vente ouverte mais reliquat <= seuil de poussiere : affichee comme sold-out. */
+/**
+ * Seuil de poussiere (decision du 2026-10-09) : la vente se finalise seule quand le plafond est atteint
+ * au wei pres ; s'il reste moins que le prix d'un JOOB au prix du moment, elle est affichee sold-out.
+ */
 export function isSoldOut(config, global, price) {
   if (!config || !global || !price) return false;
-  const dust = parseUnits(SOLD_OUT_DUST_PAYMENT, config.paymentDecimals);
-  return maxPurchasablePayment(config, global, price) <= dust;
+  return maxPurchasablePayment(config, global, price) < price;
 }
 
 /** Instant de cloture du prix : finalisation (tgeTimestamp) si elle a eu lieu avant la fin, sinon endTime. */
