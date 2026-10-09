@@ -7,7 +7,9 @@ import { instances } from '../config/instances';
 import { ESCROW_ABI } from '../config/contract';
 
 // Le volume en $ n'est affiche qu'a partir de ce montant (un petit chiffre dessert plus qu'il ne rassure).
+// Volume securise = montants deposes dans les escrows non annules (en cours, en litige, liberes, resolus).
 const VOLUME_DISPLAY_MIN_USD = 1000;
+const CANCELLED = 5;
 // Statuts du contrat V4 : 1 FUNDED, 2 RELEASED, 3 DISPUTED, 4 RESOLVED, 5 CANCELLED.
 const COMPLETED = new Set([2, 4]);
 const IN_PROGRESS = new Set([1, 3]);
@@ -33,7 +35,7 @@ function Row({ label, value, loading, error, accent }) {
 
 export default function LiveStats() {
   const { readProvider } = useWeb3();
-  const [stats, setStats] = useState({ created: 0, completed: 0, inProgress: 0, releasedUsd: 0, loading: true, error: false });
+  const [stats, setStats] = useState({ created: 0, completed: 0, inProgress: 0, securedUsd: 0, loading: true, error: false });
 
   useEffect(() => {
     let isMounted = true;
@@ -42,7 +44,7 @@ export default function LiveStats() {
     async function fetchStats() {
       if (!readProvider) return;
       try {
-        let created = 0, completed = 0, inProgress = 0, releasedUsd = 0;
+        let created = 0, completed = 0, inProgress = 0, securedUsd = 0;
         // Instances publiques uniquement : la demo est hors de `instances` et n'est jamais comptee.
         const contracts = [...new Set(Object.values(instances).map((i) => i.contractAddress))];
         for (const address of contracts) {
@@ -52,15 +54,12 @@ export default function LiveStats() {
           for (let id = 1; id <= count; id++) {
             const e = await contract.getEscrowDetails(id);
             const status = Number(e.status);
-            if (COMPLETED.has(status)) {
-              completed++;
-              releasedUsd += Number(ethers.formatUnits(e.amount, 18)); // USDT/USDC BEP-20 : 18 decimales
-            } else if (IN_PROGRESS.has(status)) {
-              inProgress++;
-            }
+            if (status !== CANCELLED) securedUsd += Number(ethers.formatUnits(e.amount, 18)); // USDT/USDC BEP-20 : 18 decimales
+            if (COMPLETED.has(status)) completed++;
+            else if (IN_PROGRESS.has(status)) inProgress++;
           }
         }
-        if (isMounted) setStats({ created, completed, inProgress, releasedUsd, loading: false, error: false });
+        if (isMounted) setStats({ created, completed, inProgress, securedUsd, loading: false, error: false });
       } catch (err) {
         console.error('Error fetching live stats:', err);
         if (isMounted) setStats((s) => ({ ...s, loading: false, error: true }));
@@ -75,7 +74,7 @@ export default function LiveStats() {
     };
   }, [readProvider]);
 
-  const showVolume = stats.releasedUsd >= VOLUME_DISPLAY_MIN_USD;
+  const showVolume = stats.securedUsd >= VOLUME_DISPLAY_MIN_USD;
 
   return (
     <div className="glass-panel" style={{ padding: '30px', margin: '0', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)', flex: 1, minWidth: '300px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
@@ -85,15 +84,18 @@ export default function LiveStats() {
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        {showVolume && (
+          <Row
+            label="Volume secured (USDT/USDC)"
+            value={`$${stats.securedUsd.toLocaleString('en-US', { maximumFractionDigits: 0 })}`}
+            loading={stats.loading}
+            error={stats.error}
+            accent
+          />
+        )}
+        <Row label="Deals completed" value={stats.completed} loading={stats.loading} error={stats.error} accent={!showVolume} />
         <Row label="Escrows created" value={stats.created} loading={stats.loading} error={stats.error} />
-        <Row label="In progress" value={stats.inProgress} loading={stats.loading} error={stats.error} />
-        <Row
-          label={showVolume ? 'Funds released' : 'Completed'}
-          value={showVolume ? `$${stats.releasedUsd.toLocaleString('en-US', { maximumFractionDigits: 0 })}` : stats.completed}
-          loading={stats.loading}
-          error={stats.error}
-          accent
-        />
+        {stats.inProgress > 0 && <Row label="In progress" value={stats.inProgress} loading={stats.loading} error={stats.error} />}
       </div>
     </div>
   );
