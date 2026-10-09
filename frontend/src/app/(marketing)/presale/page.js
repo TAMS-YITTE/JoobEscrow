@@ -79,7 +79,7 @@ export default function PresalePage() {
             <TokenomicsDonut />
             <div className={styles.donutCenter}>
               <div className={`${styles.donutBigVal} ${styles.titleGradient}`}>1B</div>
-              <div className={styles.donutSubLabel}>MAX SUPPLY JOOB</div>
+              <div className={styles.donutSubLabel}>FIXED SUPPLY JOOB</div>
             </div>
           </div>
 
