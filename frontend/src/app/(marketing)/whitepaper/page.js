@@ -166,7 +166,7 @@ export default function WhitepaperPage() {
             <p className={styles.p}>
               <strong>Disputes:</strong> either party can open a dispute and submit evidence. The JoobEscrow arbitration multisig can
               split the funds in any proportion from 0 to 100%. If a dispute is abandoned for 30 days, either party can trigger a 50/50
-              split directly in the contract, so funds are never locked forever. Parties can talk through end-to-end encrypted
+              split directly in the contract (resolveStaleDispute). Parties can talk through end-to-end encrypted
               wallet-to-wallet messaging (XMTP). Details: <Link href="/how-disputes-work" className={styles.link}>how disputes work</Link>.
             </p>
           </Section>
@@ -174,7 +174,7 @@ export default function WhitepaperPage() {
           <Section id="fees" n={sec('fees')} title={title('fees')}>
             <p className={styles.p}>
               The client pays 0%. The provider pays a fee of 10%, 8%, 5%, 3% or 2% depending on the category (one audited contract
-              per tier), taken only on the amount the provider actually receives. Using JoobEscrow never requires the JOOB token. A $1 demo
+              per tier), taken only on the amount the provider actually receives. Using JoobEscrow does not require the JOOB token. A $1 demo
               lets anyone run a real escrow between two of their own wallets: <Link href="/try" className={styles.link}>try it with $1</Link>.
             </p>
           </Section>
@@ -198,11 +198,11 @@ export default function WhitepaperPage() {
               </div>
               <div className={styles.card}>
                 <div className={styles.cardTitle}>Accounting invariant</div>
-                <div className={styles.cardText}>The contract balance always covers locked funds plus amounts owed to users.</div>
+                <div className={styles.cardText}>The token recovery function can only move a surplus above locked funds plus amounts owed to users.</div>
               </div>
               <div className={styles.card}>
                 <div className={styles.cardTitle}>Pause without lock-in</div>
-                <div className={styles.cardText}>The emergency pause stops new escrows and releases, never withdrawals or dispute resolution.</div>
+                <div className={styles.cardText}>The emergency pause stops new escrows and releases; withdrawals and dispute resolution keep working even when paused.</div>
               </div>
             </div>
             <p className={styles.p}>Full list of contracts and audit details: <Link href="/security#contracts" className={styles.link}>security page</Link>.</p>

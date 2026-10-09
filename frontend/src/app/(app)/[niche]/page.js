@@ -236,7 +236,7 @@ function DashboardContent() {
             </div>
             <p>
               A full escrow between <strong>two of your own wallets</strong>, with {niche.minAmount} to {niche.maxAmount} USDT or USDC.
-              0% fee: you get back exactly what you deposited. Demo escrows are never counted in JoobEscrow statistics.
+              0% fee: you get back exactly what you deposited. Demo escrows are not counted in JoobEscrow statistics.
             </p>
           </div>
           <Link href="/try" className="demo-guide-link">Step-by-step guide →</Link>

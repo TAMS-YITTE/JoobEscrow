@@ -19,7 +19,7 @@ const FAQS = [
   },
   {
     q: 'What is the "sealed vault"?',
-    a: 'The contract cannot open the sale until the full 163.5M JOOB cap has been deposited in it. You can check the deposited amount at any time on BscScan (depositedTokens). Buyer allocations are always covered by tokens already held by the contract.',
+    a: 'The contract cannot open the sale until the full 163.5M JOOB cap has been deposited in it. You can check the deposited amount on BscScan (depositedTokens). Each purchase is checked against the tokens still available in the contract, so buyer allocations are covered by tokens it already holds.',
   },
   {
     q: 'Are the contracts audited?',

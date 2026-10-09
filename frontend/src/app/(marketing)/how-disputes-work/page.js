@@ -59,7 +59,7 @@ export default function HowDisputesWorkPage() {
           <p className="text-gray-400">
             If a dispute is opened but left unresolved for 30 days, either party (client or provider) can call 
             <code>resolveStaleDispute(id)</code> on the smart contract. This executes a <strong>50/50 split</strong> of 
-            the locked funds between client and provider, ensuring capital is never permanently trapped.
+            the locked funds between client and provider, without waiting for the arbitration team.
           </p>
         </div>
 

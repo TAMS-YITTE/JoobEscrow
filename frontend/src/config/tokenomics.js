@@ -11,7 +11,7 @@ export const TOKENOMICS = [
   { name: 'Team', pct: 12, color: '#f59e0b', vesting: 'Locked until Jan 13, 2028, then linear over 24 months', onChain: true, contract: '0xc430f8C4E26FFc25326C4AA84947B3e2A1328012' },
   { name: 'DEX liquidity', pct: 10, color: '#06b6d4', vesting: 'Paired at listing, LP locked 12 months or more' },
   { name: 'Marketing', pct: 6.65, color: '#ec4899', vesting: '10% at TGE, then 18 months' },
-  { name: 'Partners & KOL', pct: 7, color: '#f97316', vesting: '3-month cliff, then 12 months, always disclosed' },
+  { name: 'Partners & KOL', pct: 7, color: '#f97316', vesting: '3-month cliff, then 12 months, each deal disclosed' },
   { name: 'Airdrop (points)', pct: 5, color: '#eab308', vesting: '20% at TGE, then 6 months (audited contract)' },
   { name: 'CEX reserve', pct: 5, color: '#64748b', vesting: 'Used only for a centralized exchange listing' },
 ];

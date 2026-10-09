@@ -32,7 +32,7 @@
   },
   "security": {
     "title": "Security & Transparency",
-    "subtitle": "Our non-custodial architecture ensures deposited funds cannot be diverted by the team. While the multi-sig Safe can pause new activity or resolve disputes, withdrawals of credited funds remain accessible at all times.",
+    "subtitle": "Escrows are non-custodial: the team cannot send escrowed funds to an arbitrary address. The 3-of-5 Safe multisig can pause new activity and, in a dispute, can only split the funds between client and provider. Withdrawals of credited funds keep working even when the contracts are paused.",
     "auditSection": {
       "title": "Verified audits",
       "desc": "Every contract that holds or distributes funds was audited by SpyWolf before launch. An audit reduces risk but cannot rule out every bug."

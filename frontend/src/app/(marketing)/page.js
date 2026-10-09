@@ -348,7 +348,7 @@ export default function LandingPage() {
               </div>
               <h3 className={styles.secTitle}>3-of-5 Governance</h3>
               <p className={styles.secDesc}>
-                Treasury actions require 3 separate hardware wallet signatures on Safe. No single point of failure.
+                Treasury and admin actions need 3 of the 5 signers of the Safe multisig to approve: no single signer can act alone.
               </p>
             </div>
 

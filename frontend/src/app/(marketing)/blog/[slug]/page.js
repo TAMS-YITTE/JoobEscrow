@@ -30,7 +30,7 @@ export default async function BlogPost({ params }) {
         <h1 className="text-4xl font-bold text-white mb-6">How Dispute Resolution Works on JoobEscrow</h1>
         <p className="text-gray-400 mb-4">When a freelance contract goes wrong, traditional legal systems are too slow and expensive. Web3 needs a better way.</p>
         <p className="text-gray-400 mb-4">On JoobEscrow, either party can open a dispute while the funds are locked. Both sides share their evidence (deliverables, messages, original requirements), and the JoobEscrow arbitration team compares the work delivered with what was agreed. The decision is executed by the smart contract, which can split the funds in any proportion, from 0 to 100%.</p>
-        <p className="text-gray-400 mb-4">The contract can record a fingerprint (hash) of each piece of evidence on-chain; in-app evidence upload is coming. If a dispute is left unresolved for 30 days, either party can trigger a 50/50 split, so funds are never locked forever.</p>
+        <p className="text-gray-400 mb-4">The contract can record a fingerprint (hash) of each piece of evidence on-chain; in-app evidence upload is coming. If a dispute is left unresolved for 30 days, either party can trigger a 50/50 split on-chain with resolveStaleDispute.</p>
       </article>
     )
   };

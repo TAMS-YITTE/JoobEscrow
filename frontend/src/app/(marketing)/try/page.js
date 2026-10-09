@@ -22,7 +22,7 @@ const STEPS = [
   {
     who: 'Wallet B (provider)',
     title: 'Accept the escrow',
-    text: 'Switch to wallet B and accept the escrow (one transaction). The provider never signs a spending approval: nothing can be drained from this wallet.',
+    text: 'Switch to wallet B and accept the escrow (one transaction). The provider signs no spending approval in this flow, so this wallet gives the contract no allowance.',
   },
   {
     who: 'Wallet A (client)',
@@ -88,7 +88,7 @@ export default function TryPage() {
       </div>
 
       <p className={styles.fine}>
-        Demo escrows are never counted in JoobEscrow statistics or volume. The demo contract only accepts 1 to 20 USDT or USDC per escrow.
+        Demo escrows are not counted in JoobEscrow statistics or volume. The demo contract only accepts 1 to 20 USDT or USDC per escrow.
         Only use joobescrow.com, and never share your seed phrase.
       </p>
     </div>
