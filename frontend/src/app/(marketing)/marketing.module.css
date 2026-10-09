@@ -707,7 +707,6 @@
 
 .launchBtn { white-space: nowrap; }
 
-.navSocialMobile { display: none; }
 
 .zealyBar {
   position: relative; display: flex; align-items: center; justify-content: center;
@@ -733,11 +732,14 @@
 
 .zealyClose:hover { color: #fff; }
 
+@media (max-width: 1240px) {
+  .navCenter { gap: 22px; }
+}
 @media (max-width: 1080px) {
-  .header { flex-wrap: wrap; gap: 10px 16px; padding: 14px 20px; }
+  .header { padding: 14px 20px; gap: 12px; }
   .logoContainer { flex: 0 0 auto; }
   .navRight { flex: 1 1 auto; }
-  .navCenter { order: 3; flex: 1 1 100%; justify-content: center; gap: 22px; }
+  .navCenter { display: none; }
 }
 
 @media (max-width: 640px) {
@@ -746,12 +748,9 @@
   .logoText { display: none; }
   .navRight { gap: 8px; }
   .headerSocial { display: none; }
-  .navSocialMobile { display: inline; }
   .presaleBtn { padding: 7px 11px; font-size: 0.8rem; gap: 6px; }
   .launchBtn { padding: 8px 12px !important; font-size: 0.82rem !important; }
-  .navCenter { justify-content: flex-start; gap: 18px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; min-width: 0; max-width: 100%; }
   .header { max-width: 100vw; }
-  .navLink { white-space: nowrap; font-size: 0.88rem; }
   .zealyBar { padding: 7px 36px 7px 12px; font-size: 0.78rem; }
   .zealyTag { display: none; }
   .zealyLong { display: none; }
@@ -875,7 +874,6 @@
 }
 @media (max-width: 640px) {
   .heroCtas { flex-wrap: wrap; justify-content: center; }
-  .navCenter { flex-wrap: wrap; gap: 6px 16px; }
 }
 
 /* --- Parrainage sous le hero --- */
@@ -906,4 +904,48 @@
 @media (max-width: 640px) {
   .referralSection .referralBanner { padding: 22px 18px; }
   .referralSection .refTitle { font-size: 1.35rem; }
+}
+
+/* --- Navigation : menu Learn (desktop) et burger (<= 1080 px) --- */
+.header { position: relative; }
+.learn { position: relative; }
+.navCenter .navLink { white-space: nowrap; }
+.learnBtn { display: inline-flex; align-items: center; gap: 4px; background: none; border: none; cursor: pointer; padding: 0; font-family: inherit; }
+.learnMenu {
+  position: absolute; top: calc(100% + 12px); left: 50%; transform: translateX(-50%); z-index: 60;
+  display: flex; flex-direction: column; min-width: 180px; padding: 8px;
+  background: #0d1117; border: 1px solid rgba(163, 230, 53, 0.25); border-radius: 12px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+}
+.learnItem { padding: 9px 12px; border-radius: 8px; color: #cbd5e1; font-size: 0.92rem; white-space: nowrap; }
+.learnItem:hover, .learnItem:focus-visible { color: #fff; background: rgba(163, 230, 53, 0.1); }
+
+.burger {
+  display: none; align-items: center; justify-content: center; flex: 0 0 auto;
+  width: 40px; height: 40px; border-radius: 10px; cursor: pointer;
+  background: rgba(255, 255, 255, 0.04); border: 1px solid var(--border-color); color: #fff; font-size: 1.15rem; line-height: 1;
+}
+.burger:hover { border-color: rgba(163, 230, 53, 0.5); }
+@media (max-width: 1080px) {
+  .burger { display: inline-flex; }
+}
+
+.mobileMenu {
+  position: absolute; top: 100%; left: 0; right: 0; z-index: 60;
+  display: flex; flex-direction: column; padding: 10px 20px 18px;
+  background: #0d1117; border-bottom: 1px solid rgba(163, 230, 53, 0.25);
+  box-shadow: 0 16px 30px rgba(0, 0, 0, 0.5);
+}
+.mobileLink { padding: 11px 4px; color: #e2e8f0; font-size: 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+.mobileLink:hover { color: #a3e635; }
+.mobileGroup { margin-top: 12px; padding: 4px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: #a3e635; }
+.mobileSocials { display: flex; gap: 24px; margin-top: 8px; }
+.mobileSocials .mobileLink { border-bottom: none; }
+
+@media (max-width: 640px) {
+  .burger { width: 36px; height: 36px; }
+  .mobileMenu { padding: 6px 14px 14px; }
+}
+@media (max-width: 480px) {
+  .presaleTag { display: none; }
 }
