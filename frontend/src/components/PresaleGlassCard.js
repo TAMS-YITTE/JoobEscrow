@@ -107,7 +107,7 @@ export default function PresaleGlassCard() {
           <div className={styles.metricVal}>
             {isPending ? '163.5M' : allocatedTokens} <span className={styles.tokenUnit}>JOOB</span>
           </div>
-          <div className={styles.metricSub}>Planned DEX: ${PLANNED_LISTING_PRICE}</div>
+          <div className={styles.metricSub}>Planned DEX: ${PLANNED_LISTING_PRICE} · not guaranteed</div>
         </div>
       </div>
 
