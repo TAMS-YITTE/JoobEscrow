@@ -1,10 +1,11 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { ethers } from 'ethers';
 import { useWeb3 } from '../context/Web3Context';
 import { usePresaleState } from '../hooks/usePresaleState';
-import { PLANNED_LISTING_PRICE } from '../config/presale';
+import { PLANNED_LISTING_PRICE, PRESALE_ADDRESSES, PRESALE_ABI, PRESALE_CHAIN_ID, readableError } from '../config/presale';
 import styles from './PresaleGlassCard.module.css';
 
 function CountdownDisplay({ seconds }) {
@@ -36,7 +37,9 @@ const BADGE = {
 };
 
 export default function PresaleGlassCard() {
-  const { readProvider } = useWeb3();
+  const { readProvider, account, provider, connectWallet } = useWeb3();
+  const [finalizing, setFinalizing] = useState(false);
+  const [finalizeMsg, setFinalizeMsg] = useState(null);
   const {
     config,
     global,
@@ -51,6 +54,25 @@ export default function PresaleGlassCard() {
   const isLive = computedState === 'LIVE';
   const isPending = computedState === 'PENDING' || computedState === 'LOADING';
   const isClosed = computedState === 'ENDED' || computedState === 'FINALIZATION_PENDING';
+  const isSoldOut = computedState === 'SOLD_OUT';
+
+  // finalize() est sans permission une fois endTime passe : n'importe quel wallet peut ouvrir les claims.
+  const finalize = async () => {
+    if (!account || !provider) { await connectWallet(); return; }
+    setFinalizing(true); setFinalizeMsg(null);
+    try {
+      const { chainId } = await provider.getNetwork();
+      if (Number(chainId) !== PRESALE_CHAIN_ID) { setFinalizeMsg('Switch your wallet to BNB Smart Chain, then try again.'); return; }
+      const signer = await provider.getSigner();
+      const presale = new ethers.Contract(PRESALE_ADDRESSES.PRESALE, PRESALE_ABI, signer);
+      await (await presale.finalize()).wait();
+      setFinalizeMsg('Sale finalized: claims are open.');
+    } catch (err) {
+      setFinalizeMsg(readableError(err));
+    } finally {
+      setFinalizing(false);
+    }
+  };
 
   const priceUSD = config && currentPrice
     ? Number(ethers.formatUnits(currentPrice, config.paymentDecimals)).toFixed(4)
@@ -98,9 +120,9 @@ export default function PresaleGlassCard() {
 
       <div className={styles.metricsGrid}>
         <div className={styles.metricItem}>
-          <div className={styles.metricLabel}>{isClosed ? 'Final Price' : 'Current Price'}</div>
-          <div className={styles.metricVal}>${isClosed ? finalPriceUSD : priceUSD}</div>
-          <div className={styles.metricSub}>{isClosed ? 'Sale closed' : `Next: $${nextPriceUSD}`}</div>
+          <div className={styles.metricLabel}>{isClosed ? 'Final Price' : isSoldOut ? 'Price' : 'Current Price'}</div>
+          <div className={styles.metricVal}>{isSoldOut ? 'Sold out' : `$${isClosed ? finalPriceUSD : priceUSD}`}</div>
+          <div className={styles.metricSub}>{isClosed ? 'Sale closed' : isSoldOut ? 'Cap reached' : `Next: $${nextPriceUSD}`}</div>
         </div>
         <div className={styles.metricItem}>
           <div className={styles.metricLabel}>{isPending ? 'Allocation Cap' : 'Tokens Allocated'}</div>
@@ -121,9 +143,20 @@ export default function PresaleGlassCard() {
       )}
 
       <div className={styles.actionWrap}>
-        <Link href="/presale" className="btn btn-primary" style={{ width: '100%', padding: '13px 0', fontSize: '1rem' }}>
-          {isLive ? 'Buy JOOB Now →' : computedState === 'ENDED' ? 'Claim your JOOB →' : 'Access Presale Portal →'}
-        </Link>
+        {computedState === 'FINALIZATION_PENDING' ? (
+          <>
+            <button type="button" onClick={finalize} disabled={finalizing} className="btn btn-primary" style={{ width: '100%', padding: '13px 0', fontSize: '1rem' }}>
+              {finalizing ? 'Finalizing…' : 'Finalize the sale (open to anyone)'}
+            </button>
+            <div className={styles.metricSub} style={{ marginTop: '8px', textAlign: 'center' }} role="status">
+              {finalizeMsg ?? 'The sale ended. Any wallet can call finalize() on-chain to open claims.'}
+            </div>
+          </>
+        ) : (
+          <Link href="/presale" className="btn btn-primary" style={{ width: '100%', padding: '13px 0', fontSize: '1rem' }}>
+            {isLive ? 'Buy JOOB Now →' : computedState === 'ENDED' ? 'Claim your JOOB →' : 'Access Presale Portal →'}
+          </Link>
+        )}
       </div>
 
       <div className={styles.footerGuarantees}>

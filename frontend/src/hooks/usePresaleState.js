@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { ethers } from 'ethers';
-import { PRESALE_ADDRESSES, PRESALE_ABI, PRESALE_STATE, priceAt, nextStepAt } from '../config/presale';
+import { PRESALE_ADDRESSES, PRESALE_ABI, PRESALE_STATE, priceAt, nextStepAt, isSoldOut, closingTime } from '../config/presale';
 
 /**
  * Hook partage de lecture de l'etat de la Presale on-chain.
@@ -141,10 +141,8 @@ export function usePresaleState(readProvider) {
       // Heure passee mais start() pas encore execute par le Safe : la vente n'est pas ouverte.
       if (global.state === PRESALE_STATE.PENDING) return 'AWAITING_START';
       if (now > global.endTime) return 'FINALIZATION_PENDING';
-      // Plafond atteint : il reste une poussiere (finalisation auto seulement au wei pres),
-      // trop petite pour le moindre achat. Meme regle que PresaleClient (maxPurchasable = 0).
-      const td = 10n ** BigInt(config.tokenDecimals ?? 18);
-      if (global.currentPrice > 0n && (global.remainingTokens * global.currentPrice) / td === 0n) return 'SOLD_OUT';
+      // Plafond atteint a la poussiere pres (finalisation auto seulement au wei pres) : meme regle que PresaleClient.
+      if (isSoldOut(config, global, global.currentPrice)) return 'SOLD_OUT';
       if (global.paused) return 'PAUSED';
       return 'LIVE';
     }
@@ -166,8 +164,8 @@ export function usePresaleState(readProvider) {
   const nextT = config ? nextStepAt(config, now) : 0n;
   const nextPrice = config ? priceAt(config, nextT) : 0n;
   const nextStepSeconds = config && nextT > now ? nextT - now : 0n;
-  // Prix du dernier palier (vente close) : base de l'affichage apres endTime.
-  const finalPrice = config && global ? priceAt(config, global.endTime) : 0n;
+  // Prix de cloture (vente finalisee ou fin passee) : fige, ne suit plus l'horloge.
+  const finalPrice = config && global ? priceAt(config, closingTime(global)) : 0n;
 
   return {
     config,

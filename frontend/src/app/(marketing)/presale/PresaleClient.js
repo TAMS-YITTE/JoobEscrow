@@ -8,7 +8,7 @@ import { bsc } from '@reown/appkit/networks';
 import { useWeb3 } from '../../../context/Web3Context';
 import {
   PRESALE_ADDRESSES, PRESALE_ABI, ERC20_ABI, PRESALE_STATE, PRESALE_CHAIN_ID, BSCSCAN, AUDITS,
-  priceAt, nextStepAt, volumeTierBps, readableError,
+  priceAt, nextStepAt, volumeTierBps, readableError, maxPurchasablePayment, isSoldOut, closingTime,
   PLANNED_LISTING_PRICE,
 } from '../../../config/presale';
 import styles from './presale.module.css';
@@ -232,7 +232,7 @@ export default function PresaleClient() {
   const nextStep = config ? nextStepAt(config, now) : 0n;
   const nextPrice = config ? priceAt(config, nextStep) : 0n;
   // Vente close (fin passee ou finalisee) : on affiche le prix du dernier palier, pas un prix calcule sur l'horloge.
-  const finalPrice = config && global ? priceAt(config, global.endTime) : 0n;
+  const finalPrice = config && global ? priceAt(config, closingTime(global)) : 0n;
   const nextStepRemaining = config && nextStep > now ? nextStep - now : 0n;
 
   const balance = paymentToken === 'USDT' ? user.balanceUSDT : user.balanceUSDC;
@@ -259,14 +259,9 @@ export default function PresaleClient() {
     return { threshold: config.tierThresholds[idx], bps: config.tierBps[idx], missing: config.tierThresholds[idx] - cumulative };
   }, [config, user.contribution, amountWei]);
 
-  const maxPurchasable = useMemo(() => {
-    if (!config || !global || currentPrice === 0n) return 0n;
-    const maxBonusBps = (config.tierBps.length ? config.tierBps[config.tierBps.length - 1] : 0n) + config.referralBps;
-    const tokens = (global.remainingTokens * 10_000n) / (10_000n + maxBonusBps);
-    return (tokens * currentPrice) / 10n ** BigInt(td);
-  }, [config, global, currentPrice, td]);
+  const maxPurchasable = useMemo(() => maxPurchasablePayment(config, global, currentPrice), [config, global, currentPrice]);
 
-  const soldOut = isLive && currentPrice > 0n && maxPurchasable === 0n;
+  const soldOut = isLive && currentPrice > 0n && isSoldOut(config, global, currentPrice);
   const vaultSealed = !!config && !!global && global.depositedTokens >= config.cap;
   const soldPct = soldOut ? 100 : config && global && config.cap > 0n ? Number((global.totalTokensOwed * 10_000n) / config.cap) / 100 : 0;
   const referralLink = account && typeof window !== 'undefined' ? `${window.location.origin}/presale?${REF_PARAM}=${account}` : '';
@@ -465,11 +460,12 @@ export default function PresaleClient() {
           {/* Sub-cards: Price & Allocation */}
           <div className={styles.metricsGrid}>
             <div className={styles.metricCard}>
-              <span className={styles.metricLabel}>{isEnded || awaitingFinalize ? 'Final Price' : 'Current Price'}</span>
-              <span className={styles.metricMainVal}>${fmtUsd(isEnded || awaitingFinalize ? finalPrice : currentPrice, pd)}</span>
+              <span className={styles.metricLabel}>{isEnded || awaitingFinalize ? 'Final Price' : soldOut ? 'Price' : 'Current Price'}</span>
+              <span className={styles.metricMainVal}>{soldOut ? 'Sold out' : `$${fmtUsd(isEnded || awaitingFinalize ? finalPrice : currentPrice, pd)}`}</span>
               <span className={styles.metricSubVal}>
                 {isEnded || awaitingFinalize
                   ? 'Sale closed'
+                  : soldOut ? 'Cap reached'
                   : <>Next: <strong className={styles.nextPriceHighlight}>${fmtUsd(nextPrice, pd)}</strong></>}
               </span>
             </div>
@@ -623,6 +619,10 @@ export default function PresaleClient() {
               <button type="button" onClick={doSwitch} className="btn btn-primary" style={{ width: '100%', padding: '16px' }}>
                 Switch to BNB Smart Chain
               </button>
+            ) : awaitingFinalize ? (
+              <button type="button" onClick={handleFinalize} disabled={status === 'loading'} className="btn btn-primary" style={{ width: '100%', padding: '16px' }}>
+                {status === 'loading' ? (step || 'Processing…') : 'Finalize the sale (open to anyone)'}
+              </button>
             ) : (
               <button type="submit" disabled={!canBuy} className="btn btn-primary" style={{ width: '100%', padding: '16px' }}>
                 {buyLabel}
@@ -700,7 +700,7 @@ export default function PresaleClient() {
                 <div>
                   <p style={{ color: '#94a3b8', fontSize: '0.82rem', marginBottom: '8px' }}>The sale ended. Anyone can finalize it on-chain to open claims.</p>
                   <button onClick={handleFinalize} disabled={status === 'loading'} className="btn btn-primary" style={{ width: '100%' }}>
-                    Finalize Sale on BscScan
+                    Finalize the sale
                   </button>
                 </div>
               ) : (
