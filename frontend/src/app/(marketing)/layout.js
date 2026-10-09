@@ -64,7 +64,7 @@ export default function MarketingLayout({ children }) {
                 <span>JoobEscrow</span>
               </Link>
               <p className={styles.footerTagline}>
-                Secure every payment. Funds stay locked on-chain until the work is approved.
+                Secure every payment. Funds stay locked on-chain until the work is approved, the deadline passes or a dispute is settled.
               </p>
               <div className={styles.footerSocials}>
                 <a href={TELEGRAM_URL} target="_blank" rel="noopener noreferrer" className={styles.headerSocial} aria-label="Telegram">

@@ -35,7 +35,7 @@ export default function LandingPage() {
               </h1>
 
               <p className={styles.heroSubtitle}>
-                Marketplaces take 20–30%. With JoobEscrow, clients pay 0%, providers keep 90–98%, and funds remain locked in an audited smart contract until the work is approved.
+                Marketplaces take 20–30%. With JoobEscrow, clients pay 0%, providers keep 90–98%, and funds stay locked in an audited smart contract until the work is approved, the deadline passes or a dispute is settled.
               </p>
 
               <div className={styles.heroTechLine}>
@@ -130,7 +130,7 @@ export default function LandingPage() {
               <div className={`${styles.eraNum} ${styles.textGradient}`}>03</div>
               <h3 className={styles.eraTitle}>JoobEscrow: Code is law</h3>
               <p className={styles.eraDesc}>
-                Funds are locked on-chain before the work begins. Released only upon approved delivery. 0% for clients, 2–10% for providers.
+                Funds are locked on-chain before the work begins. Released on approval, claimable after the deadline, or split in a dispute. 0% for clients, 2–10% for providers.
               </p>
             </div>
           </div>
