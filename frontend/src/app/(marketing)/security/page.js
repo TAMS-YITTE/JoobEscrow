@@ -54,7 +54,7 @@ export default function SecurityPage() {
           <div className={styles.pillBadge} style={{ margin: '0 auto 20px' }}>
             <span className={styles.pulseDot} />
             <span>
-              {['AUDITED', 'KYC VERIFIED', 'NON-CUSTODIAL', 'ON-CHAIN'].map((t, i) => (
+              {['AUDITED', 'KYC VERIFIED', 'NON-CUSTODIAL', 'BNB SMART CHAIN'].map((t, i) => (
                 <Fragment key={t}>{i > 0 && ' · '}<span style={{ whiteSpace: 'nowrap' }}>{t}</span></Fragment>
               ))}
             </span>
