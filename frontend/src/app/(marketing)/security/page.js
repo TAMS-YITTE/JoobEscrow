@@ -52,7 +52,7 @@ export default function SecurityPage() {
         <div className={styles.sectionHead}>
           <div className={styles.pillBadge} style={{ margin: '0 auto 20px' }}>
             <span className={styles.pulseDot} />
-            AUDITED · NON-CUSTODIAL · VERIFIED ON-CHAIN
+            AUDITED · KYC VERIFIED · NON-CUSTODIAL · ON-CHAIN
           </div>
           <h1 className={styles.heroTitle} style={{ fontSize: 'clamp(2.3rem, 5.5vw, 3.4rem)', textAlign: 'center', margin: '0 auto 16px' }}>
             Security &amp; <span className={styles.textGradient}>Transparency</span>
