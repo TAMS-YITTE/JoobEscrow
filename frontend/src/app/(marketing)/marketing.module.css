@@ -132,6 +132,25 @@
   margin-bottom: 28px;
 }
 
+.trustPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 22px;
+  border-radius: 9999px;
+  background: rgba(163, 230, 53, 0.08);
+  border: 1px solid rgba(163, 230, 53, 0.45);
+  box-shadow: 0 0 24px rgba(163, 230, 53, 0.12);
+  color: #a3e635;
+  text-decoration: none;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.trustPill:hover {
+  background: rgba(163, 230, 53, 0.14);
+  box-shadow: 0 0 32px rgba(163, 230, 53, 0.22);
+}
+.trustPill svg { flex-shrink: 0; }
+
 .quickTiles {
   display: flex;
   gap: 14px;
@@ -949,4 +968,9 @@
 }
 @media (max-width: 480px) {
   .presaleTag { display: none; }
+}
+
+@media (max-width: 640px) {
+  .heroTechLine { font-size: 0.72rem; letter-spacing: 0.06em; }
+  .trustPill { padding: 8px 14px; gap: 8px; }
 }

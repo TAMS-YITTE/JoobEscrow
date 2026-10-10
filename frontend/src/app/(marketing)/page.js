@@ -34,9 +34,17 @@ export default function LandingPage() {
       <section className={styles.heroSection}>
         <div className={styles.container}>
           <div className={styles.heroTechLine}>
-            {['AUDITED', 'KYC VERIFIED', 'NON-CUSTODIAL', 'BNB SMART CHAIN'].map((t, i) => (
-              <Fragment key={t}>{i > 0 && ' · '}<span style={{ whiteSpace: 'nowrap' }}>{t}</span></Fragment>
-            ))}
+            <Link href="/security" className={styles.trustPill}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                <polyline points="9 12 11 14 15 10" />
+              </svg>
+              <span>
+                {['AUDITED', 'KYC VERIFIED', 'NON-CUSTODIAL', 'BNB SMART CHAIN'].map((t, i) => (
+                  <Fragment key={t}>{i > 0 && ' · '}<span style={{ whiteSpace: 'nowrap' }}>{t}</span></Fragment>
+                ))}
+              </span>
+            </Link>
           </div>
           <div className={styles.heroGrid}>
             <div className={styles.heroLeft}>
