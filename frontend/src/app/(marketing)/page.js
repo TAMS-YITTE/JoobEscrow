@@ -40,7 +40,7 @@ export default function LandingPage() {
                 <polyline points="9 12 11 14 15 10" />
               </svg>
               <span>
-                {['AUDITED', 'KYC VERIFIED', 'NON-CUSTODIAL', 'BNB SMART CHAIN'].map((t, i) => (
+                {['AUDITED', 'KYC VERIFIED'].map((t, i) => (
                   <Fragment key={t}>{i > 0 && ' · '}<span style={{ whiteSpace: 'nowrap' }}>{t}</span></Fragment>
                 ))}
               </span>
@@ -60,6 +60,12 @@ export default function LandingPage() {
               <p className={styles.heroSubtitle}>
                 Marketplaces take 20–30%. With JoobEscrow, clients pay 0%, providers keep 90–98%, and funds stay locked in an audited smart contract until the work is approved, the deadline passes or a dispute is settled.
               </p>
+
+              <div className={styles.heroProofLine}>
+                {['NON-CUSTODIAL', 'VERIFIABLE ON BNB SMART CHAIN'].map((t, i) => (
+                  <Fragment key={t}>{i > 0 && ' · '}<span style={{ whiteSpace: 'nowrap' }}>{t}</span></Fragment>
+                ))}
+              </div>
 
               <div className={styles.quickTiles}>
                 <Link href="/try" className={styles.quickTile}>

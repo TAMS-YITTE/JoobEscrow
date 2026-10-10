@@ -132,6 +132,15 @@
   margin-bottom: 28px;
 }
 
+.heroProofLine {
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+  color: #a3e635;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
 .trustPill {
   display: inline-flex;
   align-items: center;
