@@ -2,7 +2,7 @@ import Link from 'next/link';
 import styles from './whitepaper.module.css';
 import PrintButton from './PrintButton';
 import CoFundedEscrowDiagram from '../../../components/CoFundedEscrowDiagram';
-import { AUDITS, PRESALE_ADDRESSES, PLANNED_LISTING_PRICE } from '../../../config/presale';
+import { AUDITS, KYC_URL, PRESALE_ADDRESSES, PLANNED_LISTING_PRICE } from '../../../config/presale';
 import { ROADMAP_STEPS, ROADMAP_STATUS_LABEL } from '../../../config/roadmap';
 import { TOKENOMICS, TOKENOMICS_SEGMENTS, fmtM } from '../../../config/tokenomics';
 
@@ -194,6 +194,14 @@ export default function WhitepaperPage() {
                 <div className={styles.cardTitle}>Pause without lock-in</div>
                 <div className={styles.cardText}>The emergency pause stops new escrows and releases; withdrawals and dispute resolution keep working even when paused.</div>
               </div>
+              {KYC_URL && (
+                <div className={styles.card}>
+                  <div className={styles.cardTitle}>KYC-verified founder</div>
+                  <div className={styles.cardText}>
+                    Founded by a builder with over 20 years in IT and finance and a focus on DeFi. Identity verified by SpyWolf (<Ext href={KYC_URL}>KYC certificate</Ext>); team tokens locked until January 2028.
+                  </div>
+                </div>
+              )}
             </div>
             <p className={styles.p}>Full list of contracts and audit details: <Link href="/security#contracts" className={styles.link}>security page</Link>.</p>
           </Section>

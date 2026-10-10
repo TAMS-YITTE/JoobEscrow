@@ -20,6 +20,9 @@ export const AUDITS = {
   STAKING: 'https://spywolf.co/audits/StandardStaking_Audit_JoobEscrow.pdf',
 };
 
+// Certificat KYC SpyWolf du fondateur. Tant qu'il vaut null, la section Team de /security reste masquee.
+export const KYC_URL = null;
+
 // Enum State du contrat.
 export const PRESALE_STATE = { PENDING: 0, ACTIVE: 1, ENDED: 2 };
 
