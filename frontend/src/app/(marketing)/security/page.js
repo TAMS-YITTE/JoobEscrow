@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import Link from 'next/link';
 import styles from '../marketing.module.css';
 import dict from '../../../i18n/en.json';
@@ -52,7 +53,11 @@ export default function SecurityPage() {
         <div className={styles.sectionHead}>
           <div className={styles.pillBadge} style={{ margin: '0 auto 20px' }}>
             <span className={styles.pulseDot} />
-            AUDITED · KYC VERIFIED · NON-CUSTODIAL · ON-CHAIN
+            <span>
+              {['AUDITED', 'KYC VERIFIED', 'NON-CUSTODIAL', 'ON-CHAIN'].map((t, i) => (
+                <Fragment key={t}>{i > 0 && ' · '}<span style={{ whiteSpace: 'nowrap' }}>{t}</span></Fragment>
+              ))}
+            </span>
           </div>
           <h1 className={styles.heroTitle} style={{ fontSize: 'clamp(2.3rem, 5.5vw, 3.4rem)', textAlign: 'center', margin: '0 auto 16px' }}>
             Security &amp; <span className={styles.textGradient}>Transparency</span>
