@@ -7,7 +7,7 @@ import HomeFaq from '../../components/HomeFaq';
 import LiveStats from '../../components/LiveStats';
 import FeeCalculator from '../../components/FeeCalculator';
 import LiteYouTube from '../../components/LiteYouTube';
-import { AUDITS } from '../../config/presale';
+import { AUDITS, KYC_URL } from '../../config/presale';
 import { TOKENOMICS, TOKENOMICS_SEGMENTS, fmtM } from '../../config/tokenomics';
 import { ROADMAP_PHASES_WITH_STATUS } from '../../config/roadmap';
 
@@ -48,7 +48,7 @@ export default function LandingPage() {
               </p>
 
               <div className={styles.heroTechLine}>
-                AUDITED · NON-CUSTODIAL · BNB SMART CHAIN
+                AUDITED · KYC VERIFIED · NON-CUSTODIAL · BNB SMART CHAIN
               </div>
 
               <div className={styles.quickTiles}>
@@ -337,9 +337,13 @@ export default function LandingPage() {
                   <polyline points="20 6 9 17 4 12"/>
                 </svg>
               </div>
-              <h3 className={styles.secTitle}>Audited by SpyWolf</h3>
+              <h3 className={styles.secTitle}>Audited &amp; KYC by SpyWolf</h3>
               <p className={styles.secDesc}>
-                0 critical findings. Public reports verifiable directly on SpyWolf Network and BscScan.
+                Contracts audited with 0 critical findings, founder identity verified by the same firm. Public reports verifiable on SpyWolf Network and BscScan.
+              </p>
+              <p className={styles.secDesc} style={{ marginTop: '10px', display: 'flex', gap: '14px', flexWrap: 'wrap' }}>
+                <Link href="/security" className="text-gradient font-bold hover:underline">Audit reports →</Link>
+                <a href={KYC_URL} target="_blank" rel="noopener noreferrer" className="text-gradient font-bold hover:underline">KYC certificate ↗</a>
               </p>
             </div>
           </div>

@@ -62,7 +62,21 @@ export default function SecurityPage() {
           </p>
         </div>
 
-        <section style={{ marginTop: '40px' }}>
+        {KYC_URL && (
+          <div id="team" className="glass-panel" style={{ marginTop: '40px', padding: 'clamp(20px, 4vw, 36px)' }}>
+            <span className={styles.sectionTag}>TEAM</span>
+            <h2 style={{ color: '#fff', margin: '6px 0 15px' }}>The team</h2>
+            <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '12px' }}>
+              JoobEscrow was founded by a builder with over 20 years of experience in IT and finance, and a long-standing focus on DeFi. The founder&apos;s identity has been verified through a KYC with SpyWolf, the firm that audited our contracts.
+            </p>
+            <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '20px' }}>
+              We chose to stay publicly pseudonymous and to make trust verifiable on-chain instead: audited contracts, a 3-of-5 Safe multisig, and team tokens locked in a vesting contract until January 2028.
+            </p>
+            <a href={KYC_URL} target="_blank" rel="noopener noreferrer" className="btn btn-primary">KYC certificate ↗</a>
+          </div>
+        )}
+
+        <section style={{ marginTop: '30px' }}>
           <div style={{ marginBottom: '24px', textAlign: 'center' }}>
             <span className={styles.sectionTag}>INDEPENDENT REVIEWS</span>
             <h2 style={{ color: '#fff', fontSize: '1.8rem', fontWeight: 800, margin: '6px 0 10px' }}>{d.auditSection.title}</h2>
@@ -82,20 +96,6 @@ export default function SecurityPage() {
             ))}
           </div>
         </section>
-
-        {KYC_URL && (
-          <div id="team" className="glass-panel" style={{ marginTop: '30px', padding: 'clamp(20px, 4vw, 36px)' }}>
-            <span className={styles.sectionTag}>TEAM</span>
-            <h2 style={{ color: '#fff', margin: '6px 0 15px' }}>The team</h2>
-            <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '12px' }}>
-              JoobEscrow was founded by a builder with over 20 years of experience in IT and finance, and a long-standing focus on DeFi. The founder&apos;s identity has been verified through a KYC with SpyWolf, the firm that audited our contracts.
-            </p>
-            <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '20px' }}>
-              We chose to stay publicly pseudonymous and to make trust verifiable on-chain instead: audited contracts, a 3-of-5 Safe multisig, and team tokens locked in a vesting contract until January 2028.
-            </p>
-            <a href={KYC_URL} target="_blank" rel="noopener noreferrer" className="btn btn-primary">KYC certificate ↗</a>
-          </div>
-        )}
 
         <div id="contracts" className="glass-panel" style={{ marginTop: '30px', padding: 'clamp(20px, 4vw, 36px)' }}>
           <h2 style={{ color: '#fff', marginBottom: '15px' }}>{d.contractSection.title}</h2>
