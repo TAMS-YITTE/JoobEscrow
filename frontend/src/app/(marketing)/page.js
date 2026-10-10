@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import Link from 'next/link';
 import styles from './marketing.module.css';
 import AmbientConstellation from '../../components/AmbientConstellation';
@@ -32,6 +33,11 @@ export default function LandingPage() {
       {/* Hero Section */}
       <section className={styles.heroSection}>
         <div className={styles.container}>
+          <div className={styles.heroTechLine}>
+            {['AUDITED', 'KYC VERIFIED', 'NON-CUSTODIAL', 'BNB SMART CHAIN'].map((t, i) => (
+              <Fragment key={t}>{i > 0 && ' · '}<span style={{ whiteSpace: 'nowrap' }}>{t}</span></Fragment>
+            ))}
+          </div>
           <div className={styles.heroGrid}>
             <div className={styles.heroLeft}>
               <div className={styles.pillBadge}>
@@ -46,10 +52,6 @@ export default function LandingPage() {
               <p className={styles.heroSubtitle}>
                 Marketplaces take 20–30%. With JoobEscrow, clients pay 0%, providers keep 90–98%, and funds stay locked in an audited smart contract until the work is approved, the deadline passes or a dispute is settled.
               </p>
-
-              <div className={styles.heroTechLine}>
-                AUDITED · KYC VERIFIED · NON-CUSTODIAL · BNB SMART CHAIN
-              </div>
 
               <div className={styles.quickTiles}>
                 <Link href="/try" className={styles.quickTile}>
