@@ -21,7 +21,7 @@ export const AUDITS = {
 };
 
 // Certificat KYC SpyWolf du fondateur. Tant qu'il vaut null, la section Team de /security reste masquee.
-export const KYC_URL = null;
+export const KYC_URL = 'https://spywolf.co/kyc-verification/JoobEscrow_KYC.pdf';
 
 // Enum State du contrat.
 export const PRESALE_STATE = { PENDING: 0, ACTIVE: 1, ENDED: 2 };
