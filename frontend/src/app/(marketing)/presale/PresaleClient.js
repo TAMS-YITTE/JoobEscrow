@@ -651,6 +651,7 @@ export default function PresaleClient() {
             </div>
 
             {/* Volume Tier Progress */}
+            {/* Barre du bonus de volume ; survol ou focus : tous les paliers */}
             <div className={styles.tierWrap}>
               <div className={styles.tierBarRow}>
                 <span className={styles.tierPill}>{Number(volumeTierBps(config, user.contribution + amountWei)) / 100}%</span>
@@ -660,9 +661,23 @@ export default function PresaleClient() {
                 <span className={styles.tierPill}>{nextTier ? `+${Number(nextTier.bps) / 100}%` : 'MAX'}</span>
               </div>
               <div className={styles.tierHint}>
+                {/* Bouton : ouvre aussi la liste des paliers au clavier et au toucher. */}
+                <button type="button" aria-label="Show volume bonus tiers" aria-describedby="tiers-tip" className={styles.tierInfo}>i</button>
                 {nextTier
                   ? <>Contribute another <b>${fmtUsd(nextTier.missing, pd, 0)}</b> to reach the <b>+{Number(nextTier.bps) / 100}%</b> volume bonus.</>
                   : <>Maximum volume bonus reached (+{Number(config.tierBps[config.tierBps.length - 1] ?? 0n) / 100}%).</>}
+              </div>
+              <div id="tiers-tip" role="tooltip" className={styles.tierTip}>
+                <span className={styles.tierTipTitle}>Volume bonus tiers (cumulative purchases)</span>
+                {config.tierThresholds.map((th, i) => {
+                  const reached = user.contribution + amountWei >= th;
+                  return (
+                    <span key={i} className={`${styles.tierTipRow} ${reached ? styles.tierTipReached : ''}`}>
+                      <span>{reached ? '✓ ' : ''}≥ ${fmtUsd(th, pd, 0)}</span>
+                      <b>+{Number(config.tierBps[i]) / 100}%</b>
+                    </span>
+                  );
+                })}
               </div>
             </div>
 
@@ -703,34 +718,35 @@ export default function PresaleClient() {
 
         {/* Right Side Column */}
         <aside className={styles.sideColumn}>
-          {/* User Allocation Dashboard if Connected */}
-          {account && (
+          {/* Allocation de l'acheteur : toujours affichee (tirets avant connexion) pour que les
+              deux cadres de droite remplissent la hauteur de la carte d'achat. */}
+          {(
             <div className={styles.allocCard}>
               <div className={styles.sideCardTitle}>Your Allocation</div>
               <div className={styles.allocStatsGrid}>
                 <div className={styles.allocStatItem}>
                   <div className={styles.allocStatLabel}>Total JOOB</div>
-                  <div className={`${styles.allocStatVal} ${styles.allocHighlight}`}>{fmtToken(user.allocation, td)}</div>
+                  <div className={`${styles.allocStatVal} ${styles.allocHighlight}`}>{account ? fmtToken(user.allocation, td) : '—'}</div>
                 </div>
                 <div className={styles.allocStatItem}>
                   <div className={styles.allocStatLabel}>Purchased</div>
-                  <div className={styles.allocStatVal}>{fmtToken(user.purchased, td)}</div>
+                  <div className={styles.allocStatVal}>{account ? fmtToken(user.purchased, td) : '—'}</div>
                 </div>
                 <div className={styles.allocStatItem}>
                   <div className={styles.allocStatLabel}>Volume Bonus</div>
-                  <div className={styles.allocStatVal}>{fmtToken(user.volumeBonus, td)}</div>
+                  <div className={styles.allocStatVal}>{account ? fmtToken(user.volumeBonus, td) : '—'}</div>
                 </div>
                 <div className={styles.allocStatItem}>
                   <div className={styles.allocStatLabel}>Contributed</div>
-                  <div className={styles.allocStatVal}>${fmtUsd(user.contribution, pd, 2)}</div>
+                  <div className={styles.allocStatVal}>{account ? `$${fmtUsd(user.contribution, pd, 2)}` : '—'}</div>
                 </div>
               </div>
 
-              {isEnded ? (
+              {isEnded && account ? (
                 <button onClick={handleClaim} disabled={user.claimable === 0n || status === 'loading'} className="btn btn-primary" style={{ width: '100%' }}>
                   {user.claimable > 0n ? `Claim ${fmtToken(user.claimable, td)} JOOB` : 'Nothing to claim yet'}
                 </button>
-              ) : awaitingFinalize ? (
+              ) : awaitingFinalize && account ? (
                 <div>
                   <p style={{ color: '#94a3b8', fontSize: '0.82rem', marginBottom: '8px' }}>The sale ended. Anyone can finalize it on-chain to open claims.</p>
                   <button onClick={handleFinalize} disabled={status === 'loading'} className="btn btn-primary" style={{ width: '100%' }}>
