@@ -22,12 +22,12 @@ export default function WhatsNextPage() {
         </div>
       </header>
 
-      <WhatsNextWidget title="Coming to JoobEscrow" />
-
-      <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 16 }}>
         <Link href="/roadmap" className="btn btn-outline">Full roadmap →</Link>
         <Link href="/presale" className="btn btn-primary">Join the JOOB presale →</Link>
       </div>
+
+      <WhatsNextWidget title="Coming to JoobEscrow" />
     </div>
   );
 }

@@ -8,13 +8,13 @@
 .coming-widget-head h3 { margin: 0; font-size: 1rem; font-weight: 800; color: #fff; }
 .coming-widget-head h3 span { color: #64748b; margin-left: 4px; }
 .coming-widget-note { color: #64748b; font-size: 0.72rem; }
-.coming-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-flow: column; grid-template-rows: repeat(5, auto); column-gap: 22px; }
+.coming-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: minmax(0, 1fr); }
 .coming-row {
   display: grid; grid-template-columns: 18px 30px minmax(0, 1fr) auto; align-items: center; gap: 10px;
   padding: 9px 4px; border-radius: 10px; transition: background 0.15s;
 }
 .coming-row { border-top: 1px solid rgba(255, 255, 255, 0.04); }
-.coming-row:nth-child(1), .coming-row:nth-child(6) { border-top: none; }
+.coming-row:nth-child(1) { border-top: none; }
 .coming-row:hover { background: rgba(163, 230, 53, 0.05); }
 .coming-rank { color: #64748b; font-size: 0.85rem; font-weight: 600; text-align: center; }
 .coming-icon { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.95rem; background: rgba(163, 230, 53, 0.1); }
