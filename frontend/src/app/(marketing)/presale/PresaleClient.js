@@ -763,9 +763,9 @@ export default function PresaleClient() {
 
           {/* Referral Card (id="referral") */}
           <div className={styles.referralCard} id="referral">
-            <h3 className={styles.referralTitle}>Share &amp; Earn 2% On-Chain</h3>
+            <h3 className={styles.referralTitle}>Share &amp; Earn <span className={styles.referralAccent}>2%</span> On-Chain</h3>
             <p className={styles.referralSub}>
-              Referrers receive 2% of all JOOB bought through their link, with the exact same linear vesting.
+              Referrers receive <b className={styles.referralAccent}>2% of all JOOB</b> bought through their link, with the exact same linear vesting.
             </p>
 
             {account ? (
