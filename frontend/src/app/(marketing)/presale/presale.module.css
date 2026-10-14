@@ -269,24 +269,24 @@
 /* Big Hero Value inside Card */
 .raisedBox {
   text-align: center;
-  padding: 14px 14px;
-  margin-bottom: 14px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
   background: rgba(0, 0, 0, 0.45);
-  border-radius: 16px;
+  border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .raisedLabel {
-  font-size: 0.76rem;
+  font-size: 0.68rem;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   color: #94a3b8;
-  margin-bottom: 6px;
+  margin-bottom: 2px;
 }
 
 .raisedValue {
   font-family: var(--font-mono, monospace);
-  font-size: clamp(1.6rem, 4vw, 2rem);
+  font-size: clamp(1.3rem, 3.5vw, 1.6rem);
   font-weight: 800;
   line-height: 1.1;
   background: linear-gradient(135deg, #10b981 0%, #a3e635 60%, #facc15 100%);
@@ -298,7 +298,7 @@
 
 .countdownMono {
   font-family: var(--font-mono, monospace);
-  font-size: clamp(1.4rem, 3.5vw, 1.75rem);
+  font-size: clamp(1.15rem, 3vw, 1.35rem);
   font-weight: 800;
   color: #fff;
   letter-spacing: -0.02em;
@@ -308,12 +308,12 @@
 .metricsGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-bottom: 14px;
+  gap: 8px;
+  margin-bottom: 12px;
 }
 
 .metricCard {
-  padding: 12px 14px;
+  padding: 8px 12px;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.07);
   border-radius: 14px;
@@ -322,25 +322,25 @@
 }
 
 .metricLabel {
-  font-size: 0.74rem;
+  font-size: 0.66rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: #94a3b8;
-  margin-bottom: 6px;
+  margin-bottom: 2px;
 }
 
 .metricMainVal {
   font-family: var(--font-mono, monospace);
-  font-size: 1.15rem;
+  font-size: 1rem;
   font-weight: 800;
   color: #fff;
   line-height: 1.2;
 }
 
 .metricSubVal {
-  font-size: 0.78rem;
+  font-size: 0.72rem;
   color: #64748b;
-  margin-top: 4px;
+  margin-top: 2px;
 }
 
 .nextPriceHighlight {
