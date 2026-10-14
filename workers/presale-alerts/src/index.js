@@ -1,9 +1,15 @@
 // Alertes Telegram des achats de la presale JOOB (VestingPresale, BNB Smart Chain).
-// Cron chaque minute : lit les events TokensBought depuis le dernier bloc traite
-// (curseur en KV) et publie un message par achat. Lecture seule : aucune transaction.
+// Cron toutes les 2 minutes : lit totalRaised() ; seulement s'il a bouge, lit les events
+// TokensBought depuis le dernier bloc traite (curseur en KV) et publie un message par
+// achat. La plupart des executions ne font donc que deux appels RPC legers, que tous
+// les RPC publics acceptent ; eth_getLogs (refuse ou limite par la plupart d'entre
+// eux) n'est appele que lorsqu'il y a reellement un achat. Lecture seule.
 //
-// Secrets (wrangler secret put) : TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID.
-// Variables (wrangler.toml)     : PRESALE_ADDRESS, RPC_URLS, DRY_RUN, IMAGE_URL (optionnelle).
+// Secrets (wrangler secret put) : TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID,
+//                                 FALLBACK_RPC_URL (optionnel, ex. Alchemy).
+// Variables (wrangler.toml)     : PRESALE_ADDRESS, RPC_URLS (appels simples),
+//                                 LOGS_RPC_URLS (eth_getLogs), FALLBACK_ORIGIN, DRY_RUN,
+//                                 IMAGE_URL (optionnelle).
 
 // keccak256 des signatures (verifiees contre contracts-token/src/VestingPresale.sol).
 const TOPIC_BOUGHT = '0xbd37c6c26f83ab804758436c263701c75879733903991b821180916fd6726eb6'; // TokensBought(address,uint256,uint256,bool,address,uint256)
@@ -11,7 +17,9 @@ const TOPIC_BONUS = '0x43f13eddb62d931341dc084f228017290dbd879d3b2a3e727f35921af
 const SEL_TOTAL_RAISED = '0xc5c4744c'; // totalRaised()
 
 const CONFIRMATIONS = 3n;
-const MAX_RANGE = 2000n; // blocs par requete eth_getLogs
+const MAX_RANGE = 2000n; // blocs par requete eth_getLogs (publicnode)
+const FALLBACK_RANGE = 10n; // Alchemy gratuit : 10 blocs par requete eth_getLogs
+const MAX_LOG_REQUESTS = 25; // Cloudflare gratuit : 50 sous-requetes par execution, Telegram compris
 const MAX_LAG = 4000n; // ~30 min de blocs BSC (~0,45 s par bloc) : au-dela, publicnode exige une cle d'archive
 const MAX_SENDS_PER_RUN = 15; // limite Telegram ~20 messages/min par groupe
 // KV gratuit : 1 000 ecritures/jour par compte. Le curseur n'est enregistre qu'apres un
@@ -22,23 +30,75 @@ const DECIMALS = 18; // USDT, USDC (BSC) et JOOB : 18 decimales
 const BSCSCAN = 'https://bscscan.com';
 const PRESALE_URL = 'https://www.joobescrow.com/presale';
 
+const urls = (list) => (list ?? '').split(',').map((u) => u.trim()).filter(Boolean);
+
+async function rpcAt(url, method, params, origin) {
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json', ...(origin ? { origin } : {}) },
+    body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }),
+  });
+  const json = await res.json();
+  if (json.error) throw new Error(`${method}: ${json.error.message}`);
+  return json.result;
+}
+
+// Appels simples (eth_blockNumber, eth_call) : premier RPC de la liste qui repond.
 async function rpc(env, method, params) {
   let lastErr;
-  for (const url of env.RPC_URLS.split(',').map((u) => u.trim()).filter(Boolean)) {
+  for (const url of urls(env.RPC_URLS)) {
     try {
-      const res = await fetch(url, {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }),
-      });
-      const json = await res.json();
-      if (json.error) throw new Error(`${method}: ${json.error.message}`);
-      return json.result;
+      return await rpcAt(url, method, params);
     } catch (err) {
       lastErr = err;
     }
   }
   throw lastErr;
+}
+
+const hex = (n) => `0x${n.toString(16)}`;
+
+// totalRaised() au bloc `block` : ne fait que monter, a chaque achat.
+async function raisedAt(env, block) {
+  return BigInt(await rpc(env, 'eth_call', [{ to: env.PRESALE_ADDRESS, data: SEL_TOTAL_RAISED }, hex(block)]));
+}
+
+// Events de la presale entre `from` et `to`, par tranches. RPC de logs (publicnode)
+// d'abord ; en cas d'echec, RPC de secours (ex. Alchemy gratuit, 10 blocs par requete).
+// S'arrete au budget de requetes : renvoie le dernier bloc entierement lu.
+async function getLogs(env, from, to) {
+  const filter = (a, b) => [{ address: env.PRESALE_ADDRESS, fromBlock: hex(a), toBlock: hex(b), topics: [[TOPIC_BOUGHT, TOPIC_BONUS]] }];
+  const logs = [];
+  let requests = 0;
+  let scannedTo = from - 1n;
+  while (scannedTo < to && requests < MAX_LOG_REQUESTS) {
+    const a = scannedTo + 1n;
+    const b = to < a + MAX_RANGE - 1n ? to : a + MAX_RANGE - 1n;
+    let chunk = null;
+    for (const url of urls(env.LOGS_RPC_URLS ?? env.RPC_URLS)) {
+      if (requests >= MAX_LOG_REQUESTS) break;
+      requests++;
+      try { chunk = await rpcAt(url, 'eth_getLogs', filter(a, b)); break; } catch (err) { console.warn(`getLogs ${url}: ${err.message}`); }
+    }
+    if (chunk) { logs.push(...chunk); scannedTo = b; continue; }
+    // Secours par petites tranches ; on avance de ce qui a pu etre lu.
+    if (!env.FALLBACK_RPC_URL) break;
+    let c = a;
+    while (c <= b && requests < MAX_LOG_REQUESTS) {
+      const d = b < c + FALLBACK_RANGE - 1n ? b : c + FALLBACK_RANGE - 1n;
+      requests++;
+      try {
+        logs.push(...await rpcAt(env.FALLBACK_RPC_URL, 'eth_getLogs', filter(c, d), env.FALLBACK_ORIGIN));
+      } catch (err) {
+        console.warn(`getLogs fallback: ${err.message}`);
+        return { logs, scannedTo };
+      }
+      scannedTo = d;
+      c = d + 1n;
+    }
+    if (scannedTo < b) break;
+  }
+  return { logs, scannedTo };
 }
 
 const word = (data, i) => BigInt(`0x${data.slice(2 + i * 64, 2 + (i + 1) * 64)}`);
@@ -74,11 +134,6 @@ function decodePurchases(logs) {
       volumeBps: bonus.get(`${l.transactionHash}:${buyer}`)?.bps ?? 0n,
     };
   });
-}
-
-async function readProgress(env) {
-  const call = (sel) => rpc(env, 'eth_call', [{ to: env.PRESALE_ADDRESS, data: sel }, 'latest']).then(BigInt);
-  return { raised: await call(SEL_TOTAL_RAISED) };
 }
 
 function formatMessage(p, progress) {
@@ -127,43 +182,51 @@ async function sendTelegram(env, text) {
 async function run(env) {
   const latest = BigInt(await rpc(env, 'eth_blockNumber', []));
   const safe = latest - CONFIRMATIONS;
-  // cursor = { block: dernier bloc entierement traite, sent: achats deja publies dans les blocs suivants }
+  const raised = await raisedAt(env, safe);
+  // cursor = { block: dernier bloc entierement traite, sent: achats deja publies dans les
+  //            blocs suivants, raised: totalRaised au bloc `block` }
   const cursor = JSON.parse((await env.STATE.get(CURSOR_KEY)) ?? 'null');
   if (!cursor) {
     // Premier lancement : on part du bloc courant (pas de rattrapage d'historique).
-    await env.STATE.put(CURSOR_KEY, JSON.stringify({ block: safe.toString(), sent: [] }));
+    await env.STATE.put(CURSOR_KEY, JSON.stringify({ block: safe.toString(), sent: [], raised: raised.toString() }));
     console.log(`Cursor initialised at block ${safe}`);
     return;
   }
+  // totalRaised inchange : aucun achat depuis le curseur, rien a lire.
+  if (cursor.raised !== undefined && BigInt(cursor.raised) === raised) {
+    if (safe - BigInt(cursor.block) >= SAVE_EVERY) {
+      await env.STATE.put(CURSOR_KEY, JSON.stringify({ block: safe.toString(), sent: [], raised: raised.toString() }));
+    }
+    return;
+  }
+
   let from = BigInt(cursor.block) + 1n;
   if (from > safe) return;
-  // Les RPC publics ne servent que les blocs recents : apres une longue panne on saute
-  // en avant plutot que de rester bloque (les achats manques restent visibles sur BscScan).
-  if (safe - from > MAX_LAG) {
+  // Les RPC publics ne servent que les blocs recents : sans RPC de secours, apres une
+  // longue panne on saute en avant (les achats manques restent visibles sur BscScan).
+  if (safe - from > MAX_LAG && !env.FALLBACK_RPC_URL) {
     console.warn(`Cursor too old (${from}), skipping to ${safe - MAX_LAG}`);
     from = safe - MAX_LAG;
     cursor.sent = [];
   }
-  const to = safe < from + MAX_RANGE - 1n ? safe : from + MAX_RANGE - 1n;
+  const { logs, scannedTo } = await getLogs(env, from, safe);
+  if (scannedTo < from) throw new Error(`eth_getLogs failed from block ${from}`);
+  // totalRaised n'est enregistre qu'une fois le retard entierement rattrape : sinon
+  // l'execution suivante doit reprendre la lecture des events la ou elle s'est arretee.
+  const nextRaised = scannedTo === safe ? raised.toString() : cursor.raised;
 
-  const logs = await rpc(env, 'eth_getLogs', [{
-    address: env.PRESALE_ADDRESS,
-    fromBlock: `0x${from.toString(16)}`,
-    toBlock: `0x${to.toString(16)}`,
-    topics: [[TOPIC_BOUGHT, TOPIC_BONUS]],
-  }]);
   const already = new Set(cursor.sent);
   const all = decodePurchases(logs);
   const blockOf = new Map(all.map((p) => [p.key, p.block]));
   const purchases = all.filter((p) => !already.has(p.key));
-  const progress = purchases.length ? await readProgress(env).catch(() => null) : null;
+  const progress = { raised };
 
   let sends = 0;
   for (const p of purchases) {
     // Arret (erreur ou limite) : on reprend au bloc de cet achat, sans republier ceux deja envoyes.
     const stopAt = async () => {
       const sent = [...already].filter((k) => blockOf.get(k) === p.block);
-      await env.STATE.put(CURSOR_KEY, JSON.stringify({ block: (p.block - 1n).toString(), sent }));
+      await env.STATE.put(CURSOR_KEY, JSON.stringify({ block: (p.block - 1n).toString(), sent, raised: cursor.raised }));
     };
     if (sends >= MAX_SENDS_PER_RUN) { await stopAt(); return; }
     try {
@@ -176,9 +239,7 @@ async function run(env) {
     already.add(p.key);
     sends++;
   }
-  if (sends > 0 || to - BigInt(cursor.block) >= SAVE_EVERY) {
-    await env.STATE.put(CURSOR_KEY, JSON.stringify({ block: to.toString(), sent: [] }));
-  }
+  await env.STATE.put(CURSOR_KEY, JSON.stringify({ block: scannedTo.toString(), sent: [], raised: nextRaised }));
 }
 
 export default {
