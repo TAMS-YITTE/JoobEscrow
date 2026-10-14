@@ -1,6 +1,6 @@
 /* Widget compact « What's coming » (liste numerotee, statut a droite) */
 .coming-widget {
-  padding: 14px 16px 10px; border-radius: 18px;
+  padding: 14px 16px 10px; border-radius: 18px; max-width: 760px;
   background: rgba(17, 24, 31, 0.75); border: 1px solid rgba(163, 230, 53, 0.35);
   box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.08), 0 0 30px -14px rgba(163, 230, 53, 0.4);
 }
