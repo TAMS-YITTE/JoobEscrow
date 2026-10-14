@@ -1,9 +1,15 @@
+import { DurableObject } from 'cloudflare:workers';
+
 // Alertes Telegram des achats de la presale JOOB (VestingPresale, BNB Smart Chain).
-// Cron toutes les 2 minutes : lit totalRaised() ; seulement s'il a bouge, lit les events
+// Cron chaque minute : lit totalRaised() ; seulement s'il a bouge, lit les events
 // TokensBought depuis le dernier bloc traite (curseur en KV) et publie un message par
 // achat. La plupart des executions ne font donc que deux appels RPC legers, que tous
 // les RPC publics acceptent ; eth_getLogs (refuse ou limite par la plupart d'entre
 // eux) n'est appele que lorsqu'il y a reellement un achat. Lecture seule.
+//
+// Le curseur vit dans un Durable Object (un seul exemplaire, ecritures immediatement
+// visibles, une execution a la fois) : avec KV, une execution pouvait relire un
+// curseur pas encore propage et republier un achat deja annonce.
 //
 // Secrets (wrangler secret put) : TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID,
 //                                 FALLBACK_RPC_URL (optionnel, ex. Alchemy).
@@ -179,23 +185,23 @@ async function sendTelegram(env, text) {
   if (!res.ok) throw new Error(`Telegram ${res.status}: ${(await res.text()).slice(0, 200)}`);
 }
 
-async function run(env) {
+async function run(env, store) {
   const latest = BigInt(await rpc(env, 'eth_blockNumber', []));
   const safe = latest - CONFIRMATIONS;
   const raised = await raisedAt(env, safe);
   // cursor = { block: dernier bloc entierement traite, sent: achats deja publies dans les
   //            blocs suivants, raised: totalRaised au bloc `block` }
-  const cursor = JSON.parse((await env.STATE.get(CURSOR_KEY)) ?? 'null');
+  const cursor = JSON.parse((await store.get()) ?? 'null');
   if (!cursor) {
     // Premier lancement : on part du bloc courant (pas de rattrapage d'historique).
-    await env.STATE.put(CURSOR_KEY, JSON.stringify({ block: safe.toString(), sent: [], raised: raised.toString() }));
+    await store.put(JSON.stringify({ block: safe.toString(), sent: [], raised: raised.toString() }));
     console.log(`Cursor initialised at block ${safe}`);
     return;
   }
   // totalRaised inchange : aucun achat depuis le curseur, rien a lire.
   if (cursor.raised !== undefined && BigInt(cursor.raised) === raised) {
     if (safe - BigInt(cursor.block) >= SAVE_EVERY) {
-      await env.STATE.put(CURSOR_KEY, JSON.stringify({ block: safe.toString(), sent: [], raised: raised.toString() }));
+      await store.put(JSON.stringify({ block: safe.toString(), sent: [], raised: raised.toString() }));
     }
     return;
   }
@@ -226,7 +232,7 @@ async function run(env) {
     // Arret (erreur ou limite) : on reprend au bloc de cet achat, sans republier ceux deja envoyes.
     const stopAt = async () => {
       const sent = [...already].filter((k) => blockOf.get(k) === p.block);
-      await env.STATE.put(CURSOR_KEY, JSON.stringify({ block: (p.block - 1n).toString(), sent, raised: cursor.raised }));
+      await store.put(JSON.stringify({ block: (p.block - 1n).toString(), sent, raised: cursor.raised }));
     };
     if (sends >= MAX_SENDS_PER_RUN) { await stopAt(); return; }
     try {
@@ -239,11 +245,63 @@ async function run(env) {
     already.add(p.key);
     sends++;
   }
-  await env.STATE.put(CURSOR_KEY, JSON.stringify({ block: scannedTo.toString(), sent: [], raised: nextRaised }));
+  await store.put(JSON.stringify({ block: scannedTo.toString(), sent: [], raised: nextRaised }));
+}
+
+// Curseur en KV : ancien stockage, garde a jour en copie pour le mode secours.
+const kvStore = (env) => ({
+  get: () => env.STATE.get(CURSOR_KEY),
+  put: (value) => env.STATE.put(CURSOR_KEY, value),
+});
+
+// Execute `run` dans un seul objet : le curseur y est lu et ecrit sans delai de
+// propagation, et un declenchement qui arrive pendant une execution en cours
+// est ignore plutot que de traiter les memes achats en parallele.
+export class AlertsRunner extends DurableObject {
+  running = false;
+
+  async tick() {
+    if (this.running) return 'busy';
+    this.running = true;
+    try {
+      const kv = kvStore(this.env);
+      const store = {
+        // Reprise du curseur KV de l'ancienne version au premier passage.
+        get: async () => (await this.ctx.storage.get(CURSOR_KEY)) ?? (await kv.get()) ?? null,
+        put: async (value) => {
+          await this.ctx.storage.put(CURSOR_KEY, value);
+          // Copie pour le mode secours ; un echec (quota KV) ne bloque pas les alertes.
+          await kv.put(value).catch((err) => console.warn(`KV copy: ${err.message}`));
+        },
+      };
+      await run(this.env, store);
+      return 'ok';
+    } catch (err) {
+      // Erreur de traitement (RPC, Telegram...) : renvoyee comme resultat, pour que
+      // l'appelant ne la confonde pas avec un objet injoignable.
+      console.error(err);
+      return `error: ${err.message}`;
+    } finally {
+      this.running = false;
+    }
+  }
 }
 
 export default {
   async scheduled(_event, env, ctx) {
-    ctx.waitUntil(run(env));
+    ctx.waitUntil((async () => {
+      try {
+        const stub = env.ALERTS.get(env.ALERTS.idFromName('main'));
+        await Promise.race([
+          stub.tick(),
+          new Promise((_, reject) => setTimeout(() => reject(new Error('no answer after 25 s')), 25_000)),
+        ]);
+      } catch (err) {
+        // Objet injoignable ou muet : les alertes continuent avec le curseur KV
+        // (risque de doublon, mais aucun achat oublie).
+        console.error(`Durable Object unavailable, KV cursor fallback: ${err.message}`);
+        await run(env, kvStore(env));
+      }
+    })());
   },
 };
