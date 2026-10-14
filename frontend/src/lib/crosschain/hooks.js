@@ -40,7 +40,9 @@ export function useSourceBalance(source, account, tick) {
       let client = clients.get(source.chainId);
       if (!client) {
         const chain = (await loadCatalog()).chains.find((c) => c.id === source.chainId);
-        const rpc = chain?.metamask?.rpcUrls?.[0];
+        // publicnode d'abord : deja autorise par la CSP du site (vercel.json).
+        const urls = chain?.metamask?.rpcUrls ?? [];
+        const rpc = urls.find((u) => u.includes('publicnode.com')) ?? urls[0];
         if (!rpc) return;
         client = createPublicClient({ transport: http(rpc) });
         clients.set(source.chainId, client);
