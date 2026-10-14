@@ -539,31 +539,22 @@ export default function PresaleClient() {
           )}
 
           {/* Sub-cards: Price & Allocation */}
+          {/* Prix : libelle a gauche, valeur a droite */}
           <div className={styles.metricsGrid}>
-            <div className={styles.metricCard}>
-              <span className={styles.metricLabel}>{isEnded || awaitingFinalize ? 'Final Price' : soldOut ? 'Price' : 'Current Price'}</span>
-              <span className={styles.metricMainVal}>{soldOut ? 'Sold out' : `$${fmtUsd(isEnded || awaitingFinalize ? finalPrice : currentPrice, pd)}`}</span>
-              <span className={styles.metricSubVal}>
-                {isEnded || awaitingFinalize
-                  ? 'Sale closed'
-                  : soldOut ? 'Cap reached'
-                  : <>Next: <strong className={styles.nextPriceHighlight}>${fmtUsd(nextPrice, pd)}</strong></>}
-              </span>
+            <div className={styles.priceTile}>
+              <span className={styles.priceTileLabel}>{isEnded || awaitingFinalize ? 'Final price' : 'Current price'}</span>
+              <span className={`${styles.priceTileVal} ${styles.priceTileAccent}`}>{soldOut ? 'Sold out' : `$${fmtUsd(isEnded || awaitingFinalize ? finalPrice : currentPrice, pd)}`}</span>
             </div>
-
-            <div className={styles.metricCard}>
-              <span className={styles.metricLabel}>JOOB Allocated</span>
-              <span className={styles.metricMainVal}>{fmtToken(global.totalTokensOwed, td, 0)}</span>
-              <span className={styles.metricSubVal}>
-                {soldPct.toFixed(2)}% of {capM}M cap
-              </span>
+            <div className={styles.priceTile}>
+              <span className={styles.priceTileLabel}>Next price</span>
+              <span className={styles.priceTileVal}>{isEnded || awaitingFinalize || soldOut ? '—' : `$${fmtUsd(nextPrice, pd)}`}</span>
             </div>
           </div>
 
           {/* Cap Progress Bar with Glow Handle */}
           <div className={styles.capProgressWrap}>
             <div className={styles.capProgressHeader}>
-              <span>Presale Cap Progress</span>
+              <span>JOOB allocated <b className={styles.capProgressStrong}>{fmtToken(global.totalTokensOwed, td, 0)}</b> / {capM}M</span>
               <span>{soldPct.toFixed(2)}%</span>
             </div>
             <div className={styles.capProgressBar}>

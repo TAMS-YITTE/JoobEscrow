@@ -1370,3 +1370,36 @@
   text-decoration: underline;
   text-underline-offset: 2px;
 }
+
+/* Tuiles de prix (comme MedLease) */
+.priceTile {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.priceTileLabel {
+  font-size: 0.78rem;
+  color: #94a3b8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.priceTileVal {
+  font-family: var(--font-mono, monospace);
+  font-size: 1rem;
+  font-weight: 800;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.priceTileAccent { color: #a3e635; }
+
+.capProgressStrong { color: #fff; }
