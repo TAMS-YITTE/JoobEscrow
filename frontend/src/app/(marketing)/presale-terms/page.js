@@ -60,8 +60,8 @@ export default function PresaleTermsPage() {
             <li style={li}><strong>Start:</strong> October 15, 2026, 14:00 UTC, at <strong>0.001 USD</strong> per JOOB. The sale only opens once the multisig has started it on-chain after the full deposit (Article 3).</li>
             <li style={li}><strong>Increase:</strong> +0.0002 USD every 2 days from the start time. The applicable price is the one computed by the smart contract when your transaction is executed.</li>
             <li style={li}><strong>End:</strong> January 13, 2027, 13:59:59 UTC, unless the sale is extended (Article 3). If the cap is reached earlier, no further purchases are accepted; the sale still ends, and claims open, at the end time.</li>
-            <li style={li}><strong>Payment:</strong> USDT or USDC (BEP-20) on BNB Smart Chain, only through the presale page. No minimum or maximum contribution. Network fees (BNB) are paid by the participant.</li>
-            <li style={li}><strong>Slippage protection:</strong> if the price changes between your confirmation and the execution, the transaction is cancelled and nothing is charged.</li>
+            <li style={li}><strong>Payment:</strong> only through the presale page. USDT or USDC (BEP-20) on BNB Smart Chain are paid directly to the contract. You can also pay with another token or from another network (USDT, USDC, BNB, ETH, POL, AVAX, ARB or OP on Ethereum, Arbitrum, Base, Polygon, Optimism or Avalanche): the payment is then converted into USDT on BNB Smart Chain by a third-party router (LI.FI) before reaching the contract. Router and bridge fees apply and are shown before you confirm. No minimum or maximum contribution, but a route from another network may require a minimum of a few dollars. Network fees are paid by the participant.</li>
+            <li style={li}><strong>Slippage protection:</strong> if the price changes between your confirmation and the execution, the transaction is cancelled and nothing is charged. For a payment from another token or network, if the purchase fails on arrival, the converted amount is sent to your wallet on BNB Smart Chain.</li>
           </ul>
         </section>
 
@@ -140,6 +140,15 @@ export default function PresaleTermsPage() {
           <p style={p}>
             Any dispute shall first be subject to an attempt at amicable resolution by writing to contact@joobescrow.com. If no agreement is reached
             within 30 days, the dispute shall be settled by arbitration under the ICC Rules.
+          </p>
+        </section>
+
+        <section>
+          <h2 style={h2}>Article 12 – Acceptance</h2>
+          <p style={p}>
+            By purchasing JOOB, you accept these Terms and confirm that you are not a resident of a restricted jurisdiction (Article 1), that the
+            tokens you buy are vested (Article 4), that the price after the sale is set by the market and not guaranteed (Article 6), and that you
+            may lose all the funds you contribute (Article 8).
           </p>
         </section>
       </div>

@@ -6,7 +6,7 @@ import styles from './presale.module.css';
 
 export const metadata = {
   title: 'JOOB Token Presale | JoobEscrow',
-  description: 'JOOB token presale on BNB Smart Chain: public price schedule, sealed token vault and on-chain vesting, enforced by a verified smart contract.',
+  description: 'JOOB token presale on BNB Smart Chain: public price schedule, sealed token vault and on-chain vesting, enforced by a verified smart contract. Pay with USDT, USDC, BNB, ETH and more from 7 EVM networks.',
   alternates: { canonical: '/presale' },
   openGraph: {
     title: 'JOOB Presale | JoobEscrow',

@@ -38,6 +38,10 @@ const FAQS = [
     a: 'A JOOB/USDT pool on PancakeSwap is planned right after the sale ends, opened by the JoobEscrow Safe at an initial price of $0.02 (50 JOOB per USDT), above every presale price. Once trading starts, the price is set by the market alone: it is not guaranteed and may be lower than the price you paid. Only contribute what you can afford to lose.',
   },
   {
+    q: 'What can I pay with?',
+    a: 'Connect your EVM wallet and click the token in "You pay": USDT, USDC, BNB, ETH, POL, AVAX, ARB or OP, on BNB Smart Chain, Ethereum, Arbitrum, Base, Polygon, Optimism or Avalanche. USDT and USDC on BNB Smart Chain go straight to the contract; any other token or network is converted into USDT on BNB Smart Chain by LI.FI, with the fees shown before you confirm.',
+  },
+  {
     q: 'Who can participate?',
     a: 'Only adults who are not residents of a restricted jurisdiction listed in the Presale Terms. You are responsible for checking that participation is legal where you live.',
   },

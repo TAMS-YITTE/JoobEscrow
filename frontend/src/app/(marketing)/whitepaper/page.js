@@ -319,7 +319,7 @@ export default function WhitepaperPage() {
           <Section id="presale" n={sec('presale')} title={title('presale')}>
             <ul className={styles.list}>
               <li className={styles.li}>Opens October 15, 2026, 14:00 UTC; ends January 13, 2027, 13:59:59 UTC (up to 3 extensions of 20 days).</li>
-              <li className={styles.li}>Price: $0.001 at start, +$0.0002 every 2 days, computed by the contract. Payment in USDT or USDC (BEP-20).</li>
+              <li className={styles.li}>Price: $0.001 at start, +$0.0002 every 2 days, computed by the contract. Payment in USDT or USDC on BNB Smart Chain, or in USDT, USDC, BNB, ETH, POL, AVAX, ARB or OP from 7 EVM networks (converted by LI.FI).</li>
               <li className={styles.li}>Sealed vault: the full cap of 163,500,000 JOOB was deposited before the sale could open, verifiable on BscScan.</li>
               <li className={styles.li}>Vesting for every buyer: 20% at sale end, then linear over 180 days. No soft cap, no refund.</li>
               <li className={styles.li}>Volume bonus 2% to 7% from $100 to $1,000 cumulative; referrers receive 2% of the tokens bought through their link.</li>

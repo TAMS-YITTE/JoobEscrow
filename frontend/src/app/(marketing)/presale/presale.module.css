@@ -1291,6 +1291,7 @@
 .buyStepsHead { text-align: center; margin-bottom: 26px; }
 .buyStepsTag { color: #a3e635; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.12em; }
 .buyStepsTitle { color: #fff; font-size: clamp(1.6rem, 4vw, 2.2rem); font-weight: 800; margin: 8px 0 0; }
+.buyStepsSub { color: #94a3b8; font-size: 0.95rem; line-height: 1.55; max-width: 720px; margin: 10px auto 0; }
 .buyStepsGrid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
 .buyStepCard { padding: 24px 20px; border-radius: 18px; background: rgba(17, 24, 31, 0.6); border: 1px solid rgba(255, 255, 255, 0.07); backdrop-filter: blur(10px); }
 .buyStepNum { display: inline-block; font-size: 0.7rem; font-weight: 800; color: #a3e635; padding: 4px 10px; border-radius: 6px; background: rgba(163, 230, 53, 0.1); margin-bottom: 14px; }
@@ -1298,3 +1299,73 @@
 .buyStepText { color: #94a3b8; font-size: 0.86rem; line-height: 1.55; margin: 0; }
 @media (max-width: 1024px) { .buyStepsGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 640px) { .buySteps { padding: 0 16px; } .buyStepsGrid { grid-template-columns: minmax(0, 1fr); } }
+
+/* Bouton du token payé : ouvre le choix du token et du réseau */
+.tokenBtnWrap {
+  position: relative;
+  flex-shrink: 0;
+  margin-right: 10px;
+}
+
+.tokenBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px 6px 8px;
+  border-radius: 999px;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.tokenBtn:hover { border-color: rgba(163, 230, 53, 0.6); }
+
+.tokenBtnChevron {
+  color: #94a3b8;
+  font-size: 0.75rem;
+}
+
+.tokenTip {
+  display: none;
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 6px);
+  z-index: 20;
+  padding: 4px 10px;
+  border-radius: 8px;
+  background: #101c26;
+  border: 1px solid rgba(52, 211, 153, 0.35);
+  color: #fff;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.tokenBtnWrap:hover .tokenTip,
+.tokenBtnWrap:focus-within .tokenTip { display: block; }
+
+.inputRight { text-align: right; min-width: 0; }
+
+.quoteLine {
+  margin: -10px 4px 14px;
+  text-align: right;
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+.termsNotice {
+  margin: 10px 0 0;
+  text-align: center;
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.termsNotice a {
+  color: #a3e635;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}

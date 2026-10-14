@@ -3,8 +3,8 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import { ethers } from 'ethers';
-import { useAppKitNetwork } from '@reown/appkit/react';
-import { bsc } from '@reown/appkit/networks';
+import { useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react';
+import { bsc, mainnet, arbitrum, base, polygon, optimism, avalanche } from '@reown/appkit/networks';
 import { useWeb3 } from '../../../context/Web3Context';
 import {
   PRESALE_ADDRESSES, PRESALE_ABI, ERC20_ABI, PRESALE_STATE, PRESALE_CHAIN_ID, BSCSCAN, AUDITS,
@@ -12,13 +12,19 @@ import {
   PLANNED_LISTING_PRICE,
 } from '../../../config/presale';
 import styles from './presale.module.css';
+import TokenPicker, { TokenLogo } from '../../../components/TokenPicker';
+import { useCatalog, NATIVE } from '../../../lib/crosschain/sources';
+import { useRouteQuote, useSourceBalance } from '../../../lib/crosschain/hooks';
+import { makeLifiClient, quote as lifiQuote, quoteCost, contractCalls, runRoute, progressOf } from '../../../lib/crosschain/lifi';
 
 const SLIPPAGE_BPS = 50n;
+// Paiement depuis un autre reseau : le prix peut monter pendant le bridge (1-3 min).
+const CROSS_SLIPPAGE_BPS = 100n;
+const NETWORKS_BY_ID = Object.fromEntries([bsc, mainnet, arbitrum, base, polygon, optimism, avalanche].map((n) => [n.id, n]));
 const REFRESH_INTERVAL_MS = 15_000;
 const shortAddr = (a) => `${a.slice(0, 6)}…${a.slice(-4)}`;
 const REF_PARAM = 'referrer';
 const REF_STORAGE_KEY = 'joob_presale_referrer';
-const TERMS_KEY = (a) => `joob_presale_terms:${a.toLowerCase()}`;
 
 function readStored(k) {
   try { return typeof window === 'undefined' ? null : localStorage.getItem(k); } catch { return null; }
@@ -169,6 +175,7 @@ function Feedback({ status, step, success, error }) {
 export default function PresaleClient() {
   const { account, provider, readProvider, connectWallet } = useWeb3();
   const { chainId, switchNetwork } = useAppKitNetwork();
+  const { walletProvider } = useAppKitProvider('eip155');
   const { config, global, user, loadError, refreshAll } = usePresale(account, readProvider);
   const now = useNow();
 
@@ -182,7 +189,10 @@ export default function PresaleClient() {
   const [referrer, setReferrer] = useState(readInitialReferrer);
   const [refInput, setRefInput] = useState(() => readInitialReferrer() ?? '');
   const [refError, setRefError] = useState(null);
-  const [termsSession, setTermsSession] = useState({});
+  // Paiement depuis un autre token ou reseau (null = USDT/USDC sur BSC, achat direct).
+  const [source, setSource] = useState(null);
+  const [picking, setPicking] = useState(false);
+  const [balanceTick, setBalanceTick] = useState(0);
 
   const isCorrectNetwork = Number(chainId) === PRESALE_CHAIN_ID;
 
@@ -209,16 +219,6 @@ export default function PresaleClient() {
     () => (referrer && account && referrer.toLowerCase() !== account.toLowerCase() ? referrer : null),
     [referrer, account],
   );
-
-  const key = account ? account.toLowerCase() : null;
-  const termsAccepted = !!key && (key in termsSession ? termsSession[key] : readStored(TERMS_KEY(key)) !== null);
-  const onTerms = useCallback((checked) => {
-    if (!key) return;
-    setTermsSession((prev) => ({ ...prev, [key]: checked }));
-    try {
-      if (checked) localStorage.setItem(TERMS_KEY(key), String(Date.now())); else localStorage.removeItem(TERMS_KEY(key));
-    } catch { /* session fallback */ }
-  }, [key]);
 
   const pd = config?.paymentDecimals ?? 18;
   const td = config?.tokenDecimals ?? 18;
@@ -266,20 +266,62 @@ export default function PresaleClient() {
   const soldPct = soldOut ? 100 : config && global && config.cap > 0n ? Number((global.totalTokensOwed * 10_000n) / config.cap) / 100 : 0;
   const referralLink = account && typeof window !== 'undefined' ? `${window.location.origin}/presale?${REF_PARAM}=${account}` : '';
 
+  const crossChain = !!source && !source.direct;
   const amountError = useMemo(() => {
     if (amountWei === 0n) return null;
-    if (account && amountWei > balance) return `Insufficient ${paymentToken} balance.`;
+    if (!crossChain && account && amountWei > balance) return `Insufficient ${paymentToken} balance.`;
     if (maxPurchasable > 0n && amountWei > maxPurchasable) return `Above maximum purchasable (~$${fmtUsd(maxPurchasable, pd, 2)}).`;
     return null;
-  }, [amountWei, balance, account, paymentToken, maxPurchasable, pd]);
+  }, [amountWei, balance, account, paymentToken, maxPurchasable, pd, crossChain]);
 
-  const canBuy = isLive && !soldOut && isCorrectNetwork && termsAccepted && amountWei > 0n && !amountError && status !== 'loading';
+  // ── Autre token / reseau : devis LI.FI en direct et solde du token choisi ──
+  const catalog = useCatalog();
+  const directRow = catalog?.rows.find((r) => r.direct === paymentToken);
+  const crossParams = crossChain && isLive && !soldOut && amountWei > 0n && !amountError
+    ? {
+        fromChainId: source.chainId,
+        fromToken: source.address,
+        useUSDT: paymentToken === 'USDT',
+        amountWei,
+        minTokens: (estimate.tokens * (10_000n - CROSS_SLIPPAGE_BPS)) / 10_000n,
+        buyer: account,
+        referrer: effectiveReferrer ?? ethers.ZeroAddress,
+      }
+    : undefined;
+  const route = useRouteQuote(crossParams);
+  const cost = route.status === 'ok' ? quoteCost(route.step) : null;
+  const sourceBalance = useSourceBalance(crossChain ? source : null, account, balanceTick);
+
+  // MAX hors chemin direct : valeur en dollars du solde, moins une reserve. Token
+  // natif (ETH, BNB...) : il paie aussi le gas et le wallet en reserve davantage ;
+  // autres tokens : 3 % pour les frais de bridge.
+  const maxCrossUsd = (bal, s) => {
+    if (!s.priceUSD) return '';
+    const usd = Number(ethers.formatUnits(bal, s.decimals)) * s.priceUSD;
+    const reserve = s.address.toLowerCase() === NATIVE ? Math.max(usd * 0.08, 0.5) : usd * 0.03;
+    const capped = Math.min(usd - reserve, maxPurchasable > 0n ? Number(ethers.formatUnits(maxPurchasable, pd)) : Infinity);
+    return Math.max(0, Math.floor(capped * 100) / 100).toString();
+  };
+
+  const pickSource = (s) => {
+    setPicking(false);
+    if (s.direct) { setPaymentToken(s.direct); setSource(null); } else setSource(s);
+    if (status !== 'loading') { setStatus('idle'); setTxError(null); }
+  };
+
+  const canBuy = isLive && !soldOut && (crossChain ? route.status === 'ok' : isCorrectNetwork) && amountWei > 0n && !amountError && status !== 'loading';
 
   const doSwitch = async () => { try { await switchNetwork(bsc); } catch { /* ignore */ } };
+  const switchToChain = async (id) => {
+    const network = NETWORKS_BY_ID[id];
+    if (!network) throw new Error(`Unsupported network ${id}`);
+    await switchNetwork(network);
+  };
 
   const handleBuy = async (e) => {
     e.preventDefault();
     setTxError(null); setSuccessMsg(null);
+    if (crossChain) { await handleCrossBuy(); return; }
     if (!account || !provider) { await connectWallet(); return; }
     if (!isCorrectNetwork) { await doSwitch(); return; }
     if (!canBuy || !config) return;
@@ -313,6 +355,45 @@ export default function PresaleClient() {
       await refreshAll();
     } catch (err) {
       console.error('[Presale] buy:', err);
+      setStatus('error');
+      setTxError(readableError(err));
+    } finally {
+      setStep('');
+    }
+  };
+
+  // ── Achat depuis un autre token / reseau ─────────────────────────────────
+  // LI.FI convertit et appelle buyFor() sur BSC au nom de l'acheteur, sans aucun
+  // ecran LI.FI : la progression s'affiche dans le bouton.
+  const progressLabel = (p) => ({
+    approve: `Approve ${source?.symbol ?? ''} in your wallet…`,
+    confirm: 'Confirm in your wallet…',
+    bridging: 'Bridging to BNB Smart Chain… (1–3 min)',
+    finalizing: 'Finalizing your purchase…',
+  })[p];
+
+  const handleCrossBuy = async () => {
+    if (!account || !walletProvider) { await connectWallet(); return; }
+    if (!crossParams || !canBuy) return;
+    setStatus('loading');
+    try {
+      if (Number(chainId) !== source.chainId) {
+        setStep(`Switch to ${source.chainName} in your wallet…`);
+        await switchToChain(source.chainId);
+      }
+      setStep('Getting the best route…');
+      const params = { ...crossParams, buyer: account };
+      const client = makeLifiClient(walletProvider, account, switchToChain);
+      const quoted = await lifiQuote(client, params);
+      setStep('Confirm in your wallet…');
+      await runRoute(client, quoted, contractCalls(params), (r) => setStep(progressLabel(progressOf(r))));
+      setStatus('success');
+      setSuccessMsg(`Purchase confirmed! ~${fmtToken(estimate.tokens + estimate.bonus, td)} JOOB added to your allocation.`);
+      setAmount('');
+      setBalanceTick((n) => n + 1);
+      await refreshAll();
+    } catch (err) {
+      console.error('[Presale] cross-chain buy:', err);
       setStatus('error');
       setTxError(readableError(err));
     } finally {
@@ -369,13 +450,13 @@ export default function PresaleClient() {
   const buyLabel = status === 'loading' ? (step || 'Processing…')
     : !isLive ? (isEnded || awaitingFinalize ? 'Sale ended' : 'Sale not open yet')
       : soldOut ? 'Sold out'
-      : !termsAccepted ? 'Accept the terms to continue'
         : amountWei === 0n ? 'Enter an amount'
-          : allowance < amountWei ? `Approve & buy with ${paymentToken}` : 'Buy JOOB';
+          : crossChain && route.status === 'loading' ? 'Getting the best route…'
+          : crossChain && route.status === 'error' ? 'Amount too low from this network'
+          : !crossChain && allowance < amountWei ? `Approve & buy with ${paymentToken}` : 'Buy JOOB';
 
   const tierPct = nextTier ? Math.min(100, Number(((user.contribution + amountWei) * 10_000n) / nextTier.threshold) / 100) : 100;
   const capM = fmtNum(Number(ethers.formatUnits(config.cap, td)) / 1e6, 1);
-  const paymentAddr = paymentToken === 'USDT' ? PRESALE_ADDRESSES.USDT : PRESALE_ADDRESSES.USDC;
   const totalRaisedFmt = fmtNum(Number(ethers.formatUnits(global.totalRaised, pd)), 0);
 
   return (
@@ -511,11 +592,14 @@ export default function PresaleClient() {
           {/* Amount and Currency Selection */}
           <div className={styles.formSection}>
             <div className={styles.fieldLabelRow}>
-              <span>Select Currency</span>
+              <span>{crossChain ? 'You pay ($)' : 'You pay'}</span>
               <span className={styles.balanceRow}>
-                Balance: {account ? fmtUsd(balance, pd, 2) : '—'}
-                {account && (
+                Balance: {!account ? '—'
+                  : crossChain ? (sourceBalance !== undefined ? `${fmtNum(Number(ethers.formatUnits(sourceBalance, source.decimals)), 4)} ${source.symbol}` : '…')
+                  : fmtUsd(balance, pd, 2)}
+                {account && (!crossChain || sourceBalance !== undefined) && (
                   <button type="button" className={styles.maxPillBtn} onClick={() => {
+                    if (crossChain && sourceBalance !== undefined) { setAmount(maxCrossUsd(sourceBalance, source)); return; }
                     const cap = maxPurchasable > 0n && maxPurchasable < balance ? maxPurchasable : balance;
                     setAmount(ethers.formatUnits(cap, pd));
                   }}>MAX</button>
@@ -523,26 +607,17 @@ export default function PresaleClient() {
               </span>
             </div>
 
-            <div className={styles.currencySelectorRow}>
-              <button
-                type="button"
-                onClick={() => setPaymentToken('USDT')}
-                className={`${styles.currencyPill} ${paymentToken === 'USDT' ? styles.currencyPillActive : ''}`}
-              >
-                <img src="/logos/usdt.svg" alt="" width={18} height={18} />
-                USDT (BEP-20)
-              </button>
-              <button
-                type="button"
-                onClick={() => setPaymentToken('USDC')}
-                className={`${styles.currencyPill} ${paymentToken === 'USDC' ? styles.currencyPillActive : ''}`}
-              >
-                <img src="/logos/usdc.svg" alt="" width={18} height={18} />
-                USDC (BEP-20)
-              </button>
-            </div>
-
+            {/* Le bouton du token ouvre le choix du token et du reseau */}
             <div className={styles.inputGroup}>
+              <div className={styles.tokenBtnWrap}>
+                <button type="button" onClick={() => setPicking(true)} aria-label="Change token or network" className={styles.tokenBtn}>
+                  <TokenLogo src={crossChain ? source.logoURI : directRow?.logoURI ?? `/logos/${paymentToken.toLowerCase()}.svg`}
+                    badge={crossChain ? source.chainLogoURI : directRow?.chainLogoURI} size={22} />
+                  <span>{crossChain ? source.symbol : paymentToken}</span>
+                  <span className={styles.tokenBtnChevron}>▾</span>
+                </button>
+                <span role="tooltip" className={styles.tokenTip}>Change token or network</span>
+              </div>
               <input
                 type="number"
                 inputMode="decimal"
@@ -555,10 +630,18 @@ export default function PresaleClient() {
                   setAmount(e.target.value);
                   if (status !== 'loading') { setStatus('idle'); setTxError(null); }
                 }}
-                className={styles.inputField}
+                className={`${styles.inputField} ${styles.inputRight}`}
               />
-              <span style={{ color: '#94a3b8', fontWeight: 700, fontSize: '0.95rem' }}>{paymentToken}</span>
             </div>
+            {crossChain && route.status === 'loading' && <div className={styles.quoteLine}>Getting the best route…</div>}
+            {crossChain && cost && (
+              <div className={styles.quoteLine}>
+                ≈ {cost.fromAmount.toLocaleString('en-US', { maximumSignificantDigits: 4 })} {source.symbol} · ${cost.usd.toFixed(2)} incl. fees
+              </div>
+            )}
+            {crossChain && route.status === 'error' && (
+              <div className={`${styles.feedback} ${styles.feedbackErr}`}>Amount too low from this network: bridges need a minimum of about $2–3. Try a higher amount, or pay in USDT/USDC on BNB Smart Chain.</div>
+            )}
 
             {/* "You Receive" Highlight */}
             <div className={styles.receiveBox}>
@@ -594,16 +677,6 @@ export default function PresaleClient() {
 
             {amountError && <div className={`${styles.feedback} ${styles.feedbackErr}`}>{amountError}</div>}
 
-            {/* Terms checkbox */}
-            <label className={styles.termsLabel}>
-              <input type="checkbox" checked={termsAccepted} disabled={!account} onChange={(e) => onTerms(e.target.checked)} />
-              <span>
-                I have read and accept the <Link href="/presale-terms">Presale Terms</Link>. I confirm I am not a resident
-                of a restricted jurisdiction, I understand that tokens are vested, that the price after the sale is set by the market and
-                not guaranteed, and that I may lose all the funds I contribute.
-              </span>
-            </label>
-
             {/* Action Button */}
             {!account ? (
               <>
@@ -615,7 +688,7 @@ export default function PresaleClient() {
                   Powered by Reown · 700+ wallets
                 </div>
               </>
-            ) : !isCorrectNetwork ? (
+            ) : !isCorrectNetwork && !crossChain ? (
               <button type="button" onClick={doSwitch} className="btn btn-primary" style={{ width: '100%', padding: '16px' }}>
                 Switch to BNB Smart Chain
               </button>
@@ -628,47 +701,17 @@ export default function PresaleClient() {
                 {buyLabel}
               </button>
             )}
+            {account && isLive && !soldOut && (
+              <p className={styles.termsNotice}>
+                By buying, you accept the <Link href="/presale-terms">Presale Terms</Link>.
+              </p>
+            )}
+            {picking && <TokenPicker onClose={() => setPicking(false)} onPick={pickSource} />}
           </div>
         </form>
 
         {/* Right Side Column */}
         <aside className={styles.sideColumn}>
-          {/* Get USDT Tiles */}
-          <div className={styles.getUsdtCard}>
-            <div className={styles.sideCardTitle}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a3e635" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8"/><path d="M8 12h8"/></svg>
-              Get {paymentToken} on BNB Chain
-            </div>
-            <div className={styles.getTilesGrid}>
-              <a
-                href={`https://pancakeswap.finance/swap?chain=bsc&outputCurrency=${paymentAddr}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.getTile}
-              >
-                <div className={styles.getTileHead}>
-                  <img src="/logos/pancakeswap.svg" alt="" width={18} height={18} />
-                  <span>Swap ↗</span>
-                </div>
-                <div className={styles.getTileSub}>BNB → {paymentToken} on PancakeSwap</div>
-              </a>
-
-              <a
-                href="https://www.bnbchain.org/en/bnb-chain-bridge"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.getTile}
-              >
-                <div className={styles.getTileHead}>
-                  <img src="/logos/bnb-bridge.svg" alt="" width={18} height={18} />
-                  <span>Bridge ↗</span>
-                </div>
-                <div className={styles.getTileSub}>Official BNB Chain Bridge</div>
-              </a>
-            </div>
-            <div className={styles.getTileSub} style={{ marginTop: 10 }}>Both links open outside joobescrow.com.</div>
-          </div>
-
           {/* User Allocation Dashboard if Connected */}
           {account && (
             <div className={styles.allocCard}>
@@ -763,13 +806,14 @@ export default function PresaleClient() {
         <div className={styles.buyStepsHead}>
           <span className={styles.buyStepsTag}>PRESALE PARTICIPATION</span>
           <h2 className={styles.buyStepsTitle}>How to buy $JOOB</h2>
+          <p className={styles.buyStepsSub}>Pay with USDT, USDC, BNB, ETH, POL, AVAX, ARB or OP on BNB Smart Chain, Ethereum, Arbitrum, Base, Polygon, Optimism and Avalanche.</p>
         </div>
         <div className={styles.buyStepsGrid}>
           {[
-            ['Connect wallet', 'Connect your Web3 wallet on BNB Smart Chain (Chain ID: 56). 700+ wallets supported via Reown.'],
-            ['Choose currency', 'Select USDT or USDC (BEP-20). Keep about 0.001 BNB in the wallet for gas.'],
-            ['Enter amount', 'Preview your JOOB allocation, the linear vesting schedule and your volume bonus tier.'],
-            ['Approve & buy', 'Two confirmations in your wallet: approve the stablecoin, then buy. Your allocation is recorded on-chain in the presale contract.'],
+            ['Connect wallet', 'Connect your EVM wallet (MetaMask, Trust Wallet, Rabby…). Any of the 7 supported networks works; 700+ wallets via Reown.'],
+            ['Choose what you pay with', 'Click the token in "You pay" and pick what you hold, on BNB Smart Chain or another network. Keep a little of that network’s native coin for gas.'],
+            ['Enter amount', 'Preview your JOOB allocation and your volume bonus tier. From another network, the total cost including fees is shown before you confirm.'],
+            ['Approve & buy', 'Confirm in your wallet (approve first if asked; not needed with a native coin). Your allocation is recorded on-chain; from another network, allow 1–3 minutes.'],
           ].map(([t, d], i) => (
             <div key={t} className={styles.buyStepCard}>
               <span className={styles.buyStepNum}>STEP {String(i + 1).padStart(2, '0')}</span>

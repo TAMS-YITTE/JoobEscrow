@@ -4,12 +4,14 @@ import { createContext, useContext, useState, useEffect, useMemo } from 'react';
 import { ethers } from 'ethers';
 import { createAppKit, useAppKit, useAppKitProvider, useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react';
 import { EthersAdapter } from '@reown/appkit-adapter-ethers';
-import { bsc, bscTestnet, hardhat } from '@reown/appkit/networks';
+import { bsc, bscTestnet, hardhat, mainnet, arbitrum, base, polygon, optimism, avalanche } from '@reown/appkit/networks';
 
 // Projet Reown dedie a JoobEscrow (cloud.reown.com, equipe JoobEscrow). ID public par nature.
 const projectId = '63a257b332dae1f848b7dab85c8f0880';
 
-const networks = [bsc, bscTestnet, hardhat];
+// BSC par defaut ; les autres reseaux EVM servent au paiement de la presale depuis
+// une autre chaine (LI.FI) : le wallet doit pouvoir y basculer, WalletConnect compris.
+const networks = [bsc, mainnet, arbitrum, base, polygon, optimism, avalanche, bscTestnet, hardhat];
 
 // RPC de lecture BSC, par ordre de priorite (le principal peut etre remplace via NEXT_PUBLIC_BSC_RPC_URL).
 const READ_RPC_URLS = [
@@ -30,6 +32,7 @@ const ethersAdapter = new EthersAdapter();
 createAppKit({
   adapters: [ethersAdapter],
   networks,
+  defaultNetwork: bsc,
   projectId,
   metadata,
   features: {
