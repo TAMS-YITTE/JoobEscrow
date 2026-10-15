@@ -8,13 +8,33 @@ import { useWeb3 } from './Web3Context';
 const XMTPContext = createContext();
 
 export function XMTPProviderWrapper({ children }) {
-  // Le client XMTP est lie au wallet qui l'a cree : on garde son adresse avec lui.
-  const [session, setSession] = useState(null);
+  // Un client XMTP par wallet (adresse en minuscules) : apres un changement de compte,
+  // on n'expose que le client du compte connecte, jamais celui du compte precedent.
+  const [sessions, setSessions] = useState({});
   const [isInitializing, setIsInitializing] = useState(false);
   const { account } = useWeb3();
-  // Si le compte change ou se deconnecte, on n'expose plus l'ancien client,
-  // sinon les messages partiraient sous l'identite du compte precedent.
-  const client = session && account && session.address === account.toLowerCase() ? session.client : null;
+  const addr = account ? account.toLowerCase() : null;
+  const client = addr ? sessions[addr] || null : null;
+
+  // Reconnexion silencieuse : si ce navigateur a deja active le chat pour ce wallet,
+  // on rouvre la base locale sans nouvelle signature, et l'historique reste visible.
+  useEffect(() => {
+    if (!addr || sessions[addr]) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const restored = await Client.build({ identifier: addr, identifierKind: IdentifierKind.Ethereum }, { env: 'production' });
+        if (!cancelled && (await restored.isRegistered())) {
+          setSessions((prev) => ({ ...prev, [addr]: restored }));
+        } else {
+          restored.close?.();
+        }
+      } catch (e) {
+        // Pas encore active dans ce navigateur : l'utilisateur clique sur "Activate Chat".
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [addr, sessions]);
 
   useEffect(() => {
     // Polyfill Buffer for XMTP
@@ -44,7 +64,7 @@ export function XMTPProviderWrapper({ children }) {
 
       // Create native browser SDK Client V3
       const xmtpClient = await Client.create(v3Signer, { env: "production" });
-      setSession({ client: xmtpClient, address: address.toLowerCase() });
+      setSessions((prev) => ({ ...prev, [address.toLowerCase()]: xmtpClient }));
       setIsInitializing(false);
       return xmtpClient;
     } catch (err) {
