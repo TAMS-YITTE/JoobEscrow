@@ -12,6 +12,7 @@ import {
   PLANNED_LISTING_PRICE,
 } from '../../../config/presale';
 import styles from './presale.module.css';
+import { BSCN_ARTICLE_URL } from '../../../config/links';
 import TokenPicker, { TokenLogo } from '../../../components/TokenPicker';
 import { useCatalog, NATIVE } from '../../../lib/crosschain/sources';
 import { useRouteQuote, useSourceBalance } from '../../../lib/crosschain/hooks';
@@ -494,6 +495,9 @@ export default function PresaleClient() {
           <Link href="/security" className={styles.trustBadge}>
             3/5 Safe Multisig →
           </Link>
+          <a href={BSCN_ARTICLE_URL} target="_blank" rel="noopener noreferrer" className={styles.trustBadge}>
+            Read our launch article on BSC News ↗
+          </a>
         </div>
       </header>
 

@@ -4,6 +4,7 @@ import styles from './marketing.module.css';
 import AmbientConstellation from '../../components/AmbientConstellation';
 import PresaleGlassCard from '../../components/PresaleGlassCard';
 import PartnerMarquee from '../../components/PartnerMarquee';
+import { BSCN_ARTICLE_URL } from '../../config/links';
 import HomeFaq from '../../components/HomeFaq';
 import LiveStats from '../../components/LiveStats';
 import FeeCalculator from '../../components/FeeCalculator';
@@ -102,6 +103,11 @@ export default function LandingPage() {
 
       {/* Marquee Partner Section */}
       <PartnerMarquee />
+      <p style={{ textAlign: 'center', margin: '4px 0 0', fontSize: '0.88rem' }}>
+        <a href={BSCN_ARTICLE_URL} target="_blank" rel="noopener noreferrer" style={{ color: '#bef264', fontWeight: 600 }}>
+          Read our launch article on BSC News ↗
+        </a>
+      </p>
 
       {/* Referral Banner : juste sous le hero, bien visible */}
       <section className={styles.referralSection} id="referral">
