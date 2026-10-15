@@ -495,7 +495,8 @@ export default function PresaleClient() {
           <Link href="/security" className={styles.trustBadge}>
             3/5 Safe Multisig →
           </Link>
-          <a href={BSCN_ARTICLE_URL} target="_blank" rel="noopener noreferrer" className={styles.trustBadge}>
+          <a href={BSCN_ARTICLE_URL} target="_blank" rel="noopener noreferrer" className={styles.trustBadge} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+            <img src="/logos/bscnews.webp" alt="BSC News" width={16} height={16} style={{ borderRadius: 4 }} />
             Read our launch article on BSC News ↗
           </a>
         </div>

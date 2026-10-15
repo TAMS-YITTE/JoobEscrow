@@ -105,6 +105,7 @@ export default function LandingPage() {
       <PartnerMarquee />
       <p style={{ textAlign: 'center', margin: '4px 0 0', fontSize: '0.88rem' }}>
         <a href={BSCN_ARTICLE_URL} target="_blank" rel="noopener noreferrer" style={{ color: '#bef264', fontWeight: 600 }}>
+          <img src="/logos/bscnews.webp" alt="BSC News" width={18} height={18} style={{ borderRadius: 4, verticalAlign: 'middle', marginRight: 6 }} />
           Read our launch article on BSC News ↗
         </a>
       </p>
