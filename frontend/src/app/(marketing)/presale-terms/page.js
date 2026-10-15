@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import styles from '../presale/presale.module.css';
+import { PLANNED_LISTING_PRICE } from '../../../config/presale';
 
 export const metadata = {
   title: 'JOOB Presale Terms | JoobEscrow',
@@ -98,6 +99,9 @@ export default function PresaleTermsPage() {
           <h2 style={h2}>Article 6 – After the sale</h2>
           <p style={p}>
             A JOOB/USDT liquidity pool on PancakeSwap is planned after the sale ends; its details will be announced on official channels beforehand.
+            The planned initial pool price of ${PLANNED_LISTING_PRICE} per JOOB shown on this site is a target that depends on the success of the sale:
+            the pool is funded with part of the funds raised, so if the amount raised is not sufficient, the pool may open at a different price,
+            at a later date or with less liquidity.
             No listing on any exchange is guaranteed. Once trading starts, the price is set by the market alone: <strong>it is not guaranteed and may
             fall below your purchase price, down to zero.</strong>
           </p>
