@@ -69,8 +69,7 @@ export default function SecurityPage() {
 
         {KYC_URL && (
           <div id="team" className="glass-panel" style={{ marginTop: '40px', padding: 'clamp(20px, 4vw, 36px)' }}>
-            <span className={styles.sectionTag}>TEAM</span>
-            <h2 style={{ color: '#fff', margin: '6px 0 15px' }}>The team</h2>
+            <h2 style={{ color: '#fff', margin: '0 0 15px' }}>The team</h2>
             <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '12px' }}>
               JoobEscrow was founded by a builder with over 20 years of experience in IT and finance, and a long-standing focus on DeFi. The founder&apos;s identity has been verified through a KYC with SpyWolf, the firm that audited our contracts.
             </p>
@@ -95,7 +94,6 @@ export default function SecurityPage() {
           <div className={styles.auditGrid}>
             {AUDIT_CARDS.map((c) => (
               <div key={c.title} className={`glass-panel ${styles.auditCard}`}>
-                <span className={styles.auditCardTag}>SpyWolf</span>
                 <h3>{c.title}</h3>
                 <p>{c.summary}</p>
                 <div className={styles.auditCardLinks}>
