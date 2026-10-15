@@ -39,7 +39,12 @@ createAppKit({
     analytics: true,
     // Wallets uniquement : pas de wallet heberge cree par email ou reseau social.
     email: false,
-    socials: false
+    socials: false,
+    // Pas d'achat par carte ni de swap/envoi/reception dans la modale du wallet.
+    onramp: false,
+    swaps: false,
+    send: false,
+    receive: false
   }
 });
 
