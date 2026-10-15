@@ -48,7 +48,7 @@ export default function LandingPage() {
             <div className={styles.heroLeft}>
               <div className={styles.pillBadge}>
                 <span className={styles.pulseDot}></span>
-                <span>JOOB PRESALE · OPENS OCT 15 · 14:00 UTC</span>
+                <span>JOOB PRESALE · LIVE ON BNB CHAIN</span>
               </div>
 
               <h1 className={styles.heroTitle}>
@@ -103,12 +103,13 @@ export default function LandingPage() {
 
       {/* Marquee Partner Section */}
       <PartnerMarquee />
-      <p style={{ textAlign: 'center', margin: '4px 0 0', fontSize: '0.88rem' }}>
-        <a href={BSCN_ARTICLE_URL} target="_blank" rel="noopener noreferrer" style={{ color: '#bef264', fontWeight: 600 }}>
-          <img src="/logos/bscnews.webp" alt="BSC News" width={18} height={18} style={{ borderRadius: 4, verticalAlign: 'middle', marginRight: 6 }} />
-          Read our launch article on BSC News ↗
+      <div style={{ display: 'flex', justifyContent: 'center', padding: '6px 16px 0' }}>
+        <a href={BSCN_ARTICLE_URL} target="_blank" rel="noopener noreferrer" className="press-pill">
+          <img src="/logos/bscnews.webp" alt="BSC News" width={30} height={30} style={{ borderRadius: 8, flexShrink: 0 }} />
+          <span>Read our launch article on <strong>BSC News</strong></span>
+          <span aria-hidden="true">↗</span>
         </a>
-      </p>
+      </div>
 
       {/* Referral Banner : juste sous le hero, bien visible */}
       <section className={styles.referralSection} id="referral">

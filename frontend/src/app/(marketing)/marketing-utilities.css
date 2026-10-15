@@ -205,3 +205,16 @@
 .mkt-main .prose code{background:rgba(255,255,255,.08);padding:.1em .35em;border-radius:4px;font-size:.9em}
 .mkt-main .prose blockquote{border-left:3px solid #374151;padding-left:1em;color:#9ca3af;margin:1.2em 0}
 @media (min-width:1024px){.mkt-main .lg\:prose-xl{font-size:1.15rem}}
+
+/* Lien presse mis en avant (article de lancement BSC News). */
+.press-pill {
+  display: inline-flex; align-items: center; gap: 12px; max-width: 100%;
+  padding: 10px 20px 10px 10px; border-radius: 999px; text-decoration: none;
+  font-size: 1rem; font-weight: 600; color: #e2e8f0;
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.12), rgba(163, 230, 53, 0.08));
+  border: 1px solid rgba(163, 230, 53, 0.45); box-shadow: 0 0 24px rgba(163, 230, 53, 0.12);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+.press-pill strong { color: #bef264; }
+.press-pill:hover { border-color: rgba(163, 230, 53, 0.8); box-shadow: 0 0 32px rgba(163, 230, 53, 0.25); transform: translateY(-1px); }
+@media (max-width: 480px) { .press-pill { font-size: 0.9rem; gap: 10px; padding-right: 14px; } }
