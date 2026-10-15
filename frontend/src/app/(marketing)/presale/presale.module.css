@@ -1474,8 +1474,9 @@
 .walletAddr { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.86rem; color: #e2e8f0; text-decoration: none; }
 .walletAddr:hover { color: #bef264; }
 .walletDisconnect {
-  margin-left: auto; padding: 5px 12px; border-radius: 999px; cursor: pointer;
-  font-size: 0.78rem; font-weight: 700; color: #cbd5e1;
-  background: transparent; border: 1px solid rgba(255, 255, 255, 0.15);
+  margin-left: auto; width: 30px; height: 30px; border-radius: 50%; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+  color: #ef4444; background: rgba(239, 68, 68, 0.06); border: 1px solid rgba(239, 68, 68, 0.35);
+  transition: background 0.2s ease;
 }
-.walletDisconnect:hover { color: #fff; border-color: rgba(163, 230, 53, 0.5); }
+.walletDisconnect:hover { background: rgba(239, 68, 68, 0.16); }
