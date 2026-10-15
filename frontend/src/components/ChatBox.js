@@ -33,6 +33,7 @@ export default function ChatBox({ peerAddress }) {
     
     let isMounted = true;
     let stream = null;
+    let poll = null;
 
     const loadData = async () => {
       try {
@@ -83,21 +84,30 @@ export default function ChatBox({ peerAddress }) {
         const msgs = await conv.messages();
         if (isMounted) setMessages(msgs.filter(m => typeof m.content === 'string'));
 
-        // 5. Stream real-time
-        if (conv.stream) {
+        // 5. Temps reel. Si les deux parties ont chacune cree leur DM, XMTP les fusionne a la
+        // lecture (messages()) mais le stream d'un seul DM ne voit pas les messages de l'autre.
+        // On ecoute donc tous les messages du client et on recharge la conversation quand le
+        // pair ecrit, avec un rechargement periodique en filet de securite.
+        const reload = async () => {
           try {
-            stream = await conv.stream();
-            for await (const msg of stream) {
-              if (isMounted && typeof msg.content === 'string') {
-                setMessages(prev => {
-                  if (prev.find(m => m.id === msg.id)) return prev;
-                  return [...prev, msg];
-                });
-              }
-            }
-          } catch (streamErr) {
-            console.error("Stream error:", streamErr);
+            await conv.sync();
+            const fresh = await conv.messages();
+            if (isMounted) setMessages(fresh.filter(m => typeof m.content === 'string'));
+          } catch (e) {
+            console.error("[XMTP] Failed to refresh messages:", e);
           }
+        };
+        if (!isMounted) return;
+        poll = setInterval(reload, 10000);
+
+        try {
+          stream = await client.conversations.streamAllMessages();
+          for await (const msg of stream) {
+            if (!isMounted) break;
+            if (msg && msg.senderInboxId === peerInboxId) await reload();
+          }
+        } catch (streamErr) {
+          console.error("Stream error:", streamErr);
         }
       } catch (err) {
         console.error("Error loading V3 chat:", err);
@@ -109,6 +119,7 @@ export default function ChatBox({ peerAddress }) {
 
     return () => {
       isMounted = false;
+      if (poll) clearInterval(poll);
       if (stream && typeof stream.return === 'function') {
         try { stream.return(); } catch (e) {}
       }
