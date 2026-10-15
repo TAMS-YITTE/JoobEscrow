@@ -44,6 +44,13 @@ export default function LandingPage() {
               </span>
             </Link>
           </div>
+          <div style={{ display: 'flex', justifyContent: 'center', margin: '0 0 28px' }}>
+            <a href={BSCN_ARTICLE_URL} target="_blank" rel="noopener noreferrer" className="press-pill">
+              <img src="/logos/bscnews.webp" alt="BSC News" width={30} height={30} style={{ borderRadius: 8, flexShrink: 0 }} />
+              <span>Read our launch article on <strong>BSC News</strong></span>
+              <span aria-hidden="true">↗</span>
+            </a>
+          </div>
           <div className={styles.heroGrid}>
             <div className={styles.heroLeft}>
               <div className={styles.pillBadge}>
@@ -103,13 +110,6 @@ export default function LandingPage() {
 
       {/* Marquee Partner Section */}
       <PartnerMarquee />
-      <div style={{ display: 'flex', justifyContent: 'center', padding: '6px 16px 0' }}>
-        <a href={BSCN_ARTICLE_URL} target="_blank" rel="noopener noreferrer" className="press-pill">
-          <img src="/logos/bscnews.webp" alt="BSC News" width={30} height={30} style={{ borderRadius: 8, flexShrink: 0 }} />
-          <span>Read our launch article on <strong>BSC News</strong></span>
-          <span aria-hidden="true">↗</span>
-        </a>
-      </div>
 
       {/* Referral Banner : juste sous le hero, bien visible */}
       <section className={styles.referralSection} id="referral">

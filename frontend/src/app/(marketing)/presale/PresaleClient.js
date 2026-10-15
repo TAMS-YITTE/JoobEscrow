@@ -472,9 +472,6 @@ export default function PresaleClient() {
         <h1 className={styles.heroTitle}>
           Join the <span className={styles.titleGradient}>JOOB Presale</span>
         </h1>
-        <p className={styles.heroSubtitle}>
-          The native token of JoobEscrow on BNB Chain: public price schedule, sealed token vault and transparent linear on-chain vesting.
-        </p>
         <div className={styles.proofLine}>
           SEALED VAULT · AUDITED BY SPYWOLF · VESTING ON-CHAIN
         </div>
