@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import { ethers } from 'ethers';
-import { useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react';
+import { useAppKitNetwork, useAppKitProvider, useDisconnect } from '@reown/appkit/react';
 import { bsc, mainnet, arbitrum, base, polygon, optimism, avalanche } from '@reown/appkit/networks';
 import { useWeb3 } from '../../../context/Web3Context';
 import {
@@ -174,6 +174,7 @@ function Feedback({ status, step, success, error }) {
 
 export default function PresaleClient() {
   const { account, provider, readProvider, connectWallet } = useWeb3();
+  const { disconnect } = useDisconnect();
   const { chainId, switchNetwork } = useAppKitNetwork();
   const { walletProvider } = useAppKitProvider('eip155');
   const { config, global, user, loadError, refreshAll } = usePresale(account, readProvider);
@@ -723,6 +724,15 @@ export default function PresaleClient() {
           {(
             <div className={styles.allocCard}>
               <div className={styles.sideCardTitle}>Your Allocation</div>
+              {account && (
+                <div className={styles.walletRow}>
+                  <span className={styles.walletDot} />
+                  <a href={`${BSCSCAN}/address/${account}`} target="_blank" rel="noopener noreferrer" className={styles.walletAddr} title={account}>
+                    {account.slice(0, 6)}…{account.slice(-4)} ↗
+                  </a>
+                  <button type="button" onClick={() => disconnect()} className={styles.walletDisconnect}>Disconnect</button>
+                </div>
+              )}
               <div className={styles.allocStatsGrid}>
                 <div className={styles.allocStatItem}>
                   <div className={styles.allocStatLabel}>Total JOOB</div>

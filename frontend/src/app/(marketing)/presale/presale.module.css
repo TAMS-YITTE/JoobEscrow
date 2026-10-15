@@ -1463,3 +1463,19 @@
 .tierTipReached, .tierTipReached b { color: #a3e635; }
 
 .referralAccent { color: #a3e635; }
+
+/* Wallet connecte dans la carte d'allocation : adresse verifiable + deconnexion. */
+.walletRow {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  margin: -4px 0 14px; padding: 8px 12px; border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.07);
+}
+.walletDot { width: 8px; height: 8px; border-radius: 50%; background: #a3e635; flex-shrink: 0; }
+.walletAddr { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.86rem; color: #e2e8f0; text-decoration: none; }
+.walletAddr:hover { color: #bef264; }
+.walletDisconnect {
+  margin-left: auto; padding: 5px 12px; border-radius: 999px; cursor: pointer;
+  font-size: 0.78rem; font-weight: 700; color: #cbd5e1;
+  background: transparent; border: 1px solid rgba(255, 255, 255, 0.15);
+}
+.walletDisconnect:hover { color: #fff; border-color: rgba(163, 230, 53, 0.5); }
