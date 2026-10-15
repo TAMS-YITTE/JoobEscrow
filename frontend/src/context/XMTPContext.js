@@ -8,33 +8,44 @@ import { useWeb3 } from './Web3Context';
 const XMTPContext = createContext();
 
 export function XMTPProviderWrapper({ children }) {
-  // Un client XMTP par wallet (adresse en minuscules) : apres un changement de compte,
-  // on n'expose que le client du compte connecte, jamais celui du compte precedent.
-  const [sessions, setSessions] = useState({});
+  // Un seul client XMTP ouvert a la fois : deux clients dans la meme page se disputent
+  // la base locale (OPFS) et bloquent. On garde l'adresse du wallet avec son client.
+  const [session, setSession] = useState(null);
   const [isInitializing, setIsInitializing] = useState(false);
   const { account } = useWeb3();
   const addr = account ? account.toLowerCase() : null;
-  const client = addr ? sessions[addr] || null : null;
+  // Jamais le client d'un autre compte : sinon les messages partiraient sous la mauvaise identite.
+  const client = session && session.address === addr ? session.client : null;
 
-  // Reconnexion silencieuse : si ce navigateur a deja active le chat pour ce wallet,
-  // on rouvre la base locale sans nouvelle signature, et l'historique reste visible.
+  // Changement de compte : on ferme le client precedent, puis on rouvre en silence
+  // celui du nouveau compte s'il a deja active le chat dans ce navigateur (sans signature).
   useEffect(() => {
-    if (!addr || sessions[addr]) return;
     let cancelled = false;
     (async () => {
+      if (session && session.address !== addr) {
+        try { await session.client.close?.(); } catch (e) {}
+        if (!cancelled) setSession(null);
+        return;
+      }
+      if (!addr || session) return;
+      // Seulement si ce navigateur a deja active le chat pour ce wallet : evite de charger
+      // XMTP (wasm ~11 Mo) pour chaque visiteur connecte qui n'utilise pas le chat.
+      let activatedHere = false;
+      try { activatedHere = localStorage.getItem(`xmtp:activated:${addr}`) === '1'; } catch (e) {}
+      if (!activatedHere) return;
       try {
         const restored = await Client.build({ identifier: addr, identifierKind: IdentifierKind.Ethereum }, { env: 'production' });
         if (!cancelled && (await restored.isRegistered())) {
-          setSessions((prev) => ({ ...prev, [addr]: restored }));
+          setSession({ address: addr, client: restored });
         } else {
-          restored.close?.();
+          await restored.close?.();
         }
       } catch (e) {
         // Pas encore active dans ce navigateur : l'utilisateur clique sur "Activate Chat".
       }
     })();
     return () => { cancelled = true; };
-  }, [addr, sessions]);
+  }, [addr, session]);
 
   useEffect(() => {
     // Polyfill Buffer for XMTP
@@ -62,9 +73,15 @@ export function XMTPProviderWrapper({ children }) {
         }
       };
 
+      // Ferme le client deja ouvert (meme base OPFS) avant d'en creer un nouveau.
+      if (session) {
+        try { await session.client.close?.(); } catch (e) {}
+      }
+
       // Create native browser SDK Client V3
       const xmtpClient = await Client.create(v3Signer, { env: "production" });
-      setSessions((prev) => ({ ...prev, [address.toLowerCase()]: xmtpClient }));
+      setSession({ address: address.toLowerCase(), client: xmtpClient });
+      try { localStorage.setItem(`xmtp:activated:${address.toLowerCase()}`, '1'); } catch (e) {}
       setIsInitializing(false);
       return xmtpClient;
     } catch (err) {
