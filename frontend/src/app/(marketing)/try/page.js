@@ -51,6 +51,9 @@ export default function TryPage() {
           Live the full escrow cycle in about 10 minutes, with your own money moving between two of your own wallets.
           Same audited contract as real deals, 0% fee, amounts capped at 20.
         </p>
+        <Link href="/demo" className={`btn btn-primary btn-lg ${styles.cta}`}>
+          Open the demo
+        </Link>
         <div className={styles.chips}>
           <a href={`https://bscscan.com/address/${CONTRACT_DEMO}`} target="_blank" rel="noopener noreferrer" className={`${styles.chip} ${styles.chipOk}`}>
             Demo contract on BscScan ↗
@@ -62,17 +65,17 @@ export default function TryPage() {
       <div className={styles.card}>
         <h2 className={styles.h2}>What you need</h2>
         <ul className={styles.needs}>
-          <li>Two wallets on BNB Smart Chain (e.g. two accounts in the same wallet app)</li>
-          <li>1 to 20 USDT or USDC (BEP-20) on wallet A</li>
-          <li>About 0.001 BNB (less than $1) on each wallet for gas — the whole demo usually costs a few cents</li>
+          <li><strong>2 wallets</strong> on BNB Smart Chain (two accounts in the same app work)</li>
+          <li><strong>1 to 20 USDT or USDC</strong> (BEP-20) on wallet A</li>
+          <li><strong>~0.001 BNB</strong> on each wallet for gas, a few cents in total</li>
         </ul>
       </div>
 
       <ol className={styles.steps}>
         {STEPS.map((s, i) => (
           <li key={s.title} className={styles.step}>
-            <span className={styles.stepNum}>{i + 1}</span>
             <div className={styles.stepHead}>
+              <span className={styles.stepNum}>{i + 1}</span>
               <span className={styles.stepTitle}>{s.title}</span>
               <span className={styles.who}>{s.who}</span>
             </div>
