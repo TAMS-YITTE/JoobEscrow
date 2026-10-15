@@ -51,9 +51,6 @@ export default function TryPage() {
           Live the full escrow cycle in about 10 minutes, with your own money moving between two of your own wallets.
           Same audited contract as real deals, 0% fee, amounts capped at 20.
         </p>
-        <Link href="/demo" className={`btn btn-primary btn-lg ${styles.cta}`}>
-          Open the demo
-        </Link>
         <div className={styles.chips}>
           <a href={`https://bscscan.com/address/${CONTRACT_DEMO}`} target="_blank" rel="noopener noreferrer" className={`${styles.chip} ${styles.chipOk}`}>
             Demo contract on BscScan ↗
