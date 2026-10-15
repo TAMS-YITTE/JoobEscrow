@@ -13,7 +13,7 @@ const X_PATH = 'M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.
 const NAV = [
   { href: '/try', label: 'Try $1' },
   { href: '/#how-it-works', label: 'How it works' },
-  { href: '/security', label: 'Security' },
+  { href: '/security', label: 'Audits & Security' },
   { href: '/faq', label: 'FAQ' },
 ];
 

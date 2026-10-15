@@ -761,10 +761,7 @@
 
 .zealyClose:hover { color: #fff; }
 
-@media (max-width: 1240px) {
-  .navCenter { gap: 22px; }
-}
-@media (max-width: 1080px) {
+@media (max-width: 1279px) {
   .header { padding: 14px 20px; gap: 12px; }
   .logoContainer { flex: 0 0 auto; }
   .navRight { flex: 1 1 auto; }
@@ -955,7 +952,7 @@
   background: rgba(255, 255, 255, 0.04); border: 1px solid var(--border-color); color: #fff; font-size: 1.15rem; line-height: 1;
 }
 .burger:hover { border-color: rgba(163, 230, 53, 0.5); }
-@media (max-width: 1080px) {
+@media (max-width: 1279px) {
   .burger { display: inline-flex; }
 }
 
