@@ -77,7 +77,12 @@ export default function SecurityPage() {
             <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '20px' }}>
               We chose to stay publicly pseudonymous and to make trust verifiable on-chain instead: audited contracts, a 3-of-5 Safe multisig, and team tokens locked in a vesting contract until January 2028.
             </p>
-            <a href={KYC_URL} target="_blank" rel="noopener noreferrer" className="btn btn-primary">KYC certificate ↗</a>
+            <a href={KYC_URL} target="_blank" rel="noopener noreferrer" className="btn btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ width: 22, height: 22, borderRadius: '50%', background: '#0b0f14', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+                <img src="/logos/spywolf.svg" alt="" width={15} height={15} />
+              </span>
+              KYC certificate ↗
+            </a>
           </div>
         )}
 
