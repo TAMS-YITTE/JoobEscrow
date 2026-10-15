@@ -463,6 +463,20 @@ export default function PresaleClient() {
 
   return (
     <>
+      {/* ── Sticky Quick Navigation ─────────────────────────────── */}
+      <div className={styles.quickNavWrap}>
+        <nav className={styles.quickNav} aria-label="Quick links">
+          <Link href="/whitepaper" className={styles.quickPill}>Whitepaper</Link>
+          <Link href="/tokenomics" className={styles.quickPill}>Tokenomics</Link>
+          <Link href="/tokenomics#use-of-funds" className={styles.quickPill}>Use of funds</Link>
+          <Link href="/ecosystem" className={styles.quickPill}>Ecosystem</Link>
+          <Link href="/roadmap" className={styles.quickPill}>Roadmap</Link>
+          <a href="#referral" className={styles.quickPill}>Referral</a>
+          <a href="#faq" className={styles.quickPill}>FAQ</a>
+          <Link href="/presale-terms" className={styles.quickPill}>Terms</Link>
+        </nav>
+      </div>
+
       {/* ── Hero Section ────────────────────────────────────────── */}
       <header className={styles.hero}>
         <div className={styles.heroPill}>
@@ -501,20 +515,6 @@ export default function PresaleClient() {
           </a>
         </div>
       </header>
-
-      {/* ── Sticky Quick Navigation ─────────────────────────────── */}
-      <div className={styles.quickNavWrap}>
-        <nav className={styles.quickNav} aria-label="Quick links">
-          <Link href="/whitepaper" className={styles.quickPill}>Whitepaper</Link>
-          <Link href="/tokenomics" className={styles.quickPill}>Tokenomics</Link>
-          <Link href="/tokenomics#use-of-funds" className={styles.quickPill}>Use of funds</Link>
-          <Link href="/ecosystem" className={styles.quickPill}>Ecosystem</Link>
-          <Link href="/roadmap" className={styles.quickPill}>Roadmap</Link>
-          <a href="#referral" className={styles.quickPill}>Referral</a>
-          <a href="#faq" className={styles.quickPill}>FAQ</a>
-          <Link href="/presale-terms" className={styles.quickPill}>Terms</Link>
-        </nav>
-      </div>
 
       {/* ── Presale Hero Grid (Buy Card + Side Column) ───────────── */}
       <div className={styles.presaleGrid}>
