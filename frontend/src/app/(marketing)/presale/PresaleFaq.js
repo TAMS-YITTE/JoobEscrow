@@ -42,6 +42,10 @@ const FAQS = [
     a: 'Connect your EVM wallet and click the token in "You pay": USDT, USDC, BNB, ETH, POL, AVAX, ARB or OP, on BNB Smart Chain, Ethereum, Arbitrum, Base, Polygon, Optimism or Avalanche. USDT and USDC on BNB Smart Chain go straight to the contract; any other token or network is converted into USDT on BNB Smart Chain by LI.FI, with the fees shown before you confirm.',
   },
   {
+    q: 'I only have SOL (Solana). Can I participate?',
+    a: 'Yes, in two steps. Solana cannot pay the presale contract directly, so first swap your SOL into USDT on BNB Smart Chain, sent to your own wallet on BNB Smart Chain (for example MetaMask). A cross-chain swap such as Jumper (jumper.xyz, powered by LI.FI) can do it; check the route and fees before you confirm. Then come back here and buy with that USDT. Never send funds directly to the presale contract address: only purchases made through this page are counted.',
+  },
+  {
     q: 'Who can participate?',
     a: 'Only adults who are not residents of a restricted jurisdiction listed in the Presale Terms. You are responsible for checking that participation is legal where you live.',
   },
