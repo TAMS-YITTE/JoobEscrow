@@ -59,7 +59,7 @@ export default function SecurityBanner() {
         </span>
         <span className="security-banner-links">
           <span className="security-banner-verify">Verify us anytime:</span>
-          <a href="https://spywolf.co/audits/Universal_Service_Escrow_V4_Audit.pdf" target="_blank" rel="noreferrer">Audit Report</a>
+          <a href="https://spywolf.co/audits/Universal_Service_Escrow_V4_Audit.pdf" target="_blank" rel="noreferrer">SpyWolf audit</a>
           <span className="security-banner-sep">·</span>
           <a href="https://app.safe.global/home?safe=bnb:0x872F979aa868145bE3c3A6EA787614BE2A18C7f7" target="_blank" rel="noreferrer">Multisig Safe</a>
           <span className="security-banner-sep">·</span>

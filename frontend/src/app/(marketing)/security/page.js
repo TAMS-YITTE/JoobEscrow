@@ -94,7 +94,12 @@ export default function SecurityPage() {
                 <h3>{c.title}</h3>
                 <p>{c.summary}</p>
                 <div className={styles.auditCardLinks}>
-                  <a href={c.pdf} target="_blank" rel="noopener noreferrer" className="btn btn-primary">Report (PDF)</a>
+                  <a href={c.pdf} target="_blank" rel="noopener noreferrer" className="btn btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ width: 22, height: 22, borderRadius: '50%', background: '#0b0f14', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <img src="/logos/spywolf.svg" alt="" width={15} height={15} />
+                    </span>
+                    SpyWolf audit ↗
+                  </a>
                   <a href={c.bscscan} target="_blank" rel="noopener noreferrer" className="btn btn-outline">{c.bscscanLabel}</a>
                 </div>
               </div>
