@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { instances } from '../../../config/instances';
+import styles from './hub.module.css';
 
 export const metadata = {
   title: 'Launch App | JoobEscrow',
@@ -7,69 +8,66 @@ export const metadata = {
   alternates: { canonical: '/app' },
 };
 
+// Les categories partagent un contrat par niveau de frais : on les presente regroupees par niveau,
+// du plus bas au plus haut. Tout vient de config/instances.js (aucun pourcentage en dur).
+function tiers() {
+  const byFee = new Map();
+  Object.values(instances).forEach((n) => {
+    if (!byFee.has(n.feeTier)) byFee.set(n.feeTier, []);
+    byFee.get(n.feeTier).push(n);
+  });
+  return [...byFee.entries()].sort((a, b) => a[0] - b[0]);
+}
+
+const TRUST = ['Audited by SpyWolf', 'Non-custodial', '3-of-5 Safe multisig', 'BNB Smart Chain'];
+
 export default function HubPage() {
-  const niches = Object.values(instances);
-
   return (
-    <div className="hub-container">
-      <h1 className="text-gradient hub-title">Joob Escrow</h1>
-      <p className="subtitle hub-subtitle">
-        The Universal Non-Custodial Trust Layer
-      </p>
+    <div className={styles.hub}>
+      <header className={styles.head}>
+        <p className={styles.eyebrow}>JoobEscrow app</p>
+        <h1 className={styles.title}>Choose your escrow</h1>
+        <p className={styles.lead}>
+          Pick the category that fits your deal. Funds stay locked in an audited contract until the work is approved,
+          the deadline passes or a dispute is settled. The client pays no fee.
+        </p>
+        <ul className={styles.trust}>
+          {TRUST.map((t) => <li key={t}>{t}</li>)}
+        </ul>
+      </header>
 
-      <Link href="/try" style={{ textDecoration: 'none', display: 'block', maxWidth: '720px', margin: '0 auto 40px' }}>
-        <div className="glass-panel" style={{ borderColor: 'rgba(163, 230, 53, 0.4)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px', flexWrap: 'wrap' }}>
-          <div>
-            <span style={{ padding: '2px 10px', borderRadius: '999px', background: 'linear-gradient(90deg, #d9f99d, #a3e635)', color: '#0d1117', fontWeight: 800, fontSize: '0.75rem', letterSpacing: '0.04em' }}>DEMO</span>
-            <h2 style={{ color: '#fff', fontSize: '1.2rem', margin: '8px 0 4px' }}>New here? Try it with $1</h2>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Run a full escrow between two of your own wallets. 0% fee, 1 to 20 USDT or USDC.</p>
-          </div>
-          <span className="btn btn-primary">Start the demo →</span>
+      <Link href="/demo" className={styles.demo}>
+        <div>
+          <span className={styles.demoTag}>Demo</span>
+          <h2>New here? Run a full escrow with $1</h2>
+          <p>Between two of your own wallets, 1 to 20 USDT or USDC, 0% fee. You get back exactly what you deposit.</p>
         </div>
+        <span className={styles.demoCta}>Start the demo <span aria-hidden="true">→</span></span>
       </Link>
 
-      <h2 className="hub-section-title">Featured Ecosystems</h2>
-      <div className="featured-grid">
-        {niches.slice(0, 3).map((niche) => (
-          <Link href={`/${niche.slug}`} key={niche.slug} style={{ textDecoration: 'none', width: '100%' }}>
-            <div 
-              className="glass-panel featured-card" 
-              style={{ borderTopColor: niche.theme.primary }}
-            >
-              <h2 className="featured-title" style={{ color: niche.theme.primary }}>{niche.name}</h2>
-              <p className="featured-desc">
-                Secure transactions between<br/>
-                <strong style={{color: '#fff'}}>{niche.lexicon.client}</strong> and <strong style={{color: '#fff'}}>{niche.lexicon.provider}</strong>.
-              </p>
-              <div className="fee-badge">
-                <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Platform Fee:</span> <strong style={{color: '#fff'}}>{niche.feeTier}%</strong>
-              </div>
+      <section className={styles.tiers} aria-label="Categories by fee">
+        {tiers().map(([fee, list]) => (
+          <div key={fee} className={styles.tier}>
+            <div className={styles.tierHead}>
+              <span className={styles.tierFee}>{fee}%</span>
+              <span className={styles.tierNote}>fee paid by the provider</span>
             </div>
-          </Link>
+            <div className={styles.grid}>
+              {list.map((n) => (
+                <Link key={n.slug} href={`/${n.slug}`} className={styles.card}>
+                  <span className={styles.cardName}>{n.name}</span>
+                  <span className={styles.cardRoles}>{n.lexicon.client} <span aria-hidden="true">↔</span> {n.lexicon.provider}</span>
+                  <span className={styles.cardArrow} aria-hidden="true">→</span>
+                </Link>
+              ))}
+            </div>
+          </div>
         ))}
-      </div>
+      </section>
 
-      <h2 className="hub-section-title" style={{color: 'var(--text-secondary)', fontSize: '1.5rem', marginTop: '60px'}}>Specialized Escrows</h2>
-      <div className="specialized-grid">
-        {niches.slice(3).map((niche) => (
-          <Link href={`/${niche.slug}`} key={niche.slug} style={{ textDecoration: 'none' }}>
-            <div 
-              className="glass-panel specialized-card" 
-              style={{ borderLeftColor: niche.theme.primary }}
-            >
-              <div>
-                <h3 className="specialized-title" style={{ color: niche.theme.primary }}>{niche.name}</h3>
-                <p className="specialized-desc">
-                  {niche.lexicon.client} & {niche.lexicon.provider}
-                </p>
-              </div>
-              <div className="fee-badge" style={{ marginTop: 0 }}>
-                <strong style={{color: '#fff', fontSize: '0.9rem'}}>{niche.feeTier}%</strong>
-              </div>
-            </div>
-          </Link>
-        ))}
-      </div>
+      <p className={styles.foot}>
+        Categories with the same fee share one audited contract. The fee of each escrow is recorded on-chain when it is created.
+      </p>
     </div>
   );
 }

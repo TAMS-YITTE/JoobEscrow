@@ -1,0 +1,150 @@
+/* Page /app : vue d'ensemble des categories, regroupees par niveau de frais. */
+.hub {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 48px 8px 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.head { max-width: 680px; }
+.eyebrow {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--app-lime, #A3E635);
+  margin-bottom: 14px;
+}
+.title {
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  color: var(--app-text-primary, #F2F5F3);
+  margin-bottom: 16px;
+}
+.lead {
+  color: var(--app-text-secondary, #9CA8A1);
+  font-size: 1rem;
+  line-height: 1.65;
+}
+.trust {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 22px;
+}
+.trust li {
+  font-size: 0.78rem;
+  color: var(--app-text-secondary, #9CA8A1);
+  padding: 5px 11px;
+  border: 1px solid var(--app-border-default, #2A362E);
+  border-radius: 999px;
+  background: var(--app-surface-1, #111613);
+}
+
+/* Demo : bandeau horizontal, sobre */
+.demo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 22px 26px;
+  border-radius: var(--app-radius-lg, 12px);
+  border: 1px solid rgba(163, 230, 53, 0.28);
+  background: linear-gradient(120deg, rgba(163, 230, 53, 0.07), rgba(17, 22, 19, 0.6) 55%);
+  text-decoration: none;
+  transition: border-color 0.2s ease;
+}
+.demo:hover { border-color: rgba(163, 230, 53, 0.55); }
+.demo h2 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--app-text-primary, #F2F5F3);
+  margin: 8px 0 4px;
+}
+.demo p { color: var(--app-text-secondary, #9CA8A1); font-size: 0.9rem; }
+.demoTag {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #0d1117;
+  background: var(--app-lime, #A3E635);
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+.demoCta {
+  flex-shrink: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--app-lime, #A3E635);
+  white-space: nowrap;
+}
+
+/* Niveaux de frais */
+.tiers { display: flex; flex-direction: column; }
+.tier {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 24px;
+  padding: 26px 0;
+  border-top: 1px solid var(--app-border-subtle, #1E2621);
+}
+.tier:last-child { border-bottom: 1px solid var(--app-border-subtle, #1E2621); }
+.tierHead { display: flex; flex-direction: column; gap: 4px; padding-top: 6px; }
+.tierFee {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: 1.9rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--app-text-primary, #F2F5F3);
+}
+.tierNote { font-size: 0.78rem; color: var(--app-text-muted, #627067); }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(220px, 100%), 1fr));
+  gap: 10px;
+}
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px 40px 16px 18px;
+  border-radius: var(--app-radius-md, 8px);
+  border: 1px solid var(--app-border-default, #2A362E);
+  background: var(--app-surface-1, #111613);
+  text-decoration: none;
+  transition: border-color 0.18s ease, background 0.18s ease;
+}
+.card:hover {
+  border-color: rgba(163, 230, 53, 0.45);
+  background: var(--app-surface-2, #171E1A);
+}
+.cardName { font-weight: 600; color: var(--app-text-primary, #F2F5F3); font-size: 0.98rem; }
+.cardRoles { font-size: 0.8rem; color: var(--app-text-secondary, #9CA8A1); }
+.cardArrow {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--app-text-muted, #627067);
+  transition: color 0.18s ease, transform 0.18s ease;
+}
+.card:hover .cardArrow { color: var(--app-lime, #A3E635); transform: translate(3px, -50%); }
+
+.foot { font-size: 0.82rem; color: var(--app-text-muted, #627067); }
+
+@media (max-width: 720px) {
+  .hub { padding: 24px 0 40px; gap: 28px; }
+  .tier { grid-template-columns: 1fr; gap: 12px; padding: 20px 0; }
+  .tierHead { flex-direction: row; align-items: baseline; gap: 10px; padding-top: 0; }
+  .tierFee { font-size: 1.5rem; }
+  .demo { flex-direction: column; align-items: flex-start; padding: 18px; }
+}
