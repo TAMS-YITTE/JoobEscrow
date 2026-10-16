@@ -59,6 +59,13 @@ export default function MyEscrowsPage() {
       });
       setRows(found);
       setPending(toClaim);
+      try {
+        const actionsCount = found.filter(FILTERS[0].test).length;
+        sessionStorage.setItem('joob_actions_required', String(actionsCount));
+        window.dispatchEvent(new Event('joob-actions-updated'));
+      } catch {
+        /* ignore */
+      }
       // Premier affichage : « Action required » s'il y en a, sinon « Active », sinon tout.
       setFilter((f) => (f !== 'active' ? f : found.some((e) => e.actionRequired) ? 'action' : found.some(FILTERS[1].test) ? 'active' : 'all'));
     } catch (err) {
@@ -112,16 +119,34 @@ export default function MyEscrowsPage() {
         <>
           <div className="stats-grid">
             <div className="stat-card">
-              <div className="stat-label"><span>💼</span><span className="label-long">Active escrows</span><span className="label-short">Active</span></div>
-              <div className="stat-value">{active.length}</div>
+              <div className="stat-label">
+                <span aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a3e635" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2" /><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" /></svg>
+                </span>
+                <span className="label-long">Active escrows</span>
+                <span className="label-short">Active</span>
+              </div>
+              <div className="stat-value tabular-nums">{active.length}</div>
             </div>
             <div className="stat-card">
-              <div className="stat-label"><span>💶</span><span className="label-long">Total secured</span><span className="label-short">Secured</span></div>
-              <div className="stat-value">{secured.toFixed(2)}<small>USD</small></div>
+              <div className="stat-label">
+                <span aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a3e635" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
+                </span>
+                <span className="label-long">Total secured</span>
+                <span className="label-short">Secured</span>
+              </div>
+              <div className="stat-value tabular-nums">{secured.toFixed(2)}<small>USD</small></div>
             </div>
             <div className="stat-card">
-              <div className="stat-label"><span>⚠️</span><span className="label-long">Actions required</span><span className="label-short">Actions</span></div>
-              <div className="stat-value warn">{actions}</div>
+              <div className="stat-label">
+                <span aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#eab308" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></svg>
+                </span>
+                <span className="label-long">Actions required</span>
+                <span className="label-short">Actions</span>
+              </div>
+              <div className="stat-value warn tabular-nums">{actions}</div>
             </div>
           </div>
 
@@ -129,8 +154,8 @@ export default function MyEscrowsPage() {
             <div className="controls-right" style={{ marginBottom: 20, justifyContent: 'flex-start' }}>
               {pending.map((p) => (
                 <div key={`${p.niche.contractAddress}-${p.sym}`} className="claim-box">
-                  <span>ℹ️ Funds available to withdraw{p.niche.isDemo ? ' (demo)' : ''}</span>
-                  <button className="btn btn-primary" onClick={() => claim(p)}>Claim {p.amount} {p.sym}</button>
+                  <span>Funds available to withdraw{p.niche.isDemo ? ' (demo)' : ''}</span>
+                  <button className="btn btn-primary tabular-nums" onClick={() => claim(p)}>Claim {p.amount} {p.sym}</button>
                 </div>
               ))}
             </div>
@@ -139,7 +164,7 @@ export default function MyEscrowsPage() {
           <div className="dashboard-controls" style={{ flexWrap: 'wrap', gap: 15 }}>
             <div className="tabs" style={{ flexWrap: 'wrap', gap: '8px 20px' }}>
               {FILTERS.map((f) => (
-                <button key={f.key} className={`tab ${filter === f.key ? 'active' : ''}`} onClick={() => setFilter(f.key)}>
+                <button key={f.key} className={`tab tabular-nums ${filter === f.key ? 'active' : ''}`} onClick={() => setFilter(f.key)}>
                   {f.label} ({rows.filter(f.test).length})
                 </button>
               ))}
@@ -153,9 +178,6 @@ export default function MyEscrowsPage() {
             <div className="escrow-grid">
               {shown.map((e) => (
                 <div key={e.key}>
-                  <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', margin: '0 0 6px 4px' }}>
-                    {e.niche.isDemo ? 'Demo · 0% fee' : `${e.niche.feeTier}% fee`} · you are the {e.role}
-                  </p>
                   <NicheScope niche={e.niche}>
                     <EscrowCard escrow={e} isDisputeView={e.status === 'DISPUTED'} onUpdate={load} />
                   </NicheScope>

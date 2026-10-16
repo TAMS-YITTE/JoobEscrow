@@ -74,9 +74,11 @@ function DashboardContent() {
       const staleTimeoutNumber = Number(await contract.staleDisputeTimeout());
 
       let actionRequired = null;
+      const nowSec = Math.floor(Date.now() / 1000);
       if (statusEnum === 1) {
-        if (!isAccepted && isProvider) actionRequired = "Action Required: Accept Job";
-        else if (isAccepted && isClient) actionRequired = "Action Required: Release or Dispute";
+        if (!isAccepted && isProvider) actionRequired = "Action required: Accept escrow";
+        else if (isAccepted && isClient) actionRequired = "Action required: Release or open dispute";
+        else if (isAccepted && isProvider && Number(e.timeoutDate) > 0 && nowSec > Number(e.timeoutDate)) actionRequired = "Action required: Claim timeout";
       }
 
       setInvitedEscrow({
@@ -88,7 +90,7 @@ function DashboardContent() {
         tokenSymbol: e.sym || 'USDT',
         actionRequired,
         highlighted: true,
-        createdAt: 0,
+        createdAt: Number(e.createdAt || 0),
         timeoutDate: Number(e.timeoutDate),
         accepted: isAccepted,
         disputeOpenedAt,
@@ -158,14 +160,14 @@ function DashboardContent() {
         <div className="controls-right">
           {Object.entries(pending).filter(([, v]) => Number(v) > 0).map(([sym, v]) => (
             <div key={sym} className="claim-box">
-              <span>ℹ️ Funds available to withdraw</span>
-              <button className="btn btn-primary" onClick={() => handleClaim(sym)}>
+              <span>Funds available to withdraw</span>
+              <button className="btn btn-primary tabular-nums" onClick={() => handleClaim(sym)}>
                 Claim {v} {sym}
               </button>
             </div>
           ))}
           {account && (
-            <div className="balance-badge">
+            <div className="balance-badge tabular-nums">
               {balances ? Object.entries(balances).map(([sym, v]) => `${Number(v).toFixed(2)} ${sym}`).join(' · ') : 'Loading...'}
             </div>
           )}
@@ -183,30 +185,30 @@ function DashboardContent() {
             <div className="invite-body">
               <p>
                 You&apos;ve been invited to <strong>Escrow #{invitedEscrow.id}</strong> ({invitedEscrow.amount} {invitedEscrow.tokenSymbol}).
-                Connect the wallet <strong style={{ fontFamily: 'monospace', color: niche.theme.primary }}>{short(invitedEscrow.provider)}</strong> ({niche.lexicon.provider}) to review and accept it.
+                Connect the wallet <strong style={{ fontFamily: 'monospace', color: '#a3e635' }}>{short(invitedEscrow.provider)}</strong> ({niche.lexicon.provider}) to review and accept it.
               </p>
-              <button className="btn btn-primary" onClick={() => open()} style={{ backgroundColor: niche.theme.primary, borderColor: niche.theme.primary, padding: '10px 20px' }}>
+              <button className="btn btn-primary" onClick={() => open()} style={{ padding: '10px 20px' }}>
                 Connect Wallet
               </button>
             </div>
           );
         } else if (meProvider) {
-          banner = <p style={{ color: '#22c55e' }}>✓ You are connected as the recipient ({niche.lexicon.provider}). Review and accept this escrow below.</p>;
+          banner = <p style={{ color: '#22c55e' }}>You are connected as the recipient ({niche.lexicon.provider}). Review and accept this escrow below.</p>;
         } else if (meClient) {
           banner = <p>You created this escrow ({niche.lexicon.client}). Waiting for the {niche.lexicon.provider.toLowerCase()} to accept.</p>;
         } else {
           banner = (
-            <p style={{ color: '#facc15' }}>
-              ⚠️ This escrow is addressed to <strong style={{ fontFamily: 'monospace' }}>{short(invitedEscrow.provider)}</strong>, but you&apos;re connected as <strong style={{ fontFamily: 'monospace' }}>{short(account)}</strong>. Switch to the correct wallet to accept it.
+            <p style={{ color: '#eab308' }}>
+              This escrow is addressed to <strong style={{ fontFamily: 'monospace' }}>{short(invitedEscrow.provider)}</strong>, but you&apos;re connected as <strong style={{ fontFamily: 'monospace' }}>{short(account)}</strong>. Switch to the correct wallet to accept it.
             </p>
           );
         }
         return (
-          <div className="glass-panel invite-panel" style={{ borderColor: niche.theme.primary }}>
-            <h3 style={{ color: niche.theme.primary }}>📨 Escrow Invitation</h3>
+          <div className="glass-panel invite-panel" style={{ borderColor: 'rgba(163, 230, 53, 0.4)' }}>
+            <h3 style={{ color: '#a3e635' }}>Escrow Invitation</h3>
             {banner}
             <div className="invite-card">
-              <EscrowCard escrow={invitedEscrow} isOwner={isOwner} onUpdate={() => { fetchInvited(); fetchPending(); }} />
+              <EscrowCard escrow={invitedEscrow} isOwner={isOwner} defaultExpanded={true} onUpdate={() => { fetchInvited(); fetchPending(); }} />
             </div>
           </div>
         );

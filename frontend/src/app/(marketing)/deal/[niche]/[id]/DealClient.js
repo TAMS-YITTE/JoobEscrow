@@ -19,14 +19,21 @@ const short = (a) => `${a.slice(0, 6)}…${a.slice(-4)}`;
 const fmtDate = (s) => new Date(Number(s) * 1000).toUTCString().replace(' GMT', ' UTC');
 
 function statusOf(e) {
+  const nowSec = Math.floor(Date.now() / 1000);
+  const expired = Number(e.timeoutDate) > 0 && nowSec > Number(e.timeoutDate);
   switch (Number(e.status)) {
-    case 1: return e.accepted
-      ? { label: 'Funds locked · work in progress', tone: 'ok', note: 'The provider accepted. The client can no longer cancel: the funds can only be paid to the provider, or split through a dispute.' }
-      : { label: 'Funds locked · waiting for the provider', tone: 'ok', note: 'The funds are in the contract. Until the provider accepts, the client can still cancel and get a full refund.' };
-    case 2: return { label: 'Paid', tone: 'done', note: 'The funds were released to the provider.' };
-    case 3: return { label: 'In dispute', tone: 'warn', note: 'A dispute is open. The 3-of-5 Safe multisig settles it; after 30 days either party can trigger a 50/50 split.' };
-    case 4: return { label: 'Dispute settled', tone: 'done', note: 'The dispute was settled and the funds were split.' };
-    case 5: return { label: 'Cancelled · refunded', tone: 'done', note: 'The client cancelled before acceptance and was refunded.' };
+    case 1:
+      if (!e.accepted) {
+        return { label: 'Awaiting acceptance', tone: 'warn', note: 'The funds are locked in the contract. Until the provider accepts, the client can still cancel and get a full refund.' };
+      }
+      if (expired) {
+        return { label: 'Deadline passed', tone: 'warn', note: 'The delivery deadline has passed. The provider can claim the timeout, or the client can release the funds or open a dispute.' };
+      }
+      return { label: 'In progress', tone: 'ok', note: 'The provider accepted. The client can no longer cancel: the funds can only be paid to the provider, or split through a dispute.' };
+    case 2: return { label: 'Completed', tone: 'done', note: 'The funds were released to the provider.' };
+    case 3: return { label: 'In mediation', tone: 'warn', note: 'A dispute is open. The 3-of-5 Safe multisig settles it; after 30 days either party can trigger a 50/50 split.' };
+    case 4: return { label: 'Completed', tone: 'done', note: 'The dispute was settled and the funds were split.' };
+    case 5: return { label: 'Cancelled', tone: 'done', note: 'The client cancelled before acceptance and was refunded.' };
     default: return null;
   }
 }
