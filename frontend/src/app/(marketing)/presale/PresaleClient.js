@@ -197,9 +197,9 @@ function AllocationLookup({ readProvider, td, pd }) {
 
   return (
     <div className={styles.lookup}>
-      <div className={styles.lookupTitle}>Check an allocation <span>· no wallet needed</span></div>
+      <div className={styles.lookupTitle}>Already bought? <span>Check your JOOB with your address, no need to connect your wallet.</span></div>
       <form onSubmit={lookup} className={styles.lookupForm}>
-        <input value={addr} onChange={(e) => setAddr(e.target.value)} placeholder="0x… wallet address" className={styles.lookupInput} spellCheck={false} autoComplete="off" />
+        <input value={addr} onChange={(e) => setAddr(e.target.value)} placeholder="Paste your 0x… address" className={styles.lookupInput} spellCheck={false} autoComplete="off" />
         <button type="submit" className={styles.lookupBtn} disabled={loading}>{loading ? '…' : 'Check'}</button>
       </form>
       {error && <p className={styles.lookupError}>{error}</p>}
