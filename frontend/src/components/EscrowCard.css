@@ -543,7 +543,8 @@
   .escrow-timeline .timeline-label {
     font-size: 0.68rem;
     line-height: 1.2;
-    word-break: break-word;
+    word-break: normal;
+    overflow-wrap: normal;
   }
   .timeline-line {
     align-self: flex-start;

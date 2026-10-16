@@ -360,3 +360,8 @@
     color: var(--app-lime, #A3E635);
   }
 }
+
+/* Petits ecrans : le bouton du wallet prend la place, on garde le logo seul plutot qu'un nom tronque. */
+@media (max-width: 420px) {
+  .sidebar-brand-link h2 { display: none; }
+}
