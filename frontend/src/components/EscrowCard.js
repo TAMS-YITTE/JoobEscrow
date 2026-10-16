@@ -317,13 +317,12 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
 
   const step1Done = escrow.accepted || isCompleted || isDisputed;
   const step1Active = escrow.status === 'FUNDED' && !escrow.accepted;
+  // Libellé dynamique de la 1re étape : en attente tant que non accepté, « Accepted » une fois franchie, « Cancelled » si annulé avant acceptation
+  const step1Label = step1Done ? 'Accepted' : isCancelled ? 'Cancelled' : 'Awaiting acceptance';
 
   let step2Label = 'In progress';
   let step2Class = '';
-  if (isCancelled) {
-    step2Label = 'Cancelled';
-    step2Class = '';
-  } else if (isDisputed) {
+  if (isDisputed) {
     step2Label = 'In mediation';
     step2Class = 'is-danger';
   } else if (isExpired) {
@@ -408,7 +407,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
                 <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'currentColor' }} />
               )}
             </span>
-            <span className="timeline-label">Awaiting acceptance</span>
+            <span className="timeline-label">{step1Label}</span>
           </div>
 
           <div className={`timeline-line ${step1Done ? 'is-done' : ''}`} />
