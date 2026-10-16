@@ -14,7 +14,7 @@ export default function AppGuard({ children }) {
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100%' }}>
       {isTestnet && (
         <div style={{ background: '#ef4444', color: '#fff', padding: '10px', textAlign: 'center', fontWeight: 'bold' }}>
-          ⚠️ You are on BSC Testnet. Funds used are not real.
+          You are on BSC Testnet. Funds used are not real.
         </div>
       )}
       {error && (
@@ -25,7 +25,12 @@ export default function AppGuard({ children }) {
       {!account && !isPublic ? (
         <div style={{ display: 'flex', flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px' }}>
           <div className="glass-panel connect-card">
-            <div className="connect-icon" aria-hidden="true">🔐</div>
+            <div className="connect-icon" aria-hidden="true">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#a3e635" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+            </div>
             <h2 className="connect-title">Connect your <span className="text-gradient">wallet</span></h2>
             <p className="connect-text">
               Please connect your Web3 wallet (MetaMask, TrustWallet) to access the dashboard, manage your contracts, and secure your transactions.

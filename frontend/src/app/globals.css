@@ -5,7 +5,7 @@
   --bg-panel: rgba(255, 255, 255, 0.03);
   --bg-glass: rgba(20, 20, 20, 0.6);
   --border-color: rgba(255, 255, 255, 0.1);
-  --border-glow: rgba(56, 189, 248, 0.3);
+  --border-glow: rgba(163, 230, 53, 0.3);
   
   --text-primary: #f8fafc;
   --text-secondary: #94a3b8;
@@ -54,7 +54,7 @@ a {
 
 .glass-panel:hover {
   border-color: var(--border-glow);
-  box-shadow: 0 0 20px rgba(56, 189, 248, 0.05);
+  box-shadow: 0 0 20px rgba(163, 230, 53, 0.05);
 }
 
 /* Buttons : un seul systeme (pilule), partout sur le site.
@@ -265,11 +265,13 @@ h1, h2, h3 {
 
 .fee-badge {
   margin-top: 20px;
-  padding: 10px;
-  background-color: rgba(255,255,255,0.05);
-  border-radius: 8px;
+  padding: 8px 12px;
+  background-color: var(--app-surface-2, #171E1A);
+  border: 1px solid var(--app-border-subtle, #1E2621);
+  border-radius: var(--app-radius-md, 8px);
   display: inline-block;
   align-self: center;
+  font-variant-numeric: tabular-nums;
 }
 
 .specialized-grid {
@@ -282,13 +284,14 @@ h1, h2, h3 {
 
 .specialized-card {
   padding: 20px;
-  border-radius: 8px;
+  border-radius: var(--app-radius-md, 8px);
   border-left-width: 3px;
   border-left-style: solid;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  background: var(--app-surface-1, #111613);
 }
 
 .specialized-card:hover {
@@ -322,24 +325,24 @@ h1, h2, h3 {
   gap: 12px;
   margin-bottom: 24px;
   padding: 10px 14px;
-  border-radius: 10px;
-  border: 1px solid rgba(163, 230, 53, 0.2);
-  background: rgba(255, 255, 255, 0.03);
-  color: #94a3b8;
+  border-radius: var(--app-radius-md, 8px);
+  border: 1px solid rgba(163, 230, 53, 0.25);
+  background: var(--app-surface-1, #111613);
+  color: var(--app-text-secondary, #9CA8A1);
   font-size: 0.8125rem;
   line-height: 1.5;
 }
 .security-banner-icon { flex-shrink: 0; display: inline-flex; align-items: center; }
 .security-banner-body { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; flex: 1; min-width: 0; }
-.security-banner-text { color: #94a3b8; }
-.security-banner-text strong { color: #e2e8f0; }
+.security-banner-text { color: var(--app-text-secondary, #9CA8A1); }
+.security-banner-text strong { color: var(--app-text-primary, #F2F5F3); }
 .security-banner-links { display: inline-flex; flex-wrap: wrap; gap: 6px; align-items: center; font-weight: 500; }
-.security-banner-verify { color: #64748b; }
-.security-banner-sep { color: #475569; }
-.security-banner-links a { color: #a3e635; text-decoration: underline; text-underline-offset: 2px; }
-.security-banner-links a:hover { color: #bef264; }
-.security-banner-close { background: transparent; border: none; color: #64748b; cursor: pointer; padding: 4px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; transition: color 0.15s, background 0.15s; }
-.security-banner-close:hover { color: #e2e8f0; background: rgba(255, 255, 255, 0.05); }
+.security-banner-verify { color: var(--app-text-muted, #627067); }
+.security-banner-sep { color: var(--app-text-muted, #627067); }
+.security-banner-links a { color: var(--app-lime, #A3E635); text-decoration: underline; text-underline-offset: 2px; }
+.security-banner-links a:hover { color: var(--app-lime-hover, #BEF264); }
+.security-banner-close { background: transparent; border: none; color: var(--app-text-muted, #627067); cursor: pointer; padding: 4px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; transition: color 0.15s, background 0.15s; }
+.security-banner-close:hover { color: var(--app-text-primary, #F2F5F3); background: var(--app-surface-2, #171E1A); }
 @media (max-width: 640px) {
   .security-banner { align-items: flex-start; padding: 10px 12px; }
   .security-banner-body { flex-direction: column; align-items: flex-start; gap: 6px; }
@@ -357,10 +360,10 @@ h1, h2, h3 {
 
 /* --- Ecran de connexion de l'app (AppGuard) --- */
 .connect-card {
-  text-align: center; max-width: 520px; padding: 40px 36px; border-radius: 22px;
-  border: 1px solid rgba(163, 230, 53, 0.3);
-  background: linear-gradient(165deg, rgba(17, 28, 34, 0.9), rgba(9, 14, 20, 0.95));
-  box-shadow: 0 0 50px -18px rgba(163, 230, 53, 0.35);
+  text-align: center; max-width: 520px; padding: 40px 36px; border-radius: var(--app-radius-xl, 16px);
+  border: 1px solid var(--app-border-default, #2A362E);
+  background: var(--app-surface-1, #111613);
+  box-shadow: 0 18px 44px -20px rgba(163, 230, 53, 0.25);
 }
 .connect-icon {
   width: 60px; height: 60px; margin: 0 auto 16px; border-radius: 18px; display: flex; align-items: center; justify-content: center;

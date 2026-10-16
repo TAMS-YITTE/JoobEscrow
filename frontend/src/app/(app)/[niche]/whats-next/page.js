@@ -15,7 +15,7 @@ export default function WhatsNextPage() {
     <div className="dashboard">
       <header className="dashboard-header">
         <div>
-          <h1 className="text-gradient">What&apos;s next 🚀</h1>
+          <h1 className="text-gradient">What&apos;s next</h1>
           <p className="subtitle">
             Our public roadmap: each milestone ships when it is ready, and audited where needed.
           </p>

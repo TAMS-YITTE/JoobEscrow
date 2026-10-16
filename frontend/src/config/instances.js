@@ -19,7 +19,7 @@ export const instances = {
       escrow: "Influence Escrow"
     },
     theme: {
-      primary: "#10b981", // Emerald
+      primary: "#22c55e", // Green
       bg: "bg-gray-900"
     },
     contractAddress: CONTRACT_10_PERCENT,
@@ -35,8 +35,8 @@ export const instances = {
       escrow: "Freelance Escrow"
     },
     theme: {
-      primary: "#3b82f6", // Blue
-      bg: "bg-slate-900"
+      primary: "#a3e635", // Lime
+      bg: "bg-gray-900"
     },
     contractAddress: CONTRACT_8_PERCENT,
     feeTier: 8
@@ -51,8 +51,8 @@ export const instances = {
       escrow: "Pro Escrow"
     },
     theme: {
-      primary: "#8b5cf6", // Violet
-      bg: "bg-indigo-950"
+      primary: "#eab308", // Yellow
+      bg: "bg-gray-900"
     },
     contractAddress: CONTRACT_5_PERCENT,
     feeTier: 5
@@ -67,8 +67,8 @@ export const instances = {
       escrow: "Trade Escrow"
     },
     theme: {
-      primary: "#f59e0b", // Amber
-      bg: "bg-stone-900"
+      primary: "#eab308", // Yellow
+      bg: "bg-gray-900"
     },
     contractAddress: CONTRACT_3_PERCENT,
     feeTier: 3
@@ -83,8 +83,8 @@ export const instances = {
       escrow: "Prime Escrow"
     },
     theme: {
-      primary: "#eab308", // Yellow Gold
-      bg: "bg-zinc-950"
+      primary: "#a3e635", // Lime
+      bg: "bg-gray-900"
     },
     contractAddress: CONTRACT_2_PERCENT,
     feeTier: 2
@@ -93,7 +93,7 @@ export const instances = {
     name: "Audit & Security",
     slug: "audit",
     lexicon: { client: "Project", provider: "Auditor", action: "Audit", escrow: "Audit Escrow" },
-    theme: { primary: "#14b8a6", bg: "bg-teal-950" },
+    theme: { primary: "#22c55e", bg: "bg-gray-900" },
     contractAddress: CONTRACT_5_PERCENT,
     feeTier: 5 // Uses the 5% contract
   },
@@ -101,7 +101,7 @@ export const instances = {
     name: "Development",
     slug: "dev",
     lexicon: { client: "Founder", provider: "Developer", action: "Code Delivery", escrow: "Dev Escrow" },
-    theme: { primary: "#0ea5e9", bg: "bg-sky-950" },
+    theme: { primary: "#a3e635", bg: "bg-gray-900" },
     contractAddress: CONTRACT_5_PERCENT,
     feeTier: 5 // Uses the 5% contract
   },
@@ -109,7 +109,7 @@ export const instances = {
     name: "Art & Commission",
     slug: "art",
     lexicon: { client: "Collector", provider: "Artist", action: "Commission", escrow: "Art Escrow" },
-    theme: { primary: "#ec4899", bg: "bg-fuchsia-950" },
+    theme: { primary: "#bef264", bg: "bg-gray-900" },
     contractAddress: CONTRACT_8_PERCENT,
     feeTier: 8 // Uses the 8% contract
   },
@@ -117,7 +117,7 @@ export const instances = {
     name: "Gaming Assets",
     slug: "gaming",
     lexicon: { client: "Buyer", provider: "Player", action: "Transfer", escrow: "Gaming Escrow" },
-    theme: { primary: "#a855f7", bg: "bg-purple-950" },
+    theme: { primary: "#84cc16", bg: "bg-gray-900" },
     contractAddress: CONTRACT_3_PERCENT,
     feeTier: 3 // Uses the 3% contract
   },
@@ -125,7 +125,7 @@ export const instances = {
     name: "Real Estate (OTC)",
     slug: "realestate",
     lexicon: { client: "Buyer", provider: "Broker", action: "Closing", escrow: "Estate Escrow" },
-    theme: { primary: "#fbbf24", bg: "bg-amber-950" },
+    theme: { primary: "#eab308", bg: "bg-gray-900" },
     contractAddress: CONTRACT_2_PERCENT,
     feeTier: 2 // Uses the 2% contract
   },
@@ -133,7 +133,7 @@ export const instances = {
     name: "Music Rights",
     slug: "music",
     lexicon: { client: "Label", provider: "Producer", action: "Clearance", escrow: "Music Escrow" },
-    theme: { primary: "#f43f5e", bg: "bg-rose-950" },
+    theme: { primary: "#22c55e", bg: "bg-gray-900" },
     contractAddress: CONTRACT_5_PERCENT,
     feeTier: 5 // Uses the 5% contract
   },
@@ -141,7 +141,7 @@ export const instances = {
     name: "Community Mgmt",
     slug: "cm",
     lexicon: { client: "Project", provider: "Manager", action: "Animation", escrow: "CM Escrow" },
-    theme: { primary: "#6366f1", bg: "bg-indigo-950" },
+    theme: { primary: "#a3e635", bg: "bg-gray-900" },
     contractAddress: CONTRACT_8_PERCENT,
     feeTier: 8 // Uses the 8% contract (Talent)
   },
@@ -149,7 +149,7 @@ export const instances = {
     name: "Domain Names",
     slug: "domain",
     lexicon: { client: "Buyer", provider: "Owner", action: "Transfer", escrow: "Domain Escrow" },
-    theme: { primary: "#10b981", bg: "bg-emerald-950" },
+    theme: { primary: "#22c55e", bg: "bg-gray-900" },
     contractAddress: CONTRACT_3_PERCENT,
     feeTier: 3 // Uses the 3% contract
   },
@@ -157,7 +157,7 @@ export const instances = {
     name: "M&A Deals",
     slug: "mergers",
     lexicon: { client: "Acquirer", provider: "Target", action: "Acquisition", escrow: "M&A Escrow" },
-    theme: { primary: "#ef4444", bg: "bg-red-950" },
+    theme: { primary: "#eab308", bg: "bg-gray-900" },
     contractAddress: CONTRACT_2_PERCENT,
     feeTier: 2 // Uses the 2% contract
   },
@@ -165,7 +165,7 @@ export const instances = {
     name: "Bug Bounties",
     slug: "bounty",
     lexicon: { client: "Protocol", provider: "Hacker", action: "Disclosure", escrow: "Bounty Escrow" },
-    theme: { primary: "#f97316", bg: "bg-orange-950" },
+    theme: { primary: "#facc15", bg: "bg-gray-900" },
     contractAddress: CONTRACT_8_PERCENT,
     feeTier: 8 // Uses the 8% contract
   }
@@ -187,7 +187,7 @@ export const demoInstance = {
     escrow: "Demo Escrow"
   },
   theme: {
-    primary: "#f59e0b",
+    primary: "#a3e635",
     bg: "bg-gray-900"
   },
   contractAddress: CONTRACT_DEMO,

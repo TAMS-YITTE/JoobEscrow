@@ -16,19 +16,19 @@ export default function WalletConnect() {
           style={{ 
             display: 'flex', 
             alignItems: 'center', 
-            background: 'var(--panel-bg, #1e293b)', 
+            background: 'var(--app-surface-2, #171E1A)', 
             borderRadius: '24px', 
-            padding: '4px 16px 4px 4px', 
-            border: '1px solid var(--border-color, #334155)', 
+            padding: '4px 14px 4px 4px', 
+            border: '1px solid var(--app-border-default, #2A362E)', 
             cursor: 'pointer',
-            color: 'white',
-            transition: 'background 0.2s ease'
+            color: 'var(--app-text-primary, #F2F5F3)',
+            transition: 'background 0.2s ease, border-color 0.2s ease'
           }}
-          onMouseOver={(e) => e.currentTarget.style.background = '#334155'}
-          onMouseOut={(e) => e.currentTarget.style.background = 'var(--panel-bg, #1e293b)'}
+          onMouseOver={(e) => { e.currentTarget.style.background = 'var(--app-surface-3, #1F2923)'; }}
+          onMouseOut={(e) => { e.currentTarget.style.background = 'var(--app-surface-2, #171E1A)'; }}
         >
           <img src="/logo.svg" alt="JoobEscrow" style={{ width: '28px', height: '28px', borderRadius: '50%', marginRight: '8px', objectFit: 'cover' }} />
-          <span style={{ fontSize: '0.9rem', fontWeight: '500', fontFamily: 'monospace' }}>
+          <span style={{ fontSize: '0.88rem', fontWeight: '500', fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace', fontVariantNumeric: 'tabular-nums' }}>
             {address ? `${address.substring(0, 6)}...${address.substring(address.length - 4)}` : ''}
           </span>
         </button>
@@ -63,17 +63,17 @@ export default function WalletConnect() {
             display: 'flex', 
             alignItems: 'center', 
             justifyContent: 'center', 
-            width: '40px', 
-            height: '40px', 
+            width: '38px', 
+            height: '38px', 
             borderRadius: '50%', 
-            background: 'var(--panel-bg, #1e293b)', 
-            border: '1px solid var(--border-color, #334155)', 
+            background: 'var(--app-surface-2, #171E1A)', 
+            border: '1px solid rgba(239, 68, 68, 0.35)', 
             cursor: 'pointer', 
-            color: '#ef4444',
+            color: 'var(--app-red, #EF4444)',
             transition: 'background 0.2s ease'
           }}
-          onMouseOver={(e) => e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)'}
-          onMouseOut={(e) => e.currentTarget.style.background = 'var(--panel-bg, #1e293b)'}
+          onMouseOver={(e) => { e.currentTarget.style.background = 'rgba(239, 68, 68, 0.12)'; }}
+          onMouseOut={(e) => { e.currentTarget.style.background = 'var(--app-surface-2, #171E1A)'; }}
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>

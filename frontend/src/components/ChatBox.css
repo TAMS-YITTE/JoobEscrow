@@ -1,13 +1,13 @@
 .chatbox-container {
   display: flex;
   flex-direction: column;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
+  background: var(--app-surface-2, #171E1A);
+  border: 1px solid var(--app-border-default, #2A362E);
+  border-radius: var(--app-radius-lg, 12px);
   overflow: hidden;
-  height: 400px;
+  height: 380px;
   max-height: 50vh;
-  margin-top: 1rem;
+  margin-top: 0.75rem;
 }
 
 .chatbox-uninitialized {
@@ -23,21 +23,21 @@
 
 .chatbox-uninitialized h4 {
   margin: 0;
-  font-size: 1.1rem;
-  color: #fff;
+  font-size: 1.05rem;
+  color: var(--app-text-primary, #F2F5F3);
 }
 
 .chatbox-uninitialized p {
-  color: var(--text-secondary);
-  font-size: 0.9rem;
+  color: var(--app-text-secondary, #9CA8A1);
+  font-size: 0.88rem;
   margin: 0;
   max-width: 300px;
 }
 
 .chatbox-header {
   padding: 0.75rem 1rem;
-  background: rgba(0, 0, 0, 0.2);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background: var(--app-surface-1, #111613);
+  border-bottom: 1px solid var(--app-border-subtle, #1E2621);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -45,8 +45,8 @@
 
 .chatbox-header h4 {
   margin: 0;
-  font-size: 0.95rem;
-  color: #fff;
+  font-size: 0.9rem;
+  color: var(--app-text-primary, #F2F5F3);
 }
 
 .chatbox-messages {
@@ -60,8 +60,8 @@
 
 .chat-empty {
   text-align: center;
-  color: var(--text-secondary);
-  font-size: 0.9rem;
+  color: var(--app-text-secondary, #9CA8A1);
+  font-size: 0.88rem;
   margin: auto;
 }
 
@@ -82,71 +82,74 @@
 }
 
 .chat-bubble {
-  padding: 0.6rem 0.8rem;
-  border-radius: 12px;
-  font-size: 0.95rem;
+  padding: 0.55rem 0.8rem;
+  border-radius: var(--app-radius-md, 8px);
+  font-size: 0.9rem;
   word-break: break-word;
   white-space: pre-wrap;
 }
 
 .is-me .chat-bubble {
-  background: var(--primary-color, #10b981);
-  color: #fff;
+  background: var(--app-green, #22C55E);
+  color: var(--app-bg-canvas, #090C0A);
+  font-weight: 500;
   border-bottom-right-radius: 2px;
 }
 
 .is-peer .chat-bubble {
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
+  background: var(--app-surface-3, #1F2923);
+  border: 1px solid var(--app-border-default, #2A362E);
+  color: var(--app-text-primary, #F2F5F3);
   border-bottom-left-radius: 2px;
 }
 
 .chat-time {
   font-size: 0.7rem;
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--app-text-muted, #627067);
   margin-top: 0.25rem;
   padding: 0 0.25rem;
+  font-variant-numeric: tabular-nums;
 }
 
 .chatbox-input-area {
   display: flex;
   padding: 0.75rem;
-  background: rgba(0, 0, 0, 0.2);
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  background: var(--app-surface-1, #111613);
+  border-top: 1px solid var(--app-border-subtle, #1E2621);
   gap: 0.5rem;
 }
 
 .chatbox-input-area input {
   flex: 1;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
+  background: var(--app-surface-2, #171E1A);
+  border: 1px solid var(--app-border-default, #2A362E);
+  border-radius: var(--app-radius-md, 8px);
   padding: 0.5rem 0.75rem;
-  color: #fff;
-  font-size: 0.95rem;
+  color: var(--app-text-primary, #F2F5F3);
+  font-size: 0.9rem;
   outline: none;
 }
 
 .chatbox-input-area input:focus {
-  border-color: rgba(255, 255, 255, 0.3);
+  border-color: var(--app-lime, #A3E635);
 }
 
 .chatbox-input-area button {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--app-lime, #A3E635);
   border: none;
-  color: #fff;
+  color: var(--app-bg-canvas, #090C0A);
   padding: 0 1.1rem;
-  border-radius: 999px;
+  border-radius: var(--app-radius-md, 8px);
   cursor: pointer;
   font-weight: 600;
   transition: all 0.2s;
 }
 
 .chatbox-input-area button:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--app-lime-hover, #BEF264);
 }
 
 .chatbox-input-area button:disabled {
-  opacity: 0.5;
+  opacity: 0.45;
   cursor: not-allowed;
 }
