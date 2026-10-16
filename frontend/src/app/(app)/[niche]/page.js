@@ -132,7 +132,15 @@ function DashboardContent() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
           <img src="/logo.svg" alt="JoobEscrow Logo" style={{ width: '48px', height: '48px' }} />
           <div>
-            <h1 className="text-gradient" style={{ backgroundImage: `linear-gradient(to right, ${niche.theme.primary}, #fff)` }}>{niche.isDemo ? 'Demo' : 'Create an escrow'}</h1>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+              <h1 className="text-gradient">{niche.isDemo ? 'Demo' : 'Create an escrow'}</h1>
+              <span className="category-pill tabular-nums">
+                {niche.name} · {niche.feeTier}% fee
+              </span>
+              <Link href="/app" className="change-category-link">
+                Change category →
+              </Link>
+            </div>
             <p className="subtitle">{niche.isDemo ? 'Test a real on-chain escrow with $1, between two of your wallets' : `${niche.name}: secure payments between ${niche.lexicon.client.toLowerCase()} and ${niche.lexicon.provider.toLowerCase()}`}</p>
           </div>
         </div>
@@ -214,7 +222,7 @@ function DashboardContent() {
         );
       })()}
 
-      <div className="glass-panel empty-panel" style={{ '--niche-primary': niche.theme.primary }}>
+      <div className="glass-panel empty-panel">
            {account ? (
              <>
                <h2>How it works</h2>
@@ -233,16 +241,18 @@ function DashboardContent() {
                    </div>
                  ))}
                </div>
-               <button className="btn btn-primary empty-cta" onClick={() => setShowModal(true)} style={{backgroundColor: niche.theme.primary, borderColor: niche.theme.primary}}>
+               <button className="btn btn-primary empty-cta" onClick={() => setShowModal(true)}>
                  {niche.isDemo ? 'Start the demo with wallet A' : 'Create an escrow'}
                </button>
              </>
            ) : (
              <div className="connect-empty">
-               <div className="lock">🔒</div>
+               <div className="lock" aria-hidden="true">
+                 <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#a3e635" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
+               </div>
                <h3>Secure Web3 Escrow</h3>
                <p>Connect your wallet to view or create contracts.</p>
-               <div style={{ transform: 'scale(1.2)' }}>
+               <div style={{ transform: 'scale(1.1)' }}>
                  <WalletConnect />
                </div>
              </div>

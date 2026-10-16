@@ -1,82 +1,186 @@
 'use client';
 
+import { useState, useSyncExternalStore } from 'react';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { useNiche } from '../context/NicheContext';
-import { allInstances } from '../config/instances';
+import WalletConnect from './WalletConnect';
 import './Sidebar.css';
 
-export default function Sidebar() {
-  const pathname = usePathname();
-  const router = useRouter();
-  const niche = useNiche();
-
-  const menuItems = [
-    { name: 'Create', path: `/${niche.slug}` },
-  ];
-  const generalItems = [
-    { name: "What's next", path: `/${niche.slug}/whats-next`, badge: 'NEW' },
-    { name: 'Settings', path: `/${niche.slug}/settings` },
-  ];
-  const allEscrowsPath = `/${niche.slug}/all`;
-
-  const renderLink = (item) => {
-    const isActive = pathname === item.path || (item.path !== `/${niche.slug}` && pathname.startsWith(item.path));
-    return (
-      <Link
-        key={item.name}
-        href={item.path}
-        className={`nav-link ${isActive ? 'active' : ''}`}
-      >
-        {item.name}
-        {item.badge && <span className="nav-badge">{item.badge}</span>}
-      </Link>
-    );
+function subscribeActions(callback) {
+  if (typeof window === 'undefined') return () => {};
+  window.addEventListener('joob-actions-updated', callback);
+  window.addEventListener('storage', callback);
+  return () => {
+    window.removeEventListener('joob-actions-updated', callback);
+    window.removeEventListener('storage', callback);
   };
+}
+
+function getActionsSnapshot() {
+  try {
+    const raw = sessionStorage.getItem('joob_actions_required');
+    if (raw === null) return 0;
+    const n = parseInt(raw, 10);
+    return Number.isNaN(n) ? 0 : n;
+  } catch {
+    return 0;
+  }
+}
+
+function getActionsServerSnapshot() {
+  return 0;
+}
+
+export default function Sidebar() {
+  const pathname = usePathname() || '';
+  const niche = useNiche();
+  const [moreOpen, setMoreOpen] = useState(false);
+  const actionsRequired = useSyncExternalStore(subscribeActions, getActionsSnapshot, getActionsServerSnapshot);
+
+  const createPath = `/${niche.slug}`;
+  const allEscrowsPath = `/${niche.slug}/all`;
+  const categoriesPath = '/app';
+  const demoPath = '/demo';
+  const whatsNextPath = `/${niche.slug}/whats-next`;
+  const settingsPath = `/${niche.slug}/settings`;
+
+  const isMyEscrowsActive = pathname === allEscrowsPath;
+  const isCreateActive = pathname === createPath;
+  const isCategoriesActive = pathname === categoriesPath;
+  const isMoreActive = pathname === whatsNextPath || pathname === settingsPath || pathname === demoPath;
 
   return (
-    <aside className="sidebar glass-panel">
-      <div className="sidebar-brand">
-        {/* Le logo reste dans l'app : retour a la vue d'ensemble des categories (/app). */}
-        <Link href="/app" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <img src="/logo.svg" alt="JoobEscrow Logo" style={{ width: '40px', height: '40px' }} />
-          <h2>Joob</h2>
-        </Link>
-      </div>
-
-      <nav className="nav-menu">
-        {renderLink({ name: 'My escrows', path: allEscrowsPath })}
-
-        <div className="nav-section-head">
-          <label className="nav-section-label" htmlFor="category-select">Category</label>
-          <Link href="/app" className="nav-all-categories">All categories</Link>
+    <>
+      <aside className="sidebar">
+        <div className="sidebar-brand">
+          {/* Le logo reste dans l'app : retour a la vue d'ensemble des categories (/app). */}
+          <Link href="/app" className="sidebar-brand-link">
+            <img src="/logo.svg" alt="JoobEscrow Logo" style={{ width: '38px', height: '38px' }} />
+            <h2>JoobEscrow</h2>
+          </Link>
+          <div className="sidebar-mobile-wallet">
+            <WalletConnect />
+          </div>
         </div>
-        <select
-          id="category-select"
-          className="category-select"
-          value={niche.slug}
-          onChange={(e) => router.push(`/${e.target.value}`)}
-          style={{ borderColor: niche.theme.primary }}
-        >
-          {/* La demo (0 %) n'est pas une categorie : visible seulement quand on y est deja. */}
-          {Object.values(allInstances).filter((n) => !n.isDemo || n.slug === niche.slug).map((n) => (
-            <option key={n.slug} value={n.slug}>{n.name}</option>
-          ))}
-        </select>
-        {menuItems.map(renderLink)}
 
-        <div className="nav-divider" />
-        {generalItems.map(renderLink)}
-      </nav>
-
-      <Link href="/" className="sidebar-back">← Back to joobescrow.com</Link>
-
-      <div className="sidebar-footer">
-        <p className="status-text"><span className="status-dot green"></span> Network: BSC Mainnet</p>
-        <Link href="/terms" style={{ display: 'block', marginTop: '10px', fontSize: '0.8rem', color: 'var(--text-secondary)', textDecoration: 'none' }}>
-          TOS & Security
+        <Link href={createPath} className="sidebar-create-cta">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+          <span>Create escrow</span>
         </Link>
-      </div>
-    </aside>
+
+        <nav className="nav-menu" aria-label="Main navigation">
+          <Link href={allEscrowsPath} className={`nav-link ${isMyEscrowsActive ? 'active' : ''}`}>
+            <span>My escrows</span>
+            {actionsRequired > 0 && (
+              <span className="nav-badge nav-badge--warn" title={`${actionsRequired} action(s) required`}>
+                {actionsRequired}
+              </span>
+            )}
+          </Link>
+
+          <Link href={categoriesPath} className={`nav-link ${isCategoriesActive ? 'active' : ''}`}>
+            <span>Categories &amp; fees</span>
+          </Link>
+
+          <Link href={demoPath} className={`nav-link ${pathname === demoPath ? 'active' : ''}`}>
+            <span>Try it with $1</span>
+          </Link>
+
+          <div className="nav-divider" />
+
+          <Link href={whatsNextPath} className={`nav-link ${pathname === whatsNextPath ? 'active' : ''}`}>
+            <span>What&apos;s next</span>
+            <span className="nav-badge">NEW</span>
+          </Link>
+
+          <Link href={settingsPath} className={`nav-link ${pathname === settingsPath ? 'active' : ''}`}>
+            <span>Settings</span>
+          </Link>
+        </nav>
+
+        <Link href="/" className="sidebar-back">← Back to joobescrow.com</Link>
+
+        <div className="sidebar-footer">
+          <p className="status-text">
+            <span className="status-dot green" aria-hidden="true"></span>
+            Network: BSC Mainnet
+          </p>
+          <Link href="/terms" style={{ display: 'block', marginTop: '10px', fontSize: '0.8rem', color: 'var(--app-text-secondary, #9CA8A1)', textDecoration: 'none' }}>
+            TOS &amp; Security
+          </Link>
+        </div>
+      </aside>
+
+      {/* Mobile More Sheet */}
+      {moreOpen && (
+        <div className="mobile-more-backdrop" onClick={() => setMoreOpen(false)}>
+          <div className="mobile-more-sheet" onClick={(e) => e.stopPropagation()}>
+            <Link href={demoPath} className={`mobile-more-link ${pathname === demoPath ? 'is-active' : ''}`} onClick={() => setMoreOpen(false)}>
+              <span>Try it with $1</span>
+              <span className="nav-badge">0% fee</span>
+            </Link>
+            <Link href={whatsNextPath} className={`mobile-more-link ${pathname === whatsNextPath ? 'is-active' : ''}`} onClick={() => setMoreOpen(false)}>
+              <span>What&apos;s next</span>
+              <span className="nav-badge">NEW</span>
+            </Link>
+            <Link href={settingsPath} className={`mobile-more-link ${pathname === settingsPath ? 'is-active' : ''}`} onClick={() => setMoreOpen(false)}>
+              <span>Settings</span>
+            </Link>
+            <Link href="/" className="mobile-more-link" onClick={() => setMoreOpen(false)}>
+              <span>← Back to website</span>
+            </Link>
+          </div>
+        </div>
+      )}
+
+      {/* Mobile Fixed Bottom Navigation Bar */}
+      <nav className="mobile-bottom-nav" aria-label="Mobile navigation">
+        <Link href={allEscrowsPath} className={`mobile-nav-item ${isMyEscrowsActive ? 'is-active' : ''}`} onClick={() => setMoreOpen(false)}>
+          {actionsRequired > 0 && <span className="mobile-nav-badge">{actionsRequired}</span>}
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
+            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+          </svg>
+          <span>My escrows</span>
+        </Link>
+
+        <Link href={createPath} className={`mobile-nav-item is-create ${isCreateActive ? 'is-active' : ''}`} onClick={() => setMoreOpen(false)}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" y1="8" x2="12" y2="16" />
+            <line x1="8" y1="12" x2="16" y2="12" />
+          </svg>
+          <span>+ Create</span>
+        </Link>
+
+        <Link href={categoriesPath} className={`mobile-nav-item ${isCategoriesActive ? 'is-active' : ''}`} onClick={() => setMoreOpen(false)}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <rect x="3" y="3" width="7" height="7" />
+            <rect x="14" y="3" width="7" height="7" />
+            <rect x="14" y="14" width="7" height="7" />
+            <rect x="3" y="14" width="7" height="7" />
+          </svg>
+          <span>Categories</span>
+        </Link>
+
+        <button
+          type="button"
+          className={`mobile-nav-item ${moreOpen || isMoreActive ? 'is-active' : ''}`}
+          onClick={() => setMoreOpen((v) => !v)}
+          aria-expanded={moreOpen}
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="1.5" />
+            <circle cx="19" cy="12" r="1.5" />
+            <circle cx="5" cy="12" r="1.5" />
+          </svg>
+          <span>More</span>
+        </button>
+      </nav>
+    </>
   );
 }

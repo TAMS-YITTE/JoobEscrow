@@ -10,6 +10,30 @@
   align-items: flex-start;
 }
 
+.category-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: var(--app-radius-sm, 6px);
+  background: var(--app-surface-2, #171E1A);
+  border: 1px solid var(--app-border-default, #2A362E);
+  color: var(--app-lime, #A3E635);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.change-category-link {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--app-text-secondary, #9CA8A1);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.change-category-link:hover {
+  color: var(--app-lime-hover, #BEF264);
+}
+
 .subtitle {
   color: var(--text-secondary);
   margin-top: 8px;
