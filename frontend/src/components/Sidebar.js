@@ -12,7 +12,7 @@ export default function Sidebar() {
   const niche = useNiche();
 
   const menuItems = [
-    { name: 'Dashboard', path: `/${niche.slug}` },
+    { name: 'Overview', path: `/${niche.slug}` },
     { name: 'Contracts', path: `/${niche.slug}/contracts` },
     { name: 'Disputes', path: `/${niche.slug}/disputes` },
   ];
@@ -29,7 +29,6 @@ export default function Sidebar() {
         key={item.name}
         href={item.path}
         className={`nav-link ${isActive ? 'active' : ''}`}
-        style={isActive ? { borderLeftColor: niche.theme.primary, color: niche.theme.primary } : {}}
       >
         {item.name}
         {item.badge && <span className="nav-badge">{item.badge}</span>}
@@ -40,17 +39,20 @@ export default function Sidebar() {
   return (
     <aside className="sidebar glass-panel">
       <div className="sidebar-brand">
-        {/* Le logo reste dans l'app : retour au tableau de bord de la categorie. */}
-        <Link href={`/${niche.slug}`} style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center', gap: '10px' }}>
+        {/* Le logo reste dans l'app : retour a la vue d'ensemble des categories (/app). */}
+        <Link href="/app" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center', gap: '10px' }}>
           <img src="/logo.svg" alt="JoobEscrow Logo" style={{ width: '40px', height: '40px' }} />
           <h2>Joob</h2>
         </Link>
       </div>
 
       <nav className="nav-menu">
-        {renderLink({ name: 'All my escrows', path: allEscrowsPath })}
+        {renderLink({ name: 'My escrows', path: allEscrowsPath })}
 
-        <label className="nav-section-label" htmlFor="category-select">Category</label>
+        <div className="nav-section-head">
+          <label className="nav-section-label" htmlFor="category-select">Category</label>
+          <Link href="/app" className="nav-all-categories">All categories</Link>
+        </div>
         <select
           id="category-select"
           className="category-select"
@@ -58,8 +60,9 @@ export default function Sidebar() {
           onChange={(e) => router.push(`/${e.target.value}`)}
           style={{ borderColor: niche.theme.primary }}
         >
-          {Object.values(allInstances).map((n) => (
-            <option key={n.slug} value={n.slug}>{n.name} · {n.feeTier}%</option>
+          {/* La demo (0 %) n'est pas une categorie : visible seulement quand on y est deja. */}
+          {Object.values(allInstances).filter((n) => !n.isDemo || n.slug === niche.slug).map((n) => (
+            <option key={n.slug} value={n.slug}>{n.name}</option>
           ))}
         </select>
         {menuItems.map(renderLink)}
