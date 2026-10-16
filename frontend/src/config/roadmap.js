@@ -16,16 +16,16 @@ export const ROADMAP_PHASES = [
   {
     phase: '02',
     title: 'Trust layer & Presale',
-    summary: '$1 interactive demo (/try) and shareable escrow links are live. JOOB presale from October 15, 2026, with a sealed vault and vesting for every participant.',
+    summary: '$1 interactive demo (/try) and shareable escrow links are live. JOOB presale live since October 15, 2026, with a sealed vault and vesting for every participant.',
     steps: [
       { title: 'Trust layer', status: 'now', items: 'Check a deal before you pay. Live: $1 demo with a step-by-step guide, shareable escrow links. Next: public deal pages anyone can verify without a wallet, Telegram alerts, dispute evidence recorded on-chain.' },
-      { title: 'JOOB presale', status: 'next', items: 'October 15, 2026 → January 13, 2027. Sealed vault, vesting for every participant, unsold tokens returned to the Safe and burned in a public transaction.' },
+      { title: 'JOOB presale', status: 'now', items: 'Live since October 15, 2026, closes January 13, 2027 at 13:59 UTC. Pay from BNB Chain or 6 other EVM chains (LI.FI), allocation check without a wallet, live purchase alerts on Telegram. Sealed vault, vesting for every participant, unsold tokens returned to the Safe and burned in a public transaction.' },
     ],
   },
   {
     phase: '03',
     title: 'TGE & Liquidity',
-    summary: 'PancakeSwap JOOB/USDT pool with LP locked 12 months or more, unsold presale tokens burned in a public transaction, audited staking opens.',
+    summary: 'Right after the presale closes: PancakeSwap JOOB/USDT pool with LP locked 12 months or more, unsold presale tokens burned in a public transaction, audited staking opens.',
     steps: [
       { title: 'TGE & liquidity', items: `JOOB/USDT pool on PancakeSwap at an initial price of $${PLANNED_LISTING_PRICE}, JOOB staking opens (contract already audited), JOOB activated on PerShare, first JOOB utilities (boosts & badges), Early Escrow points.` },
     ],
