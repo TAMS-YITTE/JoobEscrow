@@ -5,7 +5,7 @@ import WalletConnect from '../../../components/WalletConnect';
 import EscrowCard from '../../../components/EscrowCard';
 import CreateEscrowModal from '../../../components/CreateEscrowModal';
 import { useState, useEffect, useCallback, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { useWeb3 } from '../../../context/Web3Context';
 import { useNiche } from '../../../context/NicheContext';
 import { useToast } from '../../../context/ToastContext';
@@ -26,16 +26,14 @@ function DashboardContent() {
   const niche = useNiche();
   const { showToast } = useToast();
   const { open } = useAppKit();
-  const [activeTab, setActiveTab] = useState('active');
-  const [escrows, setEscrows] = useState([]);
   const [invitedEscrow, setInvitedEscrow] = useState(null);
-  const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   // Montants par jeton de la niche (USDT par defaut ; USDT + USDC pour la demo).
   const [pending, setPending] = useState({});
   const [balances, setBalances] = useState(null);
   const [isOwner, setIsOwner] = useState(false);
   const searchParams = useSearchParams();
+  const router = useRouter();
   const highlightedId = searchParams?.get('escrow');
 
   const fetchPending = useCallback(async () => {
@@ -102,97 +100,13 @@ function DashboardContent() {
     }
   }, [highlightedId, readProvider, provider, account, niche.contractAddress]);
 
-  const fetchEscrows = useCallback(async () => {
-    const currentProvider = readProvider || provider;
-    if (!currentProvider) return;
-    
-    setLoading(true);
-    try {
-      const contract = new ethers.Contract(niche.contractAddress, ESCROW_ABI, currentProvider);
-      const escrowCount = await contract.escrowCounter();
-      const count = Number(escrowCount);
-      const globalStaleTimeout = await contract.staleDisputeTimeout();
-      const staleTimeoutNumber = Number(globalStaleTimeout);
-      
-      const ownerAddr = await contract.owner();
-      const currentIsOwner = account && ownerAddr.toLowerCase() === account.toLowerCase();
-      setIsOwner(currentIsOwner);
-      
-      const loaded = [];
-      for (let i = 1; i <= count; i++) {
-        const e = await contract.getEscrowDetails(i);
-        // If wallet is connected, show only user's escrows (or all if owner). Otherwise, show public recent ones.
-        const isClient = account && e.client.toLowerCase() === account.toLowerCase();
-        const isProvider = account && e.provider.toLowerCase() === account.toLowerCase();
-        
-        if (!account || isClient || isProvider || currentIsOwner) {
-           const statusEnum = Number(e.status);
-           const isAccepted = Boolean(e.accepted);
-           
-           // Calculate Action Required
-           let actionRequired = null;
-           if (statusEnum === 1) { // FUNDED
-             if (!isAccepted && isProvider) {
-               actionRequired = "Action Required: Accept Job";
-             } else if (isAccepted && isClient) {
-               actionRequired = "Action Required: Release or Dispute";
-             } else if (isAccepted && isProvider && Number(e.timeoutDate) > 0 && (Date.now()/1000) > Number(e.timeoutDate)) {
-               actionRequired = "Action Required: Claim Timeout";
-             }
-           }
-           
-           let disputeOpenedAt = 0;
-           if (statusEnum === 3) { // DISPUTED
-             const openedAt = await contract.disputeOpenedAt(i);
-             disputeOpenedAt = Number(openedAt);
-           }
-
-           loaded.push({
-             id: i.toString(),
-             client: e.client,
-             provider: e.provider,
-             amount: ethers.formatEther(e.amount),
-             status: ['FUNDED', 'RELEASED', 'DISPUTED', 'RESOLVED', 'CANCELLED'][statusEnum - 1] || 'UNKNOWN',
-             tokenSymbol: e.sym || 'USDT',
-             actionRequired,
-             highlighted: highlightedId === i.toString(),
-             createdAt: Number(e.createdAt),
-             timeoutDate: Number(e.timeoutDate),
-             accepted: Boolean(e.accepted),
-             disputeOpenedAt,
-             staleDisputeTimeout: staleTimeoutNumber
-           });
-        }
-      }
-      
-      if (!account) {
-        loaded.reverse();
-        setEscrows(loaded.slice(0, 10)); // Show 10 latest publicly
-      } else {
-        // Sort: action required first, then disputed (for admin), then newest
-        loaded.sort((a, b) => {
-          if (a.actionRequired && !b.actionRequired) return -1;
-          if (!a.actionRequired && b.actionRequired) return 1;
-          if (a.status === 'DISPUTED' && b.status !== 'DISPUTED') return -1;
-          if (a.status !== 'DISPUTED' && b.status === 'DISPUTED') return 1;
-          return Number(b.id) - Number(a.id);
-        });
-        setEscrows(loaded);
-      }
-    } catch (err) {
-      console.error(err);
-    }
-    setLoading(false);
-  }, [account, provider, readProvider, highlightedId, niche.contractAddress]);
-
   useEffect(() => {
     if (readProvider || provider) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
-      fetchEscrows();
       fetchPending();
       fetchInvited();
     }
-  }, [fetchEscrows, fetchPending, fetchInvited, readProvider, provider, highlightedId]);
+  }, [fetchPending, fetchInvited, readProvider, provider, highlightedId]);
 
   const handleClaim = async (sym) => {
     if (!signer) return;
@@ -210,19 +124,14 @@ function DashboardContent() {
     }
   };
 
-  const activeEscrows = escrows.filter(e => e.status === 'FUNDED' || e.status === 'DISPUTED');
-  const activeCount = activeEscrows.length;
-  const totalSecured = activeEscrows.reduce((sum, e) => sum + Number(e.amount), 0);
-  const actionRequiredCount = activeEscrows.filter(e => e.actionRequired).length;
-
   return (
     <div className="dashboard">
       <header className="dashboard-header">
         <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
           <img src="/logo.svg" alt="JoobEscrow Logo" style={{ width: '48px', height: '48px' }} />
           <div>
-            <h1 className="text-gradient" style={{ backgroundImage: `linear-gradient(to right, ${niche.theme.primary}, #fff)` }}>Dashboard</h1>
-            <p className="subtitle">{niche.isDemo ? 'Test a real on-chain escrow with $1, between two of your wallets' : `Manage your ${niche.name} ${niche.lexicon.action.toLowerCase()}s & secure payments`}</p>
+            <h1 className="text-gradient" style={{ backgroundImage: `linear-gradient(to right, ${niche.theme.primary}, #fff)` }}>{niche.isDemo ? 'Demo' : 'Create an escrow'}</h1>
+            <p className="subtitle">{niche.isDemo ? 'Test a real on-chain escrow with $1, between two of your wallets' : `${niche.name}: secure payments between ${niche.lexicon.client.toLowerCase()} and ${niche.lexicon.provider.toLowerCase()}`}</p>
           </div>
         </div>
         <WalletConnect />
@@ -244,28 +153,8 @@ function DashboardContent() {
         </div>
       )}
 
-      {account && (
-        <div className="stats-grid">
-          <div className="stat-card">
-            <div className="stat-label"><span>💼</span><span className="label-long">Active Transactions</span><span className="label-short">Active</span></div>
-            <div className="stat-value">{activeCount}</div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-label"><span>💶</span><span className="label-long">Total Secured</span><span className="label-short">Secured</span></div>
-            <div className="stat-value">{totalSecured.toFixed(2)}<small>{niche.tokens ? 'USD' : 'USDT'}</small></div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-label"><span>⚠️</span><span className="label-long">Actions Required</span><span className="label-short">Actions</span></div>
-            <div className="stat-value warn">{actionRequiredCount}</div>
-          </div>
-        </div>
-      )}
-
       <div className="dashboard-controls" style={{ display: 'flex', flexWrap: 'wrap', gap: '15px', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div className="tabs" style={{ flex: '1 1 auto' }}>
-          <button className={`tab ${activeTab === 'active' ? 'active' : ''}`} onClick={() => setActiveTab('active')}>Active Contracts</button>
-          <button className={`tab ${activeTab === 'history' ? 'active' : ''}`} onClick={() => setActiveTab('history')}>History</button>
-        </div>
+        <Link href={`/${niche.slug}/all`} className="tab" style={{ flex: '1 1 auto', textDecoration: 'none' }}>Your escrows are in <strong style={{ color: '#bef264' }}>My escrows →</strong></Link>
         <div className="controls-right">
           {Object.entries(pending).filter(([, v]) => Number(v) > 0).map(([sym, v]) => (
             <div key={sym} className="claim-box">
@@ -317,16 +206,13 @@ function DashboardContent() {
             <h3 style={{ color: niche.theme.primary }}>📨 Escrow Invitation</h3>
             {banner}
             <div className="invite-card">
-              <EscrowCard escrow={invitedEscrow} isOwner={isOwner} onUpdate={() => { fetchInvited(); fetchEscrows(); fetchPending(); }} />
+              <EscrowCard escrow={invitedEscrow} isOwner={isOwner} onUpdate={() => { fetchInvited(); fetchPending(); }} />
             </div>
           </div>
         );
       })()}
 
-      {loading ? (
-        <p style={{color: 'var(--text-secondary)'}}>Loading blockchain data...</p>
-      ) : escrows.length === 0 ? (
-        <div className="glass-panel empty-panel" style={{ '--niche-primary': niche.theme.primary }}>
+      <div className="glass-panel empty-panel" style={{ '--niche-primary': niche.theme.primary }}>
            {account ? (
              <>
                <h2>How it works</h2>
@@ -346,7 +232,7 @@ function DashboardContent() {
                  ))}
                </div>
                <button className="btn btn-primary empty-cta" onClick={() => setShowModal(true)} style={{backgroundColor: niche.theme.primary, borderColor: niche.theme.primary}}>
-                 {niche.isDemo ? 'Start the demo with wallet A' : 'Create Your First Escrow'}
+                 {niche.isDemo ? 'Start the demo with wallet A' : 'Create an escrow'}
                </button>
              </>
            ) : (
@@ -360,17 +246,8 @@ function DashboardContent() {
              </div>
            )}
         </div>
-      ) : (
-        <div className="escrow-grid">
-          {escrows
-            .filter(escrow => !(invitedEscrow && escrow.id === invitedEscrow.id))
-            .map(escrow => (
-              <EscrowCard key={escrow.id} escrow={escrow} isOwner={isOwner} onUpdate={() => { fetchEscrows(); fetchPending(); }} />
-            ))}
-        </div>
-      )}
 
-      {showModal && <CreateEscrowModal onClose={() => setShowModal(false)} onSuccess={() => { fetchEscrows(); fetchPending(); }} />}
+      {showModal && <CreateEscrowModal onClose={() => setShowModal(false)} onSuccess={() => router.push(`/${niche.slug}/all`)} />}
     </div>
   );
 }

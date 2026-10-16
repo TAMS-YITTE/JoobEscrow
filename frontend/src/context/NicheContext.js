@@ -34,6 +34,11 @@ export function NicheProvider({ children }) {
   );
 }
 
+// Force une niche pour un sous-arbre (ex. « My escrows » : chaque carte sur son propre contrat).
+export function NicheScope({ niche, children }) {
+  return <NicheContext.Provider value={niche}>{children}</NicheContext.Provider>;
+}
+
 export function useNiche() {
   const context = useContext(NicheContext);
   if (!context) {

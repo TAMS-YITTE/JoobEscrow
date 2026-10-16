@@ -4,61 +4,65 @@ import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ethers } from 'ethers';
 import { useWeb3 } from '../../../../context/Web3Context';
+import { useNiche, NicheScope } from '../../../../context/NicheContext';
+import { useToast } from '../../../../context/ToastContext';
 import { allInstances } from '../../../../config/instances';
-import { ESCROW_ABI } from '../../../../config/contract';
-import { readEscrowReference } from '../../../../lib/escrowReference';
+import { ESCROW_ABI, TOKEN_ADDRESSES } from '../../../../config/contract';
+import { loadMyEscrows } from '../../../../lib/myEscrows';
+import EscrowCard from '../../../../components/EscrowCard';
+import WalletConnect from '../../../../components/WalletConnect';
+import '../page.css';
 
-// Tous les escrows du wallet connecte, sur tous les contrats (un par niveau de frais + demo).
-// Plusieurs categories partagent un contrat : on affiche la categorie principale de chaque contrat.
+// Un contrat par niveau de frais (+ demo) ; plusieurs categories partagent un contrat.
+// Chaque escrow est affiche une seule fois, avec la categorie principale de son contrat.
 const CONTRACTS = Object.values(allInstances).reduce((acc, n) => {
-  if (!acc.some((c) => c.address.toLowerCase() === n.contractAddress.toLowerCase())) {
-    acc.push({ address: n.contractAddress, slug: n.slug, name: n.name, fee: n.feeTier });
-  }
+  if (!acc.some((c) => c.contractAddress.toLowerCase() === n.contractAddress.toLowerCase())) acc.push(n);
   return acc;
 }, []);
 
-const STATUS = { 1: 'Funded', 2: 'Paid', 3: 'In dispute', 4: 'Dispute settled', 5: 'Cancelled' };
+const FILTERS = [
+  { key: 'action', label: 'Action required', test: (e) => Boolean(e.actionRequired) },
+  { key: 'active', label: 'Active', test: (e) => e.status === 'FUNDED' || e.status === 'DISPUTED' },
+  { key: 'disputes', label: 'Disputes', test: (e) => e.status === 'DISPUTED' },
+  { key: 'history', label: 'History', test: (e) => !['FUNDED', 'DISPUTED'].includes(e.status) },
+  { key: 'all', label: 'All', test: () => true },
+];
 
-function Reference({ provider, contract, id, createdAt }) {
-  const [ref, setRef] = useState(null);
-  useEffect(() => {
-    let cancelled = false;
-    readEscrowReference(provider, contract, id, createdAt).then((r) => { if (!cancelled) setRef(r); }).catch(() => {});
-    return () => { cancelled = true; };
-  }, [provider, contract, id, createdAt]);
-  return ref ? <span style={{ color: '#bef264', fontSize: '0.8rem' }}>{ref}</span> : null;
-}
-
-export default function AllEscrowsPage() {
-  const { account, readProvider } = useWeb3();
+export default function MyEscrowsPage() {
+  const { account, signer, readProvider, ensureCorrectChain } = useWeb3();
+  const niche = useNiche();
+  const { showToast } = useToast();
   const [rows, setRows] = useState(null);
+  const [pending, setPending] = useState([]);
+  const [filter, setFilter] = useState('active');
   const [error, setError] = useState(null);
 
   const load = useCallback(async () => {
     if (!account || !readProvider) return;
     setError(null);
     try {
-      const me = account.toLowerCase();
       const found = [];
-      for (const c of CONTRACTS) {
-        const contract = new ethers.Contract(c.address, ESCROW_ABI, readProvider);
-        const count = Number(await contract.escrowCounter());
-        for (let i = 1; i <= count; i++) {
-          const e = await contract.getEscrowDetails(i);
-          const isClient = e.client.toLowerCase() === me;
-          const isProvider = e.provider.toLowerCase() === me;
-          if (!isClient && !isProvider) continue;
-          found.push({
-            key: `${c.address}-${i}`, id: i, contract: c, role: isClient ? 'Client' : 'Provider',
-            amount: Number(ethers.formatUnits(e.amount, 18)), status: Number(e.status), accepted: Boolean(e.accepted),
-            createdAt: e.createdAt,
-          });
+      const toClaim = [];
+      for (const n of CONTRACTS) {
+        const list = await loadMyEscrows(n.contractAddress, readProvider, account);
+        list.forEach((e) => found.push({ ...e, niche: n, key: `${n.contractAddress}-${e.id}` }));
+        const contract = new ethers.Contract(n.contractAddress, ESCROW_ABI, readProvider);
+        for (const sym of n.tokens || ['USDT']) {
+          const amount = await contract.withdrawable(account, TOKEN_ADDRESSES[sym]);
+          if (amount > 0n) toClaim.push({ niche: n, sym, amount: ethers.formatEther(amount) });
         }
       }
-      found.sort((a, b) => Number(b.createdAt) - Number(a.createdAt));
+      found.sort((a, b) => {
+        if (a.actionRequired && !b.actionRequired) return -1;
+        if (!a.actionRequired && b.actionRequired) return 1;
+        return b.createdAt - a.createdAt;
+      });
       setRows(found);
+      setPending(toClaim);
+      // Premier affichage : « Action required » s'il y en a, sinon « Active », sinon tout.
+      setFilter((f) => (f !== 'active' ? f : found.some((e) => e.actionRequired) ? 'action' : found.some(FILTERS[1].test) ? 'active' : 'all'));
     } catch (err) {
-      console.error('[All escrows]', err);
+      console.error('[My escrows]', err);
       setError('Could not load your escrows right now. Please try again.');
     }
   }, [account, readProvider]);
@@ -68,33 +72,98 @@ export default function AllEscrowsPage() {
     return () => clearTimeout(t);
   }, [load]);
 
+  const claim = async ({ niche: n, sym }) => {
+    if (!signer) return;
+    try {
+      await ensureCorrectChain();
+      const contract = new ethers.Contract(n.contractAddress, ESCROW_ABI, signer);
+      const tx = await contract.withdraw(TOKEN_ADDRESSES[sym]);
+      showToast('success', 'Withdrawal transaction sent!');
+      await tx.wait();
+      showToast('success', 'Withdrawal successful!');
+      load();
+    } catch (err) {
+      console.error(err);
+      showToast('error', 'Withdrawal failed: ' + err.message);
+    }
+  };
+
+  const active = (rows || []).filter(FILTERS[1].test);
+  const secured = active.reduce((s, e) => s + Number(e.amount), 0);
+  const actions = (rows || []).filter(FILTERS[0].test).length;
+  const current = FILTERS.find((f) => f.key === filter) || FILTERS[4];
+  const shown = (rows || []).filter(current.test);
+
   return (
-    <div style={{ maxWidth: 900 }}>
-      <h1 className="text-gradient" style={{ fontSize: '1.8rem', marginBottom: 6 }}>All my escrows</h1>
-      <p style={{ color: 'var(--text-secondary)', marginBottom: 20 }}>Every escrow where you are the client or the provider, across all categories.</p>
-
-      {error && <p style={{ color: '#fca5a5' }}>{error}</p>}
-      {!error && rows === null && <p style={{ color: 'var(--text-secondary)' }}>Loading your escrows…</p>}
-      {rows && rows.length === 0 && <p style={{ color: 'var(--text-secondary)' }}>No escrow yet for this wallet.</p>}
-
-      {rows && rows.length > 0 && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-          {rows.map((r) => (
-            <div key={r.key} className="glass-panel" style={{ padding: '14px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 2, minWidth: 0 }}>
-                <span style={{ color: '#fff', fontWeight: 700 }}>{r.contract.name} #{r.id} <span style={{ color: 'var(--text-secondary)', fontWeight: 500, fontSize: '0.8rem' }}>· {r.contract.fee}% · {r.role}</span></span>
-                <Reference provider={readProvider} contract={r.contract.address} id={String(r.id)} createdAt={r.createdAt} />
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
-                <span style={{ fontFamily: 'ui-monospace, monospace', color: '#f8fafc' }}>{r.amount.toLocaleString('en-US', { maximumFractionDigits: 2 })} USDT</span>
-                <span style={{ fontSize: '0.8rem', padding: '3px 10px', borderRadius: 999, border: '1px solid var(--border-color)', color: r.status === 1 ? '#bef264' : '#cbd5e1' }}>
-                  {r.status === 1 && r.accepted ? 'In progress' : STATUS[r.status] ?? 'Unknown'}
-                </span>
-                <Link href={`/${r.contract.slug}?escrow=${r.id}`} className="btn btn-primary" style={{ padding: '6px 14px', fontSize: '0.85rem' }}>Open</Link>
-              </div>
-            </div>
-          ))}
+    <div className="dashboard">
+      <header className="dashboard-header">
+        <div>
+          <h1 className="text-gradient">My escrows</h1>
+          <p className="subtitle">Every escrow where you are the client or the provider, across all categories.</p>
         </div>
+        <WalletConnect />
+      </header>
+
+      {!account && <p style={{ color: 'var(--text-secondary)' }}>Connect your wallet to see your escrows.</p>}
+      {error && <p style={{ color: '#fca5a5' }}>{error}</p>}
+      {account && !error && rows === null && <p style={{ color: 'var(--text-secondary)' }}>Loading your escrows from the blockchain…</p>}
+
+      {rows && (
+        <>
+          <div className="stats-grid">
+            <div className="stat-card">
+              <div className="stat-label"><span>💼</span><span className="label-long">Active escrows</span><span className="label-short">Active</span></div>
+              <div className="stat-value">{active.length}</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-label"><span>💶</span><span className="label-long">Total secured</span><span className="label-short">Secured</span></div>
+              <div className="stat-value">{secured.toFixed(2)}<small>USD</small></div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-label"><span>⚠️</span><span className="label-long">Actions required</span><span className="label-short">Actions</span></div>
+              <div className="stat-value warn">{actions}</div>
+            </div>
+          </div>
+
+          {pending.length > 0 && (
+            <div className="controls-right" style={{ marginBottom: 20, justifyContent: 'flex-start' }}>
+              {pending.map((p) => (
+                <div key={`${p.niche.contractAddress}-${p.sym}`} className="claim-box">
+                  <span>ℹ️ Funds available to withdraw{p.niche.isDemo ? ' (demo)' : ''}</span>
+                  <button className="btn btn-primary" onClick={() => claim(p)}>Claim {p.amount} {p.sym}</button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <div className="dashboard-controls" style={{ flexWrap: 'wrap', gap: 15 }}>
+            <div className="tabs" style={{ flexWrap: 'wrap', gap: '8px 20px' }}>
+              {FILTERS.map((f) => (
+                <button key={f.key} className={`tab ${filter === f.key ? 'active' : ''}`} onClick={() => setFilter(f.key)}>
+                  {f.label} ({rows.filter(f.test).length})
+                </button>
+              ))}
+            </div>
+            <Link href={`/${niche.slug}`} className="btn btn-primary">+ Create escrow</Link>
+          </div>
+
+          {shown.length === 0 ? (
+            <p style={{ color: 'var(--text-secondary)' }}>{rows.length === 0 ? 'No escrow yet for this wallet.' : 'Nothing here.'}</p>
+          ) : (
+            <div className="escrow-grid">
+              {shown.map((e) => (
+                <div key={e.key}>
+                  <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', margin: '0 0 6px 4px' }}>
+                    {e.niche.isDemo ? 'Demo · 0% fee' : `${e.niche.feeTier}% fee`} · you are the {e.role}
+                  </p>
+                  <NicheScope niche={e.niche}>
+                    <EscrowCard escrow={e} onUpdate={load} />
+                  </NicheScope>
+                </div>
+              ))}
+            </div>
+          )}
+        </>
       )}
     </div>
   );

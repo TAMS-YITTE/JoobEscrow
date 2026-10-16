@@ -12,9 +12,7 @@ export default function Sidebar() {
   const niche = useNiche();
 
   const menuItems = [
-    { name: 'Overview', path: `/${niche.slug}` },
-    { name: 'Contracts', path: `/${niche.slug}/contracts` },
-    { name: 'Disputes', path: `/${niche.slug}/disputes` },
+    { name: 'Create', path: `/${niche.slug}` },
   ];
   const generalItems = [
     { name: "What's next", path: `/${niche.slug}/whats-next`, badge: 'NEW' },
