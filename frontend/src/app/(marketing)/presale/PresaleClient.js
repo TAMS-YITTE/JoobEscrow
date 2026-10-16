@@ -166,6 +166,66 @@ function usePresale(account, readProvider) {
   return { config, global, user, loadError, refreshAll };
 }
 
+// Consultation d'une allocation sans connecter de wallet : lecture seule sur le contrat.
+function AllocationLookup({ readProvider, td, pd }) {
+  const [addr, setAddr] = useState('');
+  const [result, setResult] = useState(null);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const lookup = async (e) => {
+    e.preventDefault();
+    const v = addr.trim();
+    setResult(null);
+    if (!ethers.isAddress(v)) { setError('Paste a valid 0x… wallet address.'); return; }
+    setError(null);
+    setLoading(true);
+    try {
+      const c = new ethers.Contract(PRESALE_ADDRESSES.PRESALE, PRESALE_ABI, readProvider);
+      const a = ethers.getAddress(v);
+      const [allocation, purchased, volumeBonus, cUSDC, cUSDT, claimed] = await Promise.all([
+        c.allocations(a), c.purchasedTokens(a), c.volumeBonusPaid(a), c.contributionsUSDC(a), c.contributionsUSDT(a), c.claimed(a),
+      ]);
+      setResult({ address: a, allocation, purchased, volumeBonus, referral: allocation - purchased - volumeBonus, contribution: cUSDC + cUSDT, claimed });
+    } catch (err) {
+      console.error('[Presale] lookup:', err);
+      setError('Could not read the contract right now. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className={styles.lookup}>
+      <div className={styles.lookupTitle}>Check an allocation <span>· no wallet needed</span></div>
+      <form onSubmit={lookup} className={styles.lookupForm}>
+        <input value={addr} onChange={(e) => setAddr(e.target.value)} placeholder="0x… wallet address" className={styles.lookupInput} spellCheck={false} autoComplete="off" />
+        <button type="submit" className={styles.lookupBtn} disabled={loading}>{loading ? '…' : 'Check'}</button>
+      </form>
+      {error && <p className={styles.lookupError}>{error}</p>}
+      {result && (
+        <div className={styles.lookupResult}>
+          <a href={`${BSCSCAN}/address/${result.address}`} target="_blank" rel="noopener noreferrer" className={styles.walletAddr}>
+            {result.address.slice(0, 6)}…{result.address.slice(-4)} ↗
+          </a>
+          {result.allocation === 0n ? (
+            <p className={styles.lookupEmpty}>No JOOB allocated to this address yet.</p>
+          ) : (
+            <ul className={styles.lookupList}>
+              <li><span>Total JOOB</span><b>{fmtToken(result.allocation, td)}</b></li>
+              <li><span>Purchased</span><b>{fmtToken(result.purchased, td)}</b></li>
+              <li><span>Volume bonus</span><b>{fmtToken(result.volumeBonus, td)}</b></li>
+              <li><span>Referral rewards</span><b>{fmtToken(result.referral > 0n ? result.referral : 0n, td)}</b></li>
+              <li><span>Contributed</span><b>${fmtUsd(result.contribution, pd, 2)}</b></li>
+              <li><span>Claimed</span><b>{fmtToken(result.claimed, td)}</b></li>
+            </ul>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function Feedback({ status, step, success, error }) {
   if (status === 'loading' && step) return <div className={`${styles.feedback} ${styles.feedbackInfo}`}>{step}</div>;
   if (status === 'success' && success) return <div className={`${styles.feedback} ${styles.feedbackOk}`}>{success}</div>;
@@ -779,6 +839,7 @@ export default function PresaleClient() {
                   Claims open at sale end ({fmtDate(global.endTime)}): {Number(config.tgeBps) / 100}% instantly, then 180-day linear vesting.
                 </p>
               )}
+              <AllocationLookup readProvider={readProvider} td={td} pd={pd} />
             </div>
           )}
 
