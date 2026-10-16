@@ -140,7 +140,7 @@ export function Web3Provider({ children }) {
   };
 
   return (
-    <Web3Context.Provider value={{ account, provider, signer, readProvider, balance, error, isTestnet, connectWallet, ensureCorrectChain }}>
+    <Web3Context.Provider value={{ account, provider, signer, readProvider, balance, error, isTestnet, connectWallet, ensureCorrectChain, chainId: chainId ? Number(String(chainId).split(':').pop()) : null }}>
       {children}
     </Web3Context.Provider>
   );

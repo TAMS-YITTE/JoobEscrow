@@ -105,11 +105,7 @@ export default function Sidebar() {
         <Link href="/" className="sidebar-back">← Back to joobescrow.com</Link>
 
         <div className="sidebar-footer">
-          <p className="status-text">
-            <span className="status-dot green" aria-hidden="true"></span>
-            Network: BSC Mainnet
-          </p>
-          <Link href="/terms" style={{ display: 'block', marginTop: '10px', fontSize: '0.8rem', color: 'var(--app-text-secondary, #9CA8A1)', textDecoration: 'none' }}>
+          <Link href="/terms" style={{ display: 'block', fontSize: '0.78rem', color: 'var(--app-text-muted, #627067)', textDecoration: 'none' }}>
             TOS &amp; Security
           </Link>
         </div>
@@ -132,6 +128,9 @@ export default function Sidebar() {
             </Link>
             <Link href="/" className="mobile-more-link" onClick={() => setMoreOpen(false)}>
               <span>← Back to website</span>
+            </Link>
+            <Link href="/terms" className="mobile-more-link" onClick={() => setMoreOpen(false)}>
+              <span>TOS &amp; Security</span>
             </Link>
           </div>
         </div>

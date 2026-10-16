@@ -7,7 +7,9 @@ import { useWeb3 } from '../context/Web3Context';
 const PUBLIC_PATH = /^\/([^/]+\/(kol\/[^/]+|whats-next)|app)\/?$/;
 
 export default function AppGuard({ children }) {
-  const { account, error, isTestnet, connectWallet } = useWeb3();
+  const { account, error, isTestnet, connectWallet, chainId, ensureCorrectChain } = useWeb3();
+  // Alerte uniquement si le wallet connecte est sur une autre chaine que BNB Smart Chain (56).
+  const wrongNetwork = Boolean(account) && chainId !== null && chainId !== 56 && !isTestnet;
   const isPublic = PUBLIC_PATH.test(usePathname() || '');
 
   return (
@@ -15,6 +17,12 @@ export default function AppGuard({ children }) {
       {isTestnet && (
         <div style={{ background: '#ef4444', color: '#fff', padding: '10px', textAlign: 'center', fontWeight: 'bold' }}>
           You are on BSC Testnet. Funds used are not real.
+        </div>
+      )}
+      {wrongNetwork && (
+        <div className="network-alert" role="alert">
+          <span>Wrong network: your wallet is not on BNB Smart Chain.</span>
+          <button type="button" onClick={() => ensureCorrectChain().catch(() => {})}>Switch to BNB Smart Chain</button>
         </div>
       )}
       {error && (

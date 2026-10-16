@@ -395,3 +395,15 @@ h1, h2, h3 {
     scroll-behavior: auto !important;
   }
 }
+
+/* Alerte « mauvais reseau » de l'app (affichee seulement si le wallet n'est pas sur BNB Smart Chain). */
+.network-alert {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;
+  margin-bottom: 16px; padding: 10px 14px; border-radius: 8px;
+  border: 1px solid rgba(234, 179, 8, 0.45); background: rgba(234, 179, 8, 0.1);
+  color: #fde047; font-size: 0.875rem; font-weight: 500;
+}
+.network-alert button {
+  border: none; cursor: pointer; padding: 6px 12px; border-radius: 999px;
+  background: #eab308; color: #0d1117; font-weight: 700; font-size: 0.8rem;
+}
