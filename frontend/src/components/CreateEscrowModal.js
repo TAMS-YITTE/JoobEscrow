@@ -228,16 +228,20 @@ export default function CreateEscrowModal({ onClose, onSuccess, prefilledProvide
                 <span>Amount to lock</span>
                 <strong>{numAmount.toFixed(2)} {tokenSym}</strong>
               </div>
-              <div className="create-summary-row">
-                <span>Provider fee ({feePct}%)</span>
-                <strong>-{feeAmount.toFixed(2)} {tokenSym}</strong>
-              </div>
+              {feePct > 0 && (
+                <div className="create-summary-row">
+                  <span>Provider fee ({feePct}%)</span>
+                  <strong>-{feeAmount.toFixed(2)} {tokenSym}</strong>
+                </div>
+              )}
               <div className="create-summary-row is-net">
-                <span>Provider receives {providerReceives.toFixed(2)} {tokenSym} (on standard release)</span>
+                <span>Provider receives (on standard release)</span>
                 <strong>{providerReceives.toFixed(2)} {tokenSym}</strong>
               </div>
               <div className="create-summary-note">
-                0% fee for the client. In case of a dispute, the {feePct}% fee applies to the share awarded to the provider.
+                {feePct === 0
+                  ? '0% fee for the client and the provider (demo)'
+                  : `0% fee for the client. In case of a dispute, the ${feePct}% fee applies to the share awarded to the provider.`}
               </div>
             </div>
           )}
