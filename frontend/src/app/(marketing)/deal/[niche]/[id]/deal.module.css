@@ -1,0 +1,19 @@
+/* Page publique d'un escrow (lecture seule). */
+.page { max-width: 640px; margin: 0 auto; padding: 48px 16px 72px; }
+.card { padding: 26px 24px; border-radius: 20px; background: rgba(17, 24, 31, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); backdrop-filter: blur(10px); }
+.badge { display: inline-block; padding: 5px 12px; border-radius: 999px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: #bef264; background: rgba(163, 230, 53, 0.08); border: 1px solid rgba(163, 230, 53, 0.35); }
+.title { font-size: clamp(1.6rem, 5vw, 2.1rem); font-weight: 800; color: #fff; margin: 14px 0 6px; }
+.muted { color: var(--text-secondary); font-size: 0.92rem; margin: 0 0 14px; }
+.status { display: inline-block; margin: 8px 0 10px; padding: 6px 14px; border-radius: 999px; font-size: 0.85rem; font-weight: 700; }
+.ok { color: #bef264; background: rgba(163, 230, 53, 0.1); border: 1px solid rgba(163, 230, 53, 0.4); }
+.done { color: #e2e8f0; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.15); }
+.warn { color: #facc15; background: rgba(250, 204, 21, 0.08); border: 1px solid rgba(250, 204, 21, 0.4); }
+.amount { font-size: 2.2rem; font-weight: 800; color: #fff; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+.amount span { font-size: 1.1rem; color: #a3e635; }
+.note { color: #cbd5e1; font-size: 0.9rem; line-height: 1.6; margin: 8px 0 16px; }
+.rows { list-style: none; margin: 0 0 20px; padding: 0; border-top: 1px solid rgba(255, 255, 255, 0.07); }
+.rows li { display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05); font-size: 0.88rem; color: #94a3b8; }
+.rows b, .rows a { color: #f8fafc; font-weight: 600; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; text-align: right; overflow-wrap: anywhere; }
+.rows a:hover { color: #bef264; }
+.cta { width: 100%; }
+.fine { text-align: center; color: #64748b; font-size: 0.82rem; margin-top: 16px; }
