@@ -258,6 +258,17 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate })
               View Contract on BscScan
             </a>
           )}
+          <button
+            type="button"
+            className="text-xs text-gray-500 hover:text-white underline"
+            style={{ marginTop: '4px', background: 'none', border: 'none', padding: 0, cursor: 'pointer', textAlign: 'left' }}
+            onClick={() => {
+              navigator.clipboard.writeText(`${window.location.origin}/deal/${niche.slug}/${escrow.id.toString()}`);
+              showToast('success', 'Deal link copied: viewable without a wallet');
+            }}
+          >
+            Copy deal link
+          </button>
         </div>
         {getStatusBadge()}
       </div>
