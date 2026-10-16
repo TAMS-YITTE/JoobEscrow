@@ -211,6 +211,15 @@ h1, h2, h3 {
   text-align: center;
 }
 
+@media (max-width: 640px) {
+  .hub-container {
+    padding: 16px 12px;
+  }
+  .hub-title {
+    font-size: 2.1rem !important;
+  }
+}
+
 .hub-title {
   font-size: 3rem;
   margin-bottom: 10px;
@@ -229,7 +238,7 @@ h1, h2, h3 {
 
 .featured-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
   gap: 20px;
   max-width: 1000px;
   margin: 0 auto;
@@ -276,7 +285,7 @@ h1, h2, h3 {
 
 .specialized-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
   gap: 15px;
   max-width: 1200px;
   margin: 0 auto;
