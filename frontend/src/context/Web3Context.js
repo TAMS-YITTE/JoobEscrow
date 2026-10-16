@@ -50,6 +50,10 @@ createAppKit({
 
 const Web3Context = createContext();
 
+// Reseau de nos contrats (escrow, presale) : BNB Smart Chain.
+const BSC_CHAIN_ID = 56;
+const BSC_CHAIN_ID_HEX = '0x38';
+
 export function Web3Provider({ children }) {
   const [account, setAccount] = useState(null);
   const [provider, setProvider] = useState(null);
@@ -110,9 +114,20 @@ export function Web3Provider({ children }) {
     syncConnection();
   }, [isConnected, walletProvider, address, chainId]);
 
+  // Avant toute ecriture sur l'escrow ou la presale : le wallet doit etre sur BNB Smart Chain.
+  // Depuis l'ajout des reseaux LI.FI, un wallet reste souvent sur Arbitrum/Base apres un achat
+  // cross-chain ; une transaction partirait alors sur ce reseau, ou nos contrats n'existent pas.
   const ensureCorrectChain = async () => {
-    // Reown AppKit handles network selection. We simply return true here so existing
-    // logic in the app doesn't break. If needed, users switch via the AppKit modal.
+    if (!walletProvider) throw new Error('Connect your wallet first.');
+    const current = parseInt(await walletProvider.request({ method: 'eth_chainId' }), 16);
+    if (current === BSC_CHAIN_ID) return true;
+    try {
+      await walletProvider.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: BSC_CHAIN_ID_HEX }] });
+    } catch (err) {
+      console.error('Network switch failed:', err);
+    }
+    const after = parseInt(await walletProvider.request({ method: 'eth_chainId' }), 16);
+    if (after !== BSC_CHAIN_ID) throw new Error('Please switch your wallet to BNB Smart Chain, then try again.');
     return true;
   };
 

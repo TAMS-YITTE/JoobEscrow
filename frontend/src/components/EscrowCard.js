@@ -9,13 +9,24 @@ import { useToast } from '../context/ToastContext';
 import { track } from '@vercel/analytics';
 import dynamic from 'next/dynamic';
 import './EscrowCard.css';
+import { readEscrowReference } from '../lib/escrowReference';
 
 const ChatBox = dynamic(() => import('./ChatBox'), { ssr: false });
 
 export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate }) {
-  const { account } = useWeb3();
+  const { account, readProvider, ensureCorrectChain } = useWeb3();
   const contract = useEscrowContract();
   const niche = useNiche();
+  // Reference gravee dans la transaction de creation (si le client en a saisi une).
+  const [reference, setReference] = useState(null);
+  useEffect(() => {
+    if (!readProvider || !niche?.contractAddress || !escrow?.createdAt) return;
+    let cancelled = false;
+    readEscrowReference(readProvider, niche.contractAddress, escrow.id.toString(), escrow.createdAt)
+      .then((r) => { if (!cancelled) setReference(r); })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, [readProvider, niche?.contractAddress, escrow?.id, escrow?.createdAt]);
   const [loading, setLoading] = useState(false);
   const [showChat, setShowChat] = useState(false);
   const [showResolveModal, setShowResolveModal] = useState(false);
@@ -54,6 +65,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate })
     if (!contract) return;
     setLoading(true);
     try {
+      await ensureCorrectChain();
       const tx = await contract.acceptEscrow(escrow.id);
       await tx.wait();
       showToast('success', "Escrow accepted!");
@@ -84,6 +96,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate })
     if (!contract) return;
     setLoading(true);
     try {
+      await ensureCorrectChain();
       const tx = await contract.releaseFunds(escrow.id);
       await tx.wait();
       showToast('success', "Funds released!");
@@ -109,6 +122,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate })
     if (!contract) return;
     setLoading(true);
     try {
+      await ensureCorrectChain();
       const tx = await contract.openDispute(escrow.id, ethers.ZeroHash);
       await tx.wait();
       showToast('success', "Dispute opened!");
@@ -127,6 +141,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate })
     if (!contract) return;
     setLoading(true);
     try {
+      await ensureCorrectChain();
       const tx = await contract.resolveStaleDispute(escrow.id);
       await tx.wait();
       showToast('success', "Stale dispute resolved 50/50!");
@@ -159,6 +174,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate })
     
     setLoading(true);
     try {
+      await ensureCorrectChain();
       const tx = await contract.resolveDispute(escrow.id, providerBps);
       await tx.wait();
       showToast('success', `Dispute resolved! ${niche.lexicon.provider} will receive ${resolvePercent}% and ${niche.lexicon.client} will get back ${100 - resolvePercent}%.`);
@@ -185,6 +201,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate })
     if (!contract) return;
     setLoading(true);
     try {
+      await ensureCorrectChain();
       const tx = await contract.claimTimeout(escrow.id);
       await tx.wait();
       showToast('success', "Timeout claimed!");
@@ -210,6 +227,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate })
     if (!contract) return;
     setLoading(true);
     try {
+      await ensureCorrectChain();
       const tx = await contract.cancelEscrow(escrow.id);
       await tx.wait();
       showToast('success', "Escrow cancelled!");
@@ -253,6 +271,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate })
       <div className="escrow-header">
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <h3>Escrow #{escrow.id.toString()}</h3>
+          {reference && <span className="text-xs" style={{ color: '#bef264', marginTop: '2px' }}>{reference}</span>}
           {getExplorerLink() && (
             <a href={getExplorerLink()} target="_blank" rel="noreferrer" className="text-xs text-gray-500 hover:text-white underline" style={{ marginTop: '4px' }}>
               View Contract on BscScan

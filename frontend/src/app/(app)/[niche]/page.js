@@ -22,7 +22,7 @@ const DEMO_STEPS = [
 ];
 
 function DashboardContent() {
-  const { account, provider, signer, readProvider } = useWeb3();
+  const { account, provider, signer, readProvider, ensureCorrectChain } = useWeb3();
   const niche = useNiche();
   const { showToast } = useToast();
   const { open } = useAppKit();
@@ -197,6 +197,7 @@ function DashboardContent() {
   const handleClaim = async (sym) => {
     if (!signer) return;
     try {
+      await ensureCorrectChain();
       const contract = new ethers.Contract(niche.contractAddress, ESCROW_ABI, signer);
       const tx = await contract.withdraw(TOKEN_ADDRESSES[sym]);
       showToast('success', 'Withdrawal transaction sent!');
