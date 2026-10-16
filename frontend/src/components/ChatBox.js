@@ -136,7 +136,10 @@ export default function ChatBox({ peerAddress }) {
       await initialize(signer);
     } catch (err) {
       console.error("Failed to initialize XMTP V3:", err);
-      setError("Signature rejected or failed. You must sign to use chat.");
+      // Message reel affiche (en plus de la console) pour diagnostiquer sans outils de dev.
+      const detail = String(err?.message || err || '').slice(0, 160);
+      const rejected = /reject|denied|cancel/i.test(detail);
+      setError(rejected ? "Signature rejected. You must sign to use chat." : `Chat could not start: ${detail || 'unknown error'}`);
     }
   };
 
