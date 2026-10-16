@@ -10,6 +10,7 @@ import { track } from '@vercel/analytics';
 import dynamic from 'next/dynamic';
 import './EscrowCard.css';
 import { readEscrowReference } from '../lib/escrowReference';
+import { isUserRejection } from '../lib/walletErrors';
 
 const ChatBox = dynamic(() => import('./ChatBox'), { ssr: false });
 
@@ -138,7 +139,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
     } catch (err) {
       console.error(err);
       const reason = err.reason || err.data?.message || err.message || "Unknown error";
-      if (!reason.includes("user rejected") && !reason.includes("User denied")) {
+      if (!isUserRejection(err)) {
         showToast('error', `Failed to accept: ${reason}`);
       }
     }
@@ -171,7 +172,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
     } catch (err) {
       console.error(err);
       const reason = err.reason || err.data?.message || err.message || "Unknown error";
-      if (!reason.includes("user rejected") && !reason.includes("User denied")) {
+      if (!isUserRejection(err)) {
         showToast('error', `Failed to release: ${reason}`);
       }
     }
@@ -195,7 +196,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
     } catch (err) {
       console.error(err);
       const reason = err.reason || err.data?.message || err.message || "Unknown error";
-      if (!reason.includes("user rejected") && !reason.includes("User denied")) {
+      if (!isUserRejection(err)) {
         showToast('error', `Failed to open dispute: ${reason}`);
       }
     }
@@ -221,7 +222,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
     } catch (err) {
       console.error(err);
       const reason = err.reason || err.data?.message || err.message || "Unknown error";
-      if (!reason.includes("user rejected") && !reason.includes("User denied")) {
+      if (!isUserRejection(err)) {
         showToast('error', `Failed to resolve: ${reason}`);
       }
     }
@@ -253,7 +254,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
     } catch (err) {
       console.error(err);
       const reason = err.reason || err.data?.message || err.message || "Unknown error";
-      if (!reason.includes("user rejected") && !reason.includes("User denied")) {
+      if (!isUserRejection(err)) {
         showToast('error', `Failed to resolve: ${reason}`);
       }
     }
@@ -279,7 +280,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
     } catch (err) {
       console.error(err);
       const reason = err.reason || err.data?.message || err.message || "Unknown error";
-      if (!reason.includes("user rejected") && !reason.includes("User denied")) {
+      if (!isUserRejection(err)) {
         showToast('error', `Failed to claim timeout: ${reason}`);
       }
     }
@@ -298,7 +299,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
     } catch (err) {
       console.error(err);
       const reason = err.reason || err.data?.message || err.message || "Unknown error";
-      if (!reason.includes("user rejected") && !reason.includes("User denied")) {
+      if (!isUserRejection(err)) {
         showToast('error', `Failed to cancel: ${reason}`);
       }
     }
@@ -525,7 +526,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
             </button>
           )}
 
-          {isDisputed && isDisputeView && escrow.disputeOpenedAt > 0 && nowSec > (escrow.disputeOpenedAt + escrow.staleDisputeTimeout) && (
+          {isDisputed && isDisputeView && (isClient || isProvider) && escrow.disputeOpenedAt > 0 && nowSec > (escrow.disputeOpenedAt + escrow.staleDisputeTimeout) && (
             <button className="btn btn-app-danger" onClick={() => setConfirmAction('stale')} disabled={loading}>
               {loading ? 'Processing...' : 'Force 50/50'}
             </button>
@@ -556,7 +557,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
         </div>
       </div>
 
-      {isDisputed && isDisputeView && escrow.disputeOpenedAt > 0 && !(nowSec > (escrow.disputeOpenedAt + escrow.staleDisputeTimeout)) && (
+      {isDisputed && isDisputeView && (isClient || isProvider) && escrow.disputeOpenedAt > 0 && !(nowSec > (escrow.disputeOpenedAt + escrow.staleDisputeTimeout)) && (
         <div className="escrow-stale-note">
           Force 50/50 resolution available after: {new Date((escrow.disputeOpenedAt + escrow.staleDisputeTimeout) * 1000).toLocaleString()}
         </div>

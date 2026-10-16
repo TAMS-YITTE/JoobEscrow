@@ -45,7 +45,7 @@ export function ToastProvider({ children }) {
             }}
           >
             <span style={{ fontSize: '18px', lineHeight: 1.2, color: toast.type === 'success' ? '#22c55e' : '#ef4444' }}>
-              {toast.type === 'success' ? '✓' : '⚠️'}
+              {toast.type === 'success' ? '✓' : '!'}
             </span>
             <span style={{ fontSize: '0.875rem', color: '#e5e7eb', lineHeight: 1.4 }}>
               {toast.message}

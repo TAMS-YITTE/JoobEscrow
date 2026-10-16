@@ -12,6 +12,7 @@ import { useToast } from '../../../context/ToastContext';
 import { useAppKit } from '@reown/appkit/react';
 import { ethers } from 'ethers';
 import { TOKEN_ADDRESSES, ERC20_ABI, ESCROW_ABI } from '../../../config/contract';
+import { isUserRejection } from '../../../lib/walletErrors';
 import './page.css';
 
 const DEMO_STEPS = [
@@ -125,7 +126,7 @@ function DashboardContent() {
       fetchPending();
     } catch (err) {
       console.error(err);
-      showToast('error', 'Withdrawal failed: ' + err.message);
+      if (!isUserRejection(err)) showToast('error', 'Withdrawal failed: ' + (err.shortMessage || err.message));
     }
   };
 
@@ -219,7 +220,7 @@ function DashboardContent() {
             <h3 style={{ color: '#a3e635' }}>Escrow Invitation</h3>
             {banner}
             <div className="invite-card">
-              <EscrowCard escrow={invitedEscrow} isOwner={isOwner} defaultExpanded={true} onUpdate={() => { fetchInvited(); fetchPending(); }} />
+              <EscrowCard escrow={invitedEscrow} isOwner={isOwner} isDisputeView={invitedEscrow.status === 'DISPUTED'} defaultExpanded={true} onUpdate={() => { fetchInvited(); fetchPending(); }} />
             </div>
           </div>
         );

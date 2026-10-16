@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useWeb3 } from '../context/Web3Context';
 import { useNiche } from '../context/NicheContext';
 import { useToast } from '../context/ToastContext';
+import { isUserRejection } from '../lib/walletErrors';
 import { ethers } from 'ethers';
 import { ESCROW_ABI, TOKEN_ADDRESSES, ERC20_ABI } from '../config/contract';
 import { buildCreateData, REF_MAX_LENGTH, REF_PATTERN } from '../lib/escrowReference';
@@ -139,7 +140,7 @@ export default function CreateEscrowModal({ onClose, onSuccess, prefilledProvide
     } catch (err) {
       console.error(err);
       const reason = err.reason || err.data?.message || err.message || "Unknown error";
-      if (!reason.includes("user rejected") && !reason.includes("User denied")) {
+      if (!isUserRejection(err)) {
         showToast('error', `Transaction Failed: ${reason}`);
       }
     }

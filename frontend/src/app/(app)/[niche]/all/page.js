@@ -9,6 +9,7 @@ import { useToast } from '../../../../context/ToastContext';
 import { allInstances } from '../../../../config/instances';
 import { ESCROW_ABI, TOKEN_ADDRESSES } from '../../../../config/contract';
 import { loadMyEscrows } from '../../../../lib/myEscrows';
+import { isUserRejection } from '../../../../lib/walletErrors';
 import EscrowCard from '../../../../components/EscrowCard';
 import WalletConnect from '../../../../components/WalletConnect';
 import '../page.css';
@@ -91,7 +92,7 @@ export default function MyEscrowsPage() {
       load();
     } catch (err) {
       console.error(err);
-      showToast('error', 'Withdrawal failed: ' + err.message);
+      if (!isUserRejection(err)) showToast('error', 'Withdrawal failed: ' + (err.shortMessage || err.message));
     }
   };
 
