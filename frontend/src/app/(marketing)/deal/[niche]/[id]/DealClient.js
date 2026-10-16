@@ -7,6 +7,7 @@ import { useWeb3 } from '../../../../../context/Web3Context';
 import { allInstances } from '../../../../../config/instances';
 import { USDT_ADDRESS, USDC_ADDRESS } from '../../../../../config/contract';
 import styles from './deal.module.css';
+import { readEscrowReference } from '../../../../../lib/escrowReference';
 
 // Page publique d'un escrow : lecture seule sur le contrat, sans wallet.
 // Usage principal : un prestataire verifie que les fonds sont bien bloques avant de commencer.
@@ -35,6 +36,7 @@ export default function DealClient({ niche, id }) {
   const inst = allInstances[niche];
   const validId = /^\d+$/.test(String(id));
   const [state, setState] = useState({ loading: true, error: null, data: null });
+  const [reference, setReference] = useState(null);
 
   useEffect(() => {
     if (!inst || !validId || !readProvider) return;
@@ -48,6 +50,7 @@ export default function DealClient({ niche, id }) {
         const symbol = TOKENS[e.token.toLowerCase()] ?? 'tokens';
         const decimals = await new ethers.Contract(e.token, ['function decimals() view returns (uint8)'], readProvider).decimals();
         if (!cancelled) setState({ loading: false, error: null, data: { ...e.toObject(), symbol, decimals: Number(decimals) } });
+        readEscrowReference(readProvider, inst.contractAddress, id, e.createdAt).then((r) => { if (!cancelled) setReference(r); }).catch(() => {});
       } catch (err) {
         console.error('[Deal] read:', err);
         if (!cancelled) setState({ loading: false, error: 'read', data: null });
@@ -88,6 +91,7 @@ export default function DealClient({ niche, id }) {
             <div className={styles.amount}>{amount} <span>{d.symbol}</span></div>
             <p className={styles.note}>{st.note}</p>
             <ul className={styles.rows}>
+              {reference && <li><span>Reference</span><b>{reference}</b></li>}
               <li><span>{inst.lexicon?.client ?? 'Client'}</span><a href={`${BSCSCAN}/address/${d.client}`} target="_blank" rel="noopener noreferrer">{short(d.client)} ↗</a></li>
               <li><span>{inst.lexicon?.provider ?? 'Provider'}</span><a href={`${BSCSCAN}/address/${d.provider}`} target="_blank" rel="noopener noreferrer">{short(d.provider)} ↗</a></li>
               <li><span>Created</span><b>{fmtDate(d.createdAt)}</b></li>

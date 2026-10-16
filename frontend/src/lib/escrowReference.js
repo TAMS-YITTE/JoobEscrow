@@ -1,0 +1,74 @@
+// Reference d'escrow gravee dans la transaction de creation, sans toucher au contrat V4 :
+// le texte "JOOBREF:<reference>" est ajoute a la fin du calldata de createAndFundEscrow.
+// Le contrat ne lit que ses 4 parametres et ignore ces octets (teste sur fork, 1 a 5 000 caracteres).
+import { ethers } from 'ethers';
+
+export const REF_MAGIC = 'JOOBREF:';
+export const REF_MAX_LENGTH = 64;
+
+// Lettres, chiffres, tiret, underscore, point et espace : lisible, sans contenu gene grave pour toujours.
+export const REF_PATTERN = /^[A-Za-z0-9 _.\-]*$/;
+
+export const cleanReference = (ref) => (ref || '').trim().slice(0, REF_MAX_LENGTH);
+
+/** Calldata de createAndFundEscrow, suivi de la reference si elle est renseignee. */
+export function buildCreateData(iface, args, reference) {
+  const base = iface.encodeFunctionData('createAndFundEscrow', args);
+  const ref = cleanReference(reference);
+  return ref ? ethers.concat([base, ethers.toUtf8Bytes(REF_MAGIC + ref)]) : base;
+}
+
+// Selecteur + 4 arguments de 32 octets.
+const BASE_LENGTH = 4 + 4 * 32;
+
+/** Extrait la reference du calldata d'une transaction de creation, ou null. */
+export function referenceFromInput(input) {
+  try {
+    const bytes = ethers.getBytes(input);
+    if (bytes.length <= BASE_LENGTH) return null;
+    const text = ethers.toUtf8String(bytes.slice(BASE_LENGTH));
+    return text.startsWith(REF_MAGIC) ? cleanReference(text.slice(REF_MAGIC.length)) || null : null;
+  } catch {
+    return null;
+  }
+}
+
+const TOPIC_CREATED = ethers.id('EscrowCreated(uint256,address,address,address,uint256,uint256)');
+const cacheKey = (contract, id) => `escrowRef:${contract.toLowerCase()}:${id}`;
+
+/**
+ * Retrouve la reference d'un escrow a partir de sa date de creation (createdAt = horodatage du bloc) :
+ * recherche du bloc par dichotomie, puis log EscrowCreated filtre sur l'identifiant (quelques blocs).
+ */
+export async function readEscrowReference(provider, contract, escrowId, createdAt) {
+  const key = cacheKey(contract, escrowId);
+  try {
+    const cached = localStorage.getItem(key);
+    if (cached !== null) return cached || null;
+  } catch {}
+
+  const target = Number(createdAt);
+  let lo = 0;
+  let hi = await provider.getBlockNumber();
+  const head = hi;
+  // Point de depart estime pour limiter les appels (bloc BSC < 1 s).
+  const latest = await provider.getBlock(hi);
+  lo = Math.max(0, hi - Math.ceil((latest.timestamp - target) / 0.4) - 50000);
+  while (lo < hi) {
+    const mid = Math.floor((lo + hi) / 2);
+    const b = await provider.getBlock(mid);
+    if (b.timestamp < target) lo = mid + 1; else hi = mid;
+  }
+
+  const logs = await provider.getLogs({
+    address: contract,
+    fromBlock: lo,
+    toBlock: Math.min(lo + 9, head),
+    topics: [TOPIC_CREATED, ethers.zeroPadValue(ethers.toBeHex(BigInt(escrowId)), 32)],
+  });
+  if (!logs.length) return null;
+  const tx = await provider.getTransaction(logs[0].transactionHash);
+  const ref = tx ? referenceFromInput(tx.data) : null;
+  try { localStorage.setItem(key, ref ?? ''); } catch {}
+  return ref;
+}

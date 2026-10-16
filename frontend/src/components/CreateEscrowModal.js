@@ -6,6 +6,7 @@ import { useNiche } from '../context/NicheContext';
 import { useToast } from '../context/ToastContext';
 import { ethers } from 'ethers';
 import { ESCROW_ABI, TOKEN_ADDRESSES, ERC20_ABI } from '../config/contract';
+import { buildCreateData, REF_MAX_LENGTH, REF_PATTERN } from '../lib/escrowReference';
 import './CreateEscrowModal.css';
 
 export default function CreateEscrowModal({ onClose, onSuccess, prefilledProvider = '', prefilledAmount = '' }) {
@@ -15,6 +16,8 @@ export default function CreateEscrowModal({ onClose, onSuccess, prefilledProvide
   const [providerAddr, setProviderAddr] = useState(prefilledProvider);
   const [amount, setAmount] = useState(prefilledAmount);
   const [timeoutDays, setTimeoutDays] = useState(3);
+  // Reference facultative gravee dans la transaction (lisible par tous, non modifiable).
+  const [reference, setReference] = useState('');
   // Jetons de la niche (USDT par defaut ; USDT ou USDC pour la demo).
   const tokenChoices = niche.tokens || ['USDT'];
   const [tokenSym, setTokenSym] = useState(tokenChoices[0]);
@@ -40,6 +43,10 @@ export default function CreateEscrowModal({ onClose, onSuccess, prefilledProvide
       showToast('error', niche.isDemo
         ? "Use your second wallet's address as provider: the contract refuses the same wallet on both sides."
         : "The provider must be a different wallet than yours.");
+      return;
+    }
+    if (!REF_PATTERN.test(reference)) {
+      showToast('error', "Reference: letters, numbers, spaces, '-', '_' and '.' only.");
       return;
     }
     if (niche.minAmount && (parseFloat(amount) < niche.minAmount || parseFloat(amount) > niche.maxAmount)) {
@@ -72,7 +79,8 @@ export default function CreateEscrowModal({ onClose, onSuccess, prefilledProvide
 
       setStep(3);
       const contract = new ethers.Contract(niche.contractAddress, ESCROW_ABI, signer);
-      const tx = await contract.createAndFundEscrow(providerAddr, tokenAddr, parsedAmount, parseInt(timeoutDays) || 7);
+      const data = buildCreateData(contract.interface, [providerAddr, tokenAddr, parsedAmount, parseInt(timeoutDays) || 7], reference);
+      const tx = await signer.sendTransaction({ to: niche.contractAddress, data });
       const receipt = await tx.wait();
       
       let newEscrowId = null;
@@ -161,6 +169,13 @@ export default function CreateEscrowModal({ onClose, onSuccess, prefilledProvide
                 *Min. 3 days enforced by the smart contract to guarantee a fair dispute window and prevent abuse.
               </p>
             </div>
+          </div>
+          <div className="form-group">
+            <label>Reference (optional):</label>
+            <input type="text" value={reference} onChange={e=>setReference(e.target.value)} maxLength={REF_MAX_LENGTH} placeholder="e.g. Escrow_Joob_BscNews_20261014" />
+            <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '6px', lineHeight: '1.2' }}>
+              Saved on-chain with the transaction to track this deal. Public and permanent: no personal data.
+            </p>
           </div>
           <div className="modal-actions">
             <button type="button" className="btn btn-outline" onClick={onClose}>Cancel</button>
