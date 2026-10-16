@@ -63,7 +63,10 @@ function DashboardContent() {
     if (!currentProvider || !highlightedId) { setInvitedEscrow(null); return; }
     try {
       const contract = new ethers.Contract(niche.contractAddress, ESCROW_ABI, currentProvider);
-      const e = await contract.getEscrowDetails(highlightedId);
+      const [e, rawEscrow] = await Promise.all([
+        contract.getEscrowDetails(highlightedId),
+        contract.escrows(highlightedId),
+      ]);
       const statusEnum = Number(e.status);
       const isAccepted = Boolean(e.accepted);
       const isClient = account && e.client.toLowerCase() === account.toLowerCase();
@@ -90,7 +93,7 @@ function DashboardContent() {
         tokenSymbol: e.sym || 'USDT',
         actionRequired,
         highlighted: true,
-        createdAt: Number(e.createdAt || 0),
+        createdAt: Number(rawEscrow.createdAt),
         timeoutDate: Number(e.timeoutDate),
         accepted: isAccepted,
         disputeOpenedAt,

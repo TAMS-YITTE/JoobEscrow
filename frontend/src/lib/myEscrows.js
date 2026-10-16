@@ -16,6 +16,8 @@ export async function loadMyEscrows(contractAddress, reader, account) {
     const isClient = e.client.toLowerCase() === me;
     const isProvider = e.provider.toLowerCase() === me;
     if (!isClient && !isProvider) continue;
+    // getEscrowDetails ne renvoie pas createdAt : on lit escrows(i) uniquement pour les escrows du wallet.
+    const rawEscrow = await contract.escrows(i);
     const statusEnum = Number(e.status);
     const accepted = Boolean(e.accepted);
     const timeoutDate = Number(e.timeoutDate);
@@ -34,7 +36,7 @@ export async function loadMyEscrows(contractAddress, reader, account) {
       tokenSymbol: e.sym || 'USDT',
       actionRequired,
       role: isClient ? 'client' : 'provider',
-      createdAt: Number(e.createdAt),
+      createdAt: Number(rawEscrow.createdAt),
       timeoutDate,
       accepted,
       disputeOpenedAt: statusEnum === 3 ? Number(await contract.disputeOpenedAt(i)) : 0,
