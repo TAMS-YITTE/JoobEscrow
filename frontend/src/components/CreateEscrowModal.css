@@ -1,66 +1,192 @@
 .modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(4px);
+  inset: 0;
+  background: rgba(9, 12, 10, 0.82);
+  backdrop-filter: blur(6px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  padding: 16px;
 }
 
 .modal-content {
   width: 100%;
-  max-width: 500px;
-  background: var(--bg-main);
+  max-width: 520px;
+  max-height: 92vh;
+  overflow-y: auto;
+  background: var(--app-surface-1, #111613);
+  border: 1px solid var(--app-border-default, #2A362E);
+  border-top: 3px solid var(--app-lime, #A3E635);
+  border-radius: var(--app-radius-xl, 16px);
+  padding: 24px;
+  color: var(--app-text-primary, #F2F5F3);
+}
+
+.modal-content h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--app-text-primary, #F2F5F3);
+  margin: 0 0 16px;
 }
 
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
 .form-group label {
   display: block;
-  margin-bottom: 8px;
-  color: var(--text-secondary);
-  font-size: 0.9rem;
+  margin-bottom: 6px;
+  color: var(--app-text-secondary, #9CA8A1);
+  font-size: 0.85rem;
+  font-weight: 500;
 }
 
 .form-group input {
   width: 100%;
-  padding: 12px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  color: var(--text-primary);
-  font-family: monospace;
+  padding: 10px 12px;
+  background: var(--app-surface-2, #171E1A);
+  border: 1px solid var(--app-border-default, #2A362E);
+  border-radius: var(--app-radius-md, 8px);
+  color: var(--app-text-primary, #F2F5F3);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.9rem;
 }
 
 .form-group input:focus {
   outline: none;
-  border-color: var(--accent-primary);
-  background: rgba(16, 185, 129, 0.05);
-}
-
-.modal-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-  margin-top: 30px;
+  border-color: var(--app-lime, #A3E635);
+  background: var(--app-surface-3, #1F2923);
 }
 
 .form-group select {
   width: 100%;
   padding: 10px 12px;
-  background: #15171c;
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  color: var(--text-primary);
+  background: var(--app-surface-2, #171E1A);
+  border: 1px solid var(--app-border-default, #2A362E);
+  border-radius: var(--app-radius-md, 8px);
+  color: var(--app-text-primary, #F2F5F3);
   font-family: var(--font-main);
   font-size: 0.9rem;
   cursor: pointer;
 }
-.form-group select:focus { outline: none; border-color: var(--accent-primary); }
+
+.form-group select:focus {
+  outline: none;
+  border-color: var(--app-lime, #A3E635);
+}
+
+.form-hint {
+  font-size: 0.75rem;
+  color: var(--app-text-secondary, #9CA8A1);
+  margin-top: 6px;
+  line-height: 1.4;
+}
+
+/* Fee breakdown summary box */
+.create-summary-box {
+  background: var(--app-surface-2, #171E1A);
+  border: 1px solid var(--app-border-subtle, #1E2621);
+  border-radius: var(--app-radius-md, 8px);
+  padding: 12px 14px;
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.82rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.create-summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--app-text-secondary, #9CA8A1);
+}
+
+.create-summary-row strong {
+  color: var(--app-text-primary, #F2F5F3);
+  font-weight: 600;
+}
+
+.create-summary-row.is-net {
+  padding-top: 6px;
+  margin-top: 2px;
+  border-top: 1px solid var(--app-border-subtle, #1E2621);
+  color: var(--app-text-primary, #F2F5F3);
+  font-weight: 600;
+}
+
+.create-summary-row.is-net strong {
+  color: var(--app-lime, #A3E635);
+  font-size: 0.9rem;
+}
+
+.create-summary-note {
+  font-size: 0.72rem;
+  color: var(--app-text-muted, #627067);
+  margin-top: 2px;
+}
+
+/* 2-step visible stepper */
+.create-stepper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 14px;
+  background: var(--app-surface-2, #171E1A);
+  border: 1px solid var(--app-border-subtle, #1E2621);
+  border-radius: var(--app-radius-md, 8px);
+  margin-bottom: 18px;
+}
+
+.create-step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.8rem;
+  color: var(--app-text-secondary, #9CA8A1);
+}
+
+.create-step.is-active {
+  color: var(--app-text-primary, #F2F5F3);
+  font-weight: 600;
+}
+
+.create-step.is-done {
+  color: var(--app-green, #22C55E);
+}
+
+.create-step-badge {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  border: 1px solid var(--app-border-default, #2A362E);
+  background: var(--app-surface-1, #111613);
+  flex-shrink: 0;
+}
+
+.create-step.is-active .create-step-badge {
+  border-color: var(--app-lime, #A3E635);
+  background: var(--app-lime-subtle, rgba(163, 230, 53, 0.12));
+  color: var(--app-lime, #A3E635);
+}
+
+.create-step.is-done .create-step-badge {
+  border-color: var(--app-green, #22C55E);
+  background: var(--app-green-subtle, rgba(34, 197, 94, 0.12));
+  color: var(--app-green, #22C55E);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}

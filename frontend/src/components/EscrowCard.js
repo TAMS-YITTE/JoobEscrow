@@ -33,6 +33,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
   const [resolvePercent, setResolvePercent] = useState(50);
   const [showReleaseModal, setShowReleaseModal] = useState(false);
   const [releaseAck, setReleaseAck] = useState(false);
+  const [showDisputeModal, setShowDisputeModal] = useState(false);
   const { showToast } = useToast();
 
   const [isExpanded, setIsExpanded] = useState(Boolean(defaultExpanded));
@@ -175,7 +176,12 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
     setLoading(false);
   };
 
-  const handleOpenDispute = async () => {
+  const handleOpenDispute = () => {
+    if (!contract) return;
+    setShowDisputeModal(true);
+  };
+
+  const executeOpenDispute = async () => {
     if (!contract) return;
     setLoading(true);
     try {
@@ -707,6 +713,56 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
                 style={!escrow.accepted ? { backgroundColor: 'var(--app-yellow, #EAB308)', borderColor: 'var(--app-yellow, #EAB308)', opacity: releaseAck ? 1 : 0.5 } : undefined}
               >
                 {loading ? 'Processing...' : 'Release funds'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showDisputeModal && (
+        <div className="escrow-modal-backdrop">
+          <div className="escrow-modal-box" style={{ borderColor: 'var(--app-red, #EF4444)' }}>
+            <h3 className="text-xl font-bold mb-4" style={{ color: 'var(--app-red, #EF4444)' }}>
+              Open a dispute?
+            </h3>
+            <p className="text-gray-300 text-sm mb-4">
+              Opening a dispute freezes <strong>{escrow.amount} {escrow.tokenSymbol}</strong> in the smart contract until settled by mediation (or until either party triggers a 50/50 split after 30 days).
+            </p>
+            <p className="text-gray-400 text-sm mb-6">
+              Most delivery issues are resolved faster by messaging your counterparty directly in the encrypted chat first.
+            </p>
+            <div className="flex flex-wrap gap-3 justify-end">
+              <button
+                type="button"
+                className="btn btn-app-secondary"
+                onClick={() => setShowDisputeModal(false)}
+                disabled={loading}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="btn btn-app-secondary"
+                style={{ borderColor: 'var(--app-lime, #A3E635)', color: 'var(--app-lime, #A3E635)' }}
+                onClick={() => {
+                  setShowDisputeModal(false);
+                  handleOpenChat();
+                }}
+                disabled={loading}
+              >
+                Open chat first
+              </button>
+              <button
+                type="button"
+                className="btn btn-app-danger"
+                style={{ backgroundColor: 'var(--app-red, #EF4444)', color: '#fff', borderColor: 'var(--app-red, #EF4444)' }}
+                onClick={async () => {
+                  setShowDisputeModal(false);
+                  await executeOpenDispute();
+                }}
+                disabled={loading}
+              >
+                {loading ? 'Processing...' : 'Confirm & open dispute'}
               </button>
             </div>
           </div>
