@@ -116,3 +116,19 @@
 
 /* Pastille d'onglet (ex. « NEW ») */
 .nav-badge { margin-left: 8px; padding: 1px 7px; border-radius: 999px; font-size: 0.6rem; font-weight: 800; letter-spacing: 0.06em; color: #0d1117; background: linear-gradient(90deg, #d9f99d, #a3e635); vertical-align: middle; }
+
+/* Navigation de l'app : toutes les categories, retour explicite au site. */
+.nav-section-label { margin: 12px 0 4px; padding: 0 4px; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-secondary); }
+.category-select {
+  width: 100%; padding: 9px 12px; border-radius: 8px; cursor: pointer; font-size: 0.9rem; font-weight: 600;
+  color: var(--text-primary); background: rgba(0, 0, 0, 0.3); border: 1px solid var(--border-color);
+}
+.category-select option { background: #0d1117; color: #e2e8f0; }
+.nav-divider { height: 1px; margin: 10px 0; background: var(--border-color); }
+.sidebar-back { display: block; margin: 8px 0 14px; padding: 8px 4px; font-size: 0.85rem; color: var(--text-secondary); text-decoration: none; }
+.sidebar-back:hover { color: #bef264; }
+@media (max-width: 768px) {
+  .nav-section-label, .nav-divider { display: none; }
+  .category-select { width: auto; flex-shrink: 0; padding: 6px 10px; font-size: 0.82rem; }
+  .sidebar-back { margin: 0; padding: 4px 0; font-size: 0.8rem; }
+}
