@@ -157,7 +157,7 @@ export default function MyEscrowsPage() {
                     {e.niche.isDemo ? 'Demo · 0% fee' : `${e.niche.feeTier}% fee`} · you are the {e.role}
                   </p>
                   <NicheScope niche={e.niche}>
-                    <EscrowCard escrow={e} onUpdate={load} />
+                    <EscrowCard escrow={e} isDisputeView={e.status === 'DISPUTED'} onUpdate={load} />
                   </NicheScope>
                 </div>
               ))}
