@@ -16,7 +16,7 @@ function countdown(left) {
   const h = Math.floor((left % 86400) / 3600);
   const m = Math.floor((left % 3600) / 60);
   const s = left % 60;
-  return `${d}d ${String(h).padStart(2, '0')}h ${String(m).padStart(2, '0')}m ${String(s).padStart(2, '0')}s`;
+  return `${String(d).padStart(2, '0')}d ${String(h).padStart(2, '0')}h ${String(m).padStart(2, '0')}m ${String(s).padStart(2, '0')}s`;
 }
 
 export default function PresaleHomeBanner() {

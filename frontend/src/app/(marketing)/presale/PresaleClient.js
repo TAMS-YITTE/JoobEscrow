@@ -50,6 +50,10 @@ const fmtToken = (v, d, max = 2) => fmtNum(Number(ethers.formatUnits(v, d)), max
 const fmtUsd = (v, d, max = 4) => Number(ethers.formatUnits(v, d)).toLocaleString('en-US', { minimumFractionDigits: Math.min(2, max), maximumFractionDigits: max });
 const fmtDate = (s) => new Date(Number(s) * 1000).toLocaleString('en-GB', { timeZone: 'UTC', day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) + ' UTC';
 
+// Compte a rebours sur 2 chiffres partout : 01d 05h 08m 12s.
+const pad2 = (n) => String(n).padStart(2, '0');
+const fmtDhms = (t) => `${pad2(Math.floor(t / 86400))}d ${pad2(Math.floor((t % 86400) / 3600))}h ${pad2(Math.floor((t % 3600) / 60))}m ${pad2(t % 60)}s`;
+
 function useNow() {
   const [now, setNow] = useState(() => BigInt(Math.floor(Date.now() / 1000)));
   useEffect(() => {
@@ -197,7 +201,7 @@ function AllocationLookup({ readProvider, td, pd }) {
 
   return (
     <div className={styles.lookup}>
-      <div className={styles.lookupTitle}>Already bought? <span>Check your JOOB with your address, no need to connect your wallet.</span></div>
+      <div className={styles.lookupTitle}>Already bought? <span>Check your JOOB with your address, no need to reconnect your wallet.</span></div>
       <form onSubmit={lookup} className={styles.lookupForm}>
         <input value={addr} onChange={(e) => setAddr(e.target.value)} placeholder="Paste your 0x… address" className={styles.lookupInput} spellCheck={false} autoComplete="off" />
         <button type="submit" className={styles.lookupBtn} disabled={loading}>{loading ? '…' : 'Check'}</button>
@@ -641,7 +645,7 @@ export default function PresaleClient() {
             <div className={styles.nextPriceBar}>
               <span>Next price increase in:</span>
               <span className={styles.nextPriceCountdown}>
-                {nextStepRemaining > 0n ? `${Math.floor(Number(nextStepRemaining) / 3600)}h ${Math.floor((Number(nextStepRemaining) % 3600) / 60)}m` : 'imminent'}
+                {nextStepRemaining > 0n ? fmtDhms(Number(nextStepRemaining)) : 'imminent'}
               </span>
             </div>
           )}
@@ -834,11 +838,7 @@ export default function PresaleClient() {
                     Finalize the sale
                   </button>
                 </div>
-              ) : (
-                <p style={{ color: '#94a3b8', fontSize: '0.8rem', margin: 0 }}>
-                  Claims open at sale end ({fmtDate(global.endTime)}): {Number(config.tgeBps) / 100}% instantly, then 180-day linear vesting.
-                </p>
-              )}
+              ) : null}
               <AllocationLookup readProvider={readProvider} td={td} pd={pd} />
             </div>
           )}
