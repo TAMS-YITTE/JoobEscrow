@@ -39,6 +39,11 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
   }, [readProvider, niche?.contractAddress, escrow?.id, escrow?.createdAt, escrow?.key]);
 
   const [loading, setLoading] = useState(false);
+  // Action en cours (seul le bouton clique affiche « Processing... ») : accept | release | dispute | stale | admin | timeout | cancel.
+  const [busy, setBusy] = useState(null);
+  const [showDeclineModal, setShowDeclineModal] = useState(false);
+  // Libelle du client dans la fenetre « Decline » (la demo nomme ses roles « Client wallet »).
+  const clientWord = niche.isDemo ? 'client' : niche.lexicon.client.toLowerCase();
   const [showResolveModal, setShowResolveModal] = useState(false);
   const [resolvePercent, setResolvePercent] = useState(50);
   const [showReleaseModal, setShowReleaseModal] = useState(false);
@@ -139,6 +144,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
   const handleAccept = async () => {
     if (!contract) return;
     setLoading(true);
+    setBusy('accept');
     try {
       await ensureCorrectChain();
       const tx = await contract.acceptEscrow(escrow.id);
@@ -153,6 +159,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
       }
     }
     setLoading(false);
+    setBusy(null);
   };
 
   const handleRelease = async () => {
@@ -165,6 +172,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
   const executeRelease = async () => {
     if (!contract) return;
     setLoading(true);
+    setBusy('release');
     try {
       await ensureCorrectChain();
       const tx = await contract.releaseFunds(escrow.id);
@@ -186,6 +194,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
       }
     }
     setLoading(false);
+    setBusy(null);
   };
 
   const handleOpenDispute = () => {
@@ -196,6 +205,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
   const executeOpenDispute = async () => {
     if (!contract) return;
     setLoading(true);
+    setBusy('dispute');
     try {
       await ensureCorrectChain();
       const tx = await contract.openDispute(escrow.id, ethers.ZeroHash);
@@ -210,11 +220,13 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
       }
     }
     setLoading(false);
+    setBusy(null);
   };
 
   const handleStaleResolution = async () => {
     if (!contract) return;
     setLoading(true);
+    setBusy('stale');
     try {
       await ensureCorrectChain();
       const tx = await contract.resolveStaleDispute(escrow.id);
@@ -236,6 +248,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
       }
     }
     setLoading(false);
+    setBusy(null);
   };
 
   const handleAdminResolve = async () => {
@@ -246,6 +259,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
     if (!contract) return;
     const providerBps = resolvePercent * 100;
     setLoading(true);
+    setBusy('admin');
     try {
       await ensureCorrectChain();
       const tx = await contract.resolveDispute(escrow.id, providerBps);
@@ -268,11 +282,13 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
       }
     }
     setLoading(false);
+    setBusy(null);
   };
 
   const handleClaimTimeout = async () => {
     if (!contract) return;
     setLoading(true);
+    setBusy('timeout');
     try {
       await ensureCorrectChain();
       const tx = await contract.claimTimeout(escrow.id);
@@ -294,11 +310,13 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
       }
     }
     setLoading(false);
+    setBusy(null);
   };
 
   const handleCancel = async () => {
     if (!contract) return;
     setLoading(true);
+    setBusy('cancel');
     try {
       await ensureCorrectChain();
       const tx = await contract.cancelEscrow(escrow.id);
@@ -313,6 +331,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
       }
     }
     setLoading(false);
+    setBusy(null);
   };
 
   const getExplorerLink = () => {
@@ -466,9 +485,15 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
         <div className="escrow-actions">
           {/* 1. Awaiting acceptance */}
           {escrow.status === 'FUNDED' && !escrow.accepted && isProvider && (
-            <button className="btn btn-app-primary" onClick={handleAccept} disabled={loading}>
-              {loading ? 'Processing...' : 'Accept'}
-            </button>
+            <>
+              {/* Le contrat V4 n'a pas de refus on-chain : « Decline » explique que le client peut annuler. */}
+              <button type="button" className="btn btn-app-secondary" onClick={() => setShowDeclineModal(true)} disabled={loading}>
+                Decline
+              </button>
+              <button className="btn btn-app-primary" onClick={handleAccept} disabled={loading}>
+                {busy === 'accept' ? 'Processing...' : 'Accept'}
+              </button>
+            </>
           )}
 
           {escrow.status === 'FUNDED' && !escrow.accepted && isClient && (
@@ -477,7 +502,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
                 Copy invite link
               </button>
               <button className="btn btn-app-danger" onClick={() => setConfirmAction('cancel')} disabled={loading}>
-                {loading ? 'Processing...' : 'Cancel & refund'}
+                {busy === 'cancel' ? 'Processing...' : 'Cancel & refund'}
               </button>
             </>
           )}
@@ -486,10 +511,10 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
           {escrow.status === 'FUNDED' && escrow.accepted && !isExpired && isClient && (
             <>
               <button className="btn btn-app-danger" onClick={handleOpenDispute} disabled={loading}>
-                {loading ? 'Processing...' : 'Open dispute'}
+                {busy === 'dispute' ? 'Processing...' : 'Open dispute'}
               </button>
               <button className="btn btn-app-primary" onClick={handleRelease} disabled={loading}>
-                {loading ? 'Processing...' : 'Release'}
+                {busy === 'release' ? 'Processing...' : 'Release'}
               </button>
             </>
           )}
@@ -497,7 +522,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
           {escrow.status === 'FUNDED' && escrow.accepted && !isExpired && isProvider && (
             <>
               <button className="btn btn-app-danger" onClick={handleOpenDispute} disabled={loading}>
-                {loading ? 'Processing...' : 'Open dispute'}
+                {busy === 'dispute' ? 'Processing...' : 'Open dispute'}
               </button>
               <button type="button" className="btn btn-app-secondary" onClick={handleOpenChat}>
                 Open chat
@@ -509,10 +534,10 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
           {escrow.status === 'FUNDED' && escrow.accepted && isExpired && isProvider && (
             <>
               <button className="btn btn-app-danger" onClick={handleOpenDispute} disabled={loading}>
-                {loading ? 'Processing...' : 'Open dispute'}
+                {busy === 'dispute' ? 'Processing...' : 'Open dispute'}
               </button>
               <button className="btn btn-app-primary" onClick={handleClaimTimeout} disabled={loading}>
-                {loading ? 'Processing...' : 'Claim timeout'}
+                {busy === 'timeout' ? 'Processing...' : 'Claim timeout'}
               </button>
             </>
           )}
@@ -520,10 +545,10 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
           {escrow.status === 'FUNDED' && escrow.accepted && isExpired && isClient && (
             <>
               <button className="btn btn-app-danger" onClick={handleOpenDispute} disabled={loading}>
-                {loading ? 'Processing...' : 'Open dispute'}
+                {busy === 'dispute' ? 'Processing...' : 'Open dispute'}
               </button>
               <button className="btn btn-app-primary" onClick={handleRelease} disabled={loading}>
-                {loading ? 'Processing...' : 'Release'}
+                {busy === 'release' ? 'Processing...' : 'Release'}
               </button>
             </>
           )}
@@ -537,7 +562,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
 
           {isDisputed && isDisputeView && (isClient || isProvider) && escrow.disputeOpenedAt > 0 && nowSec > (escrow.disputeOpenedAt + escrow.staleDisputeTimeout) && (
             <button className="btn btn-app-danger" onClick={() => setConfirmAction('stale')} disabled={loading}>
-              {loading ? 'Processing...' : 'Force 50/50'}
+              {busy === 'stale' ? 'Processing...' : 'Force 50/50'}
             </button>
           )}
 
@@ -548,7 +573,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
               onClick={handleAdminResolve}
               disabled={loading}
             >
-              {loading ? 'Processing...' : 'Admin: Resolve dispute'}
+              {busy === 'admin' ? 'Processing...' : 'Admin: Resolve dispute'}
             </button>
           )}
 
@@ -565,6 +590,12 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
           )}
         </div>
       </div>
+
+      {escrow.status === 'FUNDED' && !escrow.accepted && isClient && (
+        <div className="escrow-stale-note">
+          The provider has not accepted yet: you can cancel at any time and get a full refund.
+        </div>
+      )}
 
       {isDisputed && isDisputeView && (isClient || isProvider) && escrow.disputeOpenedAt > 0 && !(nowSec > (escrow.disputeOpenedAt + escrow.staleDisputeTimeout)) && (
         <div className="escrow-stale-note">
@@ -643,17 +674,6 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
                     Release without acceptance
                   </button>
                 )}
-                {escrow.status === 'FUNDED' && !escrow.accepted && (isClient || isProvider) && (
-                  <button
-                    type="button"
-                    className="escrow-link-btn"
-                    style={{ color: 'var(--app-red, #EF4444)' }}
-                    onClick={handleOpenDispute}
-                    disabled={loading}
-                  >
-                    Open dispute
-                  </button>
-                )}
               </div>
             </div>
           )}
@@ -725,7 +745,32 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
                 disabled={loading || !releaseAck}
                 style={!escrow.accepted ? { backgroundColor: 'var(--app-yellow, #EAB308)', borderColor: 'var(--app-yellow, #EAB308)', opacity: releaseAck ? 1 : 0.5 } : undefined}
               >
-                {loading ? 'Processing...' : 'Release funds'}
+                {busy === 'release' ? 'Processing...' : 'Release funds'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showDeclineModal && (
+        <div className="escrow-modal-backdrop">
+          <div className="escrow-modal-box" style={{ borderColor: 'var(--app-border-default, #2A362E)' }}>
+            <h3 className="text-xl font-bold mb-4" style={{ color: 'var(--app-text-primary, #F2F5F3)' }}>
+              Decline this escrow?
+            </h3>
+            <p className="text-gray-300 text-sm mb-4">
+              You do not need to do anything on-chain: as long as you have not accepted, nothing is committed on your side.
+              The {clientWord} can cancel at any time and get the full <strong>{escrow.amount} {escrow.tokenSymbol}</strong> back.
+            </p>
+            <p className="text-gray-400 text-sm mb-6">
+              Let them know in the encrypted chat so they can cancel. Do not open a dispute to decline: it would freeze their funds.
+            </p>
+            <div className="flex flex-wrap gap-3 justify-end">
+              <button type="button" className="btn btn-app-secondary" onClick={() => setShowDeclineModal(false)}>
+                Close
+              </button>
+              <button type="button" className="btn btn-app-primary" onClick={() => { setShowDeclineModal(false); handleOpenChat(); }}>
+                Tell the {clientWord} in the chat
               </button>
             </div>
           </div>
@@ -808,7 +853,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
                 }}
                 disabled={loading}
               >
-                {loading ? 'Processing...' : 'Confirm & open dispute'}
+                {busy === 'dispute' ? 'Processing...' : 'Confirm & open dispute'}
               </button>
             </div>
           </div>
@@ -849,7 +894,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
                 onClick={executeAdminResolve}
                 disabled={loading}
               >
-                {loading ? 'Processing...' : 'Confirm Resolution'}
+                {busy === 'admin' ? 'Processing...' : 'Confirm Resolution'}
               </button>
             </div>
           </div>
