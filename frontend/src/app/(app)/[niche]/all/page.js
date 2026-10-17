@@ -266,7 +266,7 @@ export default function MyEscrowsPage() {
                   </button>
                 )}
               </div>
-              <Link href={`/${niche.slug}`} className="btn btn-primary">+ Create escrow</Link>
+              <Link href="/app" className="btn btn-primary">+ New escrow</Link>
             </div>
           </div>
 
