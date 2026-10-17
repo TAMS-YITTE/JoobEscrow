@@ -18,23 +18,36 @@ export function buildCreateData(iface, args, reference) {
   return ref ? ethers.concat([base, ethers.toUtf8Bytes(REF_MAGIC + ref)]) : base;
 }
 
-// Selecteur + 4 arguments de 32 octets.
-const BASE_LENGTH = 4 + 4 * 32;
-
-/** Extrait la reference du calldata d'une transaction de creation, ou null. */
+/**
+ * Extrait la reference du calldata d'une transaction de creation, ou null.
+ * Appel direct : la reference suit les 4 arguments. Wallet a compte intelligent (ex. MetaMask, EIP-7702) :
+ * l'appel est imbrique dans un lot (approve + creation), avec du remplissage a zeros apres la reference.
+ * On cherche donc le marqueur n'importe ou dans le calldata et on lit jusqu'au premier octet nul.
+ */
 export function referenceFromInput(input) {
   try {
     const bytes = ethers.getBytes(input);
-    if (bytes.length <= BASE_LENGTH) return null;
-    const text = ethers.toUtf8String(bytes.slice(BASE_LENGTH));
-    return text.startsWith(REF_MAGIC) ? cleanReference(text.slice(REF_MAGIC.length)) || null : null;
+    const magic = ethers.toUtf8Bytes(REF_MAGIC);
+    for (let i = 0; i + magic.length <= bytes.length; i++) {
+      let match = true;
+      for (let k = 0; k < magic.length; k++) {
+        if (bytes[i + k] !== magic[k]) { match = false; break; }
+      }
+      if (!match) continue;
+      let end = i + magic.length;
+      while (end < bytes.length && bytes[end] !== 0 && end - i - magic.length < REF_MAX_LENGTH) end++;
+      const ref = cleanReference(ethers.toUtf8String(bytes.slice(i + magic.length, end)));
+      return ref && REF_PATTERN.test(ref) ? ref : null;
+    }
+    return null;
   } catch {
     return null;
   }
 }
 
 const TOPIC_CREATED = ethers.id('EscrowCreated(uint256,address,address,address,uint256,uint256)');
-const cacheKey = (contract, id) => `escrowRef:${contract.toLowerCase()}:${id}`;
+// v2 : invalide les « pas de reference » mis en cache avant la prise en charge des comptes intelligents.
+const cacheKey = (contract, id) => `escrowRef2:${contract.toLowerCase()}:${id}`;
 
 /**
  * Retrouve la reference d'un escrow a partir de sa date de creation (createdAt = horodatage du bloc) :
