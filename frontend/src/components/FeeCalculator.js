@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { ethers } from 'ethers';
 import { useWeb3 } from '../context/Web3Context';
 import { ESCROW_ADDRESS, ESCROW_ABI } from '../config/contract';
@@ -47,9 +48,11 @@ export default function FeeCalculator() {
   const percentage = feeBPS / 100;
   const feeAmount = (amount * percentage) / 100;
   const providerReceives = amount - feeAmount;
+  // Categories associees au contrat selectionne (derivees de config/instances.js).
+  const activeCategories = Object.values(instances).filter((n) => n.contractAddress === selected);
 
   return (
-    <div className="glass-panel" style={{ padding: '30px', margin: '0', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)', flex: 1, minWidth: '300px' }}>
+    <div className="glass-panel" style={{ padding: '24px', margin: '0', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)', flex: '1 1 260px', minWidth: 0, width: '100%', boxSizing: 'border-box' }}>
       <div style={{ textAlign: 'center', marginBottom: '24px' }}>
         <h3 style={{ fontWeight: 'bold', fontSize: '1.5rem', color: '#fff', margin: '0 0 8px 0' }}>Transparent Fees</h3>
         <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', margin: 0 }}>Calculate exactly what you pay and what they get.</p>
@@ -82,13 +85,39 @@ export default function FeeCalculator() {
                 role="radio"
                 aria-checked={active}
                 onClick={() => setSelected(t.address)}
-                style={{ flex: '1 1 0', minWidth: '52px', padding: '8px 0', borderRadius: '8px', cursor: 'pointer', fontWeight: 700, fontSize: '0.9rem', fontFamily: 'inherit', color: active ? '#0d1117' : '#fff', background: active ? '#10b981' : 'rgba(0,0,0,0.4)', border: active ? '1px solid #10b981' : '1px solid rgba(255,255,255,0.1)' }}
+                style={{ flex: '1 1 0', minWidth: '48px', padding: '8px 0', borderRadius: '8px', cursor: 'pointer', fontWeight: 700, fontSize: '0.9rem', fontFamily: 'inherit', color: active ? '#0d1117' : '#fff', background: active ? '#10b981' : 'rgba(0,0,0,0.4)', border: active ? '1px solid #10b981' : '1px solid rgba(255,255,255,0.1)' }}
               >
                 {t.bps / 100}%
               </button>
             );
           })}
         </div>
+        {activeCategories.length > 0 && (
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '10px' }} aria-label="Categories in selected fee tier">
+            {activeCategories.map((cat) => (
+              <Link
+                key={cat.slug}
+                href={`/${cat.slug}`}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  padding: '4px 10px',
+                  borderRadius: '999px',
+                  fontSize: '0.78rem',
+                  fontWeight: 600,
+                  color: '#d9f99d',
+                  backgroundColor: 'rgba(163, 230, 53, 0.1)',
+                  border: '1px solid rgba(163, 230, 53, 0.28)',
+                  textDecoration: 'none',
+                }}
+              >
+                <span>{cat.name}</span>
+                <span aria-hidden="true">→</span>
+              </Link>
+            ))}
+          </div>
+        )}
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -116,9 +145,16 @@ export default function FeeCalculator() {
         JoobEscrow: <strong style={{ color: '#4ade80' }}>{feeAmount.toFixed(0)} USDT</strong>, client pays 0%.
       </div>
 
-      <p style={{ fontSize: '0.8rem', textAlign: 'center', color: 'var(--text-secondary)', marginTop: '20px' }}>
+      <p style={{ fontSize: '0.8rem', textAlign: 'center', color: 'var(--text-secondary)', marginTop: '20px', marginBottom: '12px' }}>
         The fee is only deducted from the provider&apos;s payout on completion. If the escrow is cancelled before the provider accepts, the client gets a full refund (minus network gas).
       </p>
+
+      <div style={{ textAlign: 'center', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+        Want to test the full flow first?{' '}
+        <Link href="/try" style={{ color: '#a3e635', fontWeight: 700, textDecoration: 'none' }}>
+          Try it with $1 →
+        </Link>
+      </div>
     </div>
   );
 }

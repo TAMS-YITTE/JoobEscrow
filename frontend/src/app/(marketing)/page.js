@@ -8,9 +8,42 @@ import { BSCN_ARTICLE_URL } from '../../config/links';
 import HomeFaq from '../../components/HomeFaq';
 import LiveStats from '../../components/LiveStats';
 import FeeCalculator from '../../components/FeeCalculator';
-import { AUDITS, KYC_URL } from '../../config/presale';
+import { AUDITS, BSCSCAN, KYC_URL, PRESALE_ADDRESSES } from '../../config/presale';
+import { instances } from '../../config/instances';
 import { TOKENOMICS, TOKENOMICS_SEGMENTS, fmtM } from '../../config/tokenomics';
 import { ROADMAP_PHASES_WITH_STATUS } from '../../config/roadmap';
+
+// Fourchette de frais et exemple derives de config/instances.js (aucun taux ni nom en dur).
+const FEE_TIERS = Object.values(instances).map((n) => n.feeTier);
+const FEE_MIN = Math.min(...FEE_TIERS);
+const FEE_MAX = Math.max(...FEE_TIERS);
+const EXAMPLE_NICHE = instances.pro;
+const EXAMPLE_AMOUNT = 1000;
+const EXAMPLE_FEE = (EXAMPLE_AMOUNT * EXAMPLE_NICHE.feeTier) / 100;
+const EXAMPLE_NET = EXAMPLE_AMOUNT - EXAMPLE_FEE;
+
+const HOW_STEPS = [
+  {
+    num: 'STEP 1',
+    title: 'Create & lock funds',
+    desc: "The client locks USDT or USDC in the category's audited contract on BNB Smart Chain and shares the deal link. Client fee: 0%.",
+  },
+  {
+    num: 'STEP 2',
+    title: 'Accept & deliver',
+    desc: 'The provider reviews the on-chain terms and accepts. Before acceptance, the client can cancel at any time for a full refund. An encrypted wallet-to-wallet chat (XMTP) is built in.',
+  },
+  {
+    num: 'STEP 3',
+    title: 'Release, claim or mediate',
+    desc: 'The client releases the funds in one click when satisfied. If the deadline passes after acceptance, the provider can claim the payment. If a dispute is opened, funds stay locked until it is settled by the 3-of-5 Safe multisig, with an automatic 50/50 option after 30 days.',
+  },
+  {
+    num: 'STEP 4',
+    title: 'Withdraw to wallet',
+    desc: `The provider withdraws the net payout from the contract (after the ${FEE_MIN}–${FEE_MAX}% category fee; 0% on the $1 demo). Withdrawals keep working even if a contract is paused.`,
+  },
+];
 
 const PHASE_STATUS = {
   done: ['COMPLETED', styles.phaseStatusDone],
@@ -78,7 +111,7 @@ export default function LandingPage() {
                   <span aria-hidden="true">→</span>
                 </Link>
                 <a
-                  href="https://bscscan.com/address/0xd3F3598Ff8efB2cF6643488e66e8df683804F63d"
+                  href={`${BSCSCAN}/address/${PRESALE_ADDRESSES.PRESALE}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className={styles.quickTile}
@@ -159,8 +192,107 @@ export default function LandingPage() {
               <div className={`${styles.eraNum} ${styles.textGradient}`}>03</div>
               <h3 className={styles.eraTitle}>JoobEscrow: Code is law</h3>
               <p className={styles.eraDesc}>
-                Funds are locked on-chain before the work begins. Released on approval, claimable after the deadline, or split in a dispute. 0% for clients, 2–10% for providers.
+                Funds are locked on-chain before the work begins. Released on approval, claimable after the deadline, or split in a dispute. 0% for clients, {FEE_MIN}–{FEE_MAX}% for providers.
               </p>
+            </div>
+          </div>
+
+          <div className={styles.howFlowWrap}>
+            <div className={styles.howStepsCol}>
+              <div className={styles.howSubHead}>
+                <span className={styles.sectionTag}>STEP BY STEP</span>
+                <h3 className={styles.howSubTitle}>How an escrow deal works</h3>
+              </div>
+              <div className={styles.howStepsList}>
+                {HOW_STEPS.map((s) => (
+                  <div key={s.num} className={`glass-panel ${styles.howStepItem}`}>
+                    <span className={styles.stepNumPill}>{s.num}</span>
+                    <div>
+                      <h4 className={styles.stepTitle}>{s.title}</h4>
+                      <p className={styles.stepDesc}>{s.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className={`glass-panel ${styles.dealPreviewCard}`}>
+              <div className={styles.dealPreviewTop}>
+                <span className={styles.dealExampleTag}>Example</span>
+                <span className={styles.dealStatusBadge}>In progress</span>
+              </div>
+
+              <div className={styles.dealPreviewHeader}>
+                <div>
+                  <div className={styles.dealPreviewCat}>
+                    {EXAMPLE_NICHE.name} · {EXAMPLE_NICHE.feeTier}% fee
+                  </div>
+                  <div className={styles.dealPreviewRoles}>
+                    {EXAMPLE_NICHE.lexicon.client} ↔ {EXAMPLE_NICHE.lexicon.provider}
+                  </div>
+                </div>
+                <div className={styles.dealPreviewAmount}>
+                  {EXAMPLE_AMOUNT.toLocaleString('en-US')} <span>USDT</span>
+                </div>
+              </div>
+
+              {/* Frise 3 etapes identique a EscrowCard.js */}
+              <div className={styles.dealTimeline} aria-label="Escrow progress">
+                <div className={`${styles.dealTimelineStep} ${styles.dealStepDone}`}>
+                  <span className={styles.dealTimelineNode} aria-hidden="true">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                  </span>
+                  <span className={styles.dealTimelineLabel}>Accepted</span>
+                </div>
+
+                <div className={`${styles.dealTimelineLine} ${styles.dealLineDone}`} />
+
+                <div className={`${styles.dealTimelineStep} ${styles.dealStepActive}`}>
+                  <span className={styles.dealTimelineNode} aria-hidden="true">
+                    <span className={styles.dealNodeDot} />
+                  </span>
+                  <span className={styles.dealTimelineLabel}>In progress</span>
+                </div>
+
+                <div className={styles.dealTimelineLine} />
+
+                <div className={styles.dealTimelineStep}>
+                  <span className={styles.dealTimelineNode} aria-hidden="true">
+                    <span className={styles.dealNodeDot} />
+                  </span>
+                  <span className={styles.dealTimelineLabel}>Completed</span>
+                </div>
+              </div>
+
+              <div className={styles.dealBreakdown}>
+                <div className={styles.dealBreakdownRow}>
+                  <span>Deposited amount</span>
+                  <strong>{EXAMPLE_AMOUNT.toLocaleString('en-US')} USDT</strong>
+                </div>
+                <div className={styles.dealBreakdownRow}>
+                  <span>Client fee</span>
+                  <strong>0%</strong>
+                </div>
+                <div className={styles.dealBreakdownRow}>
+                  <span>Provider fee</span>
+                  <strong>{EXAMPLE_NICHE.feeTier}% ({EXAMPLE_FEE.toLocaleString('en-US')} USDT)</strong>
+                </div>
+                <div className={`${styles.dealBreakdownRow} ${styles.dealBreakdownNet}`}>
+                  <span>Net to provider</span>
+                  <strong>{EXAMPLE_NET.toLocaleString('en-US')} USDT</strong>
+                </div>
+              </div>
+
+              <div className={styles.dealPreviewLinks}>
+                <Link href="/try" className={styles.dealPreviewLinkPrimary}>
+                  Try it live with $1 →
+                </Link>
+                <Link href="/app" className={styles.dealPreviewLinkSecondary}>
+                  Explore categories →
+                </Link>
+              </div>
             </div>
           </div>
         </div>
@@ -375,6 +507,33 @@ export default function LandingPage() {
           </div>
 
           <HomeFaq />
+        </div>
+      </section>
+
+      {/* Final Conversion Banner */}
+      <section className={styles.finalCtaSection}>
+        <div className={styles.container}>
+          <div className={`glass-panel ${styles.referralBanner} ${styles.finalCtaBanner}`}>
+            <div className={styles.finalCtaText}>
+              <h2 className={styles.refTitle}>
+                Ready to secure your next deal on-chain?
+              </h2>
+              <p className={styles.refSub}>
+                Start with a $1 test between two of your wallets, open an escrow in your category, or join the JOOB presale.
+              </p>
+            </div>
+            <div className={styles.finalCtaActions}>
+              <Link href="/app" className="btn btn-primary">
+                Launch App
+              </Link>
+              <Link href="/try" className="btn btn-outline">
+                Try with $1
+              </Link>
+              <Link href="/presale" className="btn btn-outline">
+                Join the Presale
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
     </div>
