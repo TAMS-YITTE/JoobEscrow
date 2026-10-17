@@ -117,14 +117,14 @@ export default function SecurityPage() {
           </p>
           <div style={{ marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px', background: 'rgba(16, 185, 129, 0.1)', padding: '10px 15px', borderRadius: '8px', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
             <span style={{ color: '#10b981', fontWeight: 'bold' }}>Treasury & Admin:</span>
-            <Link href="https://app.safe.global/home?safe=bnb:0x872F979aa868145bE3c3A6EA787614BE2A18C7f7" target="_blank" className="hover:underline" style={{ color: '#fff', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '5px' }}>
+            <Link href={`https://app.safe.global/home?safe=bnb:${PRESALE_ADDRESSES.SAFE}`} target="_blank" className="hover:underline" style={{ color: '#fff', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '5px' }}>
               <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-              Safe (0x872F...C7f7) ↗
+              Safe ({PRESALE_ADDRESSES.SAFE.slice(0, 6)}...{PRESALE_ADDRESSES.SAFE.slice(-4)}) ↗
             </Link>
           </div>
           <div style={{ padding: '15px', backgroundColor: 'rgba(0,0,0,0.5)', borderRadius: '8px', wordBreak: 'break-all', fontFamily: 'monospace', color: 'var(--accent-primary)', display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {(() => {
-              // Liste unique des 6 contrats d'escrow V4 (5 paliers a frais + demo 0 %) triee par frais decroissants.
+              // Liste unique des 6 contrats d'escrow V4 (5 paliers a frais + demo 0 %) triee par frais decroissants, demo en dernier.
               const byAddress = new Map();
               for (const inst of Object.values(allInstances)) {
                 if (!byAddress.has(inst.contractAddress)) {
@@ -135,7 +135,10 @@ export default function SecurityPage() {
                   });
                 }
               }
-              const escrowContracts = [...byAddress.values()].sort((a, b) => b.feeTier - a.feeTier);
+              const escrowContracts = [...byAddress.values()].sort((a, b) => {
+                if (a.isDemo !== b.isDemo) return a.isDemo ? 1 : -1;
+                return b.feeTier - a.feeTier;
+              });
               return escrowContracts.map(({ addr, feeTier, isDemo }, idx) => {
                 const tierName = isDemo ? `${feeTier}% Tier (Public Demo)` : `${feeTier}% Tier`;
                 const isLast = idx === escrowContracts.length - 1;
@@ -166,7 +169,7 @@ export default function SecurityPage() {
             {[
               { label: 'JOOB Token', addr: PRESALE_ADDRESSES.TOKEN, note: 'Fixed 1B supply, no mint, no transfer tax' },
               { label: 'Presale Vault', addr: PRESALE_ADDRESSES.PRESALE, note: 'Sealed vault, linear 180-day vesting' },
-              { label: 'Governance & Treasury Safe (3/5)', addr: '0x872F979aa868145bE3c3A6EA787614BE2A18C7f7', note: 'Safe multisig (3 signatures required)' },
+              { label: 'Governance & Treasury Safe (3/5)', addr: PRESALE_ADDRESSES.SAFE, note: 'Safe multisig (3 signatures required)' },
               { label: 'JOOB Staking', addr: '0x7949528182876027b1F4B2e43E3a46eb2dADD32b', note: 'Audited staking pool (opens post-TGE)' },
               { label: 'Treasury Vesting (36m)', addr: '0x8cbac3786F61572D4571C951e9215FC289FB2ff3', note: '130M JOOB on-chain vesting' },
               { label: 'Team Vesting (24m)', addr: '0xc430f8C4E26FFc25326C4AA84947B3e2A1328012', note: '120M JOOB locked until 2028' },
