@@ -509,6 +509,33 @@ export default function LandingPage() {
           <HomeFaq />
         </div>
       </section>
+
+      {/* Final Conversion Banner */}
+      <section className={styles.finalCtaSection}>
+        <div className={styles.container}>
+          <div className={`glass-panel ${styles.referralBanner} ${styles.finalCtaBanner}`}>
+            <div className={styles.finalCtaText}>
+              <h2 className={styles.refTitle}>
+                Ready to secure your next deal on-chain?
+              </h2>
+              <p className={styles.refSub}>
+                Start with a $1 test between two of your wallets, open an escrow in your category, or join the JOOB presale.
+              </p>
+            </div>
+            <div className={styles.finalCtaActions}>
+              <Link href="/app" className="btn btn-primary">
+                Launch App
+              </Link>
+              <Link href="/try" className="btn btn-outline">
+                Try with $1
+              </Link>
+              <Link href="/presale" className="btn btn-outline">
+                Join the Presale
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

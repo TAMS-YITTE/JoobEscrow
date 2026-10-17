@@ -1254,3 +1254,66 @@
   .heroTechLine { font-size: 0.72rem; letter-spacing: 0.06em; }
   .trustPill { padding: 8px 14px; gap: 8px; }
 }
+
+/* --- Bandeau de conversion final apres #faq --- */
+.finalCtaSection {
+  padding: 56px 0 20px;
+  position: relative;
+  z-index: 2;
+}
+
+.finalCtaBanner {
+  margin-top: 0;
+  padding: 36px 40px;
+}
+
+.finalCtaText {
+  max-width: 580px;
+}
+
+.finalCtaActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+
+.finalCtaActions :global(.btn) {
+  padding: 12px 24px;
+  font-size: 0.95rem;
+  white-space: nowrap;
+}
+
+@media (max-width: 1024px) {
+  .finalCtaBanner {
+    padding: 30px 22px;
+  }
+  .finalCtaActions {
+    justify-content: center;
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .finalCtaSection {
+    padding: 36px 0 10px;
+  }
+  .finalCtaActions {
+    flex-direction: column;
+  }
+  .finalCtaActions :global(.btn) {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+}
+
+@media (max-width: 360px) {
+  .header { padding: 8px 10px; gap: 6px; }
+  .logoImg { width: 28px; height: 28px; }
+  .navRight { gap: 6px; }
+  .presaleBtn { padding: 6px 8px; font-size: 0.72rem; gap: 4px; }
+  .launchBtn { padding: 6px 9px !important; font-size: 0.74rem !important; }
+  .burger { width: 32px; height: 32px; }
+}
