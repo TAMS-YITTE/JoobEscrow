@@ -8,7 +8,6 @@ import { BSCN_ARTICLE_URL } from '../../config/links';
 import HomeFaq from '../../components/HomeFaq';
 import LiveStats from '../../components/LiveStats';
 import FeeCalculator from '../../components/FeeCalculator';
-import LiteYouTube from '../../components/LiteYouTube';
 import { AUDITS, KYC_URL } from '../../config/presale';
 import { TOKENOMICS, TOKENOMICS_SEGMENTS, fmtM } from '../../config/tokenomics';
 import { ROADMAP_PHASES_WITH_STATUS } from '../../config/roadmap';
@@ -163,10 +162,6 @@ export default function LandingPage() {
                 Funds are locked on-chain before the work begins. Released on approval, claimable after the deadline, or split in a dispute. 0% for clients, 2–10% for providers.
               </p>
             </div>
-          </div>
-
-          <div className={styles.videoWrap}>
-            <LiteYouTube id="NbLMUrY4bac" title="JoobEscrow: secure payments in 45 seconds" />
           </div>
         </div>
       </section>
