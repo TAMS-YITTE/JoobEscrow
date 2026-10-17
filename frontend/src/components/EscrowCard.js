@@ -758,12 +758,8 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
             <h3 className="text-xl font-bold mb-4" style={{ color: 'var(--app-text-primary, #F2F5F3)' }}>
               Decline this escrow?
             </h3>
-            <p className="text-gray-300 text-sm mb-4">
-              You do not need to do anything on-chain: as long as you have not accepted, nothing is committed on your side.
-              The {clientWord} can cancel at any time and get the full <strong>{escrow.amount} {escrow.tokenSymbol}</strong> back.
-            </p>
-            <p className="text-gray-400 text-sm mb-6">
-              Let them know in the encrypted chat so they can cancel. Do not open a dispute to decline: it would freeze their funds.
+            <p className="text-gray-300 text-sm mb-6">
+              No transaction is sent and the escrow stays open. Only the {clientWord} can cancel and get the <strong>{escrow.amount} {escrow.tokenSymbol}</strong> back: let them know in the chat.
             </p>
             <div className="flex flex-wrap gap-3 justify-end">
               <button type="button" className="btn btn-app-secondary" onClick={() => setShowDeclineModal(false)}>
