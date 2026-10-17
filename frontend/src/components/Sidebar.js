@@ -40,14 +40,14 @@ export default function Sidebar() {
 
   const createPath = `/${niche.slug}`;
   const allEscrowsPath = `/${niche.slug}/all`;
-  const categoriesPath = '/app';
+  const newEscrowPath = '/app';
   const demoPath = '/demo';
   const whatsNextPath = `/${niche.slug}/whats-next`;
   const settingsPath = `/${niche.slug}/settings`;
 
+  const isNewEscrowActive = pathname === newEscrowPath || (pathname === createPath && !niche.isDemo);
   const isMyEscrowsActive = pathname === allEscrowsPath;
-  const isCreateActive = pathname === createPath;
-  const isCategoriesActive = pathname === categoriesPath;
+  const isDemoActive = pathname === demoPath;
   const isMoreActive = pathname === whatsNextPath || pathname === settingsPath || pathname === demoPath;
 
   return (
@@ -64,15 +64,13 @@ export default function Sidebar() {
           </div>
         </div>
 
-        <Link href={createPath} className="sidebar-create-cta">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <line x1="12" y1="5" x2="12" y2="19" />
-            <line x1="5" y1="12" x2="19" y2="12" />
-          </svg>
-          <span>Create escrow</span>
-        </Link>
-
         <nav className="nav-menu" aria-label="Main navigation">
+          <div className="nav-section-title" role="presentation">ESCROW</div>
+
+          <Link href={newEscrowPath} className={`nav-link ${isNewEscrowActive ? 'active' : ''}`}>
+            <span>New escrow</span>
+          </Link>
+
           <Link href={allEscrowsPath} className={`nav-link ${isMyEscrowsActive ? 'active' : ''}`}>
             <span>My escrows</span>
             {actionsRequired > 0 && (
@@ -82,12 +80,9 @@ export default function Sidebar() {
             )}
           </Link>
 
-          <Link href={categoriesPath} className={`nav-link ${isCategoriesActive ? 'active' : ''}`}>
-            <span>Categories &amp; fees</span>
-          </Link>
-
-          <Link href={demoPath} className={`nav-link ${pathname === demoPath ? 'active' : ''}`}>
-            <span>Try it with $1</span>
+          <Link href={demoPath} className={`nav-link ${isDemoActive ? 'active' : ''}`}>
+            <span>Try with $1</span>
+            <span className="nav-badge">0% fee</span>
           </Link>
 
           <div className="nav-divider" />
@@ -147,7 +142,7 @@ export default function Sidebar() {
           <span>My escrows</span>
         </Link>
 
-        <Link href={createPath} className={`mobile-nav-item is-create ${isCreateActive ? 'is-active' : ''}`} onClick={() => setMoreOpen(false)}>
+        <Link href={createPath} className={`mobile-nav-item is-create ${pathname === createPath ? 'is-active' : ''}`} onClick={() => setMoreOpen(false)}>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <circle cx="12" cy="12" r="10" />
             <line x1="12" y1="8" x2="12" y2="16" />
@@ -156,7 +151,7 @@ export default function Sidebar() {
           <span>+ Create</span>
         </Link>
 
-        <Link href={categoriesPath} className={`mobile-nav-item ${isCategoriesActive ? 'is-active' : ''}`} onClick={() => setMoreOpen(false)}>
+        <Link href={newEscrowPath} className={`mobile-nav-item ${pathname === newEscrowPath ? 'is-active' : ''}`} onClick={() => setMoreOpen(false)}>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <rect x="3" y="3" width="7" height="7" />
             <rect x="14" y="3" width="7" height="7" />
