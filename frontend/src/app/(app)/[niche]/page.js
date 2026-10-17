@@ -37,6 +37,17 @@ function DashboardContent() {
   const router = useRouter();
   const highlightedId = searchParams?.get('escrow');
 
+  // Memorise la derniere categorie non demo visitee pour proposer un raccourci sur /app.
+  useEffect(() => {
+    if (niche?.slug && !niche.isDemo) {
+      try {
+        localStorage.setItem('joob_last_category', niche.slug);
+      } catch {
+        /* ignore */
+      }
+    }
+  }, [niche?.slug, niche?.isDemo]);
+
   const fetchPending = useCallback(async () => {
     const currentProvider = readProvider || provider;
     if (!currentProvider || !account) return;

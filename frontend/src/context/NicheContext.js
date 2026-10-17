@@ -25,6 +25,17 @@ export function NicheProvider({ children }) {
   // Ensure slug exists in config, otherwise fallback
   const activeNiche = instances[currentSlug] || instances[defaultInstance];
 
+  // Memorise la derniere categorie non demo ouverte sur /[niche] (avec ou sans wallet connecte).
+  useEffect(() => {
+    if (pathname === `/${activeNiche.slug}` && !activeNiche.isDemo) {
+      try {
+        localStorage.setItem('joob_last_category', activeNiche.slug);
+      } catch {
+        /* ignore */
+      }
+    }
+  }, [pathname, activeNiche.slug, activeNiche.isDemo]);
+
   return (
     <NicheContext.Provider value={activeNiche}>
       <div className={`min-h-screen text-white font-sans ${activeNiche.theme.bg} transition-colors duration-300`}>

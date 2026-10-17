@@ -46,6 +46,33 @@
   background: var(--app-surface-1, #111613);
 }
 
+/* Raccourci sobre vers la derniere categorie visitee */
+.continueLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-radius: var(--app-radius-md, 8px);
+  border: 1px solid var(--app-border-default, #2A362E);
+  background: var(--app-surface-1, #111613);
+  color: var(--app-text-secondary, #9CA8A1);
+  font-size: 0.9rem;
+  text-decoration: none;
+  font-variant-numeric: tabular-nums;
+  transition: border-color 0.18s ease, background 0.18s ease, color 0.18s ease;
+  max-width: 100%;
+  flex-wrap: wrap;
+}
+.continueLink strong {
+  color: var(--app-lime-hover, #BEF264);
+  font-weight: 600;
+}
+.continueLink:hover {
+  border-color: rgba(163, 230, 53, 0.45);
+  background: var(--app-surface-2, #171E1A);
+  color: var(--app-text-primary, #F2F5F3);
+}
+
 /* Demo : bandeau horizontal, sobre */
 .demo {
   display: flex;

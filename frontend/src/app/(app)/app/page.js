@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { instances } from '../../../config/instances';
+import LastCategoryShortcut from './LastCategoryShortcut';
 import styles from './hub.module.css';
 
 export const metadata = {
@@ -35,6 +36,8 @@ export default function HubPage() {
           {TRUST.map((t) => <li key={t}>{t}</li>)}
         </ul>
       </header>
+
+      <LastCategoryShortcut />
 
       <Link href="/demo" className={styles.demo}>
         <div>
