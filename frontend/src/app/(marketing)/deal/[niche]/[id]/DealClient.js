@@ -31,11 +31,43 @@ function statusOf(e) {
       }
       return { label: 'In progress', tone: 'ok', note: 'The provider accepted. The client can no longer cancel: the funds can only be paid to the provider, or split through a dispute.' };
     case 2: return { label: 'Completed', tone: 'done', note: 'The funds were released to the provider.' };
-    case 3: return { label: 'In mediation', tone: 'warn', note: 'A dispute is open. The 3-of-5 Safe multisig settles it; after 30 days either party can trigger a 50/50 split.' };
+    case 3: return { label: 'In mediation', tone: 'danger', note: 'A dispute is open. The 3-of-5 Safe multisig settles it; after 30 days either party can trigger a 50/50 split.' };
     case 4: return { label: 'Completed', tone: 'done', note: 'The dispute was settled and the funds were split.' };
     case 5: return { label: 'Cancelled', tone: 'done', note: 'The client cancelled before acceptance and was refunded.' };
     default: return null;
   }
+}
+
+// Etat de la frise 3 etapes aligne sur le vocabulaire d'EscrowCard.js.
+function timelineOf(e) {
+  const statusNum = Number(e.status);
+  const nowSec = Math.floor(Date.now() / 1000);
+  const isCompleted = statusNum === 2 || statusNum === 4;
+  const isCancelled = statusNum === 5;
+  const isDisputed = statusNum === 3;
+  const isExpired = statusNum === 1 && Boolean(e.accepted) && Number(e.timeoutDate) > 0 && nowSec > Number(e.timeoutDate);
+
+  const step1Done = Boolean(e.accepted) || isCompleted || isDisputed;
+  const step1Active = statusNum === 1 && !e.accepted;
+  const step1Label = step1Done ? 'Accepted' : isCancelled ? 'Cancelled' : 'Awaiting acceptance';
+
+  let step2Label = 'In progress';
+  let step2Class = '';
+  if (isDisputed) {
+    step2Label = 'In mediation';
+    step2Class = styles.stepDanger;
+  } else if (isExpired) {
+    step2Label = 'Deadline passed';
+    step2Class = styles.stepWarn;
+  } else if (isCompleted) {
+    step2Label = 'In progress';
+    step2Class = styles.stepDone;
+  } else if (statusNum === 1 && e.accepted) {
+    step2Label = 'In progress';
+    step2Class = styles.stepActive;
+  }
+
+  return { isCompleted, isCancelled, isDisputed, step1Done, step1Active, step1Label, step2Label, step2Class };
 }
 
 export default function DealClient({ niche, id }) {
@@ -44,6 +76,7 @@ export default function DealClient({ niche, id }) {
   const validId = /^\d+$/.test(String(id));
   const [state, setState] = useState({ loading: true, error: null, data: null });
   const [reference, setReference] = useState(null);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     if (!inst || !validId || !readProvider) return;
@@ -79,7 +112,25 @@ export default function DealClient({ niche, id }) {
 
   const d = state.data;
   const st = d && statusOf(d);
+  const tl = d && timelineOf(d);
   const amount = d ? Number(ethers.formatUnits(d.amount, d.decimals)).toLocaleString('en-US', { maximumFractionDigits: 2 }) : null;
+
+  // Calcul exact en BigInt du net prestataire pour une liberation standard (masque si litige resolu ou annule).
+  const statusNum = d ? Number(d.status) : 0;
+  const showNetLine = d && statusNum !== 4 && statusNum !== 5;
+  const feeBPSBig = d ? BigInt(d.feeBPS) : 0n;
+  const netRaw = d ? d.amount - (d.amount * feeBPSBig) / 10000n : 0n;
+  const netFormatted = d ? Number(ethers.formatUnits(netRaw, d.decimals)).toLocaleString('en-US', { maximumFractionDigits: 2 }) : null;
+
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      /* Silence si le navigateur refuse l'acces au presse-papiers */
+    }
+  };
 
   return (
     <div className={styles.page}>
@@ -92,11 +143,58 @@ export default function DealClient({ niche, id }) {
         {state.error === 'not-found' && <p className={styles.muted}>No escrow #{id} on this contract. Check the link you received.</p>}
         {state.error === 'read' && <p className={styles.muted}>Could not read the contract right now. Please try again.</p>}
 
-        {d && st && (
+        {d && st && tl && (
           <>
             <div className={`${styles.status} ${styles[st.tone]}`}>{st.label}</div>
             <div className={styles.amount}>{amount} <span>{d.symbol}</span></div>
             <p className={styles.note}>{st.note}</p>
+
+            {/* Frise 3 etapes identique au vocabulaire d'EscrowCard */}
+            <div className={styles.timeline} aria-label="Deal progress">
+              <div className={styles.timelineTrack}>
+                <div className={`${styles.timelineStep} ${tl.step1Done ? styles.stepDone : tl.step1Active ? styles.stepActive : ''}`}>
+                  <span className={styles.timelineNode} aria-hidden="true">
+                    {tl.step1Done ? (
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+                    ) : (
+                      <span className={styles.timelineDot} />
+                    )}
+                  </span>
+                  <span className={styles.timelineLabel}>{tl.step1Label}</span>
+                </div>
+
+                {!tl.isCancelled && (
+                  <>
+                    <div className={`${styles.timelineLine} ${tl.step1Done ? styles.lineDone : ''}`} />
+
+                    <div className={`${styles.timelineStep} ${tl.step2Class}`}>
+                      <span className={styles.timelineNode} aria-hidden="true">
+                        {tl.isCompleted ? (
+                          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+                        ) : (
+                          <span className={styles.timelineDot} />
+                        )}
+                      </span>
+                      <span className={styles.timelineLabel}>{tl.step2Label}</span>
+                    </div>
+
+                    <div className={`${styles.timelineLine} ${tl.isCompleted ? styles.lineDone : tl.isDisputed ? styles.lineDanger : ''}`} />
+
+                    <div className={`${styles.timelineStep} ${tl.isCompleted ? styles.stepDone : ''}`}>
+                      <span className={styles.timelineNode} aria-hidden="true">
+                        {tl.isCompleted ? (
+                          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+                        ) : (
+                          <span className={styles.timelineDot} />
+                        )}
+                      </span>
+                      <span className={styles.timelineLabel}>Completed</span>
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+
             <ul className={styles.rows}>
               {reference && <li><span>Reference</span><b>{reference}</b></li>}
               <li><span>{inst.lexicon?.client ?? 'Client'}</span><a href={`${BSCSCAN}/address/${d.client}`} target="_blank" rel="noopener noreferrer">{short(d.client)} ↗</a></li>
@@ -104,9 +202,20 @@ export default function DealClient({ niche, id }) {
               <li><span>Created</span><b>{fmtDate(d.createdAt)}</b></li>
               <li><span>Delivery deadline</span><b>{fmtDate(d.timeoutDate)}</b></li>
               <li><span>Provider fee</span><b>{Number(d.feeBPS) / 100}%</b></li>
+              {showNetLine && (
+                <li>
+                  <span>Net to provider (on standard release)</span>
+                  <b>{netFormatted} {d.symbol}{Number(d.feeBPS) === 0 ? ' (0% fee)' : ''}</b>
+                </li>
+              )}
               <li><span>Contract</span><a href={`${BSCSCAN}/address/${inst.contractAddress}#readContract`} target="_blank" rel="noopener noreferrer">{short(inst.contractAddress)} ↗</a></li>
             </ul>
-            <Link href={`/${niche}?escrow=${id}`} className={`btn btn-primary ${styles.cta}`}>Open in the app</Link>
+            <div className={styles.actions}>
+              <Link href={`/${niche}?escrow=${id}`} className={`btn btn-primary ${styles.cta}`}>Open in the app</Link>
+              <button type="button" className={styles.copyBtn} onClick={handleCopyLink}>
+                {copied ? 'Link copied' : 'Copy deal link'}
+              </button>
+            </div>
           </>
         )}
       </div>
