@@ -9,6 +9,7 @@ import { useToast } from '../../../../context/ToastContext';
 import { allInstances } from '../../../../config/instances';
 import { ESCROW_ABI, TOKEN_ADDRESSES } from '../../../../config/contract';
 import { loadMyEscrows } from '../../../../lib/myEscrows';
+import { readEscrowReference, cacheKey } from '../../../../lib/escrowReference';
 import { isUserRejection } from '../../../../lib/walletErrors';
 import EscrowCard from '../../../../components/EscrowCard';
 import WalletConnect from '../../../../components/WalletConnect';
@@ -36,7 +37,17 @@ export default function MyEscrowsPage() {
   const [rows, setRows] = useState(null);
   const [pending, setPending] = useState([]);
   const [filter, setFilter] = useState('active');
+  const [search, setSearch] = useState('');
+  // References remontees par chaque EscrowCard (et pre-lues depuis le cache localStorage escrowRef2:).
+  // Limite documentee : la reference etant gravee dans le calldata de la transaction de creation,
+  // elle devient cherchable des que la carte (ou le cache localStorage) a resolu readEscrowReference.
+  const [refsByKey, setRefsByKey] = useState({});
   const [error, setError] = useState(null);
+
+  const handleReference = useCallback((ref, key) => {
+    if (!ref || !key) return;
+    setRefsByKey((prev) => (prev[key] === ref ? prev : { ...prev, [key]: ref }));
+  }, []);
 
   const load = useCallback(async () => {
     if (!account || !readProvider) return;
@@ -58,6 +69,19 @@ export default function MyEscrowsPage() {
         if (!a.actionRequired && b.actionRequired) return 1;
         return b.createdAt - a.createdAt;
       });
+      // Pre-remplissage synchrone depuis le cache localStorage (0 appel RPC) pour les escrows deja vus.
+      try {
+        const cachedRefs = {};
+        for (const e of found) {
+          const val = localStorage.getItem(cacheKey(e.niche.contractAddress, e.id));
+          if (val) cachedRefs[e.key] = val;
+        }
+        if (Object.keys(cachedRefs).length > 0) {
+          setRefsByKey((prev) => ({ ...prev, ...cachedRefs }));
+        }
+      } catch {
+        /* ignore */
+      }
       setRows(found);
       setPending(toClaim);
       try {
@@ -80,6 +104,33 @@ export default function MyEscrowsPage() {
     return () => clearTimeout(t);
   }, [load]);
 
+  // Si l'utilisateur saisit une recherche texte (hors #ID et 0x...), resout en arriere-plan (apres 300 ms)
+  // les references des escrows du wallet non encore montees dans l'onglet courant (partage le cache cacheKey).
+  useEffect(() => {
+    const q = search.trim();
+    if (!q || !rows || !readProvider) return;
+    if (/^#?\d+$/.test(q) || q.toLowerCase().startsWith('0x')) return;
+    let cancelled = false;
+    const timer = setTimeout(async () => {
+      for (const e of rows) {
+        if (cancelled) break;
+        if (!e.createdAt) continue;
+        try {
+          const r = await readEscrowReference(readProvider, e.niche.contractAddress, String(e.id), e.createdAt);
+          if (!cancelled && r) {
+            setRefsByKey((prev) => (prev[e.key] === r ? prev : { ...prev, [e.key]: r }));
+          }
+        } catch {
+          /* ignore */
+        }
+      }
+    }, 300);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [search, rows, readProvider]);
+
   const claim = async ({ niche: n, sym }) => {
     if (!signer) return;
     try {
@@ -100,7 +151,25 @@ export default function MyEscrowsPage() {
   const secured = active.reduce((s, e) => s + Number(e.amount), 0);
   const actions = (rows || []).filter(FILTERS[0].test).length;
   const current = FILTERS.find((f) => f.key === filter) || FILTERS[4];
-  const shown = (rows || []).filter(current.test);
+  const tabRows = (rows || []).filter(current.test);
+
+  const qRaw = search.trim().toLowerCase();
+  const isNumericQuery = /^#?\d+$/.test(qRaw);
+  const numericTarget = isNumericQuery ? qRaw.replace(/^#/, '') : '';
+
+  const shown = tabRows.filter((e) => {
+    if (!qRaw) return true;
+    if (isNumericQuery) {
+      if (String(e.id) === numericTarget) return true;
+      const ref = refsByKey[e.key];
+      return Boolean(ref && ref.toLowerCase().includes(numericTarget));
+    }
+    if (String(e.id).toLowerCase().includes(qRaw)) return true;
+    if (e.client?.toLowerCase().includes(qRaw) || e.provider?.toLowerCase().includes(qRaw)) return true;
+    const ref = refsByKey[e.key];
+    if (ref && ref.toLowerCase().includes(qRaw)) return true;
+    return false;
+  });
 
   return (
     <div className="dashboard">
@@ -114,7 +183,13 @@ export default function MyEscrowsPage() {
 
       {!account && <p style={{ color: 'var(--text-secondary)' }}>Connect your wallet to see your escrows.</p>}
       {error && <p style={{ color: '#fca5a5' }}>{error}</p>}
-      {account && !error && rows === null && <p style={{ color: 'var(--text-secondary)' }}>Loading your escrows from the blockchain…</p>}
+      {account && !error && rows === null && (
+        <div className="escrow-grid" aria-busy="true" aria-label="Loading your escrows">
+          <div className="escrow-skeleton-card" />
+          <div className="escrow-skeleton-card" />
+          <div className="escrow-skeleton-card" />
+        </div>
+      )}
 
       {rows && (
         <>
@@ -170,17 +245,53 @@ export default function MyEscrowsPage() {
                 </button>
               ))}
             </div>
-            <Link href={`/${niche.slug}`} className="btn btn-primary">+ Create escrow</Link>
+            <div className="escrow-controls-right">
+              <div className="escrow-search-wrap">
+                <input
+                  type="search"
+                  className="escrow-search-input"
+                  value={search}
+                  onChange={(ev) => setSearch(ev.target.value)}
+                  placeholder="Search by #ID, reference or 0x address…"
+                  aria-label="Search by ID, reference or wallet address"
+                />
+                {search && (
+                  <button
+                    type="button"
+                    className="escrow-search-clear-icon"
+                    onClick={() => setSearch('')}
+                    aria-label="Clear search"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+              <Link href={`/${niche.slug}`} className="btn btn-primary">+ Create escrow</Link>
+            </div>
           </div>
 
           {shown.length === 0 ? (
-            <p style={{ color: 'var(--text-secondary)' }}>{rows.length === 0 ? 'No escrow yet for this wallet.' : 'Nothing here.'}</p>
+            qRaw && tabRows.length > 0 ? (
+              <div className="escrow-search-empty">
+                <p style={{ margin: 0 }}>No escrow matches your search.</p>
+                <button type="button" className="btn btn-app-secondary" onClick={() => setSearch('')}>
+                  Clear
+                </button>
+              </div>
+            ) : (
+              <p style={{ color: 'var(--text-secondary)' }}>{rows.length === 0 ? 'No escrow yet for this wallet.' : 'Nothing here.'}</p>
+            )
           ) : (
             <div className="escrow-grid">
               {shown.map((e) => (
                 <div key={e.key}>
                   <NicheScope niche={e.niche}>
-                    <EscrowCard escrow={e} isDisputeView={e.status === 'DISPUTED'} onUpdate={load} />
+                    <EscrowCard
+                      escrow={e}
+                      isDisputeView={e.status === 'DISPUTED'}
+                      onUpdate={load}
+                      onReference={handleReference}
+                    />
                   </NicheScope>
                 </div>
               ))}

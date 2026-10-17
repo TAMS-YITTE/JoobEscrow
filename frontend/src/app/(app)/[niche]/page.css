@@ -213,3 +213,103 @@
   .stat-card { flex-direction: column; justify-content: center; gap: 4px; padding: 10px; }
   .stat-card .stat-value { font-size: 1.2rem; }
 }
+
+/* --- Recherche et squelettes My escrows --- */
+.escrow-controls-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.escrow-search-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  flex: 1 1 240px;
+}
+
+.escrow-search-input {
+  width: 100%;
+  min-width: 0;
+  height: 40px;
+  padding: 0 34px 0 12px;
+  border-radius: var(--app-radius-md, 8px);
+  border: 1px solid var(--app-border-default, #2A362E);
+  background: var(--app-surface-1, #111613);
+  color: var(--app-text-primary, #F2F5F3);
+  font-size: 0.88rem;
+  font-family: var(--font-main);
+  transition: border-color 0.15s ease;
+}
+
+.escrow-search-input::placeholder {
+  color: var(--app-text-secondary, #9CA8A1);
+}
+
+.escrow-search-input:focus {
+  outline: none;
+  border-color: var(--app-lime, #A3E635);
+}
+
+.escrow-search-clear-icon {
+  position: absolute;
+  right: 8px;
+  background: none;
+  border: none;
+  color: var(--app-text-secondary, #9CA8A1);
+  cursor: pointer;
+  padding: 4px 6px;
+  font-size: 0.85rem;
+  line-height: 1;
+}
+
+.escrow-search-clear-icon:hover {
+  color: var(--app-text-primary, #F2F5F3);
+}
+
+.escrow-search-empty {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  color: var(--app-text-secondary, #9CA8A1);
+}
+
+.escrow-skeleton-card {
+  height: 196px;
+  border-radius: var(--app-radius-lg, 12px);
+  border: 1px solid var(--app-border-subtle, #1E2621);
+  background: linear-gradient(
+    90deg,
+    var(--app-surface-1, #111613) 0%,
+    var(--app-surface-2, #171E1A) 50%,
+    var(--app-surface-1, #111613) 100%
+  );
+  background-size: 200% 100%;
+  animation: escrow-skeleton-shimmer 1.8s ease-in-out infinite;
+}
+
+@keyframes escrow-skeleton-shimmer {
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .escrow-skeleton-card {
+    animation: none;
+    background: var(--app-surface-1, #111613);
+  }
+}
+
+@media (max-width: 640px) {
+  .escrow-controls-right {
+    width: 100%;
+  }
+  .escrow-search-wrap {
+    flex: 1 1 100%;
+  }
+}
+

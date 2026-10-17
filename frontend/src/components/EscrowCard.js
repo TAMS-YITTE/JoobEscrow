@@ -14,20 +14,29 @@ import { isUserRejection } from '../lib/walletErrors';
 
 const ChatBox = dynamic(() => import('./ChatBox'), { ssr: false });
 
-export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, defaultExpanded = false }) {
+export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, defaultExpanded = false, onReference }) {
   const { account, readProvider, ensureCorrectChain } = useWeb3();
   const contract = useEscrowContract();
   const niche = useNiche();
   // Reference gravee dans la transaction de creation (si le client en a saisi une).
   const [reference, setReference] = useState(null);
+  const onReferenceRef = useRef(onReference);
+  useEffect(() => {
+    onReferenceRef.current = onReference;
+  }, [onReference]);
   useEffect(() => {
     if (!readProvider || !niche?.contractAddress || !escrow?.createdAt) return;
     let cancelled = false;
     readEscrowReference(readProvider, niche.contractAddress, escrow.id.toString(), escrow.createdAt)
-      .then((r) => { if (!cancelled) setReference(r); })
+      .then((r) => {
+        if (!cancelled) {
+          setReference(r);
+          if (r && onReferenceRef.current) onReferenceRef.current(r, escrow?.key);
+        }
+      })
       .catch(() => {});
     return () => { cancelled = true; };
-  }, [readProvider, niche?.contractAddress, escrow?.id, escrow?.createdAt]);
+  }, [readProvider, niche?.contractAddress, escrow?.id, escrow?.createdAt, escrow?.key]);
 
   const [loading, setLoading] = useState(false);
   const [showResolveModal, setShowResolveModal] = useState(false);

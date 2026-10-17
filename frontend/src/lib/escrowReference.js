@@ -47,7 +47,7 @@ export function referenceFromInput(input) {
 
 const TOPIC_CREATED = ethers.id('EscrowCreated(uint256,address,address,address,uint256,uint256)');
 // v2 : invalide les « pas de reference » mis en cache avant la prise en charge des comptes intelligents.
-const cacheKey = (contract, id) => `escrowRef2:${contract.toLowerCase()}:${id}`;
+export const cacheKey = (contract, id) => `escrowRef2:${contract.toLowerCase()}:${id}`;
 
 /**
  * Retrouve la reference d'un escrow a partir de sa date de creation (createdAt = horodatage du bloc) :
