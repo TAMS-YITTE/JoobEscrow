@@ -49,7 +49,7 @@ export default function TryPage() {
         <h1 className={styles.title}>Try JoobEscrow <span className={styles.gradient}>with $1</span></h1>
         <p className={styles.lead}>
           Live the full escrow cycle in about 10 minutes, with your own money moving between two of your own wallets.
-          Same audited contract as real deals, 0% fee, amounts capped at 20.
+          Same audited contract as real deals, 0% fee, amounts capped at $1.
         </p>
         <div className={styles.chips}>
           <a href={`https://bscscan.com/address/${CONTRACT_DEMO}`} target="_blank" rel="noopener noreferrer" className={`${styles.chip} ${styles.chipOk}`}>
