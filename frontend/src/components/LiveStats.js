@@ -77,7 +77,7 @@ export default function LiveStats() {
   const showVolume = stats.securedUsd >= VOLUME_DISPLAY_MIN_USD;
 
   return (
-    <div className="glass-panel" style={{ padding: '30px', margin: '0', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)', flex: 1, minWidth: '300px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+    <div className="glass-panel" style={{ padding: '24px', margin: '0', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)', flex: '1 1 260px', minWidth: 0, width: '100%', boxSizing: 'border-box', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
       <div style={{ textAlign: 'center', marginBottom: '24px' }}>
         <h3 style={{ fontWeight: 'bold', fontSize: '1.5rem', color: '#fff', margin: '0 0 8px 0' }}>Live Network Stats</h3>
         <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', margin: 0 }}>Read directly from the escrow contracts on BNB Smart Chain.</p>
