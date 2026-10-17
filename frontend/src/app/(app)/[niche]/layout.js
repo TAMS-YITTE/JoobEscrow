@@ -24,7 +24,7 @@ export async function generateMetadata({ params }) {
   return {
     title: `${niche.name} | JoobEscrow`,
     description: niche.isDemo
-      ? 'Try JoobEscrow with $1: run a full escrow between two of your own wallets. 0% fee, 1 to 20 USDT or USDC.'
+      ? `Try JoobEscrow with $1: run a full escrow between two of your own wallets. 0% fee, with $1 in USDT or USDC.`
       : `Secure payments between ${niche.lexicon.client} and ${niche.lexicon.provider} with Joob Escrow. ${niche.feeTier}% platform fee.`,
     alternates: {
       canonical: `/${slug}`,

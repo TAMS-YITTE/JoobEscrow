@@ -43,7 +43,7 @@ export default function HubPage() {
         <div>
           <span className={styles.demoTag}>Demo</span>
           <h2>New here? Run a full escrow with $1</h2>
-          <p>Between two of your own wallets, 1 to 20 USDT or USDC, 0% fee. You get back exactly what you deposit.</p>
+          <p>Between two of your own wallets, with $1 in USDT or USDC, 0% fee. You get back exactly what you deposit.</p>
         </div>
         <span className={styles.demoCta}>Start the demo <span aria-hidden="true">→</span></span>
       </Link>

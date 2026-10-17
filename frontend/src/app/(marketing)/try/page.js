@@ -4,7 +4,7 @@ import { CONTRACT_DEMO } from '../../../config/instances';
 
 export const metadata = {
   title: 'Try JoobEscrow with $1 | JoobEscrow',
-  description: 'Run a full on-chain escrow between two of your own wallets with 1 to 20 USDT or USDC. 0% fee, audited contract, owned by a Safe multisig.',
+  description: `Run a full on-chain escrow between two of your own wallets with $1 in USDT or USDC. 0% fee, audited contract, owned by a Safe multisig.`,
   alternates: { canonical: '/try' },
 };
 
@@ -63,7 +63,7 @@ export default function TryPage() {
         <h2 className={styles.h2}>What you need</h2>
         <ul className={styles.needs}>
           <li><strong>2 wallets</strong> on BNB Smart Chain (two accounts in the same app work)</li>
-          <li><strong>1 to 20 USDT or USDC</strong> (BEP-20) on wallet A</li>
+          <li><strong>$1 in USDT or USDC</strong> (BEP-20) on wallet A</li>
           <li><strong>~0.001 BNB</strong> on each wallet for gas, a few cents in total</li>
         </ul>
       </div>
@@ -88,7 +88,7 @@ export default function TryPage() {
       </div>
 
       <p className={styles.fine}>
-        Demo escrows are not counted in JoobEscrow statistics or volume. The demo contract only accepts 1 to 20 USDT or USDC per escrow.
+        Demo escrows are not counted in JoobEscrow statistics or volume. The demo contract only accepts up to $1 (USDT or USDC) per escrow.
         Only use joobescrow.com, and never share your seed phrase.
       </p>
     </div>

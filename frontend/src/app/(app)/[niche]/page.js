@@ -159,7 +159,7 @@ function DashboardContent() {
               Try JoobEscrow with $1
             </div>
             <p>
-              A full escrow between <strong>two of your own wallets</strong>, with {niche.minAmount} to {niche.maxAmount} USDT or USDC.
+              A full escrow between <strong>two of your own wallets</strong>, with $1 in USDT or USDC.
               0% fee: you get back exactly what you deposited. Demo escrows are not counted in JoobEscrow statistics.
             </p>
           </div>

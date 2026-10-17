@@ -194,8 +194,8 @@ export const demoInstance = {
   feeTier: 0,
   isDemo: true,
   tokens: ["USDT", "USDC"],
-  minAmount: 1,
-  maxAmount: 20
+  minAmount: 0.5,
+  maxAmount: 1
 };
 
 // Toutes les routes /[niche] (y compris la demo).
