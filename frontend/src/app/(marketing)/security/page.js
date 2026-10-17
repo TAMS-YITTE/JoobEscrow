@@ -2,7 +2,7 @@ import { Fragment } from 'react';
 import Link from 'next/link';
 import styles from '../marketing.module.css';
 import dict from '../../../i18n/en.json';
-import { instances } from '../../../config/instances';
+import { allInstances } from '../../../config/instances';
 import GovernanceTransparency from '../../../components/GovernanceTransparency';
 import { AUDITS, KYC_URL, PRESALE_ADDRESSES } from '../../../config/presale';
 
@@ -10,7 +10,7 @@ import { AUDITS, KYC_URL, PRESALE_ADDRESSES } from '../../../config/presale';
 const AUDIT_CARDS = [
   {
     title: 'Escrow contract (V4)',
-    summary: '0 critical, 0 high. 1 medium and 2 low findings, all fixed and re-checked by SpyWolf. Same code on all 5 fee tiers listed below.',
+    summary: '0 critical, 0 high. 1 medium and 2 low findings, all fixed and re-checked by SpyWolf. Same code on all 5 fee tiers and the 0% public demo contract listed below.',
     pdf: AUDITS.ESCROW_V4,
     bscscan: '#contracts',
     bscscanLabel: 'Contracts ↓',
@@ -123,28 +123,35 @@ export default function SecurityPage() {
             </Link>
           </div>
           <div style={{ padding: '15px', backgroundColor: 'rgba(0,0,0,0.5)', borderRadius: '8px', wordBreak: 'break-all', fontFamily: 'monospace', color: 'var(--accent-primary)', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            {[...new Set(Object.values(instances).map(i => i.contractAddress))].map((addr, idx) => {
-               // Map address back to tier approximately for display
-               const tierMap = {
-                 "0xD5B180580D183A7A9278118312207bc8a9C9f89E": "10% Tier",
-                 "0xa45f887b938a08B295A5b96b6559600632F09Ab0": "8% Tier",
-                 "0x56c2227E06dBC16062179Be397839b101a8e58c7": "5% Tier",
-                 "0x3EEEA456daCF2247CB0023a70923E60C3E13D6C3": "3% Tier",
-                 "0x7986Bd37C4DA6d1822958fCB97E7a284b40DD7Cc": "2% Tier"
-               };
-               const tierName = tierMap[addr] || "Custom Tier";
-               return (
-                 <div key={idx} style={{ display: 'flex', flexWrap: 'wrap', gap: '8px 12px', justifyContent: 'space-between', alignItems: 'center', borderBottom: idx < 4 ? '1px solid rgba(255,255,255,0.1)' : 'none', paddingBottom: idx < 4 ? '10px' : '0' }}>
-                   <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
-                     <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{tierName}</span>
-                     <span style={{ wordBreak: 'break-all' }}>{addr}</span>
-                   </div>
-                   <Link href={`https://bscscan.com/address/${addr}`} target="_blank" className="btn btn-outline" style={{ padding: '4px 12px', fontSize: '0.8rem' }}>
-                     BscScan
-                   </Link>
-                 </div>
-               );
-            })}
+            {(() => {
+              // Liste unique des 6 contrats d'escrow V4 (5 paliers a frais + demo 0 %) triee par frais decroissants.
+              const byAddress = new Map();
+              for (const inst of Object.values(allInstances)) {
+                if (!byAddress.has(inst.contractAddress)) {
+                  byAddress.set(inst.contractAddress, {
+                    addr: inst.contractAddress,
+                    feeTier: inst.feeTier,
+                    isDemo: Boolean(inst.isDemo),
+                  });
+                }
+              }
+              const escrowContracts = [...byAddress.values()].sort((a, b) => b.feeTier - a.feeTier);
+              return escrowContracts.map(({ addr, feeTier, isDemo }, idx) => {
+                const tierName = isDemo ? `${feeTier}% Tier (Public Demo)` : `${feeTier}% Tier`;
+                const isLast = idx === escrowContracts.length - 1;
+                return (
+                  <div key={addr} style={{ display: 'flex', flexWrap: 'wrap', gap: '8px 12px', justifyContent: 'space-between', alignItems: 'center', borderBottom: !isLast ? '1px solid rgba(255,255,255,0.1)' : 'none', paddingBottom: !isLast ? '10px' : '0' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{tierName}</span>
+                      <span style={{ wordBreak: 'break-all' }}>{addr}</span>
+                    </div>
+                    <Link href={`https://bscscan.com/address/${addr}`} target="_blank" className="btn btn-outline" style={{ padding: '4px 12px', fontSize: '0.8rem' }}>
+                      BscScan
+                    </Link>
+                  </div>
+                );
+              });
+            })()}
           </div>
         </div>
 
