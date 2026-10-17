@@ -8,7 +8,7 @@ import { BSCN_ARTICLE_URL } from '../../config/links';
 import HomeFaq from '../../components/HomeFaq';
 import LiveStats from '../../components/LiveStats';
 import FeeCalculator from '../../components/FeeCalculator';
-import { AUDITS, KYC_URL } from '../../config/presale';
+import { AUDITS, BSCSCAN, KYC_URL, PRESALE_ADDRESSES } from '../../config/presale';
 import { TOKENOMICS, TOKENOMICS_SEGMENTS, fmtM } from '../../config/tokenomics';
 import { ROADMAP_PHASES_WITH_STATUS } from '../../config/roadmap';
 
@@ -78,7 +78,7 @@ export default function LandingPage() {
                   <span aria-hidden="true">→</span>
                 </Link>
                 <a
-                  href="https://bscscan.com/address/0xd3F3598Ff8efB2cF6643488e66e8df683804F63d"
+                  href={`${BSCSCAN}/address/${PRESALE_ADDRESSES.PRESALE}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className={styles.quickTile}
