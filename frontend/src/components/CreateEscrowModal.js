@@ -186,9 +186,11 @@ export default function CreateEscrowModal({ onClose, onSuccess, prefilledProvide
 
   return (
     <div className="modal-overlay">
-      <div className="modal-content">
+      <div className="modal-content is-form">
         <h2>Create {niche.lexicon.escrow}</h2>
         <form onSubmit={handleSubmit}>
+          {/* Corps defilant : le titre et les boutons restent toujours visibles */}
+          <div className="modal-body">
           <div className="form-group">
             <label>{niche.lexicon.provider} Address</label>
             <input type="text" value={providerAddr} onChange={e=>setProviderAddr(e.target.value)} required placeholder="0x..." />
@@ -261,6 +263,7 @@ export default function CreateEscrowModal({ onClose, onSuccess, prefilledProvide
               <span className="create-step-badge" aria-hidden="true">2</span>
               <span>2. Lock funds in escrow</span>
             </div>
+          </div>
           </div>
 
           <div className="modal-actions">
