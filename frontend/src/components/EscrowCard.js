@@ -698,11 +698,12 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
       {showReleaseModal && (
         <div className="escrow-modal-backdrop">
           <div className="escrow-modal-box" style={{ borderColor: escrow.accepted ? 'var(--app-lime, #A3E635)' : 'var(--app-yellow, #EAB308)' }}>
+            <h3 className="text-xl font-bold mb-4" style={{ color: escrow.accepted ? 'var(--app-text-primary, #F2F5F3)' : 'var(--app-yellow, #EAB308)' }}>
+              {escrow.accepted ? 'Confirm funds release' : 'Release without acceptance?'}
+            </h3>
+            <div className="escrow-modal-body">
             {escrow.accepted ? (
               <>
-                <h3 className="text-xl font-bold mb-4" style={{ color: 'var(--app-text-primary, #F2F5F3)' }}>
-                  Confirm funds release
-                </h3>
                 <p className="text-gray-300 text-sm mb-6">
                   You are about to release <strong>{escrow.amount} {escrow.tokenSymbol}</strong> to <strong>{niche.lexicon.provider}</strong> ({formatAddr(escrow.provider)}).
                   Once released, the funds are credited to their withdrawable balance and this action cannot be undone.
@@ -710,9 +711,6 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
               </>
             ) : (
               <>
-                <h3 className="text-xl font-bold mb-4" style={{ color: 'var(--app-yellow, #EAB308)' }}>
-                  Release without acceptance?
-                </h3>
                 <p className="text-gray-300 text-sm mb-4">
                   <strong>{niche.lexicon.provider}</strong> has not accepted this escrow yet.
                   If you release the funds now, you <strong>pay directly</strong> and give up
@@ -734,8 +732,9 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
                 </label>
               </>
             )}
+            </div>
 
-            <div className="flex gap-3 justify-end">
+            <div className="escrow-modal-actions flex gap-3 justify-end">
               <button className="btn btn-app-secondary" onClick={() => setShowReleaseModal(false)} disabled={loading}>
                 Cancel
               </button>
@@ -758,10 +757,12 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
             <h3 className="text-xl font-bold mb-4" style={{ color: 'var(--app-text-primary, #F2F5F3)' }}>
               Decline this escrow?
             </h3>
+            <div className="escrow-modal-body">
             <p className="text-gray-300 text-sm mb-6">
               No transaction is sent and the escrow stays open. Only the {clientWord} can cancel and get the <strong>{escrow.amount} {escrow.tokenSymbol}</strong> back: let them know in the chat.
             </p>
-            <div className="flex flex-wrap gap-3 justify-end">
+            </div>
+            <div className="escrow-modal-actions flex flex-wrap gap-3 justify-end">
               <button type="button" className="btn btn-app-secondary" onClick={() => setShowDeclineModal(false)}>
                 Close
               </button>
@@ -779,12 +780,14 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
             <h3 className="text-xl font-bold mb-4" style={{ color: 'var(--app-text-primary, #F2F5F3)' }}>
               {confirmAction === 'cancel' ? 'Cancel this escrow?' : 'Force a 50/50 split?'}
             </h3>
+            <div className="escrow-modal-body">
             <p className="text-gray-300 text-sm mb-6">
               {confirmAction === 'cancel'
                 ? <>The full <strong>{escrow.amount} {escrow.tokenSymbol}</strong> is credited back to your withdrawable balance and the {niche.lexicon.provider.toLowerCase()} can no longer accept. This action cannot be undone.</>
                 : <>The dispute has been open for more than 30 days. <strong>{escrow.amount} {escrow.tokenSymbol}</strong> is split in half: 50% to the {niche.lexicon.client.toLowerCase()}, 50% to the {niche.lexicon.provider.toLowerCase()}{niche.feeTier > 0 ? ` (the ${niche.feeTier}% fee applies to the provider's share)` : ''}. This action cannot be undone.</>}
             </p>
-            <div className="flex gap-3 justify-end">
+            </div>
+            <div className="escrow-modal-actions flex gap-3 justify-end">
               <button type="button" className="btn btn-app-secondary" onClick={() => setConfirmAction(null)} disabled={loading}>
                 Back
               </button>
@@ -812,13 +815,15 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
             <h3 className="text-xl font-bold mb-4" style={{ color: 'var(--app-red, #EF4444)' }}>
               Open a dispute?
             </h3>
+            <div className="escrow-modal-body">
             <p className="text-gray-300 text-sm mb-4">
               Opening a dispute freezes <strong>{escrow.amount} {escrow.tokenSymbol}</strong> in the smart contract until settled by mediation (or until either party triggers a 50/50 split after 30 days).
             </p>
             <p className="text-gray-400 text-sm mb-6">
               Most delivery issues are resolved faster by messaging your counterparty directly in the encrypted chat first.
             </p>
-            <div className="flex flex-wrap gap-3 justify-end">
+            </div>
+            <div className="escrow-modal-actions flex flex-wrap gap-3 justify-end">
               <button
                 type="button"
                 className="btn btn-app-secondary"
@@ -862,6 +867,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
             <h3 className="text-xl font-bold mb-4" style={{ color: 'var(--app-text-primary, #F2F5F3)' }}>
               Resolve Dispute
             </h3>
+            <div className="escrow-modal-body">
             <p className="text-gray-300 text-sm mb-6">
               Adjust the slider to set the percentage of funds the <strong>{niche.lexicon.provider}</strong> will receive. The remaining balance will be refunded to the {niche.lexicon.client}.
             </p>
@@ -880,8 +886,9 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
                 style={{ accentColor: 'var(--app-lime, #A3E635)' }}
               />
             </div>
+            </div>
 
-            <div className="flex gap-3 justify-end mt-6">
+            <div className="escrow-modal-actions flex gap-3 justify-end">
               <button className="btn btn-app-secondary" onClick={() => setShowResolveModal(false)} disabled={loading}>
                 Cancel
               </button>

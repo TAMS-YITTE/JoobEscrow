@@ -168,17 +168,21 @@ export default function CreateEscrowModal({ onClose, onSuccess, prefilledProvide
   if (shareableLink) {
     return (
       <div className="modal-overlay">
-        <div className="modal-content">
+        <div className="modal-content is-form">
           <h2>Escrow created and funded</h2>
-          <p className="text-gray-400 my-4 text-sm">
-            Your escrow is now locked on BNB Smart Chain. Send this link to the {niche.lexicon.provider.toLowerCase()} so they can review and accept the deal.
-          </p>
-          <div className="bg-black/50 border border-gray-700 p-3 rounded text-sm text-white mb-6 break-all" style={{ fontFamily: 'monospace' }}>
-            {shareableLink}
+          <div className="modal-body">
+            <p className="text-gray-400 mb-4 text-sm">
+              Your escrow is now locked on BNB Smart Chain. Send this link to the {niche.lexicon.provider.toLowerCase()} so they can review and accept the deal.
+            </p>
+            <div className="bg-black/50 border border-gray-700 p-3 rounded text-sm text-white mb-2 break-all" style={{ fontFamily: 'monospace' }}>
+              {shareableLink}
+            </div>
           </div>
-          <button className="btn btn-app-primary w-full" onClick={copyLinkAndClose}>
-            Copy Link &amp; Close
-          </button>
+          <div className="modal-actions">
+            <button className="btn btn-app-primary w-full" onClick={copyLinkAndClose}>
+              Copy Link &amp; Close
+            </button>
+          </div>
         </div>
       </div>
     );

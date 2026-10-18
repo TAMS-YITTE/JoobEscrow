@@ -325,6 +325,10 @@
     display: flex;
     flex-direction: column;
     gap: 4px;
+    /* Ecrans bas (paysage) : le menu defile au lieu de deborder */
+    max-height: 100%;
+    overflow-y: auto;
+    overscroll-behavior: contain;
   }
 
   .mobile-more-link {
