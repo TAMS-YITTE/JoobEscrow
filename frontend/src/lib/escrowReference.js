@@ -2,6 +2,7 @@
 // le texte "JOOBREF:<reference>" est ajoute a la fin du calldata de createAndFundEscrow.
 // Le contrat ne lit que ses 4 parametres et ignore ces octets (teste sur fork, 1 a 5 000 caracteres).
 import { ethers } from 'ethers';
+import { normalizeKolHandle, KOL_PATTERN, KOL_MAX_LENGTH } from './kolFlag.js';
 
 export const REF_MAGIC = 'JOOBREF:';
 export const REF_MAX_LENGTH = 64;
@@ -84,4 +85,54 @@ export async function readEscrowReference(provider, contract, escrowId, createdA
   const ref = tx ? referenceFromInput(tx.data) : null;
   try { localStorage.setItem(key, ref ?? ''); } catch {}
   return ref;
+}
+
+// --- Flag KOL (JOOBKOL) : attribution d'un escrow au KOL qui a apporte le client ---
+// Ajout pur : buildCreateData, referenceFromInput et cacheKey ne changent pas. Sans KOL, le calldata
+// reste identique octet pour octet. Avec KOL, "JOOBKOL:<handle>" est ajoute apres la reference
+// eventuelle, separe par un octet 0x00 : referenceFromInput s'arrete sur ce 0x00, la reference
+// reste donc lisible (sans separateur, elle deviendrait "maRefJOOBKOL:..." et serait rejetee).
+
+export const KOL_MAGIC = 'JOOBKOL:';
+
+/**
+ * Calldata de createAndFundEscrow avec reference et flag KOL facultatifs.
+ * Sans handle valide : renvoie exactement buildCreateData(iface, args, reference).
+ * Avec handle : base [+ "JOOBREF:<ref>" + 0x00] + "JOOBKOL:<handle>".
+ */
+export function buildCreateDataWithKol(iface, args, reference, kolHandle) {
+  const data = buildCreateData(iface, args, reference);
+  const kol = normalizeKolHandle(kolHandle);
+  if (!kol) return data;
+  const parts = [data];
+  if (cleanReference(reference)) parts.push(new Uint8Array([0]));
+  parts.push(ethers.toUtf8Bytes(KOL_MAGIC + kol));
+  return ethers.concat(parts);
+}
+
+/**
+ * Extrait le handle KOL du calldata d'une transaction de creation, ou null.
+ * Meme logique que referenceFromInput : marqueur cherche n'importe ou (appel direct ou lot EIP-7702),
+ * lecture jusqu'au premier octet nul. Le handle grave doit deja etre en minuscules.
+ */
+export function kolFromInput(input) {
+  try {
+    const bytes = ethers.getBytes(input);
+    const magic = ethers.toUtf8Bytes(KOL_MAGIC);
+    for (let i = 0; i + magic.length <= bytes.length; i++) {
+      let match = true;
+      for (let k = 0; k < magic.length; k++) {
+        if (bytes[i + k] !== magic[k]) { match = false; break; }
+      }
+      if (!match) continue;
+      let end = i + magic.length;
+      // Un caractere de plus que le maximum : un handle trop long est rejete au lieu d'etre tronque.
+      while (end < bytes.length && bytes[end] !== 0 && end - i - magic.length <= KOL_MAX_LENGTH) end++;
+      const handle = ethers.toUtf8String(bytes.slice(i + magic.length, end));
+      return KOL_PATTERN.test(handle) ? handle : null;
+    }
+    return null;
+  } catch {
+    return null;
+  }
 }

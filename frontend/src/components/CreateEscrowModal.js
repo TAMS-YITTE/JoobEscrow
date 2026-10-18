@@ -8,6 +8,9 @@ import { isUserRejection } from '../lib/walletErrors';
 import { ethers } from 'ethers';
 import { ESCROW_ABI, TOKEN_ADDRESSES, ERC20_ABI } from '../config/contract';
 import { buildCreateData, REF_MAX_LENGTH, REF_PATTERN } from '../lib/escrowReference';
+import { buildCreateDataWithKol } from '../lib/escrowReference';
+import { kolFromStorage, KOL_STORAGE_KEY } from '../lib/kolFlag';
+import kolProgram from '../config/kolProgram.json';
 import './CreateEscrowModal.css';
 
 export default function CreateEscrowModal({ onClose, onSuccess, prefilledProvider = '', prefilledAmount = '' }) {
@@ -111,7 +114,15 @@ export default function CreateEscrowModal({ onClose, onSuccess, prefilledProvide
 
       setStep(3);
       const contract = new ethers.Contract(niche.contractAddress, ESCROW_ABI, signer);
-      const data = buildCreateData(contract.interface, [providerAddr, tokenAddr, parsedAmount, parseInt(timeoutDays) || 7], reference);
+      // Flag KOL : seulement sur les contrats payants (la demo a 0 % est exclue), pour un clic valide,
+      // actif et de moins de 30 jours. Sans KOL, l'appel d'origine ci-dessous reste inchange.
+      let kolHandle = null;
+      if (!niche.isDemo && Number(niche.feeTier) > 0) {
+        try { kolHandle = kolFromStorage(localStorage.getItem(KOL_STORAGE_KEY), kolProgram); } catch {}
+      }
+      const data = kolHandle
+        ? buildCreateDataWithKol(contract.interface, [providerAddr, tokenAddr, parsedAmount, parseInt(timeoutDays) || 7], reference, kolHandle)
+        : buildCreateData(contract.interface, [providerAddr, tokenAddr, parsedAmount, parseInt(timeoutDays) || 7], reference);
       const tx = await signer.sendTransaction({ to: niche.contractAddress, data });
       const receipt = await tx.wait();
       

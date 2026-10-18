@@ -2,6 +2,8 @@
 
 import { useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { kolClickValue, KOL_STORAGE_KEY } from '../lib/kolFlag';
+import kolProgram from '../config/kolProgram.json';
 
 export default function ReferralTracker() {
   const searchParams = useSearchParams();
@@ -11,6 +13,12 @@ export default function ReferralTracker() {
     if (ref) {
       // Store the referral code in localStorage
       localStorage.setItem('joob_ref', ref);
+      // Flag KOL : clic horodate sous une cle distincte, seulement pour un handle valide et actif
+      // (un handle inconnu n'ecrase pas un clic valide precedent).
+      try {
+        const kolClick = kolClickValue(ref, kolProgram);
+        if (kolClick) localStorage.setItem(KOL_STORAGE_KEY, kolClick);
+      } catch {}
     }
   }, [searchParams]);
 
