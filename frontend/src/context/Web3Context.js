@@ -117,18 +117,28 @@ export function Web3Provider({ children }) {
   // Avant toute ecriture sur l'escrow ou la presale : le wallet doit etre sur BNB Smart Chain.
   // Depuis l'ajout des reseaux LI.FI, un wallet reste souvent sur Arbitrum/Base apres un achat
   // cross-chain ; une transaction partirait alors sur ce reseau, ou nos contrats n'existent pas.
+  // Reseau actuel du wallet. eth_chainId renvoie normalement "0x38", mais certains wallets mobiles
+  // (WalletConnect) renvoient 56 en nombre ou en texte decimal : lu en hexadecimal, 56 donnait 86
+  // et bloquait a tort les utilisateurs deja sur BSC. On accepte donc les trois formats.
+  const readWalletChainId = async () => {
+    const raw = await walletProvider.request({ method: 'eth_chainId' });
+    try { return Number(BigInt(raw)); } catch { return NaN; }
+  };
+
   const ensureCorrectChain = async () => {
     if (!walletProvider) throw new Error('Connect your wallet first.');
-    const current = parseInt(await walletProvider.request({ method: 'eth_chainId' }), 16);
-    if (current === BSC_CHAIN_ID) return true;
+    if (await readWalletChainId() === BSC_CHAIN_ID) return true;
     try {
       await walletProvider.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: BSC_CHAIN_ID_HEX }] });
     } catch (err) {
       console.error('Network switch failed:', err);
     }
-    const after = parseInt(await walletProvider.request({ method: 'eth_chainId' }), 16);
-    if (after !== BSC_CHAIN_ID) throw new Error('Please switch your wallet to BNB Smart Chain, then try again.');
-    return true;
+    // Certains wallets mobiles mettent un instant a repercuter le changement de reseau.
+    for (let i = 0; i < 6; i++) {
+      if (await readWalletChainId() === BSC_CHAIN_ID) return true;
+      await new Promise((r) => setTimeout(r, 500));
+    }
+    throw new Error('Please switch your wallet to BNB Smart Chain, then try again.');
   };
 
   const connectWallet = async () => {
