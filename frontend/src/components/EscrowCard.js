@@ -12,7 +12,7 @@ import './EscrowCard.css';
 import { readEscrowReference } from '../lib/escrowReference';
 import { isUserRejection } from '../lib/walletErrors';
 import { TOKEN_ADDRESSES } from '../config/contract';
-import { GAS_TOPUP_BNB, LOW_GAS_BNB } from '../config/gas';
+import { gasHelp } from '../config/gas';
 
 const ChatBox = dynamic(() => import('./ChatBox'), { ssr: false });
 
@@ -64,10 +64,11 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
   const [nowSec, setNowSec] = useState(0);
 
   // Aide au gas : le client voit si le prestataire n'a pas assez de BNB pour agir (Accept, Claim,
-  // litige) et peut lui en envoyer. Pas en demo : les deux wallets appartiennent au testeur.
+  // litige) et peut lui en envoyer (montant reduit en demo, ou le 2e wallet du testeur est souvent vide).
+  const { topup: gasTopup, low: gasLow } = gasHelp(niche.isDemo);
   const [providerLowGas, setProviderLowGas] = useState(false);
   useEffect(() => {
-    if (!isClient || niche.isDemo || !readProvider || !escrow.provider) return;
+    if (!isClient || !readProvider || !escrow.provider) return;
     let cancelled = false;
     (async () => {
       try {
@@ -79,22 +80,22 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
         }
         if (!needsGas) return;
         const bal = await readProvider.getBalance(escrow.provider);
-        if (!cancelled) setProviderLowGas(bal < ethers.parseEther(LOW_GAS_BNB));
+        if (!cancelled) setProviderLowGas(bal < ethers.parseEther(gasLow));
       } catch {
         /* lecture impossible : pas de proposition */
       }
     })();
     return () => { cancelled = true; };
-  }, [isClient, niche.isDemo, niche.contractAddress, readProvider, escrow.provider, escrow.status, escrow.tokenSymbol]);
+  }, [isClient, gasLow, niche.contractAddress, readProvider, escrow.provider, escrow.status, escrow.tokenSymbol]);
 
   const handleSendGas = async () => {
     if (!signer) return;
     setBusy('gas');
     try {
       await ensureCorrectChain();
-      const tx = await signer.sendTransaction({ to: escrow.provider, value: ethers.parseEther(GAS_TOPUP_BNB) });
+      const tx = await signer.sendTransaction({ to: escrow.provider, value: ethers.parseEther(gasTopup) });
       await tx.wait();
-      showToast('success', `${GAS_TOPUP_BNB} BNB sent to the ${niche.lexicon.provider.toLowerCase()} for network fees.`);
+      showToast('success', `${gasTopup} BNB sent to the ${niche.lexicon.provider.toLowerCase()} for network fees.`);
       setProviderLowGas(false);
     } catch (err) {
       console.error(err);
@@ -637,7 +638,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
         <div className="escrow-gas-note">
           <span>The {niche.lexicon.provider.toLowerCase()} has no BNB to pay network fees, so they can&apos;t accept or claim yet.</span>
           <button type="button" className="btn btn-app-secondary escrow-gas-btn" onClick={handleSendGas} disabled={busy === 'gas'}>
-            {busy === 'gas' ? 'Processing...' : `Send ${GAS_TOPUP_BNB} BNB`}
+            {busy === 'gas' ? 'Processing...' : `Send ${gasTopup} BNB`}
           </button>
         </div>
       )}
