@@ -405,6 +405,30 @@
   color: var(--app-text-primary, #F2F5F3);
 }
 
+/* Aide au gas : le prestataire n'a pas de BNB pour ses frais (jaune = attention, pas une erreur) */
+.escrow-gas-note {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 0.78rem;
+  color: var(--app-text-primary, #F2F5F3);
+  background: rgba(234, 179, 8, 0.08);
+  border: 1px solid rgba(234, 179, 8, 0.4);
+  padding: 8px 10px;
+  border-radius: var(--app-radius-sm, 6px);
+  margin-bottom: 8px;
+}
+
+.escrow-gas-btn {
+  padding: 6px 12px;
+  font-size: 0.78rem;
+  border-color: var(--app-yellow, #EAB308);
+  color: var(--app-yellow, #EAB308);
+}
+
 .escrow-stale-note {
   width: 100%;
   font-size: 0.76rem;

@@ -11,6 +11,7 @@ import { buildCreateData, REF_MAX_LENGTH, REF_PATTERN } from '../lib/escrowRefer
 import { buildCreateDataWithKol } from '../lib/escrowReference';
 import { kolFromStorage, KOL_STORAGE_KEY } from '../lib/kolFlag';
 import kolProgram from '../config/kolProgram.json';
+import { GAS_TOPUP_BNB, LOW_GAS_BNB } from '../config/gas';
 import './CreateEscrowModal.css';
 
 export default function CreateEscrowModal({ onClose, onSuccess, prefilledProvider = '', prefilledAmount = '' }) {
@@ -31,6 +32,27 @@ export default function CreateEscrowModal({ onClose, onSuccess, prefilledProvide
   const [allowanceSufficient, setAllowanceSufficient] = useState(false);
 
   const [shareableLink, setShareableLink] = useState(null);
+
+  // Aide au gas : si le prestataire n'a pas de BNB, proposer de lui en envoyer apres la creation
+  // (transaction separee, facultative). Pas en demo : les deux wallets appartiennent au testeur.
+  // Adresse dont le solde BNB est trop bas (l'option ne s'affiche que pour l'adresse saisie actuelle).
+  const [lowGasAddr, setLowGasAddr] = useState(null);
+  const [sendGas, setSendGas] = useState(true);
+  const providerTrim = providerAddr.trim();
+  const providerLowGas = !niche.isDemo && Boolean(lowGasAddr) && lowGasAddr === providerTrim.toLowerCase();
+  useEffect(() => {
+    if (niche.isDemo || !readProvider || !ethers.isAddress(providerTrim)) return;
+    let cancelled = false;
+    const timer = setTimeout(async () => {
+      try {
+        const bal = await readProvider.getBalance(providerTrim);
+        if (!cancelled) setLowGasAddr(bal < ethers.parseEther(LOW_GAS_BNB) ? providerTrim.toLowerCase() : null);
+      } catch {
+        if (!cancelled) setLowGasAddr(null);
+      }
+    }, 400);
+    return () => { cancelled = true; clearTimeout(timer); };
+  }, [providerTrim, readProvider, niche.isDemo]);
 
   // Verification reactive de l'allowance ERC-20 existante pour cocher l'etape 1 si suffisante.
   useEffect(() => {
@@ -134,6 +156,18 @@ export default function CreateEscrowModal({ onClose, onSuccess, prefilledProvide
             newEscrowId = parsed.args.escrowId.toString();
           }
         } catch(e) {}
+      }
+
+      // Envoi facultatif du gas au prestataire : un echec ne remet pas en cause l'escrow deja cree.
+      if (providerLowGas && sendGas) {
+        try {
+          const gasTx = await signer.sendTransaction({ to: providerTrim, value: ethers.parseEther(GAS_TOPUP_BNB) });
+          await gasTx.wait();
+          showToast('success', `${GAS_TOPUP_BNB} BNB sent to the ${niche.lexicon.provider.toLowerCase()} for network fees.`);
+        } catch (gasErr) {
+          console.error(gasErr);
+          if (!isUserRejection(gasErr)) showToast('error', 'Escrow created, but sending BNB failed. You can send it later from the escrow card.');
+        }
       }
 
       if (newEscrowId) {
@@ -262,6 +296,15 @@ export default function CreateEscrowModal({ onClose, onSuccess, prefilledProvide
                   : `0% fee for the client. In case of a dispute, the ${feePct}% fee applies to the share awarded to the provider.`}
               </div>
             </div>
+          )}
+
+          {providerLowGas && (
+            <label className="create-gas-option">
+              <input type="checkbox" checked={sendGas} onChange={(e) => setSendGas(e.target.checked)} />
+              <span>
+                This {niche.lexicon.provider.toLowerCase()} has no BNB for network fees. Also send them {GAS_TOPUP_BNB} BNB so they can accept and claim (one extra transaction, optional).
+              </span>
+            </label>
           )}
 
           <div className="create-stepper" aria-label="Transaction steps">

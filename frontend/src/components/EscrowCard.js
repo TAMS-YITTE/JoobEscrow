@@ -11,11 +11,13 @@ import dynamic from 'next/dynamic';
 import './EscrowCard.css';
 import { readEscrowReference } from '../lib/escrowReference';
 import { isUserRejection } from '../lib/walletErrors';
+import { TOKEN_ADDRESSES } from '../config/contract';
+import { GAS_TOPUP_BNB, LOW_GAS_BNB } from '../config/gas';
 
 const ChatBox = dynamic(() => import('./ChatBox'), { ssr: false });
 
 export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, defaultExpanded = false, onReference }) {
-  const { account, readProvider, ensureCorrectChain } = useWeb3();
+  const { account, signer, readProvider, ensureCorrectChain } = useWeb3();
   const contract = useEscrowContract();
   const niche = useNiche();
   // Reference gravee dans la transaction de creation (si le client en a saisi une).
@@ -60,6 +62,46 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
   const isClient = account && escrow.client && account.toLowerCase() === escrow.client.toLowerCase();
   const isProvider = account && escrow.provider && account.toLowerCase() === escrow.provider.toLowerCase();
   const [nowSec, setNowSec] = useState(0);
+
+  // Aide au gas : le client voit si le prestataire n'a pas assez de BNB pour agir (Accept, Claim,
+  // litige) et peut lui en envoyer. Pas en demo : les deux wallets appartiennent au testeur.
+  const [providerLowGas, setProviderLowGas] = useState(false);
+  useEffect(() => {
+    if (!isClient || niche.isDemo || !readProvider || !escrow.provider) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        let needsGas = ['FUNDED', 'DISPUTED'].includes(escrow.status);
+        if (['RELEASED', 'RESOLVED'].includes(escrow.status)) {
+          // Apres liberation, utile seulement si le prestataire n'a pas encore retire ses fonds.
+          const c = new ethers.Contract(niche.contractAddress, ['function withdrawable(address,address) view returns (uint256)'], readProvider);
+          needsGas = (await c.withdrawable(escrow.provider, TOKEN_ADDRESSES[escrow.tokenSymbol])) > 0n;
+        }
+        if (!needsGas) return;
+        const bal = await readProvider.getBalance(escrow.provider);
+        if (!cancelled) setProviderLowGas(bal < ethers.parseEther(LOW_GAS_BNB));
+      } catch {
+        /* lecture impossible : pas de proposition */
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [isClient, niche.isDemo, niche.contractAddress, readProvider, escrow.provider, escrow.status, escrow.tokenSymbol]);
+
+  const handleSendGas = async () => {
+    if (!signer) return;
+    setBusy('gas');
+    try {
+      await ensureCorrectChain();
+      const tx = await signer.sendTransaction({ to: escrow.provider, value: ethers.parseEther(GAS_TOPUP_BNB) });
+      await tx.wait();
+      showToast('success', `${GAS_TOPUP_BNB} BNB sent to the ${niche.lexicon.provider.toLowerCase()} for network fees.`);
+      setProviderLowGas(false);
+    } catch (err) {
+      console.error(err);
+      if (!isUserRejection(err)) showToast('error', `Failed to send BNB: ${err.shortMessage || err.message}`);
+    }
+    setBusy(null);
+  };
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -590,6 +632,15 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
           )}
         </div>
       </div>
+
+      {providerLowGas && isClient && (
+        <div className="escrow-gas-note">
+          <span>The {niche.lexicon.provider.toLowerCase()} has no BNB to pay network fees, so they can&apos;t accept or claim yet.</span>
+          <button type="button" className="btn btn-app-secondary escrow-gas-btn" onClick={handleSendGas} disabled={busy === 'gas'}>
+            {busy === 'gas' ? 'Processing...' : `Send ${GAS_TOPUP_BNB} BNB`}
+          </button>
+        </div>
+      )}
 
       {escrow.status === 'FUNDED' && !escrow.accepted && isClient && (
         <div className="escrow-stale-note">

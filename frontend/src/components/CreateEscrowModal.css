@@ -173,6 +173,30 @@
   margin-top: 2px;
 }
 
+/* Option d'envoi de BNB au prestataire sans gas (jaune = attention) */
+.create-gas-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  border-radius: var(--app-radius-md, 8px);
+  background: rgba(234, 179, 8, 0.08);
+  border: 1px solid rgba(234, 179, 8, 0.4);
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: var(--app-text-primary, #F2F5F3);
+  cursor: pointer;
+}
+
+.create-gas-option input {
+  margin-top: 2px;
+  accent-color: var(--app-yellow, #EAB308);
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+}
+
 /* 2-step visible stepper */
 .create-stepper {
   display: flex;

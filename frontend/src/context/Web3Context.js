@@ -5,6 +5,7 @@ import { ethers } from 'ethers';
 import { createAppKit, useAppKit, useAppKitProvider, useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react';
 import { EthersAdapter } from '@reown/appkit-adapter-ethers';
 import { bsc, bscTestnet, hardhat, mainnet, arbitrum, base, polygon, optimism, avalanche } from '@reown/appkit/networks';
+import { MAX_TX_GAS } from '../config/gas';
 
 // Projet Reown dedie a JoobEscrow (cloud.reown.com, equipe JoobEscrow). ID public par nature.
 const projectId = '63a257b332dae1f848b7dab85c8f0880';
@@ -49,6 +50,8 @@ createAppKit({
 });
 
 const Web3Context = createContext();
+
+export const GAS_ERROR = 'Not enough BNB to pay the network fee. Add a little BNB on BNB Smart Chain to this wallet (about $0.50 is plenty), or ask the other party to send you some, then try again.';
 
 // Reseau de nos contrats (escrow, presale) : BNB Smart Chain.
 const BSC_CHAIN_ID = 56;
@@ -125,9 +128,25 @@ export function Web3Provider({ children }) {
     try { return Number(BigInt(raw)); } catch { return NaN; }
   };
 
+  // Solde BNB insuffisant pour le gas : certains wallets (ex. Phantom) renvoient alors une erreur
+  // illisible (« could not coalesce error »). On previent avant d'envoyer la transaction.
+  const ensureGas = async () => {
+    if (!address) return;
+    try {
+      const [bal, fee] = await Promise.all([readProvider.getBalance(address), readProvider.getFeeData()]);
+      const gasPrice = fee.gasPrice ?? ethers.parseUnits('1', 'gwei');
+      if (bal < gasPrice * MAX_TX_GAS) {
+        throw new Error(GAS_ERROR);
+      }
+    } catch (err) {
+      // Lecture du solde impossible : on laisse le wallet decider plutot que de bloquer.
+      if (err.message === GAS_ERROR) throw err;
+    }
+  };
+
   const ensureCorrectChain = async () => {
     if (!walletProvider) throw new Error('Connect your wallet first.');
-    if (await readWalletChainId() === BSC_CHAIN_ID) return true;
+    if (await readWalletChainId() === BSC_CHAIN_ID) { await ensureGas(); return true; }
     try {
       await walletProvider.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: BSC_CHAIN_ID_HEX }] });
     } catch (err) {
@@ -135,7 +154,7 @@ export function Web3Provider({ children }) {
     }
     // Certains wallets mobiles mettent un instant a repercuter le changement de reseau.
     for (let i = 0; i < 6; i++) {
-      if (await readWalletChainId() === BSC_CHAIN_ID) return true;
+      if (await readWalletChainId() === BSC_CHAIN_ID) { await ensureGas(); return true; }
       await new Promise((r) => setTimeout(r, 500));
     }
     throw new Error('Please switch your wallet to BNB Smart Chain, then try again.');
