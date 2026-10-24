@@ -173,7 +173,7 @@ export const instances = {
 
 export const defaultInstance = "influence";
 
-// Instance DEMO "Try it with $1" : meme contrat V4 audite, USDT/USDC de 1 a 20, commission 0 %.
+// Instance DEMO "Try it with $1" : meme contrat V4 audite, USDT/USDC de 0,5 a 1 (limites contrat du 17/10), commission 0 %.
 // Volontairement HORS de `instances` : jamais comptee dans les statistiques, le hub ni la page Securite.
 export const CONTRACT_DEMO = SANDBOX_ADDRESS || "0x28b80688749958241E14Fa8181274AE0E649eC0B";
 
