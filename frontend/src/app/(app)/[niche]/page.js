@@ -12,7 +12,7 @@ import { useToast } from '../../../context/ToastContext';
 import { useAppKit } from '@reown/appkit/react';
 import { ethers } from 'ethers';
 import { TOKEN_ADDRESSES, ERC20_ABI, ESCROW_ABI } from '../../../config/contract';
-import { isUserRejection } from '../../../lib/walletErrors';
+import { isUserRejection, walletErrorMessage } from '../../../lib/walletErrors';
 import './page.css';
 
 const DEMO_STEPS = [
@@ -126,7 +126,7 @@ function DashboardContent() {
       fetchPending();
     } catch (err) {
       console.error(err);
-      if (!isUserRejection(err)) showToast('error', 'Withdrawal failed: ' + (err.shortMessage || err.message));
+      if (!isUserRejection(err)) showToast('error', 'Withdrawal failed: ' + walletErrorMessage(err));
     }
   };
 

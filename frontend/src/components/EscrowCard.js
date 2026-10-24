@@ -10,7 +10,7 @@ import { track } from '@vercel/analytics';
 import dynamic from 'next/dynamic';
 import './EscrowCard.css';
 import { readEscrowReference } from '../lib/escrowReference';
-import { isUserRejection } from '../lib/walletErrors';
+import { isUserRejection, walletErrorMessage } from '../lib/walletErrors';
 import { TOKEN_ADDRESSES } from '../config/contract';
 import { gasHelp } from '../config/gas';
 
@@ -99,7 +99,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
       setProviderLowGas(false);
     } catch (err) {
       console.error(err);
-      if (!isUserRejection(err)) showToast('error', `Failed to send BNB: ${err.shortMessage || err.message}`);
+      if (!isUserRejection(err)) showToast('error', `Failed to send BNB: ${walletErrorMessage(err)}`);
     }
     setBusy(null);
   };
@@ -196,7 +196,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
       setTimeout(() => { if (onUpdate) onUpdate(); else window.location.reload(); }, 1500);
     } catch (err) {
       console.error(err);
-      const reason = err.reason || err.data?.message || err.message || "Unknown error";
+      const reason = walletErrorMessage(err);
       if (!isUserRejection(err)) {
         showToast('error', `Failed to accept: ${reason}`);
       }
@@ -231,7 +231,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
       setTimeout(() => { if (onUpdate) onUpdate(); else window.location.reload(); }, 1500);
     } catch (err) {
       console.error(err);
-      const reason = err.reason || err.data?.message || err.message || "Unknown error";
+      const reason = walletErrorMessage(err);
       if (!isUserRejection(err)) {
         showToast('error', `Failed to release: ${reason}`);
       }
@@ -257,7 +257,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
       setTimeout(() => { if (onUpdate) onUpdate(); else window.location.reload(); }, 1500);
     } catch (err) {
       console.error(err);
-      const reason = err.reason || err.data?.message || err.message || "Unknown error";
+      const reason = walletErrorMessage(err);
       if (!isUserRejection(err)) {
         showToast('error', `Failed to open dispute: ${reason}`);
       }
@@ -285,7 +285,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
       setTimeout(() => { if (onUpdate) onUpdate(); else window.location.reload(); }, 1500);
     } catch (err) {
       console.error(err);
-      const reason = err.reason || err.data?.message || err.message || "Unknown error";
+      const reason = walletErrorMessage(err);
       if (!isUserRejection(err)) {
         showToast('error', `Failed to resolve: ${reason}`);
       }
@@ -319,7 +319,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
       setTimeout(() => { if (onUpdate) onUpdate(); else window.location.reload(); }, 1500);
     } catch (err) {
       console.error(err);
-      const reason = err.reason || err.data?.message || err.message || "Unknown error";
+      const reason = walletErrorMessage(err);
       if (!isUserRejection(err)) {
         showToast('error', `Failed to resolve: ${reason}`);
       }
@@ -347,7 +347,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
       setTimeout(() => { if (onUpdate) onUpdate(); else window.location.reload(); }, 1500);
     } catch (err) {
       console.error(err);
-      const reason = err.reason || err.data?.message || err.message || "Unknown error";
+      const reason = walletErrorMessage(err);
       if (!isUserRejection(err)) {
         showToast('error', `Failed to claim timeout: ${reason}`);
       }
@@ -368,7 +368,7 @@ export default function EscrowCard({ escrow, isDisputeView, isOwner, onUpdate, d
       setTimeout(() => { if (onUpdate) onUpdate(); else window.location.reload(); }, 1500);
     } catch (err) {
       console.error(err);
-      const reason = err.reason || err.data?.message || err.message || "Unknown error";
+      const reason = walletErrorMessage(err);
       if (!isUserRejection(err)) {
         showToast('error', `Failed to cancel: ${reason}`);
       }
