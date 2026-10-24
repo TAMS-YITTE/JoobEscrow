@@ -13,6 +13,8 @@ import {
 } from '../../../config/presale';
 import styles from './presale.module.css';
 import { BSCN_ARTICLE_URL } from '../../../config/links';
+import kolProgram from '../../../config/kolProgram.json';
+import { KOL_STORAGE_KEY, kolPresaleReferrer } from '../../../lib/kolFlag';
 import TokenPicker, { TokenLogo } from '../../../components/TokenPicker';
 import { useCatalog, NATIVE } from '../../../lib/crosschain/sources';
 import { useRouteQuote, useSourceBalance } from '../../../lib/crosschain/hooks';
@@ -31,12 +33,28 @@ function readStored(k) {
   try { return typeof window === 'undefined' ? null : localStorage.getItem(k); } catch { return null; }
 }
 
-function readInitialReferrer() {
-  if (typeof window === 'undefined') return null;
+// Horodatage du dernier lien de parrainage d'acheteur (pour l'arbitrer avec un clic KOL plus recent).
+const REF_TS_STORAGE_KEY = 'joob_presale_referrer_ts';
+
+/**
+ * Parrain initial. Ordre : lien ?referrer= de la page (le plus recent par definition), puis le plus
+ * recent entre le parrain d'acheteur memorise et le clic KOL (30 jours, adresse dediee du KOL).
+ * Le parrain KOL n'est jamais memorise durablement : il expire avec le clic.
+ */
+function readInitialReferral() {
+  if (typeof window === 'undefined') return { address: null, fromKol: false };
   const fromUrl = new URLSearchParams(window.location.search).get(REF_PARAM);
-  if (fromUrl && ethers.isAddress(fromUrl)) return ethers.getAddress(fromUrl);
+  if (fromUrl && ethers.isAddress(fromUrl)) return { address: ethers.getAddress(fromUrl), fromKol: false, fromUrl: true };
   const stored = readStored(REF_STORAGE_KEY);
-  return stored && ethers.isAddress(stored) ? ethers.getAddress(stored) : null;
+  const storedAddr = stored && ethers.isAddress(stored) ? ethers.getAddress(stored) : null;
+  const storedTs = Number(readStored(REF_TS_STORAGE_KEY)) || 0;
+  const kol = kolPresaleReferrer(readStored(KOL_STORAGE_KEY), kolProgram);
+  if (kol && (!storedAddr || kol.ts > storedTs)) return { address: ethers.getAddress(kol.referrer), fromKol: true };
+  return { address: storedAddr, fromKol: false };
+}
+
+function readInitialReferrer() {
+  return readInitialReferral().address;
 }
 
 const EMPTY_USER = {
@@ -262,9 +280,18 @@ export default function PresaleClient() {
 
   const isCorrectNetwork = Number(chainId) === PRESALE_CHAIN_ID;
 
+  // Memorise un parrain d'acheteur (lien ?referrer= ou saisie), jamais le parrain KOL du clic (30 jours).
+  const [kolReferrer] = useState(() => {
+    const r = readInitialReferral();
+    return r.fromKol ? r.address : null;
+  });
   useEffect(() => {
-    try { if (referrer) localStorage.setItem(REF_STORAGE_KEY, referrer); } catch { /* ignore */ }
-  }, [referrer]);
+    if (!referrer || referrer === kolReferrer) return;
+    try {
+      if (localStorage.getItem(REF_STORAGE_KEY) !== referrer) localStorage.setItem(REF_TS_STORAGE_KEY, String(Date.now()));
+      localStorage.setItem(REF_STORAGE_KEY, referrer);
+    } catch { /* ignore */ }
+  }, [referrer, kolReferrer]);
 
   const applyReferral = useCallback(() => {
     const v = refInput.trim();
@@ -278,7 +305,10 @@ export default function PresaleClient() {
     if (account && checksum.toLowerCase() === account.toLowerCase()) { setRefError('You cannot refer yourself.'); return; }
     setReferrer(checksum);
     setRefError(null);
-    try { localStorage.setItem(REF_STORAGE_KEY, checksum); } catch { /* ignore */ }
+    try {
+      localStorage.setItem(REF_STORAGE_KEY, checksum);
+      localStorage.setItem(REF_TS_STORAGE_KEY, String(Date.now()));
+    } catch { /* ignore */ }
   }, [refInput, account]);
 
   const effectiveReferrer = useMemo(

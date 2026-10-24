@@ -30,6 +30,23 @@ export function kolClickValue(handle, program, now = Date.now()) {
   return h ? JSON.stringify({ handle: h, ts: now }) : null;
 }
 
+/**
+ * Presale : adresse de parrain dediee du KOL du clic stocke (champ `referrer` de kolProgram.json),
+ * avec l'horodatage du clic, ou null. Meme validite que pour l'escrow (actif, moins de 30 jours).
+ * Le bonus parrain JOOB du contrat est credite a cette adresse (wallet de l'equipe, brule plus tard)
+ * et la commission du KOL est payee en USDT sur le volume lu dans les evenements TokensBought.
+ */
+export function kolPresaleReferrer(raw, program, now = Date.now()) {
+  const handle = kolFromStorage(raw, program, now);
+  const referrer = handle ? program[handle]?.referrer : null;
+  if (!referrer || !/^0x[0-9a-fA-F]{40}$/.test(referrer)) return null;
+  try {
+    return { handle, referrer, ts: JSON.parse(raw).ts };
+  } catch {
+    return null;
+  }
+}
+
 /** Handle du clic stocke s'il est valide, toujours actif et non expire, sinon null (jamais d'erreur). */
 export function kolFromStorage(raw, program, now = Date.now()) {
   try {

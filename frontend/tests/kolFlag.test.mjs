@@ -163,3 +163,18 @@ test('config livree : kolProgram.json vide, donc aucun escrow flagge tant qu\'au
   assert.deepEqual(program, {});
   assert.equal(kolFromStorage(JSON.stringify({ handle: 'kyle', ts: NOW }), program, NOW), null);
 });
+
+// --- Presale : parrain dedie du KOL (champ referrer de kolProgram.json) ---
+import { kolPresaleReferrer } from '../src/lib/kolFlag.js';
+
+test('presale : parrain KOL pour un clic valide, actif, avec adresse dediee', () => {
+  const program = { kyle: { active: true, referrer: '0x1111111111111111111111111111111111111111' }, bob: { active: true } };
+  const now = 1_800_000_000_000;
+  const click = (h, ts = now) => JSON.stringify({ handle: h, ts });
+  assert.deepEqual(kolPresaleReferrer(click('kyle'), program, now), { handle: 'kyle', referrer: '0x1111111111111111111111111111111111111111', ts: now });
+  assert.equal(kolPresaleReferrer(click('bob'), program, now), null, 'KOL sans adresse dediee');
+  assert.equal(kolPresaleReferrer(click('kyle', now - KOL_CLICK_TTL_MS - 1), program, now), null, 'clic expire');
+  assert.equal(kolPresaleReferrer(click('kyle'), { kyle: { active: false, referrer: '0x1111111111111111111111111111111111111111' } }, now), null, 'KOL inactif');
+  assert.equal(kolPresaleReferrer(click('kyle'), { kyle: { active: true, referrer: '0x123' } }, now), null, 'adresse invalide');
+  assert.equal(kolPresaleReferrer(null, program, now), null);
+});
