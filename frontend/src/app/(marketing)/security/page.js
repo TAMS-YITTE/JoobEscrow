@@ -5,6 +5,7 @@ import dict from '../../../i18n/en.json';
 import { allInstances } from '../../../config/instances';
 import GovernanceTransparency from '../../../components/GovernanceTransparency';
 import { AUDITS, KYC_URL, PRESALE_ADDRESSES } from '../../../config/presale';
+import { LIQUIDITY_LOCK, lockUrl, lockedTotal } from '../../../config/liquidityLock';
 
 // Resultats repris des rapports SpyWolf publies (relus le 2026-10-01 ; staking ajoute le 03/10).
 const AUDIT_CARDS = [
@@ -182,6 +183,27 @@ export default function SecurityPage() {
                 </div>
                 <Link href={`https://bscscan.com/address/${item.addr}`} target="_blank" className="btn btn-outline" style={{ padding: '6px 14px', fontSize: '0.8rem' }}>
                   BscScan ↗
+                </Link>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Lock de bonne foi pour la liquidite de lancement (source : config/liquidityLock.js) */}
+        <div id="liquidity-lock" className="glass-panel" style={{ marginTop: '30px', padding: 'clamp(20px, 4vw, 36px)' }}>
+          <h2 style={{ color: '#fff', marginBottom: '10px' }}>Launch Liquidity Lock</h2>
+          <p style={{ color: 'var(--text-secondary)', marginBottom: '18px', lineHeight: 1.6 }}>
+            The team has locked <strong style={{ color: '#bef264' }}>{lockedTotal().toLocaleString('en-US')} {LIQUIDITY_LOCK.token}</strong> of its own funds on PinkLock for the PancakeSwap launch liquidity. The locks are owned by our 3-of-5 Safe, so no single person can unlock them, and they unlock on {LIQUIDITY_LOCK.unlockLabel}, right after the presale closes. We add to it over time: every lock is public and verifiable.
+          </p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            {LIQUIDITY_LOCK.locks.map((l) => (
+              <div key={l.id} style={{ display: 'flex', flexWrap: 'wrap', gap: '10px 12px', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(0,0,0,0.4)', padding: '12px 16px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.06)' }}>
+                <div style={{ minWidth: 0 }}>
+                  <div style={{ color: '#fff', fontWeight: 'bold', fontSize: '0.95rem' }}>PinkLock #{l.id}</div>
+                  <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', fontVariantNumeric: 'tabular-nums' }}>{l.amount.toLocaleString('en-US')} {LIQUIDITY_LOCK.token} · owner: Safe · unlocks {LIQUIDITY_LOCK.unlockLabel}</div>
+                </div>
+                <Link href={lockUrl(l.id)} target="_blank" className="btn btn-outline" style={{ padding: '6px 14px', fontSize: '0.8rem' }}>
+                  View lock ↗
                 </Link>
               </div>
             ))}
