@@ -24,7 +24,9 @@ const SEL_TOTAL_RAISED = '0xc5c4744c'; // totalRaised()
 
 const CONFIRMATIONS = 3n;
 const MAX_RANGE = 2000n; // blocs par requete eth_getLogs (publicnode)
-const FALLBACK_RANGE = 10n; // Alchemy gratuit : 10 blocs par requete eth_getLogs
+// Taille des tranches du RPC de secours : variable FALLBACK_RANGE (NodeReal : 50 000 blocs ;
+// Alchemy gratuit : 10). Par defaut 10, la valeur la plus prudente.
+const fallbackRange = (env) => { try { const n = BigInt(env.FALLBACK_RANGE ?? 10); return n > 0n ? n : 10n; } catch { return 10n; } };
 const MAX_LOG_REQUESTS = 25; // Cloudflare gratuit : 50 sous-requetes par execution, Telegram compris
 const MAX_LAG = 4000n; // ~30 min de blocs BSC (~0,45 s par bloc) : au-dela, publicnode exige une cle d'archive
 const MAX_SENDS_PER_RUN = 15; // limite Telegram ~20 messages/min par groupe
@@ -89,9 +91,12 @@ async function getLogs(env, from, to) {
     if (chunk) { logs.push(...chunk); scannedTo = b; continue; }
     // Secours par petites tranches ; on avance de ce qui a pu etre lu.
     if (!env.FALLBACK_RPC_URL) break;
+    const range = fallbackRange(env);
+    // Secours a grandes tranches (NodeReal) : on lit directement jusqu'a `to`.
+    const limit = range > MAX_RANGE ? to : b;
     let c = a;
-    while (c <= b && requests < MAX_LOG_REQUESTS) {
-      const d = b < c + FALLBACK_RANGE - 1n ? b : c + FALLBACK_RANGE - 1n;
+    while (c <= limit && requests < MAX_LOG_REQUESTS) {
+      const d = limit < c + range - 1n ? limit : c + range - 1n;
       requests++;
       try {
         logs.push(...await rpcAt(env.FALLBACK_RPC_URL, 'eth_getLogs', filter(c, d), env.FALLBACK_ORIGIN));
@@ -290,9 +295,10 @@ export class AlertsRunner extends DurableObject {
 export default {
   async scheduled(_event, env, ctx) {
     ctx.waitUntil((async () => {
+      let result;
       try {
         const stub = env.ALERTS.get(env.ALERTS.idFromName('main'));
-        await Promise.race([
+        result = await Promise.race([
           stub.tick(),
           new Promise((_, reject) => setTimeout(() => reject(new Error('no answer after 25 s')), 25_000)),
         ]);
@@ -301,7 +307,11 @@ export default {
         // (risque de doublon, mais aucun achat oublie).
         console.error(`Durable Object unavailable, KV cursor fallback: ${err.message}`);
         await run(env, kvStore(env));
+        return;
       }
+      // Erreur de traitement (RPC, Telegram...) : relancee pour apparaitre dans les
+      // metriques Cloudflare (auparavant comptee comme un succes).
+      if (typeof result === 'string' && result.startsWith('error')) throw new Error(result);
     })());
   },
 };
