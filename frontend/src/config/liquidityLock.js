@@ -13,6 +13,8 @@ export const LIQUIDITY_LOCK = {
     { id: 2085939, amount: 50 },
     { id: 2085950, amount: 51 },
     { id: 2085954, amount: 49 },
+    { id: 2088197, amount: 638.314 },
+    { id: 2088213, amount: 218.1 },
   ],
 };
 
