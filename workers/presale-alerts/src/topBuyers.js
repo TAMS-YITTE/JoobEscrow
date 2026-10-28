@@ -158,8 +158,40 @@ async function safeOwners(rpc, safe) {
   return words.slice(2, 2 + n).map((w) => `0x${w.slice(24)}`.toLowerCase());
 }
 
+/** Lit les achats de la periode jusqu'a `upto` (inclus), a partir du dernier bloc deja lu. Dedoublonne par cle. */
+async function syncBuys(env, rpc, state, config, upto, uptoTs) {
+  const s = state?.name === config.name && state?.v === 2 ? { ...state, buys: [...state.buys] } : { v: 2, name: config.name, buys: [] };
+  if (s.startBlock === undefined) s.startBlock = (await blockAtOrAfter(rpc, config.startMs, upto, uptoTs)).toString();
+  if (s.endBlock === undefined && BigInt(uptoTs) >= BigInt(config.endMs)) s.endBlock = (await blockAtOrAfter(rpc, config.endMs, upto, uptoTs)).toString();
+  const range = BigInt(env.FALLBACK_RANGE ?? 50000);
+  const keys = new Set(s.buys.map((b) => b.key));
+  let from = s.scannedTo === undefined ? BigInt(s.startBlock) : BigInt(s.scannedTo) + 1n;
+  const to = s.endBlock !== undefined && BigInt(s.endBlock) - 1n < upto ? BigInt(s.endBlock) - 1n : upto;
+  while (from <= to) {
+    const b = to < from + range - 1n ? to : from + range - 1n;
+    const logs = await rpc('eth_getLogs', [{ address: env.PRESALE_ADDRESS, fromBlock: hex(from), toBlock: hex(b), topics: [TOPIC_BOUGHT] }]);
+    for (const l of logs) {
+      const key = `${l.transactionHash}:${BigInt(l.logIndex)}`;
+      if (keys.has(key)) continue;
+      keys.add(key);
+      s.buys.push({ key, buyer: `0x${l.topics[1].slice(26)}`.toLowerCase(), paid: BigInt(`0x${l.data.slice(2, 66)}`).toString(), block: BigInt(l.blockNumber).toString(), logIndex: BigInt(l.logIndex).toString() });
+    }
+    s.scannedTo = b.toString();
+    from = b + 1n;
+  }
+  // Signataires du Safe : relus au plus une fois par jour.
+  if (!s.owners || s.ownersDay !== day(Number(uptoTs))) {
+    s.owners = await safeOwners(rpc, env.SAFE_ADDRESS);
+    s.ownersDay = day(Number(uptoTs));
+  }
+  return s;
+}
+
+const excludedSet = (env, config, s) => new Set([...config.exclude, env.SAFE_ADDRESS.toLowerCase(), ...s.owners]);
+const toBuys = (s) => s.buys.map((b) => ({ buyer: b.buyer, paid: BigInt(b.paid), block: BigInt(b.block), logIndex: BigInt(b.logIndex ?? 0) }));
+
 /**
- * Publication du classement. state : { startBlock, endBlock, scannedTo, buys[], lastPost } (DO).
+ * Publication du classement. state : { v, name, startBlock, endBlock, scannedTo, buys[], owners, lastPost } (DO).
  * Renvoie { state, text } ; text = null si rien a publier.
  */
 export async function runTopBuyers(env, state, nowMs) {
@@ -171,27 +203,44 @@ export async function runTopBuyers(env, state, nowMs) {
   if (!env.FALLBACK_RPC_URL) throw new Error('Top Buyers: FALLBACK_RPC_URL (NodeReal) manquant');
 
   const rpc = makeRpc(env.FALLBACK_RPC_URL);
-  const range = BigInt(env.FALLBACK_RANGE ?? 50000);
   const head = BigInt(await rpc('eth_blockNumber', [])) - CONFIRMATIONS;
-  const headTs = await blockTs(rpc, head);
-  const s = state?.name === config.name ? { ...state } : { name: config.name, buys: [] };
-  if (s.startBlock === undefined) s.startBlock = (await blockAtOrAfter(rpc, config.startMs, head, headTs)).toString();
-  if (kind === 'final' && s.endBlock === undefined) s.endBlock = (await blockAtOrAfter(rpc, config.endMs, head, headTs)).toString();
-
-  let from = s.scannedTo === undefined ? BigInt(s.startBlock) : BigInt(s.scannedTo) + 1n;
-  const to = s.endBlock !== undefined && BigInt(s.endBlock) - 1n < head ? BigInt(s.endBlock) - 1n : head;
-  while (from <= to) {
-    const b = to < from + range - 1n ? to : from + range - 1n;
-    const logs = await rpc('eth_getLogs', [{ address: env.PRESALE_ADDRESS, fromBlock: hex(from), toBlock: hex(b), topics: [TOPIC_BOUGHT] }]);
-    for (const l of logs) {
-      s.buys.push({ buyer: `0x${l.topics[1].slice(26)}`.toLowerCase(), paid: BigInt(`0x${l.data.slice(2, 66)}`).toString(), block: BigInt(l.blockNumber).toString() });
-    }
-    s.scannedTo = b.toString();
-    from = b + 1n;
-  }
-
-  const excluded = new Set([...config.exclude, env.SAFE_ADDRESS.toLowerCase(), ...(await safeOwners(rpc, env.SAFE_ADDRESS))]);
-  const buys = s.buys.map((b) => ({ buyer: b.buyer, paid: BigInt(b.paid), block: BigInt(b.block) }));
-  const result = leaderboard(buys, config, excluded, s.endBlock !== undefined ? BigInt(s.endBlock) : null);
+  const s = await syncBuys(env, rpc, state, config, head, await blockTs(rpc, head));
+  const result = leaderboard(toBuys(s), config, excludedSet(env, config, s), s.endBlock !== undefined ? BigInt(s.endBlock) : null);
   return { state: s, text: formatLeaderboard(result, config, kind, nowMs), postKey };
+}
+
+/**
+ * Rang en direct pour les alertes d'achat. purchases : [{ key, buyer, block }] (alerte).
+ * Renvoie { state, ranks: Map(key -> { rank, total }) } ; vide hors periode ou si TOP_BUYERS absent.
+ */
+export async function liveRanks(env, state, purchases, upto, nowMs) {
+  const ranks = new Map();
+  const config = parseTopBuyers(env.TOP_BUYERS);
+  if (!config || !env.FALLBACK_RPC_URL || !purchases.length) return { state, ranks };
+  // Fenetre : de la date de debut a une heure apres la fin (achats de fin de periode lus en retard).
+  if (nowMs < config.startMs || nowMs > config.endMs + 3_600_000) return { state, ranks };
+  const rpc = makeRpc(env.FALLBACK_RPC_URL);
+  const s = await syncBuys(env, rpc, state, config, upto, await blockTs(rpc, upto));
+  const excluded = excludedSet(env, config, s);
+  const all = toBuys(s);
+  const endBlock = s.endBlock !== undefined ? BigInt(s.endBlock) : null;
+  for (const p of purchases) {
+    const [, idx] = p.key.split(':');
+    const at = { block: p.block, logIndex: BigInt(idx) };
+    if (BigInt(s.startBlock) > at.block || (endBlock !== null && at.block >= endBlock)) continue;
+    if (excluded.has(p.buyer.toLowerCase())) continue;
+    // Classement tel qu'il etait juste apres cet achat.
+    const upToHere = all.filter((b) => b.block < at.block || (b.block === at.block && b.logIndex <= at.logIndex));
+    const { ranking } = leaderboard(upToHere, config, excluded, endBlock);
+    const i = ranking.findIndex((r) => r.buyer === p.buyer.toLowerCase());
+    if (i >= 0) ranks.set(p.key, { rank: i + 1, total: ranking[i].total, endMs: config.endMs });
+  }
+  return { state: s, ranks };
+}
+
+/** Ligne ajoutee a l'alerte d'achat. */
+export function rankLine(r) {
+  const end = new Date(r.endMs);
+  const when = `${end.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' })}, ${end.toISOString().slice(11, 16)} UTC`;
+  return `🏆 Top Buyers: this wallet is now <b>#${r.rank}</b> with ${usd(r.total)} USDT this week. Ends ${when}.`;
 }

@@ -1,5 +1,5 @@
 import { DurableObject } from 'cloudflare:workers';
-import { runTopBuyers } from './topBuyers.js';
+import { runTopBuyers, liveRanks, rankLine } from './topBuyers.js';
 
 // Alertes Telegram des achats de la presale JOOB (VestingPresale, BNB Smart Chain).
 // Cron chaque minute : lit totalRaised() ; seulement s'il a bouge, lit les events
@@ -149,7 +149,7 @@ function decodePurchases(logs) {
   });
 }
 
-function formatMessage(p, progress) {
+function formatMessage(p, progress, rank) {
   const token = p.useUSDT ? 'USDT' : 'USDC';
   const paid = toNum(p.paid);
   const fires = Math.min(40, Math.floor(paid / FIRE_USD));
@@ -167,6 +167,7 @@ function formatMessage(p, progress) {
     lines.push(`🤝 Referral: +${pct}% to the referrer (+${fmtTok(p.referralBonus)} JOOB)`);
   }
   lines.push(`👤 Buyer: <a href="${BSCSCAN}/address/${p.buyer}">${short(p.buyer)}</a>`);
+  if (rank) lines.push(rankLine(rank));
   if (progress) lines.push(`📊 Raised so far: $${fmt(toNum(progress.raised), 0)}`);
   lines.push(`🔗 <a href="${BSCSCAN}/tx/${p.tx}">View the transaction on BscScan</a>`, '', `👉 <a href="${PRESALE_URL}">${PRESALE_URL.replace(/^https:\/\/(www\.)?/, '')}</a>`);
   return lines.join('\n');
@@ -200,7 +201,8 @@ async function sendTelegram(env, text) {
   if (!res.ok) throw new Error(`Telegram ${res.status}: ${(await res.text()).slice(0, 200)}`);
 }
 
-async function run(env, store) {
+// tbStore : etat du classement Top Buyers (Durable Object) ; absent en mode secours KV.
+async function run(env, store, tbStore = null) {
   const latest = BigInt(await rpc(env, 'eth_blockNumber', []));
   const safe = latest - CONFIRMATIONS;
   const raised = await raisedAt(env, safe);
@@ -242,6 +244,19 @@ async function run(env, store) {
   const purchases = all.filter((p) => !already.has(p.key));
   const progress = { raised };
 
+  // Rang Top Buyers de chaque acheteur ; en cas d'echec, les alertes partent sans cette ligne.
+  let ranks = new Map();
+  if (tbStore && purchases.length) {
+    try {
+      const st = await tbStore.get();
+      const r = await liveRanks(env, st, purchases, scannedTo, Date.now());
+      ranks = r.ranks;
+      if (r.state !== st) await tbStore.put(r.state);
+    } catch (err) {
+      console.warn(`Top Buyers rank: ${err.message}`);
+    }
+  }
+
   let sends = 0;
   for (const p of purchases) {
     // Arret (erreur ou limite) : on reprend au bloc de cet achat, sans republier ceux deja envoyes.
@@ -251,7 +266,7 @@ async function run(env, store) {
     };
     if (sends >= MAX_SENDS_PER_RUN) { await stopAt(); return; }
     try {
-      await sendTelegram(env, formatMessage(p, progress));
+      await sendTelegram(env, formatMessage(p, progress, ranks.get(p.key)));
     } catch (err) {
       console.error(err);
       await stopAt();
@@ -289,7 +304,11 @@ export class AlertsRunner extends DurableObject {
           await kv.put(value).catch((err) => console.warn(`KV copy: ${err.message}`));
         },
       };
-      await run(this.env, store);
+      const tbStore = {
+        get: async () => (await this.ctx.storage.get('topBuyers')) ?? null,
+        put: (value) => this.ctx.storage.put('topBuyers', value),
+      };
+      await run(this.env, store, tbStore);
       return 'ok';
     } catch (err) {
       // Erreur de traitement (RPC, Telegram...) : renvoyee comme resultat, pour que
