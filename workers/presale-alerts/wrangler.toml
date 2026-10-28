@@ -4,7 +4,8 @@ compatibility_date = "2026-10-01"
 workers_dev = false
 
 [triggers]
-crons = [ "* * * * *" ]
+# Chaque minute : alertes d'achat. 14:05 UTC : classement Top Buyers (aux dates de TOP_BUYERS).
+crons = [ "* * * * *", "5 14 * * *" ]
 
 # Curseur dans un Durable Object (offre gratuite, stockage SQLite) : un seul
 # exemplaire, sans delai de propagation, une execution a la fois.
@@ -30,6 +31,9 @@ LOGS_RPC_URLS = "https://bsc-rpc.publicnode.com"
 # Tranches du RPC de secours (secret FALLBACK_RPC_URL) : NodeReal accepte 50 000 blocs par eth_getLogs.
 FALLBACK_RANGE = "50000"
 DRY_RUN = "0"
+SAFE_ADDRESS = "0x872F979aa868145bE3c3A6EA787614BE2A18C7f7"
+# Concours Top Buyers : signataires du Safe exclus d'office (lus on-chain). Cagnotte affichee a partir de showPoolFrom USDT.
+TOP_BUYERS = '{"name":"Top Buyers","start":"2026-10-27T14:00:00Z","end":"2026-11-02T14:00:00Z","postDates":["2026-10-30","2026-11-01"],"poolBps":1000,"poolCap":500,"showPoolFrom":50,"splitBps":[5000,3000,2000],"exclude":[]}'
 
 [observability]
 enabled = true

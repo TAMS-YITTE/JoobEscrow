@@ -1,4 +1,5 @@
 import { DurableObject } from 'cloudflare:workers';
+import { runTopBuyers } from './topBuyers.js';
 
 // Alertes Telegram des achats de la presale JOOB (VestingPresale, BNB Smart Chain).
 // Cron chaque minute : lit totalRaised() ; seulement s'il a bouge, lit les events
@@ -34,6 +35,7 @@ const MAX_SENDS_PER_RUN = 15; // limite Telegram ~20 messages/min par groupe
 // envoi ou tous les SAVE_EVERY blocs (~7 min) ; au pire on relit ces blocs, sans doublon.
 const SAVE_EVERY = 1000n;
 const CURSOR_KEY = 'cursor';
+const TOP_BUYERS_CRON = '5 14 * * *'; // doit correspondre a wrangler.toml
 const DECIMALS = 18; // USDT, USDC (BSC) et JOOB : 18 decimales
 const BSCSCAN = 'https://bscscan.com';
 const PRESALE_URL = 'https://www.joobescrow.com/presale';
@@ -178,6 +180,14 @@ async function telegram(env, method, body) {
   });
 }
 
+// Classement Top Buyers : texte seul, sans l'image des alertes d'achat.
+async function sendTelegramText(env, text) {
+  if (env.DRY_RUN === '1') { console.log(`[DRY_RUN]
+${text}`); return; }
+  const res = await telegram(env, 'sendMessage', { text, disable_web_page_preview: true });
+  if (!res.ok) throw new Error(`Telegram ${res.status}: ${(await res.text()).slice(0, 200)}`);
+}
+
 async function sendTelegram(env, text) {
   if (env.DRY_RUN === '1') { console.log(`[DRY_RUN]${env.IMAGE_URL ? ` [photo ${env.IMAGE_URL}]` : ''}\n${text}`); return; }
   let res = null;
@@ -290,10 +300,34 @@ export class AlertsRunner extends DurableObject {
       this.running = false;
     }
   }
+
+  // Classement Top Buyers (cron quotidien) : publie seulement aux dates de TOP_BUYERS, une fois par jour.
+  async topBuyers() {
+    try {
+      const state = (await this.ctx.storage.get('topBuyers')) ?? null;
+      const { state: next, text, postKey } = await runTopBuyers(this.env, state, Date.now());
+      if (!text) { if (next !== state) await this.ctx.storage.put('topBuyers', next); return 'nothing due'; }
+      await this.ctx.storage.put('topBuyers', next);
+      await sendTelegramText(this.env, text);
+      await this.ctx.storage.put('topBuyers', { ...next, lastPost: postKey });
+      return 'posted';
+    } catch (err) {
+      console.error(err);
+      return `error: ${err.message}`;
+    }
+  }
 }
 
 export default {
-  async scheduled(_event, env, ctx) {
+  async scheduled(event, env, ctx) {
+    if (event.cron === TOP_BUYERS_CRON) {
+      ctx.waitUntil((async () => {
+        const result = await env.ALERTS.get(env.ALERTS.idFromName('main')).topBuyers();
+        console.log(`Top Buyers: ${result}`);
+        if (result.startsWith('error')) throw new Error(result);
+      })());
+      return;
+    }
     ctx.waitUntil((async () => {
       let result;
       try {
