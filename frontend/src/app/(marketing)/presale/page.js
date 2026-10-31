@@ -30,18 +30,13 @@ export default function PresalePage() {
       {/* ── FAQ Section ────────────────────────────────────────── */}
       <section className={styles.contentSection} id="faq">
         <div className={styles.sectionHead}>
-          <span className={styles.sectionTag}>QUESTIONS &amp; ANSWERS</span>
-          <h2 className={styles.sectionTitle}>JOOB Token FAQ</h2>
+          <h2 className={styles.sectionTitle}>Before you buy</h2>
         </div>
 
         <PresaleFaq />
 
         <p className={styles.fineText} style={{ textAlign: 'center', marginTop: '28px' }}>
-          Read the full <Link href="/presale-terms">Presale Terms</Link> and
-          the <Link href="/risks">Risks &amp; Disclaimers</Link> before participating.
-        </p>
-        <p className={styles.fineText} style={{ textAlign: 'center' }}>
-          More answers: <Link href="/tokenomics">Tokenomics &amp; use of funds</Link> · <Link href="/faq">Full FAQ</Link>
+          <Link href="/presale-terms">Presale Terms</Link> · <Link href="/risks">Risks</Link> · <Link href="/faq">Full FAQ</Link>
         </p>
       </section>
     </div>
