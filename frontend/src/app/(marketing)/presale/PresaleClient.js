@@ -13,6 +13,7 @@ import {
 } from '../../../config/presale';
 import styles from './presale.module.css';
 import { BSCN_ARTICLE_URL } from '../../../config/links';
+import { activePromo } from '../../../config/promo';
 import kolProgram from '../../../config/kolProgram.json';
 import { KOL_STORAGE_KEY, kolPresaleReferrer } from '../../../lib/kolFlag';
 import TokenPicker, { TokenLogo } from '../../../components/TokenPicker';
@@ -347,6 +348,11 @@ export default function PresaleClient() {
     return { tokens, bonus };
   }, [config, amountWei, currentPrice, td, user]);
 
+  // Bonus temporaire hors contrat (config/promo.js) : +bonusBps des JOOB achetes, au-dela de minUsd.
+  const promo = isLive ? activePromo(now) : null;
+  const promoBonus = promo && amountWei >= ethers.parseUnits(String(promo.minUsd), pd)
+    ? (estimate.tokens * BigInt(promo.bonusBps)) / 10_000n : 0n;
+
   const nextTier = useMemo(() => {
     if (!config) return null;
     const cumulative = user.contribution + amountWei;
@@ -610,6 +616,24 @@ export default function PresaleClient() {
         </div>
       </header>
 
+      {promo && (
+        <div className={styles.promoBanner}>
+          <div className={styles.promoMain}>
+            <span className={styles.promoTag}>{promo.name}</span>
+            <span className={styles.promoTitle}>
+              +{promo.bonusBps / 100}% extra JOOB on every purchase of {promo.minUsd} USDT or more
+            </span>
+            <span className={styles.promoFine}>
+              Early buyers get +{promo.earlyBonusBps / 100}% automatically. Bonus from the marketing allocation, no mint, delivered at TGE with the presale vesting.
+            </span>
+          </div>
+          <div className={styles.promoTimer}>
+            <span className={styles.promoTimerLabel}>Ends in</span>
+            <Countdown seconds={promo.endSec - now} />
+          </div>
+        </div>
+      )}
+
       {/* ── Presale Hero Grid (Buy Card + Side Column) ───────────── */}
       <div className={styles.presaleGrid}>
         {/* Left: Glass Buy Card */}
@@ -746,6 +770,16 @@ export default function PresaleClient() {
               {estimate.bonus > 0n && (
                 <div className={styles.receiveBonusNote}>
                   ✓ Includes +{fmtToken(estimate.bonus, td)} volume bonus
+                </div>
+              )}
+              {promoBonus > 0n && (
+                <div className={styles.receiveBonusNote}>
+                  + {fmtToken(promoBonus, td)} JOOB weekend bonus, delivered at TGE
+                </div>
+              )}
+              {promo && promoBonus === 0n && (
+                <div className={styles.promoHint}>
+                  Buy {promo.minUsd} USDT or more to get +{promo.bonusBps / 100}% weekend bonus
                 </div>
               )}
             </div>
