@@ -7,6 +7,7 @@ import PartnerMarquee from '../../components/PartnerMarquee';
 import { BSCN_ARTICLE_URL } from '../../config/links';
 import HomeFaq from '../../components/HomeFaq';
 import LiveStats from '../../components/LiveStats';
+import PromoBanner from '../../components/PromoBanner';
 import FeeCalculator from '../../components/FeeCalculator';
 import { AUDITS, BSCSCAN, KYC_URL, PRESALE_ADDRESSES } from '../../config/presale';
 import { instances } from '../../config/instances';
@@ -83,6 +84,7 @@ export default function LandingPage() {
               <span aria-hidden="true">↗</span>
             </a>
           </div>
+          <PromoBanner cta />
           <div className={styles.heroGrid}>
             <div className={styles.heroLeft}>
               <div className={styles.pillBadge}>

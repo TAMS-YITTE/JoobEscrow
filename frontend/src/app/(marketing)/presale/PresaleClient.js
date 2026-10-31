@@ -14,6 +14,7 @@ import {
 import styles from './presale.module.css';
 import { BSCN_ARTICLE_URL } from '../../../config/links';
 import { activePromo } from '../../../config/promo';
+import PromoBanner from '../../../components/PromoBanner';
 import kolProgram from '../../../config/kolProgram.json';
 import { KOL_STORAGE_KEY, kolPresaleReferrer } from '../../../lib/kolFlag';
 import TokenPicker, { TokenLogo } from '../../../components/TokenPicker';
@@ -616,23 +617,7 @@ export default function PresaleClient() {
         </div>
       </header>
 
-      {promo && (
-        <div className={styles.promoBanner}>
-          <div className={styles.promoMain}>
-            <span className={styles.promoTag}>{promo.name}</span>
-            <span className={styles.promoTitle}>
-              +{promo.bonusBps / 100}% extra JOOB on every purchase of {promo.minUsd} USDT or more
-            </span>
-            <span className={styles.promoFine}>
-              Early buyers get +{promo.earlyBonusBps / 100}% automatically. Bonus from the marketing allocation, no mint, delivered at TGE with the presale vesting.
-            </span>
-          </div>
-          <div className={styles.promoTimer}>
-            <span className={styles.promoTimerLabel}>Ends in</span>
-            <Countdown seconds={promo.endSec - now} />
-          </div>
-        </div>
-      )}
+      {promo && <PromoBanner />}
 
       {/* ── Presale Hero Grid (Buy Card + Side Column) ───────────── */}
       <div className={styles.presaleGrid}>
