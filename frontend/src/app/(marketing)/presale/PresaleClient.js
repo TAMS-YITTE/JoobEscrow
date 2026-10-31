@@ -544,6 +544,9 @@ export default function PresaleClient() {
     } finally { setStep(''); }
   };
 
+  // Tweet pre-rempli pour le lien de parrainage : faits verifiables seulement, aucune promesse de gain.
+  const SHARE_TEXT = 'I joined the $JOOB presale: the token behind @JoobEscrow, the audited non-custodial escrow live on BNB Chain. The price rises every 2 days.';
+
   const copyLink = async () => {
     try { await navigator.clipboard.writeText(referralLink); setCopied(true); setTimeout(() => setCopied(false), 2000); } catch { /* ignore */ }
   };
@@ -877,6 +880,17 @@ export default function PresaleClient() {
               <button type="button" onClick={connectWallet} className="btn btn-outline" style={{ width: '100%', fontSize: '0.82rem' }}>
                 Connect wallet to generate referral link
               </button>
+            )}
+            {account && (
+              <a
+                href={`https://x.com/intent/post?text=${encodeURIComponent(SHARE_TEXT)}&url=${encodeURIComponent(referralLink)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-primary"
+                style={{ display: 'block', width: '100%', marginTop: 10, padding: '10px 16px', fontSize: '0.85rem', textAlign: 'center' }}
+              >
+                Share on X
+              </a>
             )}
 
           </details>
