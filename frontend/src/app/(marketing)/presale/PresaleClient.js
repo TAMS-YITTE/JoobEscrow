@@ -567,7 +567,6 @@ export default function PresaleClient() {
           : !crossChain && allowance < amountWei ? `Approve & buy with ${paymentToken}` : 'Buy JOOB';
 
   const tierPct = nextTier ? Math.min(100, Number(((user.contribution + amountWei) * 10_000n) / nextTier.threshold) / 100) : 100;
-  const capM = fmtNum(Number(ethers.formatUnits(config.cap, td)) / 1e6, 1);
 
   return (
     <>
@@ -788,11 +787,6 @@ export default function PresaleClient() {
               </div>
             </div>
 
-            {/* Arguments de vente : plafond et vesting lus dans le contrat (pas de montant leve affiche). */}
-            <div className={styles.capProgressHeader}>
-              <span>Limited cap <b className={styles.capProgressStrong}>{capM}M JOOB</b></span>
-              <span>{Number(config.tgeBps) / 100}% at sale end · rest over {Number(config.vestingDuration) / 86400} days</span>
-            </div>
 
             {soldOut && (
               <div className={`${styles.feedback} ${styles.feedbackInfo}`}>
