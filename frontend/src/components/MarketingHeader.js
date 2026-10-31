@@ -102,7 +102,7 @@ export default function MarketingHeader() {
           <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d={X_PATH} /></svg>
         </a>
         <PresaleNavButton />
-        <Link href="/app" className={`btn btn-primary ${styles.launchBtn}`}>
+        <Link href="/app" className={`btn btn-outline ${styles.launchBtn}`}>
           Launch App
         </Link>
         <button

@@ -7,12 +7,11 @@ import { useAppKitNetwork, useAppKitProvider, useDisconnect } from '@reown/appki
 import { bsc, mainnet, arbitrum, base, polygon, optimism, avalanche } from '@reown/appkit/networks';
 import { useWeb3 } from '../../../context/Web3Context';
 import {
-  PRESALE_ADDRESSES, PRESALE_ABI, ERC20_ABI, PRESALE_STATE, PRESALE_CHAIN_ID, BSCSCAN, AUDITS,
+  PRESALE_ADDRESSES, PRESALE_ABI, ERC20_ABI, PRESALE_STATE, PRESALE_CHAIN_ID, BSCSCAN,
   priceAt, nextStepAt, volumeTierBps, readableError, maxPurchasablePayment, isSoldOut, closingTime,
   PLANNED_LISTING_PRICE,
 } from '../../../config/presale';
 import styles from './presale.module.css';
-import { BSCN_ARTICLE_URL } from '../../../config/links';
 import { activePromo } from '../../../config/promo';
 import PromoBanner from '../../../components/PromoBanner';
 import kolProgram from '../../../config/kolProgram.json';
@@ -365,7 +364,6 @@ export default function PresaleClient() {
   const maxPurchasable = useMemo(() => maxPurchasablePayment(config, global, currentPrice), [config, global, currentPrice]);
 
   const soldOut = isLive && currentPrice > 0n && isSoldOut(config, global, currentPrice);
-  const vaultSealed = !!config && !!global && global.depositedTokens >= config.cap;
   const referralLink = account && typeof window !== 'undefined' ? `${window.location.origin}/presale?${REF_PARAM}=${account}` : '';
 
   const crossChain = !!source && !source.direct;
@@ -562,50 +560,11 @@ export default function PresaleClient() {
 
   return (
     <>
-      {/* ── Sticky Quick Navigation ─────────────────────────────── */}
-      <div className={styles.quickNavWrap}>
-        <nav className={styles.quickNav} aria-label="Quick links">
-          <Link href="/tokenomics" className={styles.quickPill}>Tokenomics</Link>
-          <a href="#referral" className={styles.quickPill}>Referral</a>
-          <a href="#faq" className={styles.quickPill}>FAQ</a>
-          <Link href="/presale-terms" className={styles.quickPill}>Terms</Link>
-        </nav>
-      </div>
-
       {/* ── Hero Section ────────────────────────────────────────── */}
       <header className={styles.hero}>
-        <div className={styles.heroPill}>
-          <span className={styles.pulseDot} />
-          JOOB PRESALE · {badge[0]}
-        </div>
         <h1 className={styles.heroTitle}>
           Join the <span className={styles.titleGradient}>JOOB Presale</span>
         </h1>
-        <div className={styles.proofLine}>
-          SEALED VAULT · AUDITED BY SPYWOLF · VESTING ON-CHAIN
-        </div>
-
-        <div className={styles.trustBadges}>
-          <a href={`${BSCSCAN}/address/${PRESALE_ADDRESSES.PRESALE}#code`} target="_blank" rel="noopener noreferrer" className={styles.trustBadge}>
-            <span className={styles.trustBadgeOk}>✓</span> Verified contract ↗
-          </a>
-          <a href={`${BSCSCAN}/address/${PRESALE_ADDRESSES.PRESALE}#readContract`} target="_blank" rel="noopener noreferrer" className={styles.trustBadge}>
-            <span className={styles.trustBadgeOk}>{vaultSealed ? '🔒 163.5M JOOB vault locked' : 'Vault funding'}</span> ↗
-          </a>
-          <a href={AUDITS.PRESALE} target="_blank" rel="noopener noreferrer" className={styles.trustBadge}>
-            <span className={styles.trustBadgeOk}>🛡</span> SpyWolf audited ↗
-          </a>
-          <Link href="/security" className={styles.trustBadge}>
-            3/5 Safe Multisig →
-          </Link>
-        </div>
-        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '14px' }}>
-          <a href={BSCN_ARTICLE_URL} target="_blank" rel="noopener noreferrer" className="press-pill">
-            <img src="/logos/bscnews.webp" alt="BSC News" width={30} height={30} style={{ borderRadius: 8, flexShrink: 0 }} />
-            <span>Read our launch article on <strong>BSC News</strong></span>
-            <span aria-hidden="true">↗</span>
-          </a>
-        </div>
       </header>
 
       {promo && <PromoBanner />}
@@ -812,6 +771,7 @@ export default function PresaleClient() {
             {isLive && !soldOut && (
               <p className={styles.termsNotice}>
                 By buying, you accept the <Link href="/presale-terms">Presale Terms</Link>. Read the <Link href="/risks">Risks</Link> first.
+                {' · '}<a href={`${BSCSCAN}/address/${PRESALE_ADDRESSES.PRESALE}#code`} target="_blank" rel="noopener noreferrer">Verify on BscScan ↗</a>
               </p>
             )}
             {picking && <TokenPicker onClose={() => setPicking(false)} onPick={pickSource} />}
