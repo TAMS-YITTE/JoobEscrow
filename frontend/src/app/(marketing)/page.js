@@ -29,10 +29,15 @@ const TRUST = [
   { label: 'Verify on BscScan', href: `${BSCSCAN}/address/${PRESALE_ADDRESSES.PRESALE}#code` },
 ];
 
+const META_TITLE = 'JOOB Presale Live | The token behind smart escrow | JoobEscrow';
+const META_DESC = 'JOOB powers JoobEscrow, the audited non-custodial escrow live on BNB Smart Chain. Presale live, the price rises every 2 days. Contracts audited by SpyWolf, 3-of-5 Safe multisig.';
+
 export const metadata = {
-  title: 'Non-Custodial Smart Escrow & JOOB Presale | JoobEscrow',
-  description: 'Secure every freelance and commercial payment with non-custodial smart contracts on BNB Smart Chain. Audited by SpyWolf, governed by 3-of-5 multisig.',
+  title: META_TITLE,
+  description: META_DESC,
   alternates: { canonical: '/' },
+  openGraph: { title: META_TITLE, description: META_DESC, url: 'https://www.joobescrow.com/', type: 'website', images: [{ url: '/og-presale.png', width: 1200, height: 630 }] },
+  twitter: { card: 'summary_large_image', title: META_TITLE, description: META_DESC, images: ['/og-presale.png'] },
 };
 
 export default function LandingPage() {

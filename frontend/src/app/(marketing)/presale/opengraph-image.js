@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og';
 
 // Image d'apercu des liens /presale (Telegram, X...). Aucun prix de listing ni promesse de gain.
-export const alt = 'JOOB Presale on JoobEscrow: opens October 15, 2026, 14:00 UTC';
+export const alt = 'JOOB Presale on JoobEscrow: live now, the price rises every 2 days';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
@@ -22,10 +22,10 @@ export default function Image() {
         </div>
         <div style={{ display: 'flex', fontSize: 96, fontWeight: 800, marginTop: 24, letterSpacing: -2 }}>JOOB Presale</div>
         <div style={{ display: 'flex', fontSize: 44, marginTop: 12, color: '#fbbf24', fontWeight: 700 }}>
-          Opens October 15, 2026 · 14:00 UTC
+          Live now · the price rises every 2 days
         </div>
         <div style={{ display: 'flex', gap: 14, marginTop: 48 }}>
-          <div style={chip}>Starts at $0.001</div>
+          <div style={chip}>7 EVM networks</div>
           <div style={chip}>Sealed vault</div>
           <div style={chip}>Vesting on-chain</div>
           <div style={chip}>Audited by SpyWolf</div>
