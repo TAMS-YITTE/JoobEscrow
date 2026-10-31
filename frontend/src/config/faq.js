@@ -102,11 +102,6 @@ export const HOME_FAQ = [
     href: '/presale#faq',
   },
   {
-    q: 'Can I lose money?',
-    summary: 'Yes. After listing, the market sets the price, which may be lower than what you paid, and there is no refund. Only contribute what you can afford to lose.',
-    href: '/risks',
-  },
-  {
     q: 'Who can participate?',
     summary: 'Adults who are not residents of a restricted jurisdiction listed in the Presale Terms. You can pay from 7 EVM networks with stablecoins or native coins.',
     href: '/presale-terms',
