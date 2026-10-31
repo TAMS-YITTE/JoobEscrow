@@ -884,27 +884,6 @@ export default function PresaleClient() {
         </aside>
       </div>
 
-      {/* How to buy JOOB in 4 steps */}
-      <section className={styles.buySteps} aria-label="How to buy JOOB">
-        <div className={styles.buyStepsHead}>
-          <span className={styles.buyStepsTag}>PRESALE PARTICIPATION</span>
-          <h2 className={styles.buyStepsTitle}>How to buy $JOOB</h2>
-          <p className={styles.buyStepsSub}>Pay with stablecoins or native coins from 7 EVM networks.</p>
-        </div>
-        <div className={styles.buyStepsGrid}>
-          {[
-            ['Connect wallet', 'MetaMask, Trust Wallet, Rabby and 700+ wallets via Reown.'],
-            ['Pick token & amount', 'Click the token in "You pay" and enter an amount: your JOOB are shown before you confirm.'],
-            ['Confirm', 'Approve and buy in your wallet. Your allocation is recorded on-chain.'],
-          ].map(([t, d], i) => (
-            <div key={t} className={styles.buyStepCard}>
-              <span className={styles.buyStepNum}>STEP {String(i + 1).padStart(2, '0')}</span>
-              <h3 className={styles.buyStepName}>{t}</h3>
-              <p className={styles.buyStepText}>{d}</p>
-            </div>
-          ))}
-        </div>
-      </section>
     </>
   );
 }

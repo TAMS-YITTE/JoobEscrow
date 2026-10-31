@@ -5,6 +5,7 @@ import PresaleGlassCard from '../../components/PresaleGlassCard';
 import PartnerMarquee from '../../components/PartnerMarquee';
 import { BSCN_ARTICLE_URL } from '../../config/links';
 import HomeFaq from '../../components/HomeFaq';
+import HowToBuy from '../../components/HowToBuy';
 import PromoBanner from '../../components/PromoBanner';
 import { AUDITS, BSCSCAN, KYC_URL, PRESALE_ADDRESSES } from '../../config/presale';
 import { TOKENOMICS, fmtM } from '../../config/tokenomics';
@@ -117,6 +118,8 @@ export default function LandingPage() {
           </p>
         </div>
       </section>
+
+      <HowToBuy />
 
       {/* What's next */}
       <section className={styles.sectionAlt} id="next">

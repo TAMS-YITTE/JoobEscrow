@@ -1,6 +1,4 @@
-import Link from 'next/link';
 import PresaleClient from './PresaleClient';
-import PresaleFaq from './PresaleFaq';
 import LegacyAnchorRedirect from './LegacyAnchorRedirect';
 import styles from './presale.module.css';
 
@@ -26,19 +24,6 @@ export default function PresalePage() {
     <div className={styles.page}>
       <LegacyAnchorRedirect />
       <PresaleClient />
-
-      {/* ── FAQ Section ────────────────────────────────────────── */}
-      <section className={styles.contentSection} id="faq">
-        <div className={styles.sectionHead}>
-          <h2 className={styles.sectionTitle}>Before you buy</h2>
-        </div>
-
-        <PresaleFaq />
-
-        <p className={styles.fineText} style={{ textAlign: 'center', marginTop: '28px' }}>
-          <Link href="/presale-terms">Presale Terms</Link> · <Link href="/risks">Risks</Link> · <Link href="/faq">Full FAQ</Link>
-        </p>
-      </section>
     </div>
   );
 }

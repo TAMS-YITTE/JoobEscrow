@@ -9,6 +9,7 @@ const MOVED = {
   '#use-of-funds': '/tokenomics#use-of-funds',
   '#ecosystem': '/ecosystem',
   '#roadmap': '/roadmap',
+  '#faq': '/faq#presale-price',
 };
 
 export default function LegacyAnchorRedirect() {
@@ -20,7 +21,7 @@ export default function LegacyAnchorRedirect() {
       router.replace(target);
       return undefined;
     }
-    // Ancre restee sur la page (#referral, #faq) : le navigateur defile avant que la carte
+    // Ancre restee sur la page (#referral) : le navigateur defile avant que la carte
     // presale ait fini de s'afficher ; on re-defile une fois la mise en page stabilisee.
     if (!hash) return undefined;
     const t = setTimeout(() => {

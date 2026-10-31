@@ -68,6 +68,37 @@ export const FAQ = [
 // Presale : questions deplacees de /presale (texte complet conserve ici).
 FAQ.push(
   {
+    id: 'presale-price',
+    q: 'How is the presale price set?',
+    summary: 'By the smart contract, from a public schedule: it started at $0.001 and rises by $0.0002 every 2 days. You pay the price at the moment your transaction executes.',
+  },
+  {
+    id: 'presale-claim',
+    q: 'When can I claim my presale tokens?',
+    summary: 'When the sale ends, 20% of your allocation becomes claimable on the presale page. The remaining 80% unlocks linearly over 180 days, and claims cannot be paused.',
+  },
+  {
+    id: 'presale-safety',
+    q: 'Is the presale safe?',
+    summary: 'The token and presale contracts are verified on BscScan and audited by SpyWolf, with no critical, high or medium issue. The full cap was locked in the contract before the sale opened, so every allocation is covered. An audit reduces risk but does not remove it.',
+  },
+  {
+    id: 'presale-payment',
+    q: 'What can I pay with in the presale?',
+    summary: 'USDT or USDC on BNB Smart Chain go straight to the contract. Other tokens (BNB, ETH, POL, AVAX, ARB, OP) from 7 EVM networks are converted by LI.FI, with fees shown before you confirm.',
+  },
+  {
+    id: 'presale-listing',
+    q: 'Will JOOB be tradable after the sale?',
+    summary: 'A JOOB/USDT pool on PancakeSwap is planned right after the sale, opened above every presale price. After that the market sets the price, which may be lower than what you paid: only contribute what you can afford to lose.',
+  },
+  {
+    id: 'presale-eligibility',
+    q: 'Who can join the presale?',
+    summary: 'Adults who are not residents of a restricted jurisdiction listed in the Presale Terms. There is no refund once you buy.',
+    link: { href: '/presale-terms', label: 'Presale Terms' },
+  },
+  {
     id: 'what-is-joob',
     q: 'What is JOOB?',
     summary:
@@ -99,7 +130,7 @@ export const HOME_FAQ = [
   {
     q: 'When do I get my tokens?',
     summary: 'When the sale ends, 20% of your JOOB becomes claimable on the presale page. The remaining 80% unlocks linearly over 180 days.',
-    href: '/presale#faq',
+    href: '/faq#presale-claim',
   },
   {
     q: 'Who can participate?',
