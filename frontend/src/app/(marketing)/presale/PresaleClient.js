@@ -15,7 +15,7 @@ import styles from './presale.module.css';
 import { activePromo } from '../../../config/promo';
 import PromoBanner from '../../../components/PromoBanner';
 import kolProgram from '../../../config/kolProgram.json';
-import { KOL_STORAGE_KEY, kolPresaleReferrer } from '../../../lib/kolFlag';
+import { KOL_STORAGE_KEY, kolPresaleReferrer, activeKolHandle, kolClickValue } from '../../../lib/kolFlag';
 import TokenPicker, { TokenLogo } from '../../../components/TokenPicker';
 import { useCatalog, NATIVE } from '../../../lib/crosschain/sources';
 import { useRouteQuote, useSourceBalance } from '../../../lib/crosschain/hooks';
@@ -282,7 +282,7 @@ export default function PresaleClient() {
   const isCorrectNetwork = Number(chainId) === PRESALE_CHAIN_ID;
 
   // Memorise un parrain d'acheteur (lien ?referrer= ou saisie), jamais le parrain KOL du clic (30 jours).
-  const [kolReferrer] = useState(() => {
+  const [kolReferrer, setKolReferrer] = useState(() => {
     const r = readInitialReferral();
     return r.fromKol ? r.address : null;
   });
@@ -301,7 +301,18 @@ export default function PresaleClient() {
       try { localStorage.removeItem(REF_STORAGE_KEY); } catch { /* ignore */ }
       return;
     }
-    if (!ethers.isAddress(v)) { setRefError('Invalid referral address: paste a valid 0x… wallet address.'); return; }
+    // Code KOL (handle actif de kolProgram.json) : meme effet qu'un clic sur son lien (30 jours).
+    const handle = activeKolHandle(v, kolProgram);
+    const kolAddr = handle ? kolProgram[handle]?.referrer : null;
+    if (kolAddr && ethers.isAddress(kolAddr)) {
+      const checksum = ethers.getAddress(kolAddr);
+      try { localStorage.setItem(KOL_STORAGE_KEY, kolClickValue(handle, kolProgram)); } catch { /* ignore */ }
+      setKolReferrer(checksum);
+      setReferrer(checksum);
+      setRefError(null);
+      return;
+    }
+    if (!ethers.isAddress(v)) { setRefError('Unknown referral code: enter a valid code or 0x… wallet address.'); return; }
     const checksum = ethers.getAddress(v);
     if (account && checksum.toLowerCase() === account.toLowerCase()) { setRefError('You cannot refer yourself.'); return; }
     setReferrer(checksum);
@@ -585,52 +596,10 @@ export default function PresaleClient() {
 
           <Feedback status={status} step={step} success={successMsg} error={txError} />
 
-          {beforeStart && (
-            <div className={styles.raisedBox}>
-              <div className={styles.raisedLabel}>Presale Opens In</div>
-              <Countdown seconds={config.startTime - now} />
-            </div>
-          )}
-
-          {/* Sub-cards: Price & Allocation */}
-          {/* Prix : libelle a gauche, valeur a droite */}
-          <div className={styles.metricsGrid}>
-            <div className={styles.priceTile}>
-              <span className={styles.priceTileLabel}>{isEnded || awaitingFinalize ? 'Final price' : 'Current price'}</span>
-              <span className={`${styles.priceTileVal} ${styles.priceTileAccent}`}>{soldOut ? 'Sold out' : `$${fmtUsd(isEnded || awaitingFinalize ? finalPrice : currentPrice, pd)}`}</span>
-            </div>
-            <div className={styles.priceTile}>
-              <span className={styles.priceTileLabel}>Next price</span>
-              <span className={styles.priceTileVal}>{isEnded || awaitingFinalize || soldOut ? '—' : `$${fmtUsd(nextPrice, pd)}`}</span>
-            </div>
-          </div>
-
-          {/* Arguments de vente : plafond et vesting lus dans le contrat (pas de montant leve affiche). */}
-          <div className={styles.capProgressHeader}>
-            <span>Limited cap <b className={styles.capProgressStrong}>{capM}M JOOB</b></span>
-            <span>{Number(config.tgeBps) / 100}% at sale end · rest over {Number(config.vestingDuration) / 86400} days</span>
-          </div>
-
-          {soldOut && (
-            <div className={`${styles.feedback} ${styles.feedbackInfo}`}>
-              The cap is reached: less than 1 JOOB is left to sell. Claims open after the end date ({fmtDate(global.endTime)}).
-            </div>
-          )}
-
-          {/* Next Price Bar */}
-          {isLive && !soldOut && (
-            <div className={styles.nextPriceBar}>
-              <span>Next price increase in:</span>
-              <span className={styles.nextPriceCountdown}>
-                {nextStepRemaining > 0n ? fmtDhms(Number(nextStepRemaining)) : 'imminent'}
-              </span>
-            </div>
-          )}
-
           {/* Amount and Currency Selection */}
           <div className={styles.formSection}>
             <div className={styles.fieldLabelRow}>
-              <span>{crossChain ? 'You pay ($)' : 'You pay'}</span>
+              <span>{crossChain ? 'Sell ($)' : 'Sell'}</span>
               <span className={styles.balanceRow}>
                 Balance: {!account ? '—'
                   : crossChain ? (sourceBalance !== undefined ? `${fmtNum(Number(ethers.formatUnits(sourceBalance, source.decimals)), 4)} ${source.symbol}` : '…')
@@ -681,10 +650,12 @@ export default function PresaleClient() {
               <div className={`${styles.feedback} ${styles.feedbackErr}`}>Amount too low from this network: bridges need a minimum of about $2–3. Try a higher amount, or pay in USDT/USDC on BNB Smart Chain.</div>
             )}
 
+            <div className={styles.swapArrow} aria-hidden="true">↓</div>
+
             {/* "You Receive" Highlight */}
             <div className={styles.receiveBox}>
               <div className={styles.receiveHeader}>
-                <span>You receive (vested)</span>
+                <span>Buy (vested)</span>
                 <span>BNB Chain</span>
               </div>
               <div className={styles.receiveAmount}>
@@ -707,11 +678,14 @@ export default function PresaleClient() {
               )}
             </div>
 
-            {/* Bonus de volume replie par defaut ; survol ou focus de la barre : tous les paliers */}
+            {/* Relance visible du prochain palier ; barre et liste des paliers repliees */}
+            <div className={styles.bonusNudge}>
+              {nextTier
+                ? <>Add <b>${fmtUsd(nextTier.missing, pd, 0)}</b> more to get a <b>+{Number(nextTier.bps) / 100}%</b> volume bonus</>
+                : <>Maximum volume bonus reached (+{Number(config.tierBps[config.tierBps.length - 1] ?? 0n) / 100}%)</>}
+            </div>
             <details className={styles.bonusDetails}>
-              <summary>
-                Volume bonus up to +{Number(config.tierBps[config.tierBps.length - 1] ?? 0n) / 100}% · Details
-              </summary>
+              <summary>All bonus tiers</summary>
             <div className={styles.tierWrap}>
               <div className={styles.tierBarRow}>
                 <span className={styles.tierPill}>{Number(volumeTierBps(config, user.contribution + amountWei)) / 100}%</span>
@@ -720,14 +694,7 @@ export default function PresaleClient() {
                 </div>
                 <span className={styles.tierPill}>{nextTier ? `+${Number(nextTier.bps) / 100}%` : 'MAX'}</span>
               </div>
-              <div className={styles.tierHint}>
-                {/* Bouton : ouvre aussi la liste des paliers au clavier et au toucher. */}
-                <button type="button" aria-label="Show volume bonus tiers" aria-describedby="tiers-tip" className={styles.tierInfo}>i</button>
-                {nextTier
-                  ? <>Contribute another <b>${fmtUsd(nextTier.missing, pd, 0)}</b> to reach the <b>+{Number(nextTier.bps) / 100}%</b> volume bonus.</>
-                  : <>Maximum volume bonus reached (+{Number(config.tierBps[config.tierBps.length - 1] ?? 0n) / 100}%).</>}
-              </div>
-              <div id="tiers-tip" role="tooltip" className={styles.tierTip}>
+              <div id="tiers-tip" className={styles.tierList}>
                 <span className={styles.tierTipTitle}>Volume bonus tiers (cumulative purchases)</span>
                 {config.tierThresholds.map((th, i) => {
                   const reached = user.contribution + amountWei >= th;
@@ -740,6 +707,25 @@ export default function PresaleClient() {
                 })}
               </div>
             </div>
+            </details>
+
+            {/* Code de parrainage : adresse 0x ou code KOL */}
+            <details className={styles.bonusDetails}>
+              <summary>{referrer ? `✓ Referral applied (${shortAddr(referrer)})` : 'Do you have a referral code?'}</summary>
+              <div className={styles.refInputRow}>
+                <input
+                  value={refInput}
+                  onChange={(e) => { setRefInput(e.target.value); setRefError(null); }}
+                  onBlur={applyReferral}
+                  placeholder="Code or 0x… address"
+                  aria-label="Referral code or address"
+                  className={styles.refInput}
+                />
+                <button type="button" onClick={applyReferral} className="btn btn-ghost" style={{ padding: '6px 12px', fontSize: '0.78rem' }}>
+                  Apply
+                </button>
+              </div>
+              {refError && <div style={{ color: '#f87171', fontSize: '0.76rem', marginTop: '4px' }}>{refError}</div>}
             </details>
 
             {amountError && <div className={`${styles.feedback} ${styles.feedbackErr}`}>{amountError}</div>}
@@ -778,8 +764,54 @@ export default function PresaleClient() {
           </div>
         </form>
 
-        {/* Right Side Column */}
+        {/* Colonne de statut : a gauche sur ordinateur, sous la carte d'achat sur mobile */}
         <aside className={styles.sideColumn}>
+          <div className={styles.statusCard}>
+            <div className={styles.sideCardTitle}>Buy now, before the next price step</div>
+            {beforeStart && (
+              <div className={styles.raisedBox}>
+                <div className={styles.raisedLabel}>Presale Opens In</div>
+                <Countdown seconds={config.startTime - now} />
+              </div>
+            )}
+
+            {/* Sub-cards: Price & Allocation */}
+            {/* Prix : libelle a gauche, valeur a droite */}
+            <div className={styles.metricsGrid}>
+              <div className={styles.priceTile}>
+                <span className={styles.priceTileLabel}>{isEnded || awaitingFinalize ? 'Final price' : 'Current price'}</span>
+                <span className={`${styles.priceTileVal} ${styles.priceTileAccent}`}>{soldOut ? 'Sold out' : `$${fmtUsd(isEnded || awaitingFinalize ? finalPrice : currentPrice, pd)}`}</span>
+              </div>
+              <div className={styles.priceTile}>
+                <span className={styles.priceTileLabel}>Next price</span>
+                <span className={styles.priceTileVal}>{isEnded || awaitingFinalize || soldOut ? '—' : `$${fmtUsd(nextPrice, pd)}`}</span>
+              </div>
+            </div>
+
+            {/* Arguments de vente : plafond et vesting lus dans le contrat (pas de montant leve affiche). */}
+            <div className={styles.capProgressHeader}>
+              <span>Limited cap <b className={styles.capProgressStrong}>{capM}M JOOB</b></span>
+              <span>{Number(config.tgeBps) / 100}% at sale end · rest over {Number(config.vestingDuration) / 86400} days</span>
+            </div>
+
+            {soldOut && (
+              <div className={`${styles.feedback} ${styles.feedbackInfo}`}>
+                The cap is reached: less than 1 JOOB is left to sell. Claims open after the end date ({fmtDate(global.endTime)}).
+              </div>
+            )}
+
+            {/* Next Price Bar */}
+            {isLive && !soldOut && (
+              <div className={styles.nextPriceBar}>
+                <span>Next price increase in:</span>
+                <span className={styles.nextPriceCountdown}>
+                  {nextStepRemaining > 0n ? fmtDhms(Number(nextStepRemaining)) : 'imminent'}
+                </span>
+              </div>
+            )}
+
+          </div>
+
           {/* Allocation de l'acheteur : seulement pour un wallet connecte qui a deja achete. */}
           {account && (user.allocation > 0n || isEnded || awaitingFinalize) && (
             <div className={styles.allocCard}>
@@ -853,28 +885,6 @@ export default function PresaleClient() {
               </button>
             )}
 
-            {/* Manual referral entry */}
-            <div style={{ marginTop: '14px', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '12px' }}>
-              <div style={{ fontSize: '0.76rem', color: '#94a3b8', marginBottom: '6px' }}>Have a referrer? Paste their address:</div>
-              <div className={styles.refInputRow}>
-                <input
-                  value={refInput}
-                  onChange={(e) => { setRefInput(e.target.value); setRefError(null); }}
-                  onBlur={applyReferral}
-                  placeholder="0x… referrer wallet"
-                  className={styles.refInput}
-                />
-                <button type="button" onClick={applyReferral} className="btn btn-ghost" style={{ padding: '6px 12px', fontSize: '0.78rem' }}>
-                  Apply
-                </button>
-              </div>
-              {refError && <div style={{ color: '#f87171', fontSize: '0.76rem', marginTop: '4px' }}>{refError}</div>}
-              {effectiveReferrer && (
-                <div style={{ color: '#a3e635', fontSize: '0.76rem', marginTop: '4px' }}>
-                  ✓ Referred by {effectiveReferrer.slice(0, 6)}…{effectiveReferrer.slice(-4)}
-                </div>
-              )}
-            </div>
           </details>
 
           <details className={`${styles.referralCard} ${styles.sideDetails}`}>

@@ -5,6 +5,7 @@ import dict from '../../i18n/en.json';
 
 import { Web3Provider } from '../../context/Web3Context';
 import MarketingHeader from '../../components/MarketingHeader';
+import HideOnFocusPages from '../../components/HideOnFocusPages';
 import { TELEGRAM_URL, X_URL } from '../../config/links';
 
 
@@ -18,6 +19,7 @@ export default function MarketingLayout({ children }) {
           {children}
         </main>
 
+        <HideOnFocusPages>
         <footer className={styles.footer}>
           <div className={styles.footerGrid}>
             <div className={styles.footerBrand}>
@@ -76,6 +78,7 @@ export default function MarketingLayout({ children }) {
             <span>Only official site: joobescrow.com · We never DM first</span>
           </div>
         </footer>
+        </HideOnFocusPages>
       </div>
     </Web3Provider>
   );

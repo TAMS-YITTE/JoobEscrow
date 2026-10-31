@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import PresaleClient from './PresaleClient';
 import LegacyAnchorRedirect from './LegacyAnchorRedirect';
 import styles from './presale.module.css';
@@ -24,6 +25,9 @@ export default function PresalePage() {
     <div className={styles.page}>
       <LegacyAnchorRedirect />
       <PresaleClient />
+      <p className={styles.fineText} style={{ textAlign: 'center', padding: '0 16px 32px' }}>
+        <Link href="/presale-terms">Presale Terms</Link> · <Link href="/risks">Risks</Link> · <Link href="/compliance">Compliance</Link> · Only official site: joobescrow.com
+      </p>
     </div>
   );
 }
