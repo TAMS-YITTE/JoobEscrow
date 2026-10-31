@@ -9,7 +9,7 @@ const pad = (n) => String(n).padStart(2, '0');
 
 // Bandeau du bonus temporaire (config/promo.js), masque hors periode. Rendu apres le montage
 // seulement : l'heure du serveur et celle du navigateur ne doivent pas diverger a l'hydratation.
-export default function PromoBanner({ cta = false }) {
+export default function PromoBanner({ cta = false, className = '' }) {
   const [now, setNow] = useState(null);
   useEffect(() => {
     const tick = () => setNow(Math.floor(Date.now() / 1000));
@@ -23,7 +23,7 @@ export default function PromoBanner({ cta = false }) {
   const s = Math.max(0, Number(promo.endSec) - now);
 
   return (
-    <div className={styles.banner}>
+    <div className={`${styles.banner} ${className}`}>
       <div className={styles.main}>
         <span className={styles.tag}>{promo.name}</span>
         <span className={styles.title}>

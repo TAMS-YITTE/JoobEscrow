@@ -573,11 +573,11 @@ export default function PresaleClient() {
       {/* ── Hero Section ────────────────────────────────────────── */}
       <header className={styles.hero}>
         <h1 className={styles.heroTitle}>
-          Join the <span className={styles.titleGradient}>JOOB Presale</span>
+          <span className={styles.titleGradient}>JOOB Presale</span>
         </h1>
       </header>
 
-      {promo && <PromoBanner />}
+      {promo && <PromoBanner className={styles.promoAligned} />}
 
       {/* ── Presale Hero Grid (Buy Card + Side Column) ───────────── */}
       <div className={styles.presaleGrid}>

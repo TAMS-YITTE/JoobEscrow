@@ -1514,3 +1514,6 @@
   font-size: 0.8rem;
   color: #94a3b8;
 }
+
+/* Bandeau promo a la largeur de la grille d achat. */
+.promoAligned { max-width: 1024px; }
