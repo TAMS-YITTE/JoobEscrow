@@ -5,16 +5,13 @@ import dict from '../../i18n/en.json';
 
 import { Web3Provider } from '../../context/Web3Context';
 import MarketingHeader from '../../components/MarketingHeader';
-import ZealyBanner from '../../components/ZealyBanner';
-import { AUDITS } from '../../config/presale';
-import { TELEGRAM_URL, X_URL, ZEALY_URL } from '../../config/links';
+import { TELEGRAM_URL, X_URL } from '../../config/links';
 
 
 export default function MarketingLayout({ children }) {
   return (
     <Web3Provider>
       <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-        <ZealyBanner />
         <MarketingHeader />
 
         <main className="mkt-main" style={{ flex: 1 }}>
@@ -54,7 +51,7 @@ export default function MarketingLayout({ children }) {
               <h3>Product</h3>
               <Link href="/app">Launch App</Link>
               <Link href="/try">Try it with $1</Link>
-              <Link href="/how-disputes-work">How disputes work</Link>
+              <Link href="/security">Audits &amp; security</Link>
               <Link href="/faq">FAQ</Link>
             </div>
 
@@ -64,26 +61,15 @@ export default function MarketingLayout({ children }) {
               <Link href="/tokenomics">Tokenomics</Link>
               <Link href="/roadmap">Roadmap</Link>
               <Link href="/whitepaper">Whitepaper</Link>
-              <Link href="/presale-terms">Presale terms</Link>
-              <a href={ZEALY_URL} target="_blank" rel="noopener noreferrer">Zealy quests</a>
-            </div>
-
-            <div className={styles.footerCol}>
-              <h3>Audits</h3>
-              <a href={AUDITS.ESCROW_V4} target="_blank" rel="noopener noreferrer">Escrow contract V4</a>
-              <a href={AUDITS.TOKEN} target="_blank" rel="noopener noreferrer">JOOB token</a>
-              <a href={AUDITS.PRESALE} target="_blank" rel="noopener noreferrer">Presale &amp; airdrop</a>
-              <a href={AUDITS.STAKING} target="_blank" rel="noopener noreferrer">Staking</a>
-            </div>
-
-            <div className={styles.footerCol}>
-              <h3>Trust &amp; legal</h3>
-              <Link href="/security">Security &amp; trust</Link>
-              <Link href="/risks">Risks &amp; disclaimers</Link>
-              <Link href="/compliance">Regulatory &amp; compliance</Link>
-              <Link href="/terms">Terms of service</Link>
             </div>
           </div>
+
+          <nav className={styles.footerLegal} aria-label="Legal">
+            <Link href="/presale-terms">Presale terms</Link>
+            <Link href="/risks">Risks</Link>
+            <Link href="/compliance">Compliance</Link>
+            <Link href="/terms">Terms</Link>
+          </nav>
 
           <div className={styles.footerBottom}>
             <span>© {new Date().getFullYear()} JoobEscrow · Built on BNB Chain</span>

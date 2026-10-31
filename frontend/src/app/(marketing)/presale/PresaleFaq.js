@@ -4,50 +4,31 @@ import { useState } from 'react';
 import Link from 'next/link';
 import styles from './presale.module.css';
 
+// Questions de levee d'objection seulement ; le detail est sur /tokenomics, /presale-terms et /risks.
 const FAQS = [
   {
-    q: 'What is JOOB?',
-    a: 'JOOB is the BEP-20 token of the JoobEscrow ecosystem on BNB Smart Chain (fixed supply of 1,000,000,000). It is designed to be the key to the protocol: governance (JOOB holders vote on protocol decisions such as new categories, fee tiers and ecosystem grants), fee reductions for holders who stake JOOB, by tier, up to a full fee waiver at the highest tier (with Escrow V5), JOOB staking (contract already deployed and audited by SpyWolf, opening after the TGE: stake JOOB, earn JOOB rewards, 7-day withdrawal delay, no guaranteed yield), 0% fees on PerShare (our audited collective-pool app) for holders above a threshold from the TGE, plus boosts and badges, affiliate rewards in JOOB and Early Escrow points. These features ship progressively and are not guaranteed by a given date. JOOB gives no ownership, profit or revenue right in JoobEscrow, and using JoobEscrow escrows never requires JOOB.',
-  },
-  {
-    q: 'How is the price set during the presale?',
-    a: 'The price is computed by the smart contract from a public schedule: it starts at $0.001 and increases by $0.0002 every 2 days. The price applied is the one at the moment your transaction is executed. If a price step happens between your confirmation and the execution, the transaction is cancelled and nothing is charged.',
+    q: 'How is the price set?',
+    a: 'By the smart contract, from a public schedule: it started at $0.001 and rises by $0.0002 every 2 days. You pay the price at the moment your transaction executes.',
   },
   {
     q: 'When can I claim my tokens?',
-    a: 'Nothing is claimable before the sale ends. When it ends, 20% of your allocation (purchases and bonuses) becomes claimable, and the remaining 80% unlocks linearly, second by second, over 180 days. You claim from this page at any time; claims cannot be paused.',
+    a: 'When the sale ends, 20% of your allocation becomes claimable on this page. The remaining 80% unlocks linearly over 180 days, and claims cannot be paused.',
   },
   {
-    q: 'What is the "sealed vault"?',
-    a: 'The contract cannot open the sale until the full 163.5M JOOB cap has been deposited in it. You can check the deposited amount on BscScan (depositedTokens). Each purchase is checked against the tokens still available in the contract, so buyer allocations are covered by tokens it already holds.',
-  },
-  {
-    q: 'Are the contracts audited?',
-    a: 'Yes. The JOOB token and the presale contract were audited by SpyWolf: no critical, high or medium issue, and every reported finding was fixed or acknowledged. Reports: spywolf.co/audits/StandardToken_Audit_JoobEscrow.pdf and spywolf.co/audits/VestingPresale_Airdrop_Audit_JoobEscrow.pdf. An audit reduces technical risk but does not remove it.',
-  },
-  {
-    q: 'How do the volume bonus and referral work?',
-    a: 'The volume bonus depends on your cumulative USDT + USDC contribution: 2% from $100, 3.5% from $250, 5% from $500 and 7% from $1,000, applied to all the tokens you bought (earlier purchases are topped up automatically). A referrer receives 2% of the tokens bought through their link. Bonuses follow the same vesting and count toward the cap.',
-  },
-  {
-    q: 'What happens to unsold tokens and to the funds raised?',
-    a: 'After the sale, unsold tokens are returned to the JoobEscrow Safe multisig and burned on-chain. The stablecoins raised are withdrawn by the same multisig. There is no soft cap and no refund.',
-  },
-  {
-    q: 'Will JOOB be tradable after the sale?',
-    a: 'A JOOB/USDT pool on PancakeSwap is planned right after the sale ends, opened by the JoobEscrow Safe at an initial price of $0.02 (50 JOOB per USDT), above every presale price. Once trading starts, the price is set by the market alone: it is not guaranteed and may be lower than the price you paid. Only contribute what you can afford to lose.',
+    q: 'Is the presale safe?',
+    a: 'The token and presale contracts are verified on BscScan and audited by SpyWolf, with no critical, high or medium issue. The full cap was locked in the contract before the sale opened, so every allocation is covered. An audit reduces risk but does not remove it.',
   },
   {
     q: 'What can I pay with?',
-    a: 'Connect your EVM wallet and click the token in "You pay": USDT, USDC, BNB, ETH, POL, AVAX, ARB or OP, on BNB Smart Chain, Ethereum, Arbitrum, Base, Polygon, Optimism or Avalanche. USDT and USDC on BNB Smart Chain go straight to the contract; any other token or network is converted into USDT on BNB Smart Chain by LI.FI, with the fees shown before you confirm.',
+    a: 'USDT or USDC on BNB Smart Chain go straight to the contract. Other tokens (BNB, ETH, POL, AVAX, ARB, OP) from 7 EVM networks are converted by LI.FI, with fees shown before you confirm.',
   },
   {
-    q: 'I only have SOL (Solana). Can I participate?',
-    a: 'Yes, in two steps. Solana cannot pay the presale contract directly, so first swap your SOL into USDT on BNB Smart Chain, sent to your own wallet on BNB Smart Chain (for example MetaMask). A cross-chain swap such as Jumper (jumper.xyz, powered by LI.FI) can do it; check the route and fees before you confirm. Then come back here and buy with that USDT. Never send funds directly to the presale contract address: only purchases made through this page are counted.',
+    q: 'Will JOOB be tradable after the sale?',
+    a: 'A JOOB/USDT pool on PancakeSwap is planned right after the sale, opened above every presale price. After that the market sets the price, which may be lower than what you paid: only contribute what you can afford to lose.',
   },
   {
     q: 'Who can participate?',
-    a: 'Only adults who are not residents of a restricted jurisdiction listed in the Presale Terms. You are responsible for checking that participation is legal where you live.',
+    a: 'Adults who are not residents of a restricted jurisdiction listed in the Presale Terms. There is no refund once you buy.',
   },
 ];
 

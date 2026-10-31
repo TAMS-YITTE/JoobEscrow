@@ -41,8 +41,7 @@ export default function PresalePage() {
           the <Link href="/risks">Risks &amp; Disclaimers</Link> before participating.
         </p>
         <p className={styles.fineText} style={{ textAlign: 'center' }}>
-          Learn more: <Link href="/tokenomics">Tokenomics &amp; use of funds</Link> · <Link href="/ecosystem">Ecosystem</Link> ·{' '}
-          <Link href="/roadmap">Roadmap</Link> · <Link href="/whitepaper">Whitepaper</Link>
+          More answers: <Link href="/tokenomics">Tokenomics &amp; use of funds</Link> · <Link href="/faq">Full FAQ</Link>
         </p>
       </section>
     </div>

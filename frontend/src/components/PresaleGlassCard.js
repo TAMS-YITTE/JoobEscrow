@@ -86,13 +86,7 @@ export default function PresaleGlassCard() {
     ? Number(ethers.formatUnits(finalPrice, config.paymentDecimals)).toFixed(4)
     : '0.0000';
 
-  const raisedUSD = global && config
-    ? Number(ethers.formatUnits(global.totalRaised, config.paymentDecimals)).toLocaleString('en-US', { maximumFractionDigits: 2 })
-    : '0';
 
-  const allocatedTokens = global && config
-    ? Number(ethers.formatUnits(global.totalTokensOwed, config.tokenDecimals)).toLocaleString('en-US', { maximumFractionDigits: 0 })
-    : '0';
 
   return (
     <div className={styles.card}>
@@ -106,15 +100,10 @@ export default function PresaleGlassCard() {
         </span>
       </div>
 
-      {isPending ? (
+      {isPending && (
         <div className={styles.countdownBox}>
           <div className={styles.boxLabel}>Presale Opens In</div>
           {computedState === 'LOADING' ? <span style={{ opacity: 0.6 }}>Loading…</span> : <CountdownDisplay seconds={countdownSeconds} />}
-        </div>
-      ) : (
-        <div className={styles.raisedBox}>
-          <div className={styles.boxLabel}>Total Raised</div>
-          <div className={styles.raisedAmount}>${raisedUSD}</div>
         </div>
       )}
 
@@ -125,9 +114,9 @@ export default function PresaleGlassCard() {
           <div className={styles.metricSub}>{isClosed ? 'Sale closed' : isSoldOut ? 'Cap reached' : `Next: $${nextPriceUSD}`}</div>
         </div>
         <div className={styles.metricItem}>
-          <div className={styles.metricLabel}>{isPending ? 'Allocation Cap' : 'Tokens Allocated'}</div>
+          <div className={styles.metricLabel}>Presale Cap</div>
           <div className={styles.metricVal}>
-            {isPending ? '163.5M' : allocatedTokens} <span className={styles.tokenUnit}>JOOB</span>
+            163.5M <span className={styles.tokenUnit}>JOOB</span>
           </div>
           <div className={styles.metricSub}>Planned DEX: ${PLANNED_LISTING_PRICE}</div>
         </div>
@@ -159,11 +148,6 @@ export default function PresaleGlassCard() {
         )}
       </div>
 
-      <div className={styles.footerGuarantees}>
-        <span>🛡️ Audited by SpyWolf</span>
-        <span>•</span>
-        <span>🔐 3-of-5 Safe</span>
-      </div>
     </div>
   );
 }

@@ -6,7 +6,6 @@
 export const FAQ = [
   {
     id: 'funds-safety',
-    home: true,
     q: 'Is my money safe? Can JoobEscrow access it?',
     summary:
       'Your funds sit in an audited non-custodial smart contract, not in a JoobEscrow wallet, and the team cannot send escrowed funds to an arbitrary address. Funds leave an escrow only when the client releases them, when the client cancels before the provider accepts, when the provider claims them after the deadline with no dispute open, or when a dispute is settled between client and provider.',
@@ -18,7 +17,6 @@ export const FAQ = [
   },
   {
     id: 'disputes',
-    home: true,
     q: 'Who resolves disputes and how?',
     summary:
       'Either party can open a dispute while the escrow is funded and share evidence. The JoobEscrow arbitration team reviews it, and the 3-of-5 Safe multisig splits the funds between client and provider (any split from 0% to 100%). If a dispute stays unresolved for 30 days, either party can call resolveStaleDispute to trigger a 50/50 split on-chain.',
@@ -39,7 +37,6 @@ export const FAQ = [
   },
   {
     id: 'fees',
-    home: true,
     q: 'What fees do I pay for an escrow?',
     summary:
       'Clients pay 0% fees. Providers pay between 2% and 10% depending on the category, deducted from the provider\'s payout only when funds are released. There is no fee for creating or funding an escrow.',
@@ -59,7 +56,6 @@ export const FAQ = [
   },
   {
     id: 'messages',
-    home: true,
     q: 'Are communications with the provider secure?',
     summary:
       'The in-app chat uses the XMTP protocol: messages are end-to-end encrypted between wallets and travel over the XMTP network, not through JoobEscrow servers.',
@@ -69,4 +65,50 @@ export const FAQ = [
   },
 ];
 
-export const HOME_FAQ = FAQ.filter((f) => f.home);
+// Presale : questions deplacees de /presale (texte complet conserve ici).
+FAQ.push(
+  {
+    id: 'what-is-joob',
+    q: 'What is JOOB?',
+    summary:
+      'JOOB is the BEP-20 token of the JoobEscrow ecosystem on BNB Smart Chain (fixed supply of 1,000,000,000). It is designed to be the key to the protocol: governance (JOOB holders vote on protocol decisions such as new categories, fee tiers and ecosystem grants), fee reductions for holders who stake JOOB, by tier, up to a full fee waiver at the highest tier (with Escrow V5), JOOB staking (contract already deployed and audited by SpyWolf, opening after the TGE: stake JOOB, earn JOOB rewards, 7-day withdrawal delay, no guaranteed yield), 0% fees on PerShare (our audited collective-pool app) for holders above a threshold from the TGE, plus boosts and badges, affiliate rewards in JOOB and Early Escrow points.',
+    details: [
+      'These features ship progressively and are not guaranteed by a given date. JOOB gives no ownership, profit or revenue right in JoobEscrow, and using JoobEscrow escrows never requires JOOB.',
+    ],
+    link: { href: '/tokenomics', label: 'Tokenomics' },
+  },
+  {
+    id: 'pay-with-sol',
+    q: 'I only have SOL (Solana). Can I join the presale?',
+    summary:
+      'Yes, in two steps. Solana cannot pay the presale contract directly, so first swap your SOL into USDT on BNB Smart Chain, sent to your own wallet on BNB Smart Chain (for example MetaMask). A cross-chain swap such as Jumper (jumper.xyz, powered by LI.FI) can do it; check the route and fees before you confirm. Then buy on the presale page with that USDT.',
+    details: [
+      'Never send funds directly to the presale contract address: only purchases made through the presale page are counted.',
+    ],
+    link: { href: '/presale', label: 'Presale' },
+  },
+);
+
+// Accueil : levee d'objections sur la presale, reponse courte et lien vers le detail.
+export const HOME_FAQ = [
+  {
+    q: 'Is it safe?',
+    summary: 'The token and presale contracts are verified on BscScan and audited by SpyWolf, and the founder is KYC verified by the same firm. The full presale cap was locked in the contract before the sale opened.',
+    href: '/security',
+  },
+  {
+    q: 'When do I get my tokens?',
+    summary: 'When the sale ends, 20% of your JOOB becomes claimable on the presale page. The remaining 80% unlocks linearly over 180 days.',
+    href: '/presale#faq',
+  },
+  {
+    q: 'Can I lose money?',
+    summary: 'Yes. After listing, the market sets the price, which may be lower than what you paid, and there is no refund. Only contribute what you can afford to lose.',
+    href: '/risks',
+  },
+  {
+    q: 'Who can participate?',
+    summary: 'Adults who are not residents of a restricted jurisdiction listed in the Presale Terms. You can pay from 7 EVM networks with stablecoins or native coins.',
+    href: '/presale-terms',
+  },
+];

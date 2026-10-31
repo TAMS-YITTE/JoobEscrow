@@ -12,14 +12,12 @@ const X_PATH = 'M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.
 
 const NAV = [
   { href: '/try', label: 'Try $1' },
-  { href: '/#how-it-works', label: 'How it works' },
   { href: '/security', label: 'Audits & Security' },
   { href: '/faq', label: 'FAQ' },
 ];
 
 export const LEARN = [
   { href: '/tokenomics', label: 'Tokenomics' },
-  { href: '/ecosystem', label: 'Ecosystem' },
   { href: '/roadmap', label: 'Roadmap' },
   { href: '/whitepaper', label: 'Whitepaper' },
 ];
@@ -87,11 +85,11 @@ export default function MarketingHeader() {
       </Link>
 
       <nav className={styles.navCenter} aria-label="Main">
-        {NAV.slice(0, 2).map((n) => (
+        {NAV.slice(0, 1).map((n) => (
           <Link key={n.href} href={n.href} className={styles.navLink}>{n.label}</Link>
         ))}
         <LearnMenu />
-        {NAV.slice(2).map((n) => (
+        {NAV.slice(1).map((n) => (
           <Link key={n.href} href={n.href} className={styles.navLink}>{n.label}</Link>
         ))}
       </nav>

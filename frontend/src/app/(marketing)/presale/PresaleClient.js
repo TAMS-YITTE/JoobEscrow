@@ -366,7 +366,6 @@ export default function PresaleClient() {
 
   const soldOut = isLive && currentPrice > 0n && isSoldOut(config, global, currentPrice);
   const vaultSealed = !!config && !!global && global.depositedTokens >= config.cap;
-  const soldPct = soldOut ? 100 : config && global && config.cap > 0n ? Number((global.totalTokensOwed * 10_000n) / config.cap) / 100 : 0;
   const referralLink = account && typeof window !== 'undefined' ? `${window.location.origin}/presale?${REF_PARAM}=${account}` : '';
 
   const crossChain = !!source && !source.direct;
@@ -560,18 +559,13 @@ export default function PresaleClient() {
 
   const tierPct = nextTier ? Math.min(100, Number(((user.contribution + amountWei) * 10_000n) / nextTier.threshold) / 100) : 100;
   const capM = fmtNum(Number(ethers.formatUnits(config.cap, td)) / 1e6, 1);
-  const totalRaisedFmt = fmtNum(Number(ethers.formatUnits(global.totalRaised, pd)), 0);
 
   return (
     <>
       {/* ── Sticky Quick Navigation ─────────────────────────────── */}
       <div className={styles.quickNavWrap}>
         <nav className={styles.quickNav} aria-label="Quick links">
-          <Link href="/whitepaper" className={styles.quickPill}>Whitepaper</Link>
           <Link href="/tokenomics" className={styles.quickPill}>Tokenomics</Link>
-          <Link href="/tokenomics#use-of-funds" className={styles.quickPill}>Use of funds</Link>
-          <Link href="/ecosystem" className={styles.quickPill}>Ecosystem</Link>
-          <Link href="/roadmap" className={styles.quickPill}>Roadmap</Link>
           <a href="#referral" className={styles.quickPill}>Referral</a>
           <a href="#faq" className={styles.quickPill}>FAQ</a>
           <Link href="/presale-terms" className={styles.quickPill}>Terms</Link>
@@ -594,9 +588,6 @@ export default function PresaleClient() {
         <div className={styles.trustBadges}>
           <a href={`${BSCSCAN}/address/${PRESALE_ADDRESSES.PRESALE}#code`} target="_blank" rel="noopener noreferrer" className={styles.trustBadge}>
             <span className={styles.trustBadgeOk}>✓</span> Verified contract ↗
-          </a>
-          <a href={`${BSCSCAN}/token/${PRESALE_ADDRESSES.TOKEN}`} target="_blank" rel="noopener noreferrer" className={styles.trustBadge}>
-            JOOB token ↗
           </a>
           <a href={`${BSCSCAN}/address/${PRESALE_ADDRESSES.PRESALE}#readContract`} target="_blank" rel="noopener noreferrer" className={styles.trustBadge}>
             <span className={styles.trustBadgeOk}>{vaultSealed ? '🔒 163.5M JOOB vault locked' : 'Vault funding'}</span> ↗
@@ -635,15 +626,10 @@ export default function PresaleClient() {
 
           <Feedback status={status} step={step} success={successMsg} error={txError} />
 
-          {beforeStart ? (
+          {beforeStart && (
             <div className={styles.raisedBox}>
               <div className={styles.raisedLabel}>Presale Opens In</div>
               <Countdown seconds={config.startTime - now} />
-            </div>
-          ) : (
-            <div className={styles.raisedBox}>
-              <div className={styles.raisedLabel}>Total Raised</div>
-              <div className={styles.raisedValue}>${totalRaisedFmt}</div>
             </div>
           )}
 
@@ -660,17 +646,10 @@ export default function PresaleClient() {
             </div>
           </div>
 
-          {/* Cap Progress Bar with Glow Handle */}
-          <div className={styles.capProgressWrap}>
-            <div className={styles.capProgressHeader}>
-              <span>JOOB allocated <b className={styles.capProgressStrong}>{fmtToken(global.totalTokensOwed, td, 0)}</b> / {capM}M</span>
-              <span>{soldPct.toFixed(2)}%</span>
-            </div>
-            <div className={styles.capProgressBar}>
-              <div className={styles.capProgressFill} style={{ width: `${Math.min(100, Math.max(3, soldPct))}%` }}>
-                <span className={styles.capProgressHandle} />
-              </div>
-            </div>
+          {/* Arguments de vente : plafond et vesting lus dans le contrat (pas de montant leve affiche). */}
+          <div className={styles.capProgressHeader}>
+            <span>Limited cap <b className={styles.capProgressStrong}>{capM}M JOOB</b></span>
+            <span>{Number(config.tgeBps) / 100}% at sale end · rest over {Number(config.vestingDuration) / 86400} days</span>
           </div>
 
           {soldOut && (
@@ -769,8 +748,11 @@ export default function PresaleClient() {
               )}
             </div>
 
-            {/* Volume Tier Progress */}
-            {/* Barre du bonus de volume ; survol ou focus : tous les paliers */}
+            {/* Bonus de volume replie par defaut ; survol ou focus de la barre : tous les paliers */}
+            <details className={styles.bonusDetails}>
+              <summary>
+                Volume bonus up to +{Number(config.tierBps[config.tierBps.length - 1] ?? 0n) / 100}% · Details
+              </summary>
             <div className={styles.tierWrap}>
               <div className={styles.tierBarRow}>
                 <span className={styles.tierPill}>{Number(volumeTierBps(config, user.contribution + amountWei)) / 100}%</span>
@@ -799,6 +781,7 @@ export default function PresaleClient() {
                 })}
               </div>
             </div>
+            </details>
 
             {amountError && <div className={`${styles.feedback} ${styles.feedbackErr}`}>{amountError}</div>}
 
@@ -826,9 +809,9 @@ export default function PresaleClient() {
                 {buyLabel}
               </button>
             )}
-            {account && isLive && !soldOut && (
+            {isLive && !soldOut && (
               <p className={styles.termsNotice}>
-                By buying, you accept the <Link href="/presale-terms">Presale Terms</Link>.
+                By buying, you accept the <Link href="/presale-terms">Presale Terms</Link>. Read the <Link href="/risks">Risks</Link> first.
               </p>
             )}
             {picking && <TokenPicker onClose={() => setPicking(false)} onPick={pickSource} />}
@@ -837,9 +820,8 @@ export default function PresaleClient() {
 
         {/* Right Side Column */}
         <aside className={styles.sideColumn}>
-          {/* Allocation de l'acheteur : toujours affichee (tirets avant connexion) pour que les
-              deux cadres de droite remplissent la hauteur de la carte d'achat. */}
-          {(
+          {/* Allocation de l'acheteur : seulement pour un wallet connecte qui a deja achete. */}
+          {account && (user.allocation > 0n || isEnded || awaitingFinalize) && (
             <div className={styles.allocCard}>
               <div className={styles.sideCardTitle}>Your Allocation</div>
               {account && (
@@ -888,13 +870,12 @@ export default function PresaleClient() {
                   </button>
                 </div>
               ) : null}
-              <AllocationLookup readProvider={readProvider} td={td} pd={pd} />
             </div>
           )}
 
-          {/* Referral Card (id="referral") */}
-          <div className={styles.referralCard} id="referral">
-            <h3 className={styles.referralTitle}>Share &amp; Earn <span className={styles.referralAccent}>2%</span> On-Chain</h3>
+          {/* Parrainage replie par defaut (id="referral") */}
+          <details className={`${styles.referralCard} ${styles.sideDetails}`} id="referral">
+            <summary className={styles.referralTitle}>Share &amp; Earn <span className={styles.referralAccent}>2%</span> On-Chain</summary>
             <p className={styles.referralSub}>
               Referrers receive <b className={styles.referralAccent}>2% of all JOOB</b> bought through their link, with the exact same linear vesting.
             </p>
@@ -934,8 +915,12 @@ export default function PresaleClient() {
                 </div>
               )}
             </div>
-          </div>
+          </details>
 
+          <details className={`${styles.referralCard} ${styles.sideDetails}`}>
+            <summary className={styles.referralTitle}>Check an allocation</summary>
+            <AllocationLookup readProvider={readProvider} td={td} pd={pd} />
+          </details>
         </aside>
       </div>
 
@@ -944,14 +929,13 @@ export default function PresaleClient() {
         <div className={styles.buyStepsHead}>
           <span className={styles.buyStepsTag}>PRESALE PARTICIPATION</span>
           <h2 className={styles.buyStepsTitle}>How to buy $JOOB</h2>
-          <p className={styles.buyStepsSub}>Pay with USDT, USDC, BNB, ETH, POL, AVAX, ARB or OP on BNB Smart Chain, Ethereum, Arbitrum, Base, Polygon, Optimism and Avalanche.</p>
+          <p className={styles.buyStepsSub}>Pay with stablecoins or native coins from 7 EVM networks.</p>
         </div>
         <div className={styles.buyStepsGrid}>
           {[
-            ['Connect wallet', 'Connect your EVM wallet (MetaMask, Trust Wallet, Rabby…). Any of the 7 supported networks works; 700+ wallets via Reown.'],
-            ['Choose what you pay with', 'Click the token in "You pay" and pick what you hold, on BNB Smart Chain or another network. Keep a little of that network’s native coin for gas.'],
-            ['Enter amount', 'Preview your JOOB allocation and your volume bonus tier. From another network, the total cost including fees is shown before you confirm.'],
-            ['Approve & buy', 'Confirm in your wallet (approve first if asked; not needed with a native coin). Your allocation is recorded on-chain; from another network, allow 1–3 minutes.'],
+            ['Connect wallet', 'MetaMask, Trust Wallet, Rabby and 700+ wallets via Reown.'],
+            ['Pick token & amount', 'Click the token in "You pay" and enter an amount: your JOOB are shown before you confirm.'],
+            ['Confirm', 'Approve and buy in your wallet. Your allocation is recorded on-chain.'],
           ].map(([t, d], i) => (
             <div key={t} className={styles.buyStepCard}>
               <span className={styles.buyStepNum}>STEP {String(i + 1).padStart(2, '0')}</span>

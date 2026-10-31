@@ -27,7 +27,7 @@ export default function HomeFaq() {
               {isOpen && (
                 <p className={styles.answer}>
                   {f.summary}{' '}
-                  <Link href={`/faq#${f.id}`} onClick={(e) => e.stopPropagation()} className="text-gradient font-bold hover:underline">Full answer →</Link>
+                  <Link href={f.href} onClick={(e) => e.stopPropagation()} className="text-gradient font-bold hover:underline">Read more →</Link>
                 </p>
               )}
             </div>
