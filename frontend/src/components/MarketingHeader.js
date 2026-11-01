@@ -15,7 +15,7 @@ const TG_PATH = 'M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A
 const X_PATH = 'M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z';
 
 const NAV = [
-  { href: '/try', label: 'Try $1' },
+  { href: '/try', label: 'Try $1', hot: true },
   { href: '/airdrop', label: 'Airdrop', dot: true },
   { href: '/security', label: 'Audits & Security' },
   { href: '/faq', label: 'FAQ' },
@@ -118,7 +118,7 @@ export default function MarketingHeader() {
 
       <nav className={styles.navCenter} aria-label="Main">
         {NAV.slice(0, 2).map((n) => (
-          <Link key={n.href} href={n.href} className={styles.navLink}>{n.label}{n.dot && <NavDot />}</Link>
+          <Link key={n.href} href={n.href} className={`${styles.navLink} ${n.hot ? styles.navLinkHot : ''}`}>{n.label}{n.dot && <NavDot />}</Link>
         ))}
         <LearnMenu />
         {NAV.slice(2).map((n) => (
@@ -152,7 +152,7 @@ export default function MarketingHeader() {
       {open && (
         <nav id="mobile-menu" className={styles.mobileMenu} aria-label="Mobile">
           {NAV.map((n) => (
-            <Link key={n.href} href={n.href} className={styles.mobileLink} onClick={close}>{n.label}{n.dot && <NavDot />}</Link>
+            <Link key={n.href} href={n.href} className={`${styles.mobileLink} ${n.hot ? styles.mobileLinkHot : ''}`} onClick={close}>{n.label}{n.dot && <NavDot />}</Link>
           ))}
           <span className={styles.mobileGroup}>Learn</span>
           {LEARN.map((l) => (
