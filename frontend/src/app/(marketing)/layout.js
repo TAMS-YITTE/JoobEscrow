@@ -63,6 +63,7 @@ export default function MarketingLayout({ children }) {
               <Link href="/tokenomics">Tokenomics</Link>
               <Link href="/roadmap">Roadmap</Link>
               <Link href="/whitepaper">Whitepaper</Link>
+              <Link href="/airdrop">Airdrop</Link>
             </div>
           </div>
 
