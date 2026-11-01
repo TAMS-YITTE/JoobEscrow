@@ -776,6 +776,12 @@ export default function PresaleClient() {
                 <Countdown seconds={config.startTime - now} />
               </div>
             )}
+            {!beforeStart && (
+              <div className={styles.raisedBox}>
+                <div className={styles.raisedLabel}>Total raised</div>
+                <div className={styles.raisedValue}>${fmtNum(Number(ethers.formatUnits(global.totalRaised, pd)), 0)}</div>
+              </div>
+            )}
 
             {/* Sub-cards: Price & Allocation */}
             {/* Prix : libelle a gauche, valeur a droite */}

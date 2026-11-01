@@ -75,10 +75,10 @@ export default function LandingPage() {
                 <Link href="/presale" className="btn btn-primary" style={{ padding: '14px 34px', fontSize: '1rem' }}>
                   Join the Presale
                 </Link>
+                <Link href="/try" className={`btn ${styles.tryBtn}`} style={{ padding: '14px 28px', fontSize: '1rem' }}>
+                  Try it with $1 →
+                </Link>
               </div>
-              <Link href="/try" className={styles.heroTextLink}>
-                Or see the product in action with $1 →
-              </Link>
             </div>
 
             <div className={styles.heroRight}>
