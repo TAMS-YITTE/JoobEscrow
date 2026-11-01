@@ -75,7 +75,7 @@ export default function SecurityPage() {
               JoobEscrow was founded by a builder with over 20 years of experience in IT and finance, and a long-standing focus on DeFi. The founder&apos;s identity has been verified through a KYC with SpyWolf, the firm that audited our contracts.
             </p>
             <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '20px' }}>
-              We chose to stay publicly pseudonymous and to make trust verifiable on-chain instead: audited contracts, a 3-of-5 Safe multisig, and team tokens locked in a vesting contract until January 2028.
+              We chose to stay publicly pseudonymous and to make trust verifiable on-chain instead: audited contracts, a 3-of-5 Safe multisig, and team tokens locked in a vesting contract until January 2028. The registration of a company (SAS) for the JoobEscrow project is in progress.
             </p>
             <a href={KYC_URL} target="_blank" rel="noopener noreferrer" className="btn btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
               <span style={{ width: 22, height: 22, borderRadius: '50%', background: '#0b0f14', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
