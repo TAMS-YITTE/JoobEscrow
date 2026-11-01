@@ -2,21 +2,18 @@
 
 import { useState } from 'react';
 import { ethers } from 'ethers';
-import { useWeb3 } from '../../../context/Web3Context';
 import styles from './airdrop.module.css';
 
 const fmt = (n) => n.toLocaleString('en-US');
 const short = (a) => `${a.slice(0, 6)}…${a.slice(-4)}`;
 
-// Liste figee d'une campagne (config/airdrop/*.json) : verification par adresse ou wallet connecte, tableau public.
+// Liste figee d'une campagne (config/airdrop/*.json) : recherche par adresse (pas de connexion wallet), tableau public.
 export default function AirdropClient({ campaign }) {
-  const { account, connectWallet } = useWeb3();
   const [query, setQuery] = useState('');
   const [result, setResult] = useState(null);
 
   const byAddress = Object.fromEntries(campaign.entries.map((e) => [e.address, e]));
   const total = campaign.entries.reduce((a, e) => a + e.joob, 0);
-  const mine = account ? byAddress[account.toLowerCase()] : null;
 
   const check = (e) => {
     e.preventDefault();
@@ -39,21 +36,10 @@ export default function AirdropClient({ campaign }) {
       </div>
 
       <div className={`glass-panel ${styles.card}`}>
-        <h2 className={styles.cardTitle}>Check your wallet</h2>
-        {account ? (
-          <p className={mine ? styles.ok : styles.muted}>
-            {mine
-              ? `${short(account)} is on the list: ${fmt(mine.joob)} JOOB (${fmt(mine.xp)} XP).`
-              : `${short(account)} is not on this list.`}
-          </p>
-        ) : (
-          <button type="button" onClick={connectWallet} className="btn btn-primary" style={{ padding: '10px 22px' }}>
-            Connect wallet
-          </button>
-        )}
-        <form onSubmit={check} className={styles.form}>
-          <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Or paste a 0x… address" aria-label="Wallet address" className={styles.input} />
-          <button type="submit" className="btn btn-outline">Check</button>
+        <h2 className={styles.cardTitle}>Search by address</h2>
+        <form onSubmit={check} className={styles.form} style={{ marginTop: 0 }}>
+          <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="0x… wallet address" aria-label="Wallet address" className={styles.input} />
+          <button type="submit" className="btn btn-primary">Search</button>
         </form>
         {result && (
           <p className={result.entry ? styles.ok : styles.muted}>
