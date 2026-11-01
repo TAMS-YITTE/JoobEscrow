@@ -877,9 +877,14 @@ export default function PresaleClient() {
                 </button>
               </div>
             ) : (
-              <button type="button" onClick={connectWallet} className="btn btn-outline" style={{ width: '100%', fontSize: '0.82rem' }}>
-                Connect wallet to generate referral link
-              </button>
+              <>
+                <button type="button" onClick={connectWallet} className="btn btn-primary" style={{ width: '100%', padding: '10px 16px', fontSize: '0.85rem' }}>
+                  Share on X
+                </button>
+                <p className={styles.referralSub} style={{ marginTop: 8, marginBottom: 0 }}>
+                  Connect your wallet to get your link. No purchase needed.
+                </p>
+              </>
             )}
             {account && (
               <a
