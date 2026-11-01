@@ -657,7 +657,7 @@ export default function PresaleClient() {
             {/* "You Receive" Highlight */}
             <div className={styles.receiveBox}>
               <div className={styles.receiveHeader}>
-                <span>Buy (vested)</span>
+                <span>Buy</span>
                 <span>BNB Chain</span>
               </div>
               <div className={styles.receiveAmount}>
