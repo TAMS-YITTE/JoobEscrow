@@ -16,9 +16,15 @@ const X_PATH = 'M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.
 
 const NAV = [
   { href: '/try', label: 'Try $1' },
+  { href: '/airdrop', label: 'Airdrop', dot: true },
   { href: '/security', label: 'Audits & Security' },
   { href: '/faq', label: 'FAQ' },
 ];
+
+// Point lime : signale une page recente (ex. liste des laureats).
+const NavDot = () => (
+  <span aria-hidden="true" style={{ display: 'inline-block', width: 6, height: 6, borderRadius: 3, background: '#a3e635', marginLeft: 6, verticalAlign: 'middle', boxShadow: '0 0 8px #a3e635' }} />
+);
 
 export const LEARN = [
   { href: '/tokenomics', label: 'Tokenomics' },
@@ -111,11 +117,11 @@ export default function MarketingHeader() {
       </Link>
 
       <nav className={styles.navCenter} aria-label="Main">
-        {NAV.slice(0, 1).map((n) => (
-          <Link key={n.href} href={n.href} className={styles.navLink}>{n.label}</Link>
+        {NAV.slice(0, 2).map((n) => (
+          <Link key={n.href} href={n.href} className={styles.navLink}>{n.label}{n.dot && <NavDot />}</Link>
         ))}
         <LearnMenu />
-        {NAV.slice(1).map((n) => (
+        {NAV.slice(2).map((n) => (
           <Link key={n.href} href={n.href} className={styles.navLink}>{n.label}</Link>
         ))}
       </nav>
@@ -146,7 +152,7 @@ export default function MarketingHeader() {
       {open && (
         <nav id="mobile-menu" className={styles.mobileMenu} aria-label="Mobile">
           {NAV.map((n) => (
-            <Link key={n.href} href={n.href} className={styles.mobileLink} onClick={close}>{n.label}</Link>
+            <Link key={n.href} href={n.href} className={styles.mobileLink} onClick={close}>{n.label}{n.dot && <NavDot />}</Link>
           ))}
           <span className={styles.mobileGroup}>Learn</span>
           {LEARN.map((l) => (
