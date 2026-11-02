@@ -19,24 +19,52 @@ const PRESALE_LINK = 'joobescrow.com/presale?utm_source=telegram&utm_campaign=to
 const hex = (n) => `0x${n.toString(16)}`;
 const day = (ms) => new Date(ms).toISOString().slice(0, 10);
 
+const WEEK_MS = 7 * 86_400_000;
+
+/**
+ * Semaine du concours hebdomadaire a `nowMs` : { startMs, endMs, number }.
+ * mode 'post' : pendant les 24 h qui suivent la fin d'une semaine, renvoie la semaine qui vient de finir
+ * (message final) ; mode 'live' : toujours la semaine en cours.
+ */
+export function weekWindow(c, nowMs, mode = 'post') {
+  const anchor = Date.parse(c.anchor);
+  if (Number.isNaN(anchor)) throw new Error('TOP_BUYERS: anchor invalide');
+  let k = Math.max(0, Math.floor((nowMs - anchor) / WEEK_MS));
+  if (mode === 'post' && k >= 1 && nowMs - (anchor + k * WEEK_MS) < 86_400_000) k -= 1;
+  const startMs = anchor + k * WEEK_MS;
+  return { startMs, endMs: startMs + WEEK_MS, number: (c.firstWeek ?? 1) + k };
+}
+
 /**
  * TOP_BUYERS = { name, start, end (ISO UTC), postDates: ["AAAA-MM-JJ"], poolBps, poolCap (USDT),
  *                showPoolFrom (USDT), splitBps: [..] (total 10000), exclude: [adresses] }
  * Le jour de `end`, le message final part au cron qui suit la fin.
+ * Mode hebdomadaire : { weekly: true, anchor (debut de la 1re semaine, ISO UTC), firstWeek (numero),
+ *                       postWeekdays: [0-6, getUTCDay] } a la place de start, end et postDates.
  */
-export function parseTopBuyers(raw) {
+export function parseTopBuyers(raw, nowMs = Date.now(), mode = 'post') {
   if (!raw) return null;
   const c = typeof raw === 'string' ? JSON.parse(raw) : raw;
-  const startMs = Date.parse(c.start);
-  const endMs = Date.parse(c.end);
+  let startMs = Date.parse(c.start);
+  let endMs = Date.parse(c.end);
+  let name = c.name ?? 'Top Buyers';
+  let postDates = c.postDates ?? [];
+  if (c.weekly) {
+    const w = weekWindow(c, nowMs, mode);
+    ({ startMs, endMs } = w);
+    name = `${name} week ${w.number}`;
+    const wd = new Set(c.postWeekdays ?? []);
+    postDates = Array.from({ length: 7 }, (_, i) => startMs + i * 86_400_000).filter((t) => wd.has(new Date(t).getUTCDay())).map(day);
+  }
   if (Number.isNaN(startMs) || Number.isNaN(endMs) || endMs <= startMs) throw new Error('TOP_BUYERS: start/end invalides');
   const split = (c.splitBps ?? []).map(BigInt);
   if (!split.length || split.reduce((s, b) => s + b, 0n) !== 10000n) throw new Error('TOP_BUYERS: splitBps doit totaliser 10000');
   return {
-    name: c.name ?? 'Top Buyers',
+    name,
+    weekly: Boolean(c.weekly),
     startMs,
     endMs,
-    postDates: new Set(c.postDates ?? []),
+    postDates: new Set(postDates),
     poolBps: BigInt(c.poolBps),
     poolCap: BigInt(c.poolCap) * UNIT,
     showPoolFrom: BigInt(c.showPoolFrom ?? 0) * UNIT,
@@ -91,6 +119,7 @@ export function formatLeaderboard(result, config, kind, nowMs) {
   lines.push('');
   if (kind === 'final') {
     lines.push(`Prize pool: ${usd(result.pool)} USDT. Payouts will be sent in USDT and the transaction hashes published.`, '', 'Thank you to everyone who took part.');
+    if (config.weekly) lines.push('', 'A new week starts now: every purchase until next Monday 14:00 UTC counts for the next Top Buyers.');
   } else {
     // Montant pour passer premier, arrondi aux 5 USDT superieurs.
     const top = podium.length ? podium[0].total : 0n;
@@ -195,7 +224,7 @@ const toBuys = (s) => s.buys.map((b) => ({ buyer: b.buyer, paid: BigInt(b.paid),
  * Renvoie { state, text } ; text = null si rien a publier.
  */
 export async function runTopBuyers(env, state, nowMs) {
-  const config = parseTopBuyers(env.TOP_BUYERS);
+  const config = parseTopBuyers(env.TOP_BUYERS, nowMs, 'post');
   if (!config) return { state, text: null };
   const kind = dueKind(config, nowMs);
   const postKey = `${config.name}:${day(nowMs)}`;
@@ -215,7 +244,7 @@ export async function runTopBuyers(env, state, nowMs) {
  */
 export async function liveRanks(env, state, purchases, upto, nowMs) {
   const ranks = new Map();
-  const config = parseTopBuyers(env.TOP_BUYERS);
+  const config = parseTopBuyers(env.TOP_BUYERS, nowMs, 'live');
   if (!config || !env.FALLBACK_RPC_URL || !purchases.length) return { state, ranks };
   // Fenetre : de la date de debut a une heure apres la fin (achats de fin de periode lus en retard).
   if (nowMs < config.startMs || nowMs > config.endMs + 3_600_000) return { state, ranks };

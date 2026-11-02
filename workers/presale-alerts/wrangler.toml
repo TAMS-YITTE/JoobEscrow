@@ -33,7 +33,7 @@ FALLBACK_RANGE = "50000"
 DRY_RUN = "0"
 SAFE_ADDRESS = "0x872F979aa868145bE3c3A6EA787614BE2A18C7f7"
 # Concours Top Buyers : signataires du Safe exclus d'office (lus on-chain). Cagnotte affichee a partir de showPoolFrom USDT.
-TOP_BUYERS = '{"name":"Top Buyers","start":"2026-10-27T14:00:00Z","end":"2026-11-02T14:00:00Z","postDates":["2026-10-30","2026-11-01"],"poolBps":1000,"poolCap":500,"showPoolFrom":50,"splitBps":[5000,3000,2000],"exclude":[]}'
+TOP_BUYERS = '{"name":"Top Buyers","weekly":true,"anchor":"2026-11-02T14:00:00Z","firstWeek":2,"postWeekdays":[3,5],"poolBps":1000,"poolCap":500,"showPoolFrom":50,"splitBps":[5000,3000,2000],"exclude":[]}'
 
 [observability]
 enabled = true
