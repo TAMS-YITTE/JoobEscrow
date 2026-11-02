@@ -1,0 +1,115 @@
+{
+ "id": "flash-weekend",
+ "campaign": "Flash Weekend Bonus",
+ "snapshot": "2026-11-02",
+ "rule": "+50% extra JOOB on every purchase of 20 USDT or more from October 31 to November 2, 14:00 UTC, and +25% on every purchase made before October 31.",
+ "delivery": "From the marketing allocation, delivered at TGE with the presale vesting: 20% at the end of the sale, then linear over 180 days.",
+ "labelHeader": "Bonus",
+ "entries": [
+  {
+   "address": "0xaa719a1535d2804f3da544e62f1c21d4aa6d3f7f",
+   "joob": 132248,
+   "label": "Early buyer +25%"
+  },
+  {
+   "address": "0x8af98ace2884199982305ded0e3d6485849e058b",
+   "joob": 5490,
+   "label": "Early buyer +25%"
+  },
+  {
+   "address": "0x32d42aec112ac2527bfbfd87da11bb473101c6eb",
+   "joob": 5000,
+   "label": "Early buyer +25%"
+  },
+  {
+   "address": "0x4538d22adf42d241f7f0af24aaddeb56a1de1fcc",
+   "joob": 4012,
+   "label": "Weekend +50%"
+  },
+  {
+   "address": "0x848af69c19aa8685b688db8765f9f70c54abbaab",
+   "joob": 2534,
+   "label": "Early buyer +25%"
+  },
+  {
+   "address": "0xa8c55d26c55f7c2eda54ca3f66bb416b2039cf1e",
+   "joob": 2277,
+   "label": "Early buyer +25%"
+  },
+  {
+   "address": "0x3cd54ab235caa02494ae1060fa9686da1115abb2",
+   "joob": 1584,
+   "label": "Early buyer +25%"
+  },
+  {
+   "address": "0x93dee10c46f4855f8dd56588cd9ac1325f6f4552",
+   "joob": 1250,
+   "label": "Early buyer +25%"
+  },
+  {
+   "address": "0x99023a1eb7e678b2d18fa7f84b07300b0cee90e7",
+   "joob": 1206,
+   "label": "Early buyer +25%"
+  },
+  {
+   "address": "0x19d637e607fcdf34e22a99dde1602181c320a52b",
+   "joob": 875,
+   "label": "Early buyer +25%"
+  },
+  {
+   "address": "0x19961d0720170c3bbecbfeca6e8a0a927fcc98c0",
+   "joob": 781,
+   "label": "Early buyer +25%"
+  },
+  {
+   "address": "0x40aa669c82823d2eeb8019957b35b55b14876e14",
+   "joob": 739,
+   "label": "Early buyer +25%"
+  },
+  {
+   "address": "0x505b90f3ccab1be2a3d9a015b3031cb05636293a",
+   "joob": 645,
+   "label": "Early buyer +25%"
+  },
+  {
+   "address": "0xfb3c3d2187d3fc5aa573d0e4cf63a0e6cd3b5890",
+   "joob": 625,
+   "label": "Early buyer +25%"
+  },
+  {
+   "address": "0x18568f2d738afef821cbe23dc7a9bbebfe3e470b",
+   "joob": 625,
+   "label": "Early buyer +25%"
+  },
+  {
+   "address": "0xcf47d19f93cb50200a291bc12016869b0f313e7c",
+   "joob": 562,
+   "label": "Early buyer +25%"
+  },
+  {
+   "address": "0x8d6362231dd6f93530d6b40c7e85be987817b45a",
+   "joob": 500,
+   "label": "Early buyer +25%"
+  },
+  {
+   "address": "0x17ace61ff711285bcb04c9dc329bd6805fa6669e",
+   "joob": 500,
+   "label": "Early buyer +25%"
+  },
+  {
+   "address": "0xb3a450dfcaf1a75912a44c72ab0096839fd667e6",
+   "joob": 423,
+   "label": "Early buyer +25%"
+  },
+  {
+   "address": "0x40d814b1c7ba93de83a18e6b8194c8957242ef80",
+   "joob": 208,
+   "label": "Early buyer +25%"
+  },
+  {
+   "address": "0xa45144081757e27a2ef7adb6b557ecbd01f3ecfe",
+   "joob": 179,
+   "label": "Early buyer +25%"
+  }
+ ]
+}

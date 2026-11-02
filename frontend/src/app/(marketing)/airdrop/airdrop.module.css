@@ -126,3 +126,27 @@
   .table { font-size: 0.8rem; }
   .table th, .table td { padding: 8px 6px; }
 }
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.tab {
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: transparent;
+  color: #94a3b8;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.tabActive {
+  color: #a3e635;
+  border-color: rgba(163, 230, 53, 0.55);
+  background: rgba(163, 230, 53, 0.08);
+}

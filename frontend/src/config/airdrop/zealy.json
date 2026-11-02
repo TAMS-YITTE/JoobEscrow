@@ -1,163 +1,167 @@
 {
+ "id": "zealy",
  "campaign": "Zealy Genesis & Launch Sprints",
- "joobPerXp": 10,
  "snapshot": "2026-11-01",
+ "rule": "10 JOOB per Zealy XP earned in the Genesis and Launch Sprints.",
+ "delivery": "From the Airdrop allocation (5% of supply), delivered at TGE: 20% unlocked, then linear over 6 months.",
+ "labelHeader": "Zealy",
+ "metricHeader": "XP",
  "entries": [
   {
-   "username": "shugaberry",
    "address": "0xddb6c6782c739b3114f607ccaf4862057eea823f",
-   "xp": 750,
-   "joob": 7500
+   "joob": 7500,
+   "label": "shugaberry",
+   "metric": 750
   },
   {
-   "username": "SAGE.",
    "address": "0xc936f36f1f9cdab48de066602a2ece177afae6e9",
-   "xp": 600,
-   "joob": 6000
+   "joob": 6000,
+   "label": "SAGE.",
+   "metric": 600
   },
   {
-   "username": "MasterPrime",
    "address": "0x24e8e2835124b61b50b7fc27dc4f38591c9d8e00",
-   "xp": 250,
-   "joob": 2500
+   "joob": 2500,
+   "label": "MasterPrime",
+   "metric": 250
   },
   {
-   "username": "Straitte",
    "address": "0x6126db040e5de6bfccf738c889c55840c26ef20d",
-   "xp": 250,
-   "joob": 2500
+   "joob": 2500,
+   "label": "Straitte",
+   "metric": 250
   },
   {
-   "username": "Treasure_1",
    "address": "0xc49faca1bfb0857b1c62cb020bddf9d7aa01388e",
-   "xp": 250,
-   "joob": 2500
+   "joob": 2500,
+   "label": "Treasure_1",
+   "metric": 250
   },
   {
-   "username": "TOPS1",
    "address": "0xd00a02b85b99c0cd654c0f5a15c9ad88177fb58c",
-   "xp": 250,
-   "joob": 2500
+   "joob": 2500,
+   "label": "TOPS1",
+   "metric": 250
   },
   {
-   "username": "Casamigo",
    "address": "0x871c57e33516e44e79fcf48770fbea6357c014b4",
-   "xp": 250,
-   "joob": 2500
+   "joob": 2500,
+   "label": "Casamigo",
+   "metric": 250
   },
   {
-   "username": "Mercy_Seat",
    "address": "0x84726559d5351d8ff967d00a65ffd9c27a00af42",
-   "xp": 250,
-   "joob": 2500
+   "joob": 2500,
+   "label": "Mercy_Seat",
+   "metric": 250
   },
   {
-   "username": "Liminhu",
    "address": "0x8f95b51201957e79bf88cc1f68fc0592607dceff",
-   "xp": 250,
-   "joob": 2500
+   "joob": 2500,
+   "label": "Liminhu",
+   "metric": 250
   },
   {
-   "username": "Little_finger_",
    "address": "0x003fe8759a1d221f33b5e2c8a3851f75d0bdcb49",
-   "xp": 225,
-   "joob": 2250
+   "joob": 2250,
+   "label": "Little_finger_",
+   "metric": 225
   },
   {
-   "username": "DEATH_",
    "address": "0x2b5fa0d129cb3b8090308e8a2f7f3cd045c0a781",
-   "xp": 150,
-   "joob": 1500
+   "joob": 1500,
+   "label": "DEATH_",
+   "metric": 150
   },
   {
-   "username": "Young__Legend",
    "address": "0x712d017880101d4127e896ea5a40b4dddc40b9cb",
-   "xp": 150,
-   "joob": 1500
+   "joob": 1500,
+   "label": "Young__Legend",
+   "metric": 150
   },
   {
-   "username": "Joewhite_OJ",
    "address": "0x51f1b0863fc015264290227bb56efb9e638e9fcb",
-   "xp": 150,
-   "joob": 1500
+   "joob": 1500,
+   "label": "Joewhite_OJ",
+   "metric": 150
   },
   {
-   "username": "BomBa",
    "address": "0x35cf2755b88b57b749cda656958ee3070deaba9b",
-   "xp": 150,
-   "joob": 1500
+   "joob": 1500,
+   "label": "BomBa",
+   "metric": 150
   },
   {
-   "username": "Jude18",
    "address": "0x0852ce17b766de976eda46431e5cf4cb1420de56",
-   "xp": 150,
-   "joob": 1500
+   "joob": 1500,
+   "label": "Jude18",
+   "metric": 150
   },
   {
-   "username": "nouyah",
    "address": "0x6077b6a2d9f795851d4993652c34dcfd3f82e824",
-   "xp": 150,
-   "joob": 1500
+   "joob": 1500,
+   "label": "nouyah",
+   "metric": 150
   },
   {
-   "username": "Jeff_Fisher",
    "address": "0x5fe16381cba376e045bcf6cef7dd3a6e9e2202c9",
-   "xp": 150,
-   "joob": 1500
+   "joob": 1500,
+   "label": "Jeff_Fisher",
+   "metric": 150
   },
   {
-   "username": "TanvirAhmmedSiam",
    "address": "0xbe6eb51f0128e11eb121cc7b08a9b9261cbcc5ab",
-   "xp": 150,
-   "joob": 1500
+   "joob": 1500,
+   "label": "TanvirAhmmedSiam",
+   "metric": 150
   },
   {
-   "username": "axceloze",
    "address": "0x69ead0d52d472603790e3fa7acae80944f3fbdda",
-   "xp": 150,
-   "joob": 1500
+   "joob": 1500,
+   "label": "axceloze",
+   "metric": 150
   },
   {
-   "username": "Yusufa",
    "address": "0x7393a38ffb377ee9f5f3595f597763951da22f59",
-   "xp": 150,
-   "joob": 1500
+   "joob": 1500,
+   "label": "Yusufa",
+   "metric": 150
   },
   {
-   "username": "altomutur",
    "address": "0xaac623d90dff164d4b362b835bff9891df5bdc4d",
-   "xp": 150,
-   "joob": 1500
+   "joob": 1500,
+   "label": "altomutur",
+   "metric": 150
   },
   {
-   "username": "Kingsplee",
    "address": "0x899a35caed198667953bfbb2a949e5e3eaf6b5fa",
-   "xp": 150,
-   "joob": 1500
+   "joob": 1500,
+   "label": "Kingsplee",
+   "metric": 150
   },
   {
-   "username": "CEO_",
    "address": "0xd230651f94bb2f0b531ddce02c5c4175240ee106",
-   "xp": 125,
-   "joob": 1250
+   "joob": 1250,
+   "label": "CEO_",
+   "metric": 125
   },
   {
-   "username": "miyuki1",
    "address": "0x3635e85d6fb9c1776a144a1fc7f7d9640dfe4e2b",
-   "xp": 25,
-   "joob": 250
+   "joob": 250,
+   "label": "miyuki1",
+   "metric": 25
   },
   {
-   "username": "MingTechX",
    "address": "0xe15f030ad94190c33045e126e715de735460acbf",
-   "xp": 25,
-   "joob": 250
+   "joob": 250,
+   "label": "MingTechX",
+   "metric": 25
   },
   {
-   "username": "Ikayyyy",
    "address": "0x234862d7b061228eb55d62ec9d5ebaa6ae7b11e7",
-   "xp": 25,
-   "joob": 250
+   "joob": 250,
+   "label": "Ikayyyy",
+   "metric": 25
   }
  ]
 }

@@ -1,11 +1,15 @@
 import Link from 'next/link';
 import styles from '../marketing.module.css';
 import AirdropClient from './AirdropClient';
+import FLASH_WEEKEND from '../../../config/airdrop/flash-weekend.json';
 import ZEALY from '../../../config/airdrop/zealy.json';
 
+// Campagnes publiees, la plus recente en premier (une liste figee par fichier).
+const CAMPAIGNS = [FLASH_WEEKEND, ZEALY];
+
 export const metadata = {
-  title: 'JOOB Airdrop | JoobEscrow',
-  description: 'JOOB airdrop rewards: check if your wallet is on the list. Zealy Genesis & Launch Sprints, 10 JOOB per XP, delivered at TGE with vesting.',
+  title: 'JOOB Rewards | JoobEscrow',
+  description: 'JOOB rewards: search your address to check your allocation from the Flash Weekend Bonus and the Zealy sprints, delivered at TGE with vesting.',
   alternates: { canonical: '/airdrop' },
 };
 
@@ -14,15 +18,14 @@ export default function AirdropPage() {
     <div className={styles.section} style={{ paddingTop: '56px', paddingBottom: '90px' }}>
       <div className={styles.container}>
         <div className={styles.sectionHead}>
-          <span className={styles.sectionTag}>JOOB AIRDROP</span>
-          <h1 className={styles.sectionTitle}>Airdrop rewards</h1>
+          <span className={styles.sectionTag}>JOOB REWARDS</span>
+          <h1 className={styles.sectionTitle}>Rewards &amp; airdrops</h1>
         </div>
 
-        <AirdropClient campaign={ZEALY} />
+        <AirdropClient campaigns={CAMPAIGNS} />
 
         <p style={{ textAlign: 'center', color: '#94a3b8', fontSize: '0.85rem', marginTop: 28, lineHeight: 1.6 }}>
-          Rewards come from the Airdrop allocation (5% of supply, see <Link href="/tokenomics" className="text-gradient font-bold">Tokenomics</Link>):
-          20% at TGE, then linear over 6 months. Nothing to claim before the TGE.
+          Every reward is delivered at TGE with vesting, nothing to claim before. See <Link href="/tokenomics" className="text-gradient font-bold">Tokenomics</Link>.
           <br />
           We never DM first and will never ask you to send tokens or your seed phrase to receive a reward.
         </p>
