@@ -235,6 +235,8 @@ export async function runTopBuyers(env, state, nowMs) {
   const head = BigInt(await rpc('eth_blockNumber', [])) - CONFIRMATIONS;
   const s = await syncBuys(env, rpc, state, config, head, await blockTs(rpc, head));
   const result = leaderboard(toBuys(s), config, excludedSet(env, config, s), s.endBlock !== undefined ? BigInt(s.endBlock) : null);
+  // Semaine sans acheteur eligible : aucun message (un classement vide desservirait la presale).
+  if (!result.ranking.length) return { state: s, text: null };
   return { state: s, text: formatLeaderboard(result, config, kind, nowMs), postKey };
 }
 
