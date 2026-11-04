@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import styles from '../app/(marketing)/marketing.module.css';
 import PresaleNavButton from './PresaleNavButton';
 import { TELEGRAM_URL, X_URL } from '../config/links';
+import { useDisconnect } from '@reown/appkit/react';
 import { useWeb3 } from '../context/Web3Context';
 
 // Pages d'achat isolees : header reduit au logo et au wallet, sans menu.
@@ -88,6 +89,7 @@ export default function MarketingHeader() {
   const close = () => setOpen(false);
   const pathname = usePathname();
   const { account, connectWallet } = useWeb3();
+  const { disconnect } = useDisconnect();
 
   if (FOCUS_PATHS.includes(pathname)) {
     return (
@@ -98,7 +100,12 @@ export default function MarketingHeader() {
         </Link>
         <div className={styles.navRight}>
           {account ? (
-            <span className={`btn btn-outline ${styles.launchBtn}`}>{account.slice(0, 6)}…{account.slice(-4)}</span>
+            <>
+              <span className={`btn btn-outline ${styles.launchBtn}`}>{account.slice(0, 6)}…{account.slice(-4)}</span>
+              <button type="button" onClick={() => disconnect()} className={`btn btn-outline ${styles.launchBtn}`} aria-label="Disconnect wallet">
+                Disconnect
+              </button>
+            </>
           ) : (
             <button type="button" onClick={connectWallet} className={`btn btn-primary ${styles.launchBtn}`}>
               Connect Wallet
