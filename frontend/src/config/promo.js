@@ -26,7 +26,7 @@ export function activePromo(nowSec, promo = PROMO) {
 // avec le vesting de la presale. Un achat compte en entier si le montant leve avant lui est sous le plafond.
 export const SALES_BONUS = {
   name: 'Fair Share Bonus',
-  start: '2026-11-06T00:00:00Z',
+  start: '2026-11-05T13:00:00Z',
   joobPerUsd: 5,
   capRaisedUsd: 25000,
 };
