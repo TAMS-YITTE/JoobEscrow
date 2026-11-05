@@ -9,7 +9,7 @@ import { useWeb3 } from '../../../context/Web3Context';
 import {
   PRESALE_ADDRESSES, PRESALE_ABI, ERC20_ABI, PRESALE_STATE, PRESALE_CHAIN_ID, BSCSCAN,
   priceAt, nextStepAt, volumeTierBps, readableError, maxPurchasablePayment, isSoldOut, closingTime,
-  PLANNED_LISTING_PRICE,
+  PLANNED_LISTING_PRICE, LISTING_TARGET_USD,
 } from '../../../config/presale';
 import styles from './presale.module.css';
 import { activePromo } from '../../../config/promo';
@@ -780,6 +780,13 @@ export default function PresaleClient() {
               <div className={styles.raisedBox}>
                 <div className={styles.raisedLabel}>Total raised</div>
                 <div className={styles.raisedValue}>${fmtNum(Number(ethers.formatUnits(global.totalRaised, pd)), 0)}</div>
+                {/* Objectif minimal pour lister au prix prevu (config/presale.js). */}
+                <div className={styles.targetBar} aria-hidden="true">
+                  <i style={{ width: `${Math.min(100, Math.max(2, (Number(ethers.formatUnits(global.totalRaised, pd)) / LISTING_TARGET_USD) * 100))}%` }} />
+                </div>
+                <div className={styles.targetText}>
+                  Road to ${fmtNum(LISTING_TARGET_USD / 1000, 0)}K: the minimum to list at ${PLANNED_LISTING_PRICE}
+                </div>
               </div>
             )}
 

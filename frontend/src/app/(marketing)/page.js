@@ -6,6 +6,7 @@ import PartnerMarquee from '../../components/PartnerMarquee';
 import { BSCN_ARTICLE_URL } from '../../config/links';
 import HomeFaq from '../../components/HomeFaq';
 import HowToBuy from '../../components/HowToBuy';
+import ComparisonTable from '../../components/ComparisonTable';
 import PromoBanner from '../../components/PromoBanner';
 import { AUDITS, BSCSCAN, KYC_URL, PRESALE_ADDRESSES } from '../../config/presale';
 import { TOKENOMICS, fmtM } from '../../config/tokenomics';
@@ -25,6 +26,7 @@ const BENEFITS = [
 const TRUST = [
   { label: 'Audited by SpyWolf', href: AUDITS.PRESALE },
   { label: 'KYC verified', href: KYC_URL },
+  { label: 'Meet the team', href: '/security#team', internal: true },
   { label: '3-of-5 Safe', href: `${BSCSCAN}/address/${PRESALE_ADDRESSES.SAFE}` },
   { label: 'Verify on BscScan', href: `${BSCSCAN}/address/${PRESALE_ADDRESSES.PRESALE}#code` },
 ];
@@ -89,9 +91,15 @@ export default function LandingPage() {
           {/* Bandeau de confiance unique */}
           <div className={styles.trustBar}>
             {TRUST.map((t) => (
-              <a key={t.label} href={t.href} target="_blank" rel="noopener noreferrer" className={styles.trustBarItem}>
-                {t.label} <span aria-hidden="true">↗</span>
-              </a>
+              t.internal ? (
+                <Link key={t.label} href={t.href} className={styles.trustBarItem}>
+                  {t.label} <span aria-hidden="true">→</span>
+                </Link>
+              ) : (
+                <a key={t.label} href={t.href} target="_blank" rel="noopener noreferrer" className={styles.trustBarItem}>
+                  {t.label} <span aria-hidden="true">↗</span>
+                </a>
+              )
             ))}
           </div>
         </div>
@@ -123,6 +131,8 @@ export default function LandingPage() {
           </p>
         </div>
       </section>
+
+      <ComparisonTable />
 
       <HowToBuy />
 

@@ -136,3 +136,7 @@ export function closingTime(global) {
   if (!global) return 0n;
   return global.tgeTimestamp > 0n && global.tgeTimestamp < global.endTime ? global.tgeTimestamp : global.endTime;
 }
+
+// Montant minimal a lever pour lister au prix prevu (decision du 02/11/2026, post "Road to $25K").
+// En dessous, le prix de listing est ajuste a la liquidite disponible.
+export const LISTING_TARGET_USD = 25000;

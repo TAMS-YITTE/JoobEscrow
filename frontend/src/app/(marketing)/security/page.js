@@ -78,7 +78,7 @@ export default function SecurityPage() {
             <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '20px' }}>
               JoobEscrow was founded by a builder with over 20 years of experience in IT and finance, and a long-standing focus on DeFi. The founder&apos;s identity has been verified through a KYC with SpyWolf, the firm that audited our contracts. We chose to stay publicly pseudonymous and to make trust verifiable on-chain instead: audited contracts, a 3-of-5 Safe multisig, and team tokens locked in a vesting contract until January 2028.
             </p>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '12px', marginBottom: '22px' }}>
+            <div className={styles.teamGrid}>
               {TEAM.map((m) => (
                 <div key={m.name} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start', padding: '14px', borderRadius: '14px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(163,230,53,0.18)' }}>
                   <span aria-hidden="true" style={{ flexShrink: 0, width: 44, height: 44, borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: m.initials.length > 2 ? '0.72rem' : '0.85rem', color: '#0a0a0a', background: 'linear-gradient(135deg, #a3e635, #22c55e)', boxShadow: '0 0 14px rgba(163,230,53,0.35)' }}>

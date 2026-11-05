@@ -1517,3 +1517,8 @@
 
 /* Bandeau promo a la largeur de la grille d achat. */
 .promoAligned { max-width: 1024px; }
+
+/* Barre vers l'objectif minimal de listing (Road to $25K) */
+.targetBar { margin-top: 10px; height: 8px; border-radius: 999px; background: rgba(255, 255, 255, 0.08); overflow: hidden; }
+.targetBar i { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, #a3e635, #22c55e); box-shadow: 0 0 10px rgba(163, 230, 53, 0.6); }
+.targetText { margin-top: 6px; font-size: 0.75rem; color: #94a3b8; }

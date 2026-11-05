@@ -31,6 +31,7 @@ export const LEARN = [
   { href: '/tokenomics', label: 'Tokenomics' },
   { href: '/roadmap', label: 'Roadmap' },
   { href: '/whitepaper', label: 'Whitepaper' },
+  { href: '/security#team', label: 'Team' },
 ];
 
 // Un menu ouvert est lie a la page ou il a ete ouvert : changer de page le ferme sans effet.

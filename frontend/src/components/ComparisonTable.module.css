@@ -1,0 +1,24 @@
+.section { padding: 72px 24px; }
+.container { max-width: 1100px; margin: 0 auto; }
+.head { text-align: center; margin-bottom: 28px; }
+.tag { font-size: 0.75rem; font-weight: 800; letter-spacing: 0.12em; color: #a3e635; }
+.title { margin: 8px 0 0; font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 800; color: #fff; }
+
+.tableWrap { overflow-x: auto; border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(255, 255, 255, 0.02); }
+.table { width: 100%; border-collapse: collapse; min-width: 760px; font-size: 0.9rem; }
+.table th, .table td { padding: 14px 16px; text-align: left; border-bottom: 1px solid rgba(255, 255, 255, 0.06); vertical-align: top; }
+.table thead th { color: #94a3b8; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+.table tbody th { color: #fff; font-weight: 700; white-space: nowrap; }
+.table td { color: #cbd5e1; }
+.table tbody tr:last-child th, .table tbody tr:last-child td { border-bottom: none; }
+
+.hl { background: rgba(163, 230, 53, 0.07); }
+.hl th { color: #a3e635 !important; }
+.hl td { color: #e2e8f0; font-weight: 600; }
+
+.note { margin: 12px 0 0; font-size: 0.78rem; color: #64748b; text-align: center; }
+
+@media (max-width: 600px) {
+  .section { padding: 56px 16px; }
+  .table th, .table td { padding: 12px 10px; }
+}

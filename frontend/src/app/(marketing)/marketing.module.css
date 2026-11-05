@@ -1364,3 +1364,8 @@
   background: #a3e635;
 }
 .heroCtas { flex-wrap: wrap; }
+
+/* Equipe (/security) : 3 colonnes sur ordinateur, 2 sur tablette, 1 sur mobile */
+.teamGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 22px; }
+@media (max-width: 900px) { .teamGrid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px) { .teamGrid { grid-template-columns: 1fr; } }
