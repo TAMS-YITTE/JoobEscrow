@@ -94,9 +94,10 @@ export default function SecurityPage() {
             </div>
             <p style={{ color: '#fff', fontWeight: 700, margin: '0 0 8px' }}>Safe signers (3 of 5 required for any admin action)</p>
             <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 22px', display: 'grid', gap: '6px' }}>
-              {SAFE_SIGNERS.map((a) => (
-                <li key={a}>
-                  <a href={`https://bscscan.com/address/${a}`} target="_blank" rel="noopener noreferrer" style={{ fontFamily: 'ui-monospace, monospace', fontSize: '0.85rem', color: 'var(--text-secondary)', wordBreak: 'break-all' }}>{a} ↗</a>
+              {SAFE_SIGNERS.map((s) => (
+                <li key={s.address} style={{ display: 'flex', flexWrap: 'wrap', gap: '4px 10px', alignItems: 'baseline' }}>
+                  <span style={{ color: s.holder === 'Team signer' ? 'var(--text-secondary)' : '#a3e635', fontWeight: 700, fontSize: '0.85rem', minWidth: 110 }}>{s.holder}</span>
+                  <a href={`https://bscscan.com/address/${s.address}`} target="_blank" rel="noopener noreferrer" style={{ fontFamily: 'ui-monospace, monospace', fontSize: '0.85rem', color: 'var(--text-secondary)', wordBreak: 'break-all' }}>{s.address} ↗</a>
                 </li>
               ))}
             </ul>
