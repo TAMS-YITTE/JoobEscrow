@@ -6,6 +6,7 @@ import { ethers } from 'ethers';
 import { useAppKitNetwork, useAppKitProvider, useDisconnect } from '@reown/appkit/react';
 import { bsc, mainnet, arbitrum, base, polygon, optimism, avalanche } from '@reown/appkit/networks';
 import { useWeb3 } from '../../../context/Web3Context';
+import RecentBuys from './RecentBuys';
 import {
   PRESALE_ADDRESSES, PRESALE_ABI, ERC20_ABI, PRESALE_STATE, PRESALE_CHAIN_ID, BSCSCAN,
   priceAt, nextStepAt, volumeTierBps, readableError, maxPurchasablePayment, isSoldOut, closingTime,
@@ -874,6 +875,8 @@ export default function PresaleClient() {
               ) : null}
             </div>
           )}
+
+          <RecentBuys />
 
           {/* Parrainage replie par defaut (id="referral") */}
           <details className={`${styles.referralCard} ${styles.sideDetails}`} id="referral">
