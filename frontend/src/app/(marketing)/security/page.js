@@ -7,6 +7,7 @@ import GovernanceTransparency from '../../../components/GovernanceTransparency';
 import { AUDITS, KYC_URL, PRESALE_ADDRESSES } from '../../../config/presale';
 import { LIQUIDITY_LOCK, lockUrl, lockedTotal } from '../../../config/liquidityLock';
 import { TEAM, TEAM_LOCATION, SAFE_SIGNERS } from '../../../config/team';
+import CopyButton from '../../../components/CopyButton';
 
 // Resultats repris des rapports SpyWolf publies (relus le 2026-10-01 ; staking ajoute le 03/10).
 const AUDIT_CARDS = [
@@ -92,7 +93,13 @@ export default function SecurityPage() {
                 </div>
               ))}
             </div>
-            <p style={{ color: '#fff', fontWeight: 700, margin: '0 0 8px' }}>Safe signers (3 of 5 required for any admin action)</p>
+            <p style={{ color: '#fff', fontWeight: 700, margin: '0 0 4px' }}>Safe signers (3 of 5 required for any admin action)</p>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', margin: '0 0 10px' }}>
+              No single member can move funds: every admin action needs 3 of the 5 signers below.{' '}
+              <a href={`https://app.safe.global/transactions/history?safe=bnb:${PRESALE_ADDRESSES.SAFE}`} target="_blank" rel="noopener noreferrer" style={{ color: '#a3e635', fontWeight: 700 }}>
+                See every Safe transaction ↗
+              </a>
+            </p>
             <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 22px', display: 'grid', gap: '6px' }}>
               {SAFE_SIGNERS.map((s) => (
                 <li key={s.address} style={{ display: 'flex', flexWrap: 'wrap', gap: '4px 10px', alignItems: 'baseline' }}>
@@ -173,9 +180,12 @@ export default function SecurityPage() {
                       <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{tierName}</span>
                       <span style={{ wordBreak: 'break-all' }}>{addr}</span>
                     </div>
-                    <Link href={`https://bscscan.com/address/${addr}`} target="_blank" className="btn btn-outline" style={{ padding: '4px 12px', fontSize: '0.8rem' }}>
-                      BscScan
-                    </Link>
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      <CopyButton value={addr} />
+                      <Link href={`https://bscscan.com/address/${addr}`} target="_blank" className="btn btn-outline" style={{ padding: '4px 12px', fontSize: '0.8rem' }}>
+                        BscScan
+                      </Link>
+                    </div>
                   </div>
                 );
               });
@@ -205,9 +215,12 @@ export default function SecurityPage() {
                   <div style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', fontFamily: 'monospace', wordBreak: 'break-all' }}>{item.addr}</div>
                   <div style={{ color: '#94a3b8', fontSize: '0.75rem', marginTop: '2px' }}>{item.note}</div>
                 </div>
-                <Link href={`https://bscscan.com/address/${item.addr}`} target="_blank" className="btn btn-outline" style={{ padding: '6px 14px', fontSize: '0.8rem' }}>
-                  BscScan ↗
-                </Link>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <CopyButton value={item.addr} />
+                  <Link href={`https://bscscan.com/address/${item.addr}`} target="_blank" className="btn btn-outline" style={{ padding: '6px 14px', fontSize: '0.8rem' }}>
+                    BscScan ↗
+                  </Link>
+                </div>
               </div>
             ))}
           </div>
