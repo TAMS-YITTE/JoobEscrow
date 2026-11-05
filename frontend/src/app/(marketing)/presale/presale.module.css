@@ -1532,3 +1532,15 @@
 .recentAmt { color: #e2e8f0; font-weight: 700; text-align: right; }
 .recentAgo { color: #64748b; font-size: 0.75rem; white-space: nowrap; }
 @media (max-width: 420px) { .recentRow { grid-template-columns: 1fr auto; } .recentAgo { grid-column: 1 / -1; } }
+
+/* Bandeau defilant des derniers achats (LIVE BUYS) */
+.ticker { display: flex; align-items: center; gap: 12px; max-width: 1024px; margin: 0 auto 18px; padding: 8px 12px; border-radius: 12px; background: rgba(15, 23, 20, 0.6); border: 1px solid rgba(163, 230, 53, 0.22); overflow: hidden; }
+.tickerLabel { flex-shrink: 0; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.1em; color: #0a0a0a; background: #a3e635; padding: 3px 8px; border-radius: 6px; }
+.tickerViewport { overflow: hidden; flex: 1; -webkit-mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent); }
+.tickerTrack { display: flex; gap: 28px; width: max-content; animation: tickerScroll linear infinite; }
+.ticker:hover .tickerTrack { animation-play-state: paused; }
+.tickerItem { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; font-size: 0.82rem; color: #94a3b8; text-decoration: none; }
+.tickerItem:hover .recentAmt { color: #a3e635; }
+.tickerDot { width: 6px; height: 6px; border-radius: 50%; background: #a3e635; box-shadow: 0 0 8px #a3e635; }
+@keyframes tickerScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) { .tickerTrack { animation: none; } }

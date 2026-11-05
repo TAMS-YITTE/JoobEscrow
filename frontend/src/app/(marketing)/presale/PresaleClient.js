@@ -586,6 +586,7 @@ export default function PresaleClient() {
         </h1>
       </header>
 
+      <RecentBuys />
       {promo && <PromoBanner className={styles.promoAligned} />}
 
       {/* ── Presale Hero Grid (Buy Card + Side Column) ───────────── */}
@@ -892,8 +893,6 @@ export default function PresaleClient() {
               ) : null}
             </div>
           )}
-
-          <RecentBuys />
 
           {/* Parrainage replie par defaut (id="referral") */}
           <details className={`${styles.referralCard} ${styles.sideDetails}`} id="referral">

@@ -3,6 +3,9 @@ main = "src/index.js"
 compatibility_date = "2026-10-01"
 workers_dev = false
 
+# Fil public des derniers achats, lu par le site (domaine personnalise sur la zone Cloudflare joobescrow.com).
+routes = [ { pattern = "stats.joobescrow.com", custom_domain = true } ]
+
 [triggers]
 # Chaque minute : alertes d'achat. 14:05 UTC : classement Top Buyers (aux dates de TOP_BUYERS).
 crons = [ "* * * * *", "5 14 * * *" ]

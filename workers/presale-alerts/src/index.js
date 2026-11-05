@@ -31,6 +31,7 @@ const fallbackRange = (env) => { try { const n = BigInt(env.FALLBACK_RANGE ?? 10
 const MAX_LOG_REQUESTS = 25; // Cloudflare gratuit : 50 sous-requetes par execution, Telegram compris
 const MAX_LAG = 4000n; // ~30 min de blocs BSC (~0,45 s par bloc) : au-dela, publicnode exige une cle d'archive
 const MAX_SENDS_PER_RUN = 15; // limite Telegram ~20 messages/min par groupe
+const FEED_MAX = 300; // achats gardes pour le fil public (stats.joobescrow.com/recent-buys)
 // KV gratuit : 1 000 ecritures/jour par compte. Le curseur n'est enregistre qu'apres un
 // envoi ou tous les SAVE_EVERY blocs (~7 min) ; au pire on relit ces blocs, sans doublon.
 const SAVE_EVERY = 1000n;
@@ -202,7 +203,7 @@ async function sendTelegram(env, text) {
 }
 
 // tbStore : etat du classement Top Buyers (Durable Object) ; absent en mode secours KV.
-async function run(env, store, tbStore = null) {
+async function run(env, store, tbStore = null, feedStore = null) {
   const latest = BigInt(await rpc(env, 'eth_blockNumber', []));
   const safe = latest - CONFIRMATIONS;
   const raised = await raisedAt(env, safe);
@@ -274,6 +275,10 @@ async function run(env, store, tbStore = null) {
     }
     already.add(p.key);
     sends++;
+    // Fil public des derniers achats (stats.joobescrow.com) : alimente a chaque alerte envoyee.
+    if (feedStore) {
+      try { await feedStore.push(p, raised); } catch (err) { console.warn(`Feed: ${err.message}`); }
+    }
   }
   await store.put(JSON.stringify({ block: scannedTo.toString(), sent: [], raised: nextRaised }));
 }
@@ -308,7 +313,7 @@ export class AlertsRunner extends DurableObject {
         get: async () => (await this.ctx.storage.get('topBuyers')) ?? null,
         put: (value) => this.ctx.storage.put('topBuyers', value),
       };
-      await run(this.env, store, tbStore);
+      await run(this.env, store, tbStore, this.feedStore());
       return 'ok';
     } catch (err) {
       // Erreur de traitement (RPC, Telegram...) : renvoyee comme resultat, pour que
@@ -318,6 +323,34 @@ export class AlertsRunner extends DurableObject {
     } finally {
       this.running = false;
     }
+  }
+
+  // Fil des achats publies sur Telegram (FEED_MAX derniers), sans relecture de la blockchain.
+  feedStore() {
+    return {
+      push: async (p, raised) => {
+        const feed = (await this.ctx.storage.get('feed')) ?? [];
+        if (feed.some((f) => f.key === p.key)) return;
+        feed.push({
+          key: p.key,
+          buyer: p.buyer,
+          usd: toNum(p.paid),
+          joob: toNum(p.tokens + p.volumeBonus),
+          tx: p.tx,
+          time: Math.floor(Date.now() / 1000),
+          raisedAfter: toNum(raised),
+        });
+        await this.ctx.storage.put('feed', feed.slice(-FEED_MAX));
+      },
+    };
+  }
+
+  async feed() {
+    const feed = (await this.ctx.storage.get('feed')) ?? [];
+    const tb = (await this.ctx.storage.get('topBuyers')) ?? null;
+    // Equipe exclue du fil public : Safe et signataires (lus par le module Top Buyers).
+    const team = new Set([this.env.SAFE_ADDRESS.toLowerCase(), ...(tb?.owners ?? [])]);
+    return feed.filter((f) => !team.has(f.buyer.toLowerCase()));
   }
 
   // Classement Top Buyers (cron quotidien) : publie seulement aux dates de TOP_BUYERS, une fois par jour.
@@ -337,7 +370,26 @@ export class AlertsRunner extends DurableObject {
   }
 }
 
+// Lecture publique du fil (GET /recent-buys) depuis le site : derniers achats, du plus recent au plus ancien.
+const FEED_ORIGINS = ['https://www.joobescrow.com', 'https://joobescrow.com'];
+
 export default {
+  async fetch(request, env) {
+    const url = new URL(request.url);
+    const origin = request.headers.get('Origin');
+    const headers = {
+      'content-type': 'application/json',
+      'cache-control': 'public, max-age=30',
+      'access-control-allow-origin': FEED_ORIGINS.includes(origin) ? origin : FEED_ORIGINS[0],
+      vary: 'Origin',
+    };
+    if (request.method === 'OPTIONS') return new Response(null, { headers });
+    if (url.pathname !== '/recent-buys' || request.method !== 'GET') return new Response('Not found', { status: 404 });
+    const feed = await env.ALERTS.get(env.ALERTS.idFromName('main')).feed();
+    const buys = feed.slice().reverse().map((f) => ({ buyer: f.buyer, usd: f.usd, joob: f.joob, tx: f.tx, time: f.time, raisedAfter: f.raisedAfter }));
+    return new Response(JSON.stringify({ buys }), { headers });
+  },
+
   async scheduled(event, env, ctx) {
     if (event.cron === TOP_BUYERS_CRON) {
       ctx.waitUntil((async () => {
