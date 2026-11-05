@@ -123,6 +123,11 @@ FAQ.push(
 // Accueil : levee d'objections sur la presale, reponse courte et lien vers le detail.
 export const HOME_FAQ = [
   {
+    q: 'How do I buy JOOB?',
+    summary: 'Connect your wallet on the presale page, choose the token and amount you pay with (USDT, USDC or native coins from 7 EVM networks), then confirm. Your JOOB allocation appears right away.',
+    href: '/presale',
+  },
+  {
     q: 'Is it safe?',
     summary: 'The token and presale contracts are verified on BscScan and audited by SpyWolf, and the founder is KYC verified by the same firm. The full presale cap was locked in the contract before the sale opened.',
     href: '/security',
