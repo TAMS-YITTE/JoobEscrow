@@ -375,8 +375,8 @@ export default function WhitepaperPage() {
             <p className={styles.p}>
               Smart contracts can contain undiscovered bugs; blockchain transactions are irreversible; stablecoin issuers can freeze
               addresses; disputes are resolved by the JoobEscrow arbitration multisig; the value of JOOB can go down to zero and is not
-              guaranteed by anyone. This document is not an offer of securities or investment advice. The presale is not open to
-              residents of restricted jurisdictions listed in the presale terms. Read the full <Link href="/risks" className={styles.link}>risks &amp; disclaimers</Link> and{' '}
+              guaranteed by anyone. This document is not an offer of securities or investment advice. The presale is open to adults, each
+              responsible for complying with the laws of their own country. Read the full <Link href="/risks" className={styles.link}>risks &amp; disclaimers</Link> and{' '}
               <Link href="/presale-terms" className={styles.link}>presale terms</Link> before participating.
             </p>
           </Section>

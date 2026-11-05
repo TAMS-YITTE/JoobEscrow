@@ -95,7 +95,7 @@ FAQ.push(
   {
     id: 'presale-eligibility',
     q: 'Who can join the presale?',
-    summary: 'Adults who are not residents of a restricted jurisdiction listed in the Presale Terms. There is no refund once you buy.',
+    summary: 'Any adult (18+). Each participant is responsible for complying with the laws of their own country. There is no refund once you buy.',
     link: { href: '/presale-terms', label: 'Presale Terms' },
   },
   {
@@ -131,10 +131,5 @@ export const HOME_FAQ = [
     q: 'When do I get my tokens?',
     summary: 'When the sale ends, 20% of your JOOB becomes claimable on the presale page. The remaining 80% unlocks linearly over 180 days.',
     href: '/faq#presale-claim',
-  },
-  {
-    q: 'Who can participate?',
-    summary: 'Adults who are not residents of a restricted jurisdiction listed in the Presale Terms. You can pay from 7 EVM networks with stablecoins or native coins.',
-    href: '/presale-terms',
   },
 ];

@@ -49,9 +49,9 @@ export default function PresaleTermsPage() {
         <section>
           <h2 style={h2}>Article 1 – Eligibility</h2>
           <ul style={box}>
-            <li style={li}><strong>Access:</strong> open to adults (18+) with full legal capacity.</li>
-            <li style={li}><strong>Restricted jurisdictions:</strong> residents of the United States, Canada, China, the United Kingdom, the member states of the European Union, and any country subject to international sanctions are excluded. By participating, you confirm you are not a resident of a restricted jurisdiction and are not acting on behalf of such a person. JoobEscrow cannot be held liable if a participant circumvents these restrictions (for example with a VPN).</li>
-            <li style={li}><strong>Your responsibility:</strong> you are solely responsible for checking that your participation is legal where you live, and for any tax it triggers.</li>
+            <li style={li}><strong>Access:</strong> the presale is open to adults (18+) with full legal capacity.</li>
+            <li style={li}><strong>Your responsibility:</strong> you are solely responsible for making sure that your participation complies with the laws and regulations of the country where you live, including any rules on crypto-assets, taxes and reporting. If participating is not allowed where you live, do not participate.</li>
+            <li style={li}><strong>Confirmation:</strong> by participating, you confirm that you are an adult and that you take full responsibility for complying with your local laws. JoobEscrow cannot be held liable for a participant&apos;s failure to comply with the rules that apply to them.</li>
           </ul>
         </section>
 
@@ -150,7 +150,7 @@ export default function PresaleTermsPage() {
         <section>
           <h2 style={h2}>Article 12 – Acceptance</h2>
           <p style={p}>
-            By purchasing JOOB, you accept these Terms and confirm that you are not a resident of a restricted jurisdiction (Article 1), that the
+            By purchasing JOOB, you accept these Terms and confirm that you are an adult responsible for complying with your local laws (Article 1), that the
             tokens you buy are vested (Article 4), that the price after the sale is set by the market and not guaranteed (Article 6), and that you
             may lose all the funds you contribute (Article 8).
           </p>
