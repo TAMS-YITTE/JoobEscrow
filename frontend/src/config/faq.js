@@ -128,6 +128,11 @@ export const HOME_FAQ = [
     href: '/presale',
   },
   {
+    q: 'Can I test the product before buying?',
+    summary: 'Yes, with $1. The demo runs on a contract with the same audited code as real escrows, only with 0% fees and amounts capped at $1. Run the full cycle between two of your own wallets: lock the funds, chat through the end-to-end encrypted XMTP messaging, then release the payment.',
+    href: '/try',
+  },
+  {
     q: 'Is it safe?',
     summary: 'The token and presale contracts are verified on BscScan and audited by SpyWolf, and the founder is KYC verified by the same firm. The full presale cap was locked in the contract before the sale opened.',
     href: '/security',
