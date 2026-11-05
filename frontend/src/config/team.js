@@ -19,3 +19,9 @@ export const SAFE_SIGNERS = [
   { address: '0xFF26Ed2Ed32E06E09BeA8253Be0C8C2D7669532a', holder: 'S.Y., Arbitration Lead' },
   { address: '0xEc68d396DBd080fBe18b1f47629880d51727FeBC', holder: 'C.A.B., Security & Audits' },
 ];
+
+// Seuls comptes officiels de l'equipe sur Telegram (anti-usurpation), confirmes par le fondateur le 05/11/2026.
+export const OFFICIAL_ADMINS = [
+  { handle: '@JoobEscrow', name: 'joobescrow.com', role: 'Group owner (Founder)', url: 'https://t.me/JoobEscrow' },
+  { handle: '@tyma_one', name: 'Tyma', role: 'Admin', url: 'https://t.me/tyma_one' },
+];

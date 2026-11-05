@@ -6,7 +6,7 @@ import { allInstances } from '../../../config/instances';
 import GovernanceTransparency from '../../../components/GovernanceTransparency';
 import { AUDITS, KYC_URL, PRESALE_ADDRESSES } from '../../../config/presale';
 import { LIQUIDITY_LOCK, lockUrl, lockedTotal } from '../../../config/liquidityLock';
-import { TEAM, TEAM_LOCATION, SAFE_SIGNERS } from '../../../config/team';
+import { TEAM, TEAM_LOCATION, SAFE_SIGNERS, OFFICIAL_ADMINS } from '../../../config/team';
 import CopyButton from '../../../components/CopyButton';
 
 // Resultats repris des rapports SpyWolf publies (relus le 2026-10-01 ; staking ajoute le 03/10).
@@ -198,6 +198,16 @@ export default function SecurityPage() {
           <h2 style={{ color: '#fff', marginBottom: '10px' }}>Official Addresses & Anti-Scam Verification</h2>
           <div style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.3)', padding: '12px 16px', borderRadius: '8px', marginBottom: '20px', color: '#fca5a5', fontSize: '0.9rem' }}>
             <strong>Anti-Scam Notice:</strong> We never DM first. JoobEscrow team members will never ask for your private keys, seed phrases, or direct token transfers. Only trust addresses listed on this official page or verified on BscScan.
+          </div>
+
+          <p style={{ color: '#fff', fontWeight: 700, margin: '0 0 8px' }}>Official Telegram admins (anyone else is an impostor)</p>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginBottom: '22px' }}>
+            {OFFICIAL_ADMINS.map((a) => (
+              <a key={a.handle} href={a.url} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', flexDirection: 'column', padding: '10px 14px', borderRadius: '10px', background: 'rgba(163,230,53,0.06)', border: '1px solid rgba(163,230,53,0.3)', textDecoration: 'none' }}>
+                <span style={{ color: '#a3e635', fontWeight: 800, fontFamily: 'ui-monospace, monospace' }}>{a.handle}</span>
+                <span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>{a.name} · {a.role}</span>
+              </a>
+            ))}
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
