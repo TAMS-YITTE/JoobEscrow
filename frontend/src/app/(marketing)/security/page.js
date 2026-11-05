@@ -6,6 +6,7 @@ import { allInstances } from '../../../config/instances';
 import GovernanceTransparency from '../../../components/GovernanceTransparency';
 import { AUDITS, KYC_URL, PRESALE_ADDRESSES } from '../../../config/presale';
 import { LIQUIDITY_LOCK, lockUrl, lockedTotal } from '../../../config/liquidityLock';
+import { TEAM, TEAM_LOCATION, SAFE_SIGNERS } from '../../../config/team';
 
 // Resultats repris des rapports SpyWolf publies (relus le 2026-10-01 ; staking ajoute le 03/10).
 const AUDIT_CARDS = [
@@ -70,13 +71,35 @@ export default function SecurityPage() {
 
         {KYC_URL && (
           <div id="team" className="glass-panel" style={{ marginTop: '40px', padding: 'clamp(20px, 4vw, 36px)' }}>
-            <h2 style={{ color: '#fff', margin: '0 0 15px' }}>The team</h2>
-            <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '12px' }}>
-              JoobEscrow was founded by a builder with over 20 years of experience in IT and finance, and a long-standing focus on DeFi. The founder&apos;s identity has been verified through a KYC with SpyWolf, the firm that audited our contracts.
+            <h2 style={{ color: '#fff', margin: '0 0 10px' }}>The team</h2>
+            <p style={{ color: '#a3e635', fontWeight: 700, fontSize: '0.9rem', margin: '0 0 15px' }}>
+              {TEAM_LOCATION} · Founder KYC verified by SpyWolf · Company registration (SAS) in progress
             </p>
             <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '20px' }}>
-              We chose to stay publicly pseudonymous and to make trust verifiable on-chain instead: audited contracts, a 3-of-5 Safe multisig, and team tokens locked in a vesting contract until January 2028. The registration of a company (SAS) for the JoobEscrow project is in progress.
+              JoobEscrow was founded by a builder with over 20 years of experience in IT and finance, and a long-standing focus on DeFi. The founder&apos;s identity has been verified through a KYC with SpyWolf, the firm that audited our contracts. We chose to stay publicly pseudonymous and to make trust verifiable on-chain instead: audited contracts, a 3-of-5 Safe multisig, and team tokens locked in a vesting contract until January 2028.
             </p>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '12px', marginBottom: '22px' }}>
+              {TEAM.map((m) => (
+                <div key={m.name} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start', padding: '14px', borderRadius: '14px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(163,230,53,0.18)' }}>
+                  <span aria-hidden="true" style={{ flexShrink: 0, width: 44, height: 44, borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: m.initials.length > 2 ? '0.72rem' : '0.85rem', color: '#0a0a0a', background: 'linear-gradient(135deg, #a3e635, #22c55e)', boxShadow: '0 0 14px rgba(163,230,53,0.35)' }}>
+                    {m.initials}
+                  </span>
+                  <div>
+                    <div style={{ color: '#fff', fontWeight: 700 }}>{m.name}</div>
+                    <div style={{ color: '#a3e635', fontSize: '0.85rem', fontWeight: 600, margin: '2px 0 4px' }}>{m.role}</div>
+                    <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', lineHeight: 1.5 }}>{m.desc}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <p style={{ color: '#fff', fontWeight: 700, margin: '0 0 8px' }}>Safe signers (3 of 5 required for any admin action)</p>
+            <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 22px', display: 'grid', gap: '6px' }}>
+              {SAFE_SIGNERS.map((a) => (
+                <li key={a}>
+                  <a href={`https://bscscan.com/address/${a}`} target="_blank" rel="noopener noreferrer" style={{ fontFamily: 'ui-monospace, monospace', fontSize: '0.85rem', color: 'var(--text-secondary)', wordBreak: 'break-all' }}>{a} ↗</a>
+                </li>
+              ))}
+            </ul>
             <a href={KYC_URL} target="_blank" rel="noopener noreferrer" className="btn btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
               <span style={{ width: 22, height: 22, borderRadius: '50%', background: '#0b0f14', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
                 <img src="/logos/spywolf.svg" alt="" width={15} height={15} />
