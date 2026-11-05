@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
 import styles from './airdrop.module.css';
 
@@ -10,10 +10,35 @@ const dateLabel = (iso) => new Date(`${iso}T00:00:00Z`).toLocaleDateString('en-U
 
 // Listes figees des campagnes (config/airdrop/*.json) : une recherche par adresse sur toutes les campagnes
 // (pas de connexion wallet), puis une liste publique par campagne, la plus recente en premier.
-export default function AirdropClient({ campaigns }) {
+export default function AirdropClient({ campaigns: frozen }) {
   const [query, setQuery] = useState('');
   const [result, setResult] = useState(null);
-  const [tab, setTab] = useState(campaigns[0].id);
+  const [tab, setTab] = useState(frozen[0].id);
+  const [live, setLive] = useState(null);
+
+  // Campagne en cours, calculee on-chain par /api/sales-bonus (cache serveur de 10 minutes).
+  useEffect(() => {
+    let alive = true;
+    fetch('/api/sales-bonus')
+      .then((r) => r.json())
+      .then((d) => {
+        if (!alive || !d.started) return;
+        const startLabel = new Date(d.start).toLocaleDateString('en-US', { month: 'long', day: 'numeric', timeZone: 'UTC' });
+        setLive({
+          id: 'fair-share',
+          live: true,
+          campaign: d.campaign,
+          entries: d.entries || [],
+          labelHeader: 'Bought',
+          rule: `${d.joobPerUsd} bonus JOOB for every $1 bought, from $1, from ${startLabel} until $${d.capRaisedUsd / 1000}K raised.${d.capReached ? ' Target reached, the list is final.' : ''}`,
+          delivery: 'From the Airdrop allocation, delivered at TGE with the presale vesting: 20% at the end of the sale, then linear over 180 days.',
+        });
+        setTab('fair-share');
+      })
+      .catch(() => {});
+    return () => { alive = false; };
+  }, []);
+  const campaigns = live ? [live, ...frozen] : frozen;
 
   const check = (e) => {
     e.preventDefault();
@@ -64,7 +89,7 @@ export default function AirdropClient({ campaigns }) {
         <div className={styles.stats}>
           <div><span>Wallets</span><b>{current.entries.length}</b></div>
           <div><span>Total</span><b>{fmt(total)} JOOB</b></div>
-          <div><span>List frozen</span><b>{dateLabel(current.snapshot)}</b></div>
+          <div><span>{current.live ? 'Status' : 'List frozen'}</span><b>{current.live ? 'Live, updated every 10 min' : dateLabel(current.snapshot)}</b></div>
         </div>
         <p className={styles.sub} style={{ marginTop: 14 }}>{current.delivery}</p>
         <div className={styles.tableWrap}>

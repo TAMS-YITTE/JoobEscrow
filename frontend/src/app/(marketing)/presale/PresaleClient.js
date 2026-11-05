@@ -13,7 +13,7 @@ import {
   PLANNED_LISTING_PRICE, LISTING_TARGET_USD,
 } from '../../../config/presale';
 import styles from './presale.module.css';
-import { activePromo } from '../../../config/promo';
+import { activePromo, activeSalesBonus } from '../../../config/promo';
 import PromoBanner from '../../../components/PromoBanner';
 import kolProgram from '../../../config/kolProgram.json';
 import { KOL_STORAGE_KEY, kolPresaleReferrer, activeKolHandle, kolClickValue } from '../../../lib/kolFlag';
@@ -365,6 +365,11 @@ export default function PresaleClient() {
   const promoBonus = promo && amountWei >= ethers.parseUnits(String(promo.minUsd), pd)
     ? (estimate.tokens * BigInt(promo.bonusBps)) / 10_000n : 0n;
 
+  // Bonus Fair Share (config/promo.js) : JOOB fixes par dollar, jusqu'a l'objectif de levee.
+  const raisedUsd = global ? Number(ethers.formatUnits(global.totalRaised, pd)) : 0;
+  const fairShare = isLive ? activeSalesBonus(now, raisedUsd) : null;
+  const fairShareJoob = fairShare ? Math.floor(Number(ethers.formatUnits(amountWei, pd)) * fairShare.joobPerUsd) : 0;
+
   const nextTier = useMemo(() => {
     if (!config) return null;
     const cumulative = user.contribution + amountWei;
@@ -674,6 +679,13 @@ export default function PresaleClient() {
                   + {fmtToken(promoBonus, td)} JOOB weekend bonus, delivered at TGE
                 </div>
               )}
+              {fairShare && (
+                <div className={fairShareJoob > 0 ? styles.receiveBonusNote : styles.promoHint}>
+                  {fairShareJoob > 0
+                    ? <>+ {fairShareJoob.toLocaleString('en-US')} JOOB Fair Share bonus ({fairShare.joobPerUsd} per $1), delivered at TGE</>
+                    : <>Fair Share bonus: {fairShare.joobPerUsd} JOOB for every $1, from $1</>}
+                </div>
+              )}
               {promo && promoBonus === 0n && (
                 <div className={styles.promoHint}>
                   Buy {promo.minUsd} USDT or more to get +{promo.bonusBps / 100}% weekend bonus
@@ -788,6 +800,11 @@ export default function PresaleClient() {
                 <div className={styles.targetText}>
                   Road to ${fmtNum(LISTING_TARGET_USD / 1000, 0)}K: the minimum to list at ${PLANNED_LISTING_PRICE}
                 </div>
+                {fairShare && (
+                  <div className={styles.targetText} style={{ color: '#a3e635', fontWeight: 700 }}>
+                    ${fmtNum(fairShare.leftUsd, 0)} left at {fairShare.joobPerUsd} bonus JOOB per $1
+                  </div>
+                )}
               </div>
             )}
 
