@@ -88,9 +88,9 @@ export default function TermsPage() {
 
         <Section n={7} title="Geographic Eligibility">
           <p className={styles.p}>
-            You are entirely responsible for verifying whether the use of cryptocurrency and decentralized protocols is legal in your
-            country of residence. Access to the interface is restricted or prohibited for users located in sanctioned jurisdictions. By
-            using JoobEscrow, you represent and warrant that you are permitted to do so under your local laws.
+            JoobEscrow is open to adults (18+). You are entirely responsible for verifying whether the use of cryptocurrency and
+            decentralized protocols is legal in your country of residence. By using JoobEscrow, you represent and warrant that you
+            are permitted to do so under your local laws.
           </p>
         </Section>
 
