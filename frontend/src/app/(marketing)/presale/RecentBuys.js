@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import styles from './presale.module.css';
+import { firstProvider, recentBuys, BROWSER_RPCS } from '../../../lib/presaleLogs';
 
 const ago = (sec) => {
   const s = Math.max(0, Math.floor(Date.now() / 1000) - sec);
@@ -17,9 +18,13 @@ export default function RecentBuys() {
   const [buys, setBuys] = useState(null);
   useEffect(() => {
     let alive = true;
+    // Repli dans le navigateur si le serveur n'a pas pu lire la blockchain.
+    const fromBrowser = async () => recentBuys(await firstProvider(BROWSER_RPCS), 6, 12);
     fetch('/api/recent-buys')
       .then((r) => r.json())
-      .then((d) => { if (alive) setBuys(d.buys || []); })
+      .then((d) => (d.error ? fromBrowser() : d.buys || []))
+      .catch(() => fromBrowser())
+      .then((list) => { if (alive) setBuys(list || []); })
       .catch(() => { if (alive) setBuys([]); });
     return () => { alive = false; };
   }, []);

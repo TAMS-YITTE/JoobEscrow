@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
 import styles from './airdrop.module.css';
+import { firstProvider, fairShare, BROWSER_RPCS } from '../../../lib/presaleLogs';
 
 const fmt = (n) => n.toLocaleString('en-US');
 const short = (a) => `${a.slice(0, 6)}…${a.slice(-4)}`;
@@ -19,8 +20,10 @@ export default function AirdropClient({ campaigns: frozen }) {
   // Campagne en cours, calculee on-chain par /api/sales-bonus (cache serveur de 10 minutes).
   useEffect(() => {
     let alive = true;
+    // Repli dans le navigateur si le serveur n'a pas pu lire la blockchain.
     fetch('/api/sales-bonus')
       .then((r) => r.json())
+      .then(async (d) => (d.error && d.started ? fairShare(await firstProvider(BROWSER_RPCS)) : d))
       .then((d) => {
         if (!alive || !d.started) return;
         const startLabel = new Date(d.start).toLocaleDateString('en-US', { month: 'long', day: 'numeric', timeZone: 'UTC' });
