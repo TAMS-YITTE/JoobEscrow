@@ -2,6 +2,7 @@ import styles from './ComparisonTable.module.css';
 import { COMPARISON, COMPARISON_COLUMNS, COMPARISON_NOTE } from '../config/comparison';
 
 // Comparatif JoobEscrow vs plateformes existantes (donnees : config/comparison.js).
+// Une colonne par plateforme, une ligne par critere : JoobEscrow en premiere colonne, mis en avant.
 export default function ComparisonTable() {
   return (
     <section className={styles.section} id="compare">
@@ -14,15 +15,19 @@ export default function ComparisonTable() {
           <table className={styles.table}>
             <thead>
               <tr>
-                <th />
-                {COMPARISON_COLUMNS.map((c) => <th key={c}>{c}</th>)}
+                <th className={styles.corner} />
+                {COMPARISON.map((p) => (
+                  <th key={p.name} scope="col" className={p.highlight ? styles.hl : undefined}>{p.name}</th>
+                ))}
               </tr>
             </thead>
             <tbody>
-              {COMPARISON.map((r) => (
-                <tr key={r.name} className={r.highlight ? styles.hl : undefined}>
-                  <th scope="row">{r.name}</th>
-                  {r.cells.map((c, i) => <td key={i}>{c}</td>)}
+              {COMPARISON_COLUMNS.map((criterion, i) => (
+                <tr key={criterion}>
+                  <th scope="row" className={styles.criterion}>{criterion}</th>
+                  {COMPARISON.map((p) => (
+                    <td key={p.name} className={p.highlight ? styles.hl : undefined}>{p.cells[i]}</td>
+                  ))}
                 </tr>
               ))}
             </tbody>

@@ -4,21 +4,25 @@
 .tag { font-size: 0.75rem; font-weight: 800; letter-spacing: 0.12em; color: #a3e635; }
 .title { margin: 8px 0 0; font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 800; color: #fff; }
 
-.tableWrap { overflow-x: auto; border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(255, 255, 255, 0.02); }
-.table { width: 100%; border-collapse: collapse; min-width: 760px; font-size: 0.9rem; }
-.table th, .table td { padding: 14px 16px; text-align: left; border-bottom: 1px solid rgba(255, 255, 255, 0.06); vertical-align: top; }
-.table thead th { color: #94a3b8; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
-.table tbody th { color: #fff; font-weight: 700; white-space: nowrap; }
+.tableWrap { overflow-x: auto; }
+/* Cases separees : chaque cellule a sa bordure et un fond propre */
+.table { width: 100%; min-width: 820px; border-collapse: separate; border-spacing: 6px; font-size: 0.88rem; table-layout: fixed; }
+.table th, .table td {
+  padding: 14px 14px; text-align: center; vertical-align: middle; line-height: 1.45;
+  border: 1px solid rgba(255, 255, 255, 0.09); border-radius: 10px; background: rgba(255, 255, 255, 0.025);
+}
+.table thead th { color: #fff; font-weight: 800; font-size: 0.95rem; }
+.corner { background: transparent !important; border: none !important; }
+.criterion { color: #94a3b8 !important; font-weight: 700; font-size: 0.75rem !important; text-transform: uppercase; letter-spacing: 0.05em; text-align: left !important; width: 150px; }
 .table td { color: #cbd5e1; }
-.table tbody tr:last-child th, .table tbody tr:last-child td { border-bottom: none; }
 
-.hl { background: rgba(163, 230, 53, 0.07); }
-.hl th { color: #a3e635 !important; }
-.hl td { color: #e2e8f0; font-weight: 600; }
+/* Colonne JoobEscrow */
+.hl { background: rgba(163, 230, 53, 0.09) !important; border-color: rgba(163, 230, 53, 0.45) !important; color: #ecfccb !important; font-weight: 700; }
+.table thead .hl { color: #a3e635 !important; }
 
 .note { margin: 12px 0 0; font-size: 0.78rem; color: #64748b; text-align: center; }
 
 @media (max-width: 600px) {
   .section { padding: 56px 16px; }
-  .table th, .table td { padding: 12px 10px; }
+  .table th, .table td { padding: 10px 8px; }
 }
