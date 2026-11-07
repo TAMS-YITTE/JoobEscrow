@@ -3,13 +3,14 @@ import styles from '../marketing.module.css';
 import AirdropClient from './AirdropClient';
 import FLASH_WEEKEND from '../../../config/airdrop/flash-weekend.json';
 import ZEALY from '../../../config/airdrop/zealy.json';
+import MEME_CONTEST from '../../../config/airdrop/meme-contest.json';
 
 // Campagnes publiees, la plus recente en premier (une liste figee par fichier).
-const CAMPAIGNS = [FLASH_WEEKEND, ZEALY];
+const CAMPAIGNS = [MEME_CONTEST, FLASH_WEEKEND, ZEALY];
 
 export const metadata = {
   title: 'JOOB Rewards | JoobEscrow',
-  description: 'JOOB rewards: search your address to check your allocation from the Flash Weekend Bonus and the Zealy sprints, delivered at TGE with vesting.',
+  description: 'JOOB rewards: search your address to check your allocation from the Meme Contest, the Flash Weekend Bonus and the Zealy sprints, delivered at TGE with vesting.',
   alternates: { canonical: '/airdrop' },
 };
 

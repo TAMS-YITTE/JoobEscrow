@@ -1,0 +1,16 @@
+{
+ "id": "meme-contest",
+ "campaign": "Meme Contest",
+ "snapshot": "2026-11-06",
+ "rule": "JOOB prizes for the 7 Meme Contest winners (October 29 to November 5). USDT prizes were paid separately through JoobEscrow. Best Tutorial winner added as soon as the wallet is received.",
+ "delivery": "Delivered at TGE with the presale vesting: 20% at the end of the sale, then linear over 180 days.",
+ "labelHeader": "Winner",
+ "entries": [
+  { "address": "0x1ffcf2c06ddb6fb78ea0b513fff7a218b33c0785", "joob": 2500, "label": "TinychubsX, 1st place" },
+  { "address": "0xe2cefc102ba4db7131223f89629f0d20ea103285", "joob": 1500, "label": "LoneRogue8, 2nd place" },
+  { "address": "0xeb6207cdfe50472f267c9806affd5da070983f5a", "joob": 1000, "label": "Matt_wills10, 3rd place" },
+  { "address": "0xad95ff2175f018d2b334ce8c6e12b2be28aaceb7", "joob": 1000, "label": "contentrapper, Originality Award" },
+  { "address": "0xbc002c1e8fe3c8003f43b5616b002a33d789f0e9", "joob": 1000, "label": "sinan_muha96867, Best Animation" },
+  { "address": "0x80de33d2769894e86bdc91b8ee50d8e7e00e7522", "joob": 1000, "label": "justinahweb, Early Bird" }
+ ]
+}
