@@ -584,6 +584,12 @@ export default function PresaleClient() {
         <h1 className={styles.heroTitle}>
           <span className={styles.titleGradient}>JOOB Presale</span>
         </h1>
+        {/* Bonus Fair Share (config/promo.js), affiche tant que le plafond n'est pas atteint. */}
+        {fairShare && (
+          <p style={{ margin: '10px auto 0', maxWidth: 720, textAlign: 'center', color: '#a3e635', fontWeight: 700, fontSize: '1.05rem', lineHeight: 1.5 }}>
+            {fairShare.name}: +{fairShare.joobPerUsd} JOOB for every $1 you buy, until ${fmtNum(fairShare.capRaisedUsd / 1000, 0)}K is raised (${fmtNum(fairShare.leftUsd, 0)} left)
+          </p>
+        )}
       </header>
 
       <RecentBuys />
@@ -801,11 +807,6 @@ export default function PresaleClient() {
                 <div className={styles.targetText}>
                   Road to ${fmtNum(LISTING_TARGET_USD / 1000, 0)}K: the minimum to list at ${PLANNED_LISTING_PRICE}
                 </div>
-                {fairShare && (
-                  <div className={styles.targetText} style={{ color: '#a3e635', fontWeight: 700 }}>
-                    ${fmtNum(fairShare.leftUsd, 0)} left at {fairShare.joobPerUsd} bonus JOOB per $1
-                  </div>
-                )}
               </div>
             )}
 
