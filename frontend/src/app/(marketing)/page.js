@@ -53,7 +53,7 @@ export default function LandingPage() {
           <div style={{ display: 'flex', justifyContent: 'center', margin: '0 0 28px' }}>
             <a href={BSCN_ARTICLE_URL} target="_blank" rel="noopener noreferrer" className="press-pill">
               <img src="/logos/bscnews.webp" alt="BSC News" width={30} height={30} style={{ borderRadius: 8, flexShrink: 0 }} />
-              <span>Read our launch article on <strong>BSC News</strong></span>
+              <span>Featured on <strong>BSC News</strong></span>
               <span aria-hidden="true">↗</span>
             </a>
           </div>
